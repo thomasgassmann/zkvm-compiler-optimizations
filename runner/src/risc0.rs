@@ -1,7 +1,5 @@
-use std::fs;
-
 use crate::{
-    utils::{get_elf, time_operation},
+    utils::{read_elf, time_operation},
     ProgramId,
 };
 use crate::{EvalArgs, PerformanceReport};
@@ -13,8 +11,7 @@ pub struct Risc0Evaluator;
 
 impl Risc0Evaluator {
     pub fn eval(args: &EvalArgs) -> PerformanceReport {
-        let elf_path = get_elf(args);
-        let elf = fs::read(&elf_path).unwrap();
+        let elf = read_elf(&args.program, &args.prover);
         let image_id = compute_image_id(elf.as_slice()).unwrap();
 
         let mut builder = ExecutorEnv::builder();

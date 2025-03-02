@@ -1,7 +1,5 @@
-use std::fs;
-
 use crate::{
-    utils::{get_elf, time_operation},
+    utils::{read_elf, time_operation},
     EvalArgs, PerformanceReport, ProgramId,
 };
 
@@ -26,9 +24,7 @@ impl SP1Evaluator {
             _ => {}
         }
 
-        let elf_path = get_elf(args);
-        println!("{}", elf_path);
-        let elf = fs::read(elf_path).unwrap();
+        let elf = read_elf(&args.program, &args.prover);
 
         let cycles = get_cycles(&elf, &stdin);
         println!("cycles: {}", cycles);

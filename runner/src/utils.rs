@@ -1,10 +1,8 @@
+use std::fs;
 use core::time;
 use std::{env, time::Instant};
 
-use crate::{
-    types::{ProgramId, ProverId},
-    EvalArgs,
-};
+use crate::types::{ProgramId, ProverId};
 
 pub fn time_operation<T, F: FnOnce() -> T>(operation: F) -> (T, time::Duration) {
     let start = Instant::now();
@@ -13,20 +11,25 @@ pub fn time_operation<T, F: FnOnce() -> T>(operation: F) -> (T, time::Duration) 
     (result, duration)
 }
 
-pub fn get_elf(args: &EvalArgs) -> String {
-    let mut program_dir = args.program.to_string();
+pub fn read_elf(program: &ProgramId, prover: &ProverId) -> Vec<u8> {
+    let elf_path = get_elf(program, prover);
+    println!("Reading ELF from: {}", elf_path);
+    fs::read(elf_path).unwrap()
+}
 
-    match args.program {
+pub fn get_elf(program: &ProgramId, prover: &ProverId) -> String {
+    let mut program_dir = program.to_string();
+
+    match program {
         ProgramId::Keccak256 => {
             program_dir.push('-');
-            program_dir.push_str(&args.prover.to_string());
+            program_dir.push_str(&prover.to_string());
         }
         _ => {}
     };
 
     let current_dir = env::current_dir().expect("Failed to get current working directory");
-
-    return match args.prover {
+    return match prover {
         ProverId::Risc0 => current_dir
             .join(format!(
                 "programs/{}/target/riscv32im-risc0-zkvm-elf/release/{}",
