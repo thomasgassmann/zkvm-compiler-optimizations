@@ -1,10 +1,13 @@
 use criterion::{measurement::WallTime, Criterion};
-use runner::{types::{ProgramId, ProverId}, utils::read_elf};
+use runner::{
+    types::{ProgramId, ProverId},
+    utils::read_elf,
+};
 use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{SP1Context, SP1Prover};
 
-use crate::benchmarks::risc0_utils::get_risc0_executor;
 use crate::benchmarks::input::get_sp1_stdin;
+use crate::benchmarks::risc0_utils::get_risc0_executor;
 
 pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterion) {
     let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
@@ -31,7 +34,11 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
     // });
 }
 
-fn add_sp1_exec(name: &str, group: &mut criterion::BenchmarkGroup<'_, WallTime>, program: &ProgramId) {
+fn add_sp1_exec(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
     let stdin = get_sp1_stdin(program);
     let elf = read_elf(program, &ProverId::SP1);
 
@@ -43,9 +50,13 @@ fn add_sp1_exec(name: &str, group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     });
 }
 
-fn add_risc0_exec(name: &str, group: &mut criterion::BenchmarkGroup<'_, WallTime>, program: &ProgramId) {
+fn add_risc0_exec(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
     let mut p = get_risc0_executor(program);
-    
+
     group.bench_function(name, |b| {
         b.iter(|| p.run().unwrap());
     });

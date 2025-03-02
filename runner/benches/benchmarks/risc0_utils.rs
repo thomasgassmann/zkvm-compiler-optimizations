@@ -1,6 +1,9 @@
-use risc0_zkvm::{ExecutorEnv, ExecutorImpl};
-use runner::{types::{ProgramId, ProverId}, utils::read_elf};
 use crate::benchmarks::input::set_risc0_input;
+use risc0_zkvm::{ExecutorEnv, ExecutorImpl};
+use runner::{
+    types::{ProgramId, ProverId},
+    utils::read_elf,
+};
 
 pub fn get_risc0_executor(program: &ProgramId) -> ExecutorImpl<'_> {
     let elf = read_elf(program, &ProverId::Risc0);

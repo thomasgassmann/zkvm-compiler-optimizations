@@ -1,7 +1,6 @@
+use crate::benchmarks::utils::add_benchmarks_for;
 use criterion::{criterion_group, Criterion};
 use runner::types::{ProgramId, ProverId};
-use crate::benchmarks::utils::add_benchmarks_for;
-
 
 fn sp1_programs(c: &mut Criterion) {
     // benchmark all programs *in the current state* against sp1

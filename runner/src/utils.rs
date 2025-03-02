@@ -1,5 +1,5 @@
-use std::fs;
 use core::time;
+use std::fs;
 use std::{env, time::Instant};
 
 use crate::types::{ProgramId, ProverId};
