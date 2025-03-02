@@ -8,7 +8,7 @@ pub enum ProgramId {
     Factorial,
     Sha256,
     RustTests,
-    Keccak256
+    Keccak256,
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -25,7 +25,7 @@ impl Display for ProgramId {
             ProgramId::Factorial => write!(f, "factorial"),
             ProgramId::Sha256 => write!(f, "sha256"),
             ProgramId::RustTests => write!(f, "rust-tests"),
-            ProgramId::Keccak256 => write!(f, "keccak256")
+            ProgramId::Keccak256 => write!(f, "keccak256"),
         }
     }
 }

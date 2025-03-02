@@ -13,16 +13,16 @@ use sp1_stark::SP1ProverOpts;
 pub struct SP1Evaluator;
 
 impl SP1Evaluator {
-    pub fn eval(args: &EvalArgs) -> PerformanceReport { 
+    pub fn eval(args: &EvalArgs) -> PerformanceReport {
         // Get stdin.
         let mut stdin = SP1Stdin::new();
-        match args.program { 
+        match args.program {
             ProgramId::Factorial => {
                 stdin.write::<u32>(&10);
-            },
+            }
             ProgramId::Keccak256 => {
                 stdin.write(&vec![0u8; 64]);
-            },
+            }
             _ => {}
         }
 
@@ -30,7 +30,7 @@ impl SP1Evaluator {
         println!("{}", elf_path);
         let elf = fs::read(elf_path).unwrap();
 
-        let cycles = get_cycles(&elf, &stdin); 
+        let cycles = get_cycles(&elf, &stdin);
         println!("cycles: {}", cycles);
 
         let prover = SP1Prover::<CpuProverComponents>::new();
@@ -47,15 +47,20 @@ impl SP1Evaluator {
         let opts = SP1ProverOpts::auto();
 
         // Generate the core proof (CPU).
-        let (core_proof, prove_core_duration) =
-            time_operation(|| prover.prove_core(&pk_d, program, &stdin, opts, context).unwrap());
+        let (core_proof, prove_core_duration) = time_operation(|| {
+            prover
+                .prove_core(&pk_d, program, &stdin, opts, context)
+                .unwrap()
+        });
 
         let num_shards = core_proof.proof.0.len();
 
         // Verify the proof.
         let core_bytes = bincode::serialize(&core_proof).unwrap();
         let (_, verify_core_duration) = time_operation(|| {
-            prover.verify(&core_proof.proof, &vk).expect("Proof verification failed")
+            prover
+                .verify(&core_proof.proof, &vk)
+                .expect("Proof verification failed")
         });
 
         let (compress_proof, compress_duration) =
@@ -65,7 +70,9 @@ impl SP1Evaluator {
         println!("recursive proof size: {}", compress_bytes.len());
 
         let (_, verify_compress_duration) = time_operation(|| {
-            prover.verify_compressed(&compress_proof, &vk).expect("Proof verification failed")
+            prover
+                .verify_compressed(&compress_proof, &vk)
+                .expect("Proof verification failed")
         });
 
         let prove_duration = prove_core_duration + compress_duration;
@@ -88,9 +95,9 @@ impl SP1Evaluator {
             compress_prove_duration: compress_duration.as_secs_f64(),
             compress_verify_duration: verify_compress_duration.as_secs_f64(),
             compress_proof_size: compress_bytes.len(),
-            overall_khz
+            overall_khz,
         };
-        
+
         report
     }
 }

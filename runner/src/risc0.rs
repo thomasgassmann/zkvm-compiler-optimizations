@@ -1,15 +1,13 @@
 use std::fs;
 
 use crate::{
-    utils::{
-        get_elf, time_operation,
-    },
+    utils::{get_elf, time_operation},
     ProgramId,
 };
+use crate::{EvalArgs, PerformanceReport};
 use risc0_zkvm::{
     compute_image_id, get_prover_server, ExecutorEnv, ExecutorImpl, ProverOpts, VerifierContext,
 };
-use crate::{EvalArgs, PerformanceReport};
 
 pub struct Risc0Evaluator;
 
@@ -92,7 +90,7 @@ impl Risc0Evaluator {
             compress_prove_duration: compress_duration.as_secs_f64(),
             compress_verify_duration: recursive_verify_duration.as_secs_f64(),
             compress_proof_size: recursive_proof_size,
-            overall_khz
+            overall_khz,
         }
     }
 }
@@ -101,10 +99,10 @@ fn set_input(args: &EvalArgs, builder: &mut risc0_zkvm::ExecutorEnvBuilder<'_>) 
     match args.program {
         ProgramId::Factorial => {
             let _ = builder.write::<u32>(&10);
-        },
+        }
         ProgramId::Keccak256 => {
             let _ = builder.write(&vec![0u8; 64]);
-        },
+        }
         _ => {}
     }
 }
