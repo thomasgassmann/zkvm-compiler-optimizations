@@ -17,6 +17,7 @@ use crate::benchmarks::sp1_utils::{
 
 pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterion) {
     let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
+    group.sample_size(10);
 
     match prover {
         ProverId::Risc0 => add_risc0_exec("execute", &mut group, &program),
