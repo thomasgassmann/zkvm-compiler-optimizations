@@ -1,12 +1,10 @@
 mod risc0;
 mod sp1;
-mod types;
-mod utils;
 
 use clap::{command, Parser};
+use runner::types::{ProgramId, ProverId};
 use serde::Serialize;
 use std::{fs::File, io::Write};
-use types::*;
 
 #[derive(Parser, Clone)]
 #[command(about = "Evaluate the performance of a zkVM on a program.")]

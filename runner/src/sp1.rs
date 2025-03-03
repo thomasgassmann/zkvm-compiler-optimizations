@@ -1,10 +1,9 @@
 use crate::{
-    utils::{read_elf, time_operation},
-    EvalArgs, PerformanceReport, ProgramId,
+    EvalArgs, PerformanceReport
 };
 
+use runner::{input::get_sp1_stdin, utils::{read_elf, time_operation}};
 use sp1_core_executor::SP1Context;
-use sp1_core_machine::io::SP1Stdin;
 use sp1_prover::{components::CpuProverComponents, utils::get_cycles, SP1Prover};
 use sp1_stark::SP1ProverOpts;
 
@@ -13,17 +12,7 @@ pub struct SP1Evaluator;
 impl SP1Evaluator {
     pub fn eval(args: &EvalArgs) -> PerformanceReport {
         // Get stdin.
-        let mut stdin = SP1Stdin::new();
-        match args.program {
-            ProgramId::Factorial => {
-                stdin.write::<u32>(&10);
-            }
-            ProgramId::Keccak256 => {
-                stdin.write(&vec![0u8; 64]);
-            }
-            _ => {}
-        }
-
+        let stdin = get_sp1_stdin(&args.program);
         let elf = read_elf(&args.program, &args.prover);
 
         let cycles = get_cycles(&elf, &stdin);

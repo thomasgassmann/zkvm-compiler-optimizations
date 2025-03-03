@@ -1,5 +1,6 @@
-use runner::types::ProgramId;
 use sp1_sdk::SP1Stdin;
+
+use crate::types::ProgramId;
 
 pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
     let mut stdin = SP1Stdin::new();

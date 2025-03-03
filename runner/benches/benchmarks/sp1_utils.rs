@@ -1,8 +1,6 @@
-use runner::types::ProgramId;
+use runner::{input::get_sp1_stdin, types::ProgramId};
 use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{SP1Context, SP1Prover, SP1Stdin};
-
-use crate::benchmarks::input::get_sp1_stdin;
 
 pub fn exec_sp1_prepare(
     elf: &[u8],
