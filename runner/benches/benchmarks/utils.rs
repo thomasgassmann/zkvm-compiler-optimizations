@@ -15,9 +15,10 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
         ProverId::SP1 => add_sp1_exec("execute", &mut group, &program),
     }
 
-    // group.bench_function("core_prove", |b| {
-    //     b.iter(|| 1 + 1);
-    // });
+    // match prover {
+    //     ProverId::Risc0 => add_risc0_core_prove("core_prove", &mut group, &program),
+    //     ProverId::SP1 => add_sp1_core_prove("core_prove", &mut group, &program),
+    // }
 
     // group.bench_function("core_verify", |b| {
     //     b.iter(|| 1 + 1);
@@ -31,6 +32,12 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
     //     b.iter(|| 1 + 1);
     // });
 }
+
+// fn add_risc0_core_prove(arg: &str, group: &mut criterion::BenchmarkGroup<'_, WallTime>, program: &ProgramId) {
+// }
+
+// fn add_sp1_core_prove(arg: &str, group: &mut criterion::BenchmarkGroup<'_, WallTime>, program: &ProgramId) {
+// }
 
 fn add_sp1_exec(
     name: &str,

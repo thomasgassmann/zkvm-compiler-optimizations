@@ -1,11 +1,8 @@
-use crate::{
-    utils::{read_elf, time_operation},
-    ProgramId,
-};
 use crate::{EvalArgs, PerformanceReport};
 use risc0_zkvm::{
     compute_image_id, get_prover_server, ExecutorEnv, ExecutorImpl, ProverOpts, VerifierContext,
 };
+use runner::{input::set_risc0_input, utils::{read_elf, time_operation}};
 
 pub struct Risc0Evaluator;
 
@@ -15,7 +12,7 @@ impl Risc0Evaluator {
         let image_id = compute_image_id(elf.as_slice()).unwrap();
 
         let mut builder = ExecutorEnv::builder();
-        set_input(args, &mut builder);
+        set_risc0_input(&args.program, &mut builder);
         let env = builder.build().unwrap();
 
         // Compute some statistics.
@@ -26,7 +23,7 @@ impl Risc0Evaluator {
 
         // Setup the prover.
         let mut builder = ExecutorEnv::builder();
-        set_input(args, &mut builder);
+        set_risc0_input(&args.program, &mut builder);
         let env = builder.build().unwrap();
 
         // Generate the session.
@@ -89,17 +86,5 @@ impl Risc0Evaluator {
             compress_proof_size: recursive_proof_size,
             overall_khz,
         }
-    }
-}
-
-fn set_input(args: &EvalArgs, builder: &mut risc0_zkvm::ExecutorEnvBuilder<'_>) {
-    match args.program {
-        ProgramId::Factorial => {
-            let _ = builder.write::<u32>(&10);
-        }
-        ProgramId::Keccak256 => {
-            let _ = builder.write(&vec![0u8; 64]);
-        }
-        _ => {}
     }
 }
