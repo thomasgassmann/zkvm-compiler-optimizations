@@ -5,11 +5,12 @@ usage() {
     echo '<program> - Program name to execute (in programs/)'
     echo '<zkvm>    - sp1/risc0'
     echo '<rustc>   - Flags to rustc'
+    echo '<path>    - Copy binary to path'
     echo Example: ./build.sh loop-sum risc0 "-C llvm-args=-unroll-threshold=0"
     exit
 }
 
-if [ "$#" -ne 3 ]
+if [ "$#" -ne 4 ]
 then
     usage
 fi
@@ -26,7 +27,10 @@ if [ "$2" == "sp1" ]; then
         RUSTUP_TOOLCHAIN=succinct \
         CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
         cargo build --release --locked --features sp1
-    echo "Built ./programs/$program/target/riscv32im-succinct-zkvm-elf/release/$program"
+    s="./programs/$program/target/riscv32im-succinct-zkvm-elf/release/$program"
+    t="./programs/$program/target/riscv32im-succinct-zkvm-elf/release/$program-$4"
+    echo "Built $s"
+    cd ../..
 fi
 
 if [ "$2" == "risc0" ]; then
@@ -35,5 +39,13 @@ if [ "$2" == "risc0" ]; then
         RISC0_FEATURE_bigint2=1 \
         cargo +risc0 build --release --locked \
             --target riscv32im-risc0-zkvm-elf --manifest-path Cargo.toml --features risc0
-    echo "Built ./programs/$program/target/riscv32im-risc0-zkvm-elf/release/$program"
+    s="./programs/$program/target/riscv32im-risc0-zkvm-elf/release/$program"
+    t="./programs/$program/target/riscv32im-risc0-zkvm-elf/release/$program-$4"
+    echo "Built $s"
+    cd ../..
+fi
+
+if [[ -n "$4" ]]; then
+    echo "Copying from $s to $t"
+    cp $s $t
 fi

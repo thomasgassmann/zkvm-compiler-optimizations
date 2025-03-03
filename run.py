@@ -25,7 +25,7 @@ def filename(program: str, zkvm: str, optimization: str) -> str:
 
 
 def build(optimization: str, program: str, zkvm: str):
-    subprocess.run(["./build.sh", program, zkvm, optimization])
+    subprocess.run(["./build.sh", program, zkvm, optimization, ""])
 
 def run(program: str, zkvm: str, file: str):
     subprocess.run(["./run.sh", program, zkvm, file])
