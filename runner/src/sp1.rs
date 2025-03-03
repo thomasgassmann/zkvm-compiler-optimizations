@@ -1,8 +1,9 @@
-use crate::{
-    EvalArgs, PerformanceReport
-};
+use crate::{EvalArgs, PerformanceReport};
 
-use runner::{input::get_sp1_stdin, utils::{read_elf, time_operation}};
+use runner::{
+    input::get_sp1_stdin,
+    utils::{read_elf, time_operation},
+};
 use sp1_core_executor::SP1Context;
 use sp1_prover::{components::CpuProverComponents, utils::get_cycles, SP1Prover};
 use sp1_stark::SP1ProverOpts;
