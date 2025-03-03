@@ -89,10 +89,33 @@ pub fn compress_sp1_prepare(
 }
 
 pub fn compress_sp1(
-    prover: SP1Prover<CpuProverComponents>,
+    prover: &SP1Prover<CpuProverComponents>,
     core_proof: SP1ProofWithMetadata<SP1CoreProofData>,
-    vk: SP1VerifyingKey,
+    vk: &SP1VerifyingKey,
     opts: SP1ProverOpts,
 ) -> SP1ReduceProof<BabyBearPoseidon2> {
-    prover.compress(&vk, core_proof, vec![], opts).unwrap()
+    prover.compress(vk, core_proof, vec![], opts).unwrap()
+}
+
+pub fn compress_verify_sp1_prepare(
+    elf: &[u8],
+    program: &ProgramId,
+) -> (
+    SP1Prover<CpuProverComponents>,
+    SP1ReduceProof<BabyBearPoseidon2>,
+    SP1VerifyingKey,
+) {
+    let (prover, core_proof, vk, opts) = compress_sp1_prepare(elf, program);
+    let compress_proof = compress_sp1(&prover, core_proof, &vk, opts);
+    (prover, compress_proof, vk)
+}
+
+pub fn compress_verify_sp1(
+    prover: SP1Prover<CpuProverComponents>,
+    compress_proof: SP1ReduceProof<BabyBearPoseidon2>,
+    vk: SP1VerifyingKey,
+) {
+    prover
+        .verify_compressed(&compress_proof, &vk)
+        .expect("Proof verification failed");
 }

@@ -5,12 +5,14 @@ use runner::{
 };
 
 use crate::benchmarks::risc0_utils::{
-    compress_risc0, compress_risc0_prepare, exec_risc0, exec_risc0_setup, prove_core_risc0,
-    prove_core_risc0_prepare, verify_core_risc0, verify_core_risc0_prepare,
+    compress_risc0, compress_risc0_prepare, compress_verify_risc0, compress_verify_risc0_prepare,
+    exec_risc0, exec_risc0_setup, prove_core_risc0, prove_core_risc0_prepare, verify_core_risc0,
+    verify_core_risc0_prepare,
 };
 use crate::benchmarks::sp1_utils::{
-    compress_sp1, compress_sp1_prepare, exec_sp1, exec_sp1_prepare, prove_core_sp1,
-    prove_core_sp1_prepare, verify_core_sp1, verify_core_sp1_prepare,
+    compress_sp1, compress_sp1_prepare, compress_verify_sp1, compress_verify_sp1_prepare, exec_sp1,
+    exec_sp1_prepare, prove_core_sp1, prove_core_sp1_prepare, verify_core_sp1,
+    verify_core_sp1_prepare,
 };
 
 pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterion) {
@@ -36,9 +38,40 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
         ProverId::SP1 => add_sp1_compress("compress", &mut group, &program),
     }
 
-    // group.bench_function("compress_verify", |b| {
-    //     b.iter(|| 1 + 1);
-    // });
+    match prover {
+        ProverId::Risc0 => add_risc0_compress_verify("compress_verify", &mut group, &program),
+        ProverId::SP1 => add_sp1_compress_verify("compress_verify", &mut group, &program),
+    }
+}
+
+fn add_sp1_compress_verify(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf: Vec<u8> = read_elf(program, &ProverId::SP1);
+
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || compress_verify_sp1_prepare(&elf, program),
+            |(prover, compressed_proof, vk)| compress_verify_sp1(prover, compressed_proof, vk),
+        );
+    });
+}
+
+fn add_risc0_compress_verify(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf: Vec<u8> = read_elf(program, &ProverId::Risc0);
+
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || compress_verify_risc0_prepare(&elf, program),
+            |(compressed_proof, image_id)| compress_verify_risc0(compressed_proof, image_id),
+        );
+    });
 }
 
 fn add_risc0_compress(
@@ -66,7 +99,7 @@ fn add_sp1_compress(
     group.bench_function(name, |b| {
         b.iter_with_setup(
             || compress_sp1_prepare(&elf, program),
-            |(prover, proof, vk, opts)| compress_sp1(prover, proof, vk, opts),
+            |(prover, proof, vk, opts)| compress_sp1(&prover, proof, &vk, opts),
         );
     });
 }
