@@ -1,0 +1,6 @@
+{
+    "o0": "-C opt-level=0",
+    "o1": "-C opt-level=1",
+    "o2": "-C opt-level=2",
+    "o3": "-C opt-level=3"
+}

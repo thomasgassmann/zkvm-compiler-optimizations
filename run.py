@@ -4,14 +4,8 @@ import os
 import json
 import matplotlib.pyplot as plt
 
-OPTIMIZATIONS = {
-    # "loop-unroll-0": "-C llvm-args=-unroll-threshold=0",
-    # "loop-unroll-100": "-C llvm-args=-unroll-threshold=100",
-    "o0": "-C opt-level=0",
-    "o1": "-C opt-level=1",
-    "o2": "-C opt-level=2",
-    "o3": "-C opt-level=3",
-}
+json.load(open("flags.json", "r"))
+OPTIMIZATIONS = json.load(open("flags.json", "r"))
 
 ZKVMS = ["sp1", "risc0"]
 
