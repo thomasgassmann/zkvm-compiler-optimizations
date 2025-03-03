@@ -13,7 +13,6 @@ pub fn time_operation<T, F: FnOnce() -> T>(operation: F) -> (T, time::Duration) 
 
 pub fn read_elf(program: &ProgramId, prover: &ProverId) -> Vec<u8> {
     let elf_path = get_elf(program, prover);
-    println!("Reading ELF from: {}", elf_path);
     fs::read(elf_path).unwrap()
 }
 

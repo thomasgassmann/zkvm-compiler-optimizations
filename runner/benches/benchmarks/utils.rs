@@ -3,11 +3,9 @@ use runner::{
     types::{ProgramId, ProverId},
     utils::read_elf,
 };
-use sp1_prover::components::CpuProverComponents;
-use sp1_sdk::{SP1Context, SP1Prover};
 
-use crate::benchmarks::input::get_sp1_stdin;
-use crate::benchmarks::risc0_utils::get_risc0_executor;
+use crate::benchmarks::risc0_utils::exec_risc0;
+use crate::benchmarks::sp1_utils::exec_sp1;
 
 pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterion) {
     let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
@@ -39,14 +37,10 @@ fn add_sp1_exec(
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
-    let stdin = get_sp1_stdin(program);
     let elf = read_elf(program, &ProverId::SP1);
 
-    let prover = SP1Prover::<CpuProverComponents>::new();
-    let (_, _, _, _) = prover.setup(&elf);
-
     group.bench_function(name, |b| {
-        b.iter(|| prover.execute(&elf, &stdin, SP1Context::default()).unwrap());
+        b.iter(|| exec_sp1(&elf, program));
     });
 }
 
@@ -55,9 +49,9 @@ fn add_risc0_exec(
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
-    let mut p = get_risc0_executor(program);
+    let elf = read_elf(program, &ProverId::Risc0);
 
     group.bench_function(name, |b| {
-        b.iter(|| p.run().unwrap());
+        b.iter(|| exec_risc0(&elf, program));
     });
 }
