@@ -1,6 +1,10 @@
-use risc0_zkvm::{ExecutorEnv, ExecutorImpl};
-use runner::{input::set_risc0_input, types::ProgramId};
+use std::rc::Rc;
 
+use risc0_zkvm::{
+    get_prover_server, ExecutorEnv, ExecutorImpl, ProverOpts, ProverServer, Session,
+    VerifierContext,
+};
+use runner::{input::set_risc0_input, types::ProgramId};
 
 pub fn exec_risc0_setup<'a>(elf: &'a [u8], program: &'a ProgramId) -> ExecutorImpl<'a> {
     let mut builder = ExecutorEnv::builder();
@@ -12,4 +16,21 @@ pub fn exec_risc0_setup<'a>(elf: &'a [u8], program: &'a ProgramId) -> ExecutorIm
 
 pub fn exec_risc0(mut p: ExecutorImpl<'_>) {
     p.run().unwrap();
+}
+
+pub fn prove_core_risc0_prepare<'a>(
+    elf: &[u8],
+    program: &ProgramId,
+) -> (Rc<dyn ProverServer>, VerifierContext, Session) {
+    let mut exec = exec_risc0_setup(elf, program);
+    let session = exec.run().unwrap();
+
+    let opts = ProverOpts::default();
+    let prover = get_prover_server(&opts).unwrap();
+    let ctx = VerifierContext::default();
+    (prover, ctx, session)
+}
+
+pub fn prove_core_risc0(prover: Rc<dyn ProverServer>, ctx: VerifierContext, session: Session) {
+    prover.prove_session(&ctx, &session).unwrap();
 }

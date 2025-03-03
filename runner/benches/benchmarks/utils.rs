@@ -4,8 +4,12 @@ use runner::{
     utils::read_elf,
 };
 
-use crate::benchmarks::risc0_utils::{exec_risc0, exec_risc0_setup};
-use crate::benchmarks::sp1_utils::{exec_sp1, exec_sp1_prepare};
+use crate::benchmarks::risc0_utils::{
+    exec_risc0, exec_risc0_setup, prove_core_risc0, prove_core_risc0_prepare,
+};
+use crate::benchmarks::sp1_utils::{
+    exec_sp1, exec_sp1_prepare, prove_core_sp1, prove_core_sp1_prepare,
+};
 
 pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterion) {
     let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
@@ -15,10 +19,10 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
         ProverId::SP1 => add_sp1_exec("execute", &mut group, &program),
     }
 
-    // match prover {
-    //     ProverId::Risc0 => add_risc0_core_prove("core_prove", &mut group, &program),
-    //     ProverId::SP1 => add_sp1_core_prove("core_prove", &mut group, &program),
-    // }
+    match prover {
+        ProverId::Risc0 => add_risc0_core_prove("core_prove", &mut group, &program),
+        ProverId::SP1 => add_sp1_core_prove("core_prove", &mut group, &program),
+    }
 
     // group.bench_function("core_verify", |b| {
     //     b.iter(|| 1 + 1);
@@ -33,11 +37,37 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
     // });
 }
 
-// fn add_risc0_core_prove(arg: &str, group: &mut criterion::BenchmarkGroup<'_, WallTime>, program: &ProgramId) {
-// }
+fn add_risc0_core_prove(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf = read_elf(program, &ProverId::Risc0);
 
-// fn add_sp1_core_prove(arg: &str, group: &mut criterion::BenchmarkGroup<'_, WallTime>, program: &ProgramId) {
-// }
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || prove_core_risc0_prepare(&elf, program),
+            |(prover, ctx, session)| prove_core_risc0(prover, ctx, session),
+        );
+    });
+}
+
+fn add_sp1_core_prove(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf = read_elf(program, &ProverId::SP1);
+
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || prove_core_sp1_prepare(&elf, program),
+            |(stdin, prover, program, pk_d, opts)| {
+                prove_core_sp1(stdin, prover, program, pk_d, opts)
+            },
+        );
+    });
+}
 
 fn add_sp1_exec(
     name: &str,

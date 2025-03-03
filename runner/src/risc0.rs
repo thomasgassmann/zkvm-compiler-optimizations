@@ -2,7 +2,10 @@ use crate::{EvalArgs, PerformanceReport};
 use risc0_zkvm::{
     compute_image_id, get_prover_server, ExecutorEnv, ExecutorImpl, ProverOpts, VerifierContext,
 };
-use runner::{input::set_risc0_input, utils::{read_elf, time_operation}};
+use runner::{
+    input::set_risc0_input,
+    utils::{read_elf, time_operation},
+};
 
 pub struct Risc0Evaluator;
 
