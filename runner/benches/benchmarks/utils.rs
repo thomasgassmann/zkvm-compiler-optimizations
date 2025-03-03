@@ -5,10 +5,12 @@ use runner::{
 };
 
 use crate::benchmarks::risc0_utils::{
-    exec_risc0, exec_risc0_setup, prove_core_risc0, prove_core_risc0_prepare,
+    compress_risc0, compress_risc0_prepare, exec_risc0, exec_risc0_setup, prove_core_risc0,
+    prove_core_risc0_prepare, verify_core_risc0, verify_core_risc0_prepare,
 };
 use crate::benchmarks::sp1_utils::{
-    exec_sp1, exec_sp1_prepare, prove_core_sp1, prove_core_sp1_prepare,
+    compress_sp1, compress_sp1_prepare, exec_sp1, exec_sp1_prepare, prove_core_sp1,
+    prove_core_sp1_prepare, verify_core_sp1, verify_core_sp1_prepare,
 };
 
 pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterion) {
@@ -24,17 +26,79 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
         ProverId::SP1 => add_sp1_core_prove("core_prove", &mut group, &program),
     }
 
-    // group.bench_function("core_verify", |b| {
-    //     b.iter(|| 1 + 1);
-    // });
+    match prover {
+        ProverId::Risc0 => add_risc0_core_verify("core_verify", &mut group, &program),
+        ProverId::SP1 => add_sp1_core_verify("core_verify", &mut group, &program),
+    }
 
-    // group.bench_function("compress", |b| {
-    //     b.iter(|| 1 + 1);
-    // });
+    match prover {
+        ProverId::Risc0 => add_risc0_compress("compress", &mut group, &program),
+        ProverId::SP1 => add_sp1_compress("compress", &mut group, &program),
+    }
 
     // group.bench_function("compress_verify", |b| {
     //     b.iter(|| 1 + 1);
     // });
+}
+
+fn add_risc0_compress(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf: Vec<u8> = read_elf(program, &ProverId::Risc0);
+
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || compress_risc0_prepare(&elf, program),
+            |(receipt, prover)| compress_risc0(receipt, prover),
+        );
+    });
+}
+
+fn add_sp1_compress(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf: Vec<u8> = read_elf(program, &ProverId::SP1);
+
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || compress_sp1_prepare(&elf, program),
+            |(prover, proof, vk, opts)| compress_sp1(prover, proof, vk, opts),
+        );
+    });
+}
+
+fn add_sp1_core_verify(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf: Vec<u8> = read_elf(program, &ProverId::SP1);
+
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || verify_core_sp1_prepare(&elf, program),
+            |(prover, proof, vk, _)| verify_core_sp1(prover, proof, vk),
+        );
+    });
+}
+
+fn add_risc0_core_verify(
+    name: &str,
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+) {
+    let elf: Vec<u8> = read_elf(program, &ProverId::Risc0);
+
+    group.bench_function(name, |b| {
+        b.iter_with_setup(
+            || verify_core_risc0_prepare(&elf, program),
+            |(receipt, image_id, _)| verify_core_risc0(receipt, image_id),
+        );
+    });
 }
 
 fn add_risc0_core_prove(
@@ -47,7 +111,7 @@ fn add_risc0_core_prove(
     group.bench_function(name, |b| {
         b.iter_with_setup(
             || prove_core_risc0_prepare(&elf, program),
-            |(prover, ctx, session)| prove_core_risc0(prover, ctx, session),
+            |(prover, ctx, session)| prove_core_risc0(&prover, ctx, session),
         );
     });
 }
@@ -62,7 +126,7 @@ fn add_sp1_core_prove(
     group.bench_function(name, |b| {
         b.iter_with_setup(
             || prove_core_sp1_prepare(&elf, program),
-            |(stdin, prover, program, pk_d, opts)| {
+            |(stdin, prover, program, pk_d, opts, _)| {
                 prove_core_sp1(stdin, prover, program, pk_d, opts)
             },
         );

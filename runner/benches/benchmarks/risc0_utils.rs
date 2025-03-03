@@ -1,8 +1,8 @@
 use std::rc::Rc;
 
 use risc0_zkvm::{
-    get_prover_server, ExecutorEnv, ExecutorImpl, ProverOpts, ProverServer, Session,
-    VerifierContext,
+    compute_image_id, get_prover_server, sha::Digest, ExecutorEnv, ExecutorImpl, ProveInfo,
+    ProverOpts, ProverServer, Receipt, Session, VerifierContext,
 };
 use runner::{input::set_risc0_input, types::ProgramId};
 
@@ -31,6 +31,36 @@ pub fn prove_core_risc0_prepare<'a>(
     (prover, ctx, session)
 }
 
-pub fn prove_core_risc0(prover: Rc<dyn ProverServer>, ctx: VerifierContext, session: Session) {
-    prover.prove_session(&ctx, &session).unwrap();
+pub fn prove_core_risc0(
+    prover: &Rc<dyn ProverServer>,
+    ctx: VerifierContext,
+    session: Session,
+) -> ProveInfo {
+    prover.prove_session(&ctx, &session).unwrap()
+}
+
+pub fn verify_core_risc0_prepare(
+    elf: &[u8],
+    program: &ProgramId,
+) -> (Receipt, Digest, Rc<dyn ProverServer>) {
+    let image_id = compute_image_id(elf).unwrap();
+
+    let (prover, ctx, session) = prove_core_risc0_prepare(elf, program);
+    let info = prove_core_risc0(&prover, ctx, session);
+
+    let receipt = info.receipt;
+    (receipt, image_id, prover)
+}
+
+pub fn verify_core_risc0(receipt: Receipt, image_id: Digest) {
+    receipt.verify(image_id).unwrap();
+}
+
+pub fn compress_risc0_prepare(elf: &[u8], program: &ProgramId) -> (Receipt, Rc<dyn ProverServer>) {
+    let (receipt, _, prover) = verify_core_risc0_prepare(elf, program);
+    (receipt, prover)
+}
+
+pub fn compress_risc0(receipt: Receipt, prover: Rc<dyn ProverServer>) -> Receipt {
+    prover.compress(&ProverOpts::succinct(), &receipt).unwrap()
 }
