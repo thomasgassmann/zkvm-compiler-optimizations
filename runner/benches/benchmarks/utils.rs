@@ -23,11 +23,11 @@ use serde_json::from_reader;
 pub fn run_all(c: &mut Criterion, zkvm: ProverId) {
     let config = read_config_json();
     for (profile, _) in config.iter() {
-        // add_benchmarks_for(ProgramId::Factorial, &zkvm, c, profile);
-        // add_benchmarks_for(ProgramId::Keccak256, &zkvm, c, profile);
+        add_benchmarks_for(ProgramId::Factorial, &zkvm, c, profile);
+        add_benchmarks_for(ProgramId::Keccak256, &zkvm, c, profile);
         add_benchmarks_for(ProgramId::LoopSum, &zkvm, c, profile);
-        // add_benchmarks_for(ProgramId::RustTests, &zkvm, c, profile);
-        // add_benchmarks_for(ProgramId::Sha256, &zkvm, c, profile);
+        add_benchmarks_for(ProgramId::RustTests, &zkvm, c, profile);
+        add_benchmarks_for(ProgramId::Sha256, &zkvm, c, profile);
     }
 }
 
