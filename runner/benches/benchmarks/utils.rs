@@ -8,6 +8,7 @@ use crate::benchmarks::sp1_utils::{
     exec_sp1_prepare, prove_core_sp1, prove_core_sp1_prepare, verify_core_sp1,
     verify_core_sp1_prepare,
 };
+use criterion::BenchmarkId;
 use criterion::{measurement::WallTime, Criterion};
 use runner::{
     types::{ProgramId, ProverId},
@@ -19,33 +20,35 @@ pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterio
     group.sample_size(10);
 
     match prover {
-        ProverId::Risc0 => add_risc0_exec("execute", &mut group, &program),
-        ProverId::SP1 => add_sp1_exec("execute", &mut group, &program),
+        ProverId::Risc0 => add_risc0_exec(BenchmarkId::new("execute", ""), &mut group, &program),
+        ProverId::SP1 => add_sp1_exec(BenchmarkId::new("execute", ""), &mut group, &program),
     }
 
     match prover {
-        ProverId::Risc0 => add_risc0_core_prove("core_prove", &mut group, &program),
-        ProverId::SP1 => add_sp1_core_prove("core_prove", &mut group, &program),
+        ProverId::Risc0 => add_risc0_core_prove(BenchmarkId::new("core_prove", ""), &mut group, &program),
+        ProverId::SP1 => add_sp1_core_prove(BenchmarkId::new("core_prove", ""), &mut group, &program),
     }
 
     match prover {
-        ProverId::Risc0 => add_risc0_core_verify("core_verify", &mut group, &program),
-        ProverId::SP1 => add_sp1_core_verify("core_verify", &mut group, &program),
+        ProverId::Risc0 => add_risc0_core_verify(BenchmarkId::new("core_verify", ""), &mut group, &program),
+        ProverId::SP1 => add_sp1_core_verify(BenchmarkId::new("core_verify", ""), &mut group, &program),
     }
 
     match prover {
-        ProverId::Risc0 => add_risc0_compress("compress", &mut group, &program),
-        ProverId::SP1 => add_sp1_compress("compress", &mut group, &program),
+        ProverId::Risc0 => add_risc0_compress(BenchmarkId::new("compress", ""), &mut group, &program),
+        ProverId::SP1 => add_sp1_compress(BenchmarkId::new("compress", ""), &mut group, &program),
     }
 
     match prover {
-        ProverId::Risc0 => add_risc0_compress_verify("compress_verify", &mut group, &program),
-        ProverId::SP1 => add_sp1_compress_verify("compress_verify", &mut group, &program),
+        ProverId::Risc0 => add_risc0_compress_verify(BenchmarkId::new("compress_verify", ""), &mut group, &program),
+        ProverId::SP1 => add_sp1_compress_verify(BenchmarkId::new("compress_verify", ""), &mut group, &program),
     }
+
+    group.finish();
 }
 
 fn add_sp1_compress_verify(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -58,7 +61,7 @@ fn add_sp1_compress_verify(
 }
 
 fn add_risc0_compress_verify(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -71,7 +74,7 @@ fn add_risc0_compress_verify(
 }
 
 fn add_risc0_compress(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -86,7 +89,7 @@ fn add_risc0_compress(
 }
 
 fn add_sp1_compress(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -101,7 +104,7 @@ fn add_sp1_compress(
 }
 
 fn add_sp1_core_verify(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -114,7 +117,7 @@ fn add_sp1_core_verify(
 }
 
 fn add_risc0_core_verify(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -127,7 +130,7 @@ fn add_risc0_core_verify(
 }
 
 fn add_risc0_core_prove(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -142,7 +145,7 @@ fn add_risc0_core_prove(
 }
 
 fn add_sp1_core_prove(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -159,7 +162,7 @@ fn add_sp1_core_prove(
 }
 
 fn add_sp1_exec(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
@@ -174,7 +177,7 @@ fn add_sp1_exec(
 }
 
 fn add_risc0_exec(
-    name: &str,
+    name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
 ) {
