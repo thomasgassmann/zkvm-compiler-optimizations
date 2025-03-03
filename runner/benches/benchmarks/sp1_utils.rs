@@ -1,7 +1,7 @@
 use runner::{input::get_sp1_stdin, types::ProgramId};
-use sp1_core_executor::Program;
-use sp1_prover::components::CpuProverComponents;
-use sp1_sdk::{SP1Context, SP1Prover, SP1Stdin};
+use sp1_core_executor::{Program, SP1ReduceProof};
+use sp1_prover::{components::CpuProverComponents, SP1CoreProofData, SP1ProofWithMetadata};
+use sp1_sdk::{SP1Context, SP1Prover, SP1Stdin, SP1VerifyingKey};
 use sp1_stark::{baby_bear_poseidon2::BabyBearPoseidon2, SP1ProverOpts, StarkProvingKey};
 
 pub fn exec_sp1_prepare(
@@ -28,12 +28,13 @@ pub fn prove_core_sp1_prepare(
     Program,
     StarkProvingKey<BabyBearPoseidon2>,
     SP1ProverOpts,
+    SP1VerifyingKey,
 ) {
     let stdin = get_sp1_stdin(program);
     let prover = SP1Prover::<CpuProverComponents>::new();
-    let (_, pk_d, program, _) = prover.setup(&elf);
+    let (_, pk_d, program, vk) = prover.setup(&elf);
     let opts = SP1ProverOpts::auto();
-    (stdin, prover, program, pk_d, opts)
+    (stdin, prover, program, pk_d, opts, vk)
 }
 
 pub fn prove_core_sp1(
@@ -46,4 +47,52 @@ pub fn prove_core_sp1(
     prover
         .prove_core(&proving_key, program, &stdin, opts, SP1Context::default())
         .unwrap();
+}
+
+pub fn verify_core_sp1_prepare(
+    elf: &[u8],
+    program: &ProgramId,
+) -> (
+    SP1Prover<CpuProverComponents>,
+    SP1ProofWithMetadata<SP1CoreProofData>,
+    SP1VerifyingKey,
+    SP1ProverOpts,
+) {
+    let (stdin, prover, program, pk_d, opts, vk) = prove_core_sp1_prepare(elf, program);
+
+    let core_proof = prover
+        .prove_core(&pk_d, program, &stdin, opts, SP1Context::default())
+        .unwrap();
+    (prover, core_proof, vk, opts)
+}
+
+pub fn verify_core_sp1(
+    prover: SP1Prover<CpuProverComponents>,
+    core_proof: SP1ProofWithMetadata<SP1CoreProofData>,
+    vk: SP1VerifyingKey,
+) {
+    prover
+        .verify(&core_proof.proof, &vk)
+        .expect("Proof verification failed")
+}
+
+pub fn compress_sp1_prepare(
+    elf: &[u8],
+    program: &ProgramId,
+) -> (
+    SP1Prover<CpuProverComponents>,
+    SP1ProofWithMetadata<SP1CoreProofData>,
+    SP1VerifyingKey,
+    SP1ProverOpts,
+) {
+    verify_core_sp1_prepare(elf, program)
+}
+
+pub fn compress_sp1(
+    prover: SP1Prover<CpuProverComponents>,
+    core_proof: SP1ProofWithMetadata<SP1CoreProofData>,
+    vk: SP1VerifyingKey,
+    opts: SP1ProverOpts,
+) -> SP1ReduceProof<BabyBearPoseidon2> {
+    prover.compress(&vk, core_proof, vec![], opts).unwrap()
 }
