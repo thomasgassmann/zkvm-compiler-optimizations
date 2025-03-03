@@ -11,12 +11,12 @@ pub fn time_operation<T, F: FnOnce() -> T>(operation: F) -> (T, time::Duration) 
     (result, duration)
 }
 
-pub fn read_elf(program: &ProgramId, prover: &ProverId) -> Vec<u8> {
-    let elf_path = get_elf(program, prover);
+pub fn read_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> Vec<u8> {
+    let elf_path = get_elf(program, prover, profile);
     fs::read(elf_path).unwrap()
 }
 
-pub fn get_elf(program: &ProgramId, prover: &ProverId) -> String {
+pub fn get_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> String {
     let mut program_dir = program.to_string();
 
     match program {
@@ -28,7 +28,7 @@ pub fn get_elf(program: &ProgramId, prover: &ProverId) -> String {
     };
 
     let current_dir = env::current_dir().expect("Failed to get current working directory");
-    return match prover {
+    let path = match prover {
         ProverId::Risc0 => current_dir
             .join(format!(
                 "programs/{}/target/riscv32im-risc0-zkvm-elf/release/{}",
@@ -47,4 +47,10 @@ pub fn get_elf(program: &ProgramId, prover: &ProverId) -> String {
             .expect("Failed to get path")
             .to_string(),
     };
+
+    if profile != "" {
+        format!("{}-{}", path, profile)
+    } else {
+        path
+    }
 }
