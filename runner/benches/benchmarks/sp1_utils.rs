@@ -67,12 +67,12 @@ pub fn verify_core_sp1_prepare(
 }
 
 pub fn verify_core_sp1(
-    prover: SP1Prover<CpuProverComponents>,
-    core_proof: SP1ProofWithMetadata<SP1CoreProofData>,
-    vk: SP1VerifyingKey,
+    prover: &SP1Prover<CpuProverComponents>,
+    core_proof: &SP1ProofWithMetadata<SP1CoreProofData>,
+    vk: &SP1VerifyingKey,
 ) {
     prover
-        .verify(&core_proof.proof, &vk)
+        .verify(&core_proof.proof, vk)
         .expect("Proof verification failed")
 }
 
@@ -111,9 +111,9 @@ pub fn compress_verify_sp1_prepare(
 }
 
 pub fn compress_verify_sp1(
-    prover: SP1Prover<CpuProverComponents>,
-    compress_proof: SP1ReduceProof<BabyBearPoseidon2>,
-    vk: SP1VerifyingKey,
+    prover: &SP1Prover<CpuProverComponents>,
+    compress_proof: &SP1ReduceProof<BabyBearPoseidon2>,
+    vk: &SP1VerifyingKey,
 ) {
     prover
         .verify_compressed(&compress_proof, &vk)

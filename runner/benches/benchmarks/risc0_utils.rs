@@ -52,7 +52,7 @@ pub fn verify_core_risc0_prepare(
     (receipt, image_id, prover)
 }
 
-pub fn verify_core_risc0(receipt: Receipt, image_id: Digest) {
+pub fn verify_core_risc0(receipt: &Receipt, image_id: Digest) {
     receipt.verify(image_id).unwrap();
 }
 
@@ -61,17 +61,17 @@ pub fn compress_risc0_prepare(elf: &[u8], program: &ProgramId) -> (Receipt, Rc<d
     (receipt, prover)
 }
 
-pub fn compress_risc0(receipt: Receipt, prover: Rc<dyn ProverServer>) -> Receipt {
+pub fn compress_risc0(receipt: &Receipt, prover: &Rc<dyn ProverServer>) -> Receipt {
     prover.compress(&ProverOpts::succinct(), &receipt).unwrap()
 }
 
 pub fn compress_verify_risc0_prepare(elf: &[u8], program: &ProgramId) -> (Receipt, Digest) {
     let image_id = compute_image_id(elf).unwrap();
     let (receipt, prover) = compress_risc0_prepare(elf, program);
-    let compressed_receipt = compress_risc0(receipt, prover);
+    let compressed_receipt = compress_risc0(&receipt, &prover);
     (compressed_receipt, image_id)
 }
 
-pub fn compress_verify_risc0(compressed_proof: Receipt, image_id: Digest) {
+pub fn compress_verify_risc0(compressed_proof: &Receipt, image_id: Digest) {
     compressed_proof.verify(image_id).unwrap();
 }
