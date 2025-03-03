@@ -4,8 +4,8 @@ use runner::{
     utils::read_elf,
 };
 
-use crate::benchmarks::risc0_utils::exec_risc0;
-use crate::benchmarks::sp1_utils::exec_sp1;
+use crate::benchmarks::risc0_utils::{exec_risc0, exec_risc0_setup};
+use crate::benchmarks::sp1_utils::{exec_sp1, exec_sp1_prepare};
 
 pub fn add_benchmarks_for(program: ProgramId, prover: ProverId, c: &mut Criterion) {
     let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
@@ -40,7 +40,10 @@ fn add_sp1_exec(
     let elf = read_elf(program, &ProverId::SP1);
 
     group.bench_function(name, |b| {
-        b.iter(|| exec_sp1(&elf, program));
+        b.iter_with_setup(
+            || exec_sp1_prepare(&elf, program),
+            |(stdin, prover)| exec_sp1(stdin, prover, &elf),
+        );
     });
 }
 
@@ -52,6 +55,6 @@ fn add_risc0_exec(
     let elf = read_elf(program, &ProverId::Risc0);
 
     group.bench_function(name, |b| {
-        b.iter(|| exec_risc0(&elf, program));
+        b.iter_with_setup(|| exec_risc0_setup(&elf, program), exec_risc0);
     });
 }

@@ -28,14 +28,14 @@ impl Risc0Evaluator {
         let mut builder = ExecutorEnv::builder();
         set_input(args, &mut builder);
         let env = builder.build().unwrap();
-        let opts = ProverOpts::default();
-        let prover = get_prover_server(&opts).unwrap();
 
         // Generate the session.
         let mut exec = ExecutorImpl::from_elf(env, &elf).unwrap();
         let (session, execution_duration) = time_operation(|| exec.run().unwrap());
 
         // Generate the proof.
+        let opts = ProverOpts::default();
+        let prover = get_prover_server(&opts).unwrap();
         let ctx = VerifierContext::default();
         let (info, core_prove_duration) =
             time_operation(|| prover.prove_session(&ctx, &session).unwrap());
