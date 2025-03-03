@@ -14,7 +14,7 @@ impl SP1Evaluator {
     pub fn eval(args: &EvalArgs) -> PerformanceReport {
         // Get stdin.
         let stdin = get_sp1_stdin(&args.program);
-        let elf = read_elf(&args.program, &args.prover);
+        let elf = read_elf(&args.program, &args.prover, &args.profile);
 
         let cycles = get_cycles(&elf, &stdin);
         println!("cycles: {}", cycles);

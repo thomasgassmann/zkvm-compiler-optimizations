@@ -14,6 +14,8 @@ pub struct EvalArgs {
     #[arg(long)]
     prover: ProverId,
     #[arg(long)]
+    profile: String,
+    #[arg(long)]
     filename: String,
 }
 

@@ -11,7 +11,7 @@ pub struct Risc0Evaluator;
 
 impl Risc0Evaluator {
     pub fn eval(args: &EvalArgs) -> PerformanceReport {
-        let elf = read_elf(&args.program, &args.prover);
+        let elf = read_elf(&args.program, &args.prover, &args.profile);
         let image_id = compute_image_id(elf.as_slice()).unwrap();
 
         let mut builder = ExecutorEnv::builder();
