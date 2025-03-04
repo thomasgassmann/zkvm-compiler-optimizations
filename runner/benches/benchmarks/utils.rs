@@ -144,12 +144,10 @@ fn add_risc0_compress(
     profile: &String,
 ) {
     let elf: Vec<u8> = read_elf(program, &ProverId::Risc0, profile);
+    let (receipt, prover) = compress_risc0_prepare(&elf, program);
 
     group.bench_function(name, |b| {
-        b.iter_with_setup(
-            || compress_risc0_prepare(&elf, program),
-            |(receipt, prover)| compress_risc0(&receipt, &prover),
-        );
+        b.iter(|| compress_risc0(&receipt, &prover));
     });
 }
 
@@ -160,12 +158,10 @@ fn add_sp1_compress(
     profile: &String,
 ) {
     let elf: Vec<u8> = read_elf(program, &ProverId::SP1, profile);
+    let (prover, proof, vk, opts) = compress_sp1_prepare(&elf, program);
 
     group.bench_function(name, |b| {
-        b.iter_with_setup(
-            || compress_sp1_prepare(&elf, program),
-            |(prover, proof, vk, opts)| compress_sp1(&prover, proof, &vk, opts),
-        );
+        b.iter(|| compress_sp1(&prover, proof.clone(), &vk, opts));
     });
 }
 
@@ -204,12 +200,10 @@ fn add_risc0_core_prove(
     profile: &String,
 ) {
     let elf = read_elf(program, &ProverId::Risc0, profile);
+    let (prover, ctx, session) = prove_core_risc0_prepare(&elf, program);
 
     group.bench_function(name, |b| {
-        b.iter_with_setup(
-            || prove_core_risc0_prepare(&elf, program),
-            |(prover, ctx, session)| prove_core_risc0(&prover, ctx, session),
-        );
+        b.iter(|| prove_core_risc0(&prover, &ctx, &session));
     });
 }
 
@@ -220,14 +214,10 @@ fn add_sp1_core_prove(
     profile: &String,
 ) {
     let elf = read_elf(program, &ProverId::SP1, profile);
+    let (stdin, prover, program, pk_d, opts, _) = prove_core_sp1_prepare(&elf, program);
 
     group.bench_function(name, |b| {
-        b.iter_with_setup(
-            || prove_core_sp1_prepare(&elf, program),
-            |(stdin, prover, program, pk_d, opts, _)| {
-                prove_core_sp1(stdin, prover, program, pk_d, opts)
-            },
-        );
+        b.iter(|| prove_core_sp1(&stdin, &prover, program.clone(), &pk_d, opts));
     });
 }
 
@@ -238,12 +228,10 @@ fn add_sp1_exec(
     profile: &String,
 ) {
     let elf = read_elf(program, &ProverId::SP1, profile);
+    let (stdin, prover) = exec_sp1_prepare(&elf, program);
 
     group.bench_function(name, |b| {
-        b.iter_with_setup(
-            || exec_sp1_prepare(&elf, program),
-            |(stdin, prover)| exec_sp1(stdin, prover, &elf),
-        );
+        b.iter(|| exec_sp1(&stdin, &prover, &elf));
     });
 }
 

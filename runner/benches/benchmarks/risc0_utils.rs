@@ -33,10 +33,10 @@ pub fn prove_core_risc0_prepare<'a>(
 
 pub fn prove_core_risc0(
     prover: &Rc<dyn ProverServer>,
-    ctx: VerifierContext,
-    session: Session,
+    ctx: &VerifierContext,
+    session: &Session,
 ) -> ProveInfo {
-    prover.prove_session(&ctx, &session).unwrap()
+    prover.prove_session(ctx, session).unwrap()
 }
 
 pub fn verify_core_risc0_prepare(
@@ -46,7 +46,7 @@ pub fn verify_core_risc0_prepare(
     let image_id = compute_image_id(elf).unwrap();
 
     let (prover, ctx, session) = prove_core_risc0_prepare(elf, program);
-    let info = prove_core_risc0(&prover, ctx, session);
+    let info = prove_core_risc0(&prover, &ctx, &session);
 
     let receipt = info.receipt;
     (receipt, image_id, prover)
