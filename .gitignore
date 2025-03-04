@@ -2,3 +2,5 @@ target/
 out.json
 results-old/
 reports/
+data/
+factorial/

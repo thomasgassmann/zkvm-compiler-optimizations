@@ -18,6 +18,7 @@ fn benches_setup(c: &mut Criterion) {
         ProgramId::LoopSum,
         ProgramId::RustTests,
         ProgramId::Sha256,
+        ProgramId::ZkvmMnist
     ];
 
     for program in programs.iter() {

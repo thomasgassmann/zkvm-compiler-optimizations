@@ -9,7 +9,7 @@ OPTIMIZATIONS = json.load(open("flags.json", "r"))
 
 ZKVMS = ["sp1", "risc0"]
 
-PROGRAMS = ["loop-sum", "factorial", "sha256", "rust-tests", "keccak256"]
+PROGRAMS = ["loop-sum", "factorial", "sha256", "rust-tests", "keccak256", "zkvm-mnist"]
 ZKVM_SPECIFIC = ["keccak256"]
 FORCE_REBUILD = False
 
