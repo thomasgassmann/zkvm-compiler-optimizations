@@ -9,6 +9,7 @@ pub enum ProgramId {
     Sha256,
     RustTests,
     Keccak256,
+    ZkvmMnist,
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -26,6 +27,7 @@ impl Display for ProgramId {
             ProgramId::Sha256 => write!(f, "sha256"),
             ProgramId::RustTests => write!(f, "rust-tests"),
             ProgramId::Keccak256 => write!(f, "keccak256"),
+            ProgramId::ZkvmMnist => write!(f, "zkvm-mnist"),
         }
     }
 }
