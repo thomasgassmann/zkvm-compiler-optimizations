@@ -5,8 +5,8 @@ use crate::types::ProgramId;
 use mnist::MnistBuilder;
 
 fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
-    let train_size: usize = 100;
-    let test_size: usize = 50;
+    let train_size: usize = 20;
+    let test_size: usize = 4;
     let mnist = MnistBuilder::new()
         .training_set_length(train_size as u32)
         .test_set_length(test_size as u32)

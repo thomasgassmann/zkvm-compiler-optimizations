@@ -189,5 +189,5 @@ fn main() {
 
     println!("Training mnist");
     let mut nn = NeuralNetwork::new(784, 128, 10);
-    nn.train(&training_data, &test_data, 4, 0.1);
+    nn.train(&training_data, &test_data, 1, 0.1);
 }
