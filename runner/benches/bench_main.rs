@@ -1,6 +1,5 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use runner::types::ProgramId;
-use runner::types::ProverId;
+use runner::types::Config;
 use std::env;
 
 mod benchmarks;
@@ -10,23 +9,15 @@ use crate::benchmarks::utils::read_config_json;
 
 fn benches_setup(c: &mut Criterion) {
     env::set_current_dir(env::current_dir().unwrap().parent().unwrap()).unwrap();
-    let config = read_config_json();
+    let config: Config = read_config_json();
 
-    let programs = vec![
-        ProgramId::Factorial,
-        ProgramId::Keccak256,
-        ProgramId::LoopSum,
-        ProgramId::RustTests,
-        ProgramId::Sha256,
-        ProgramId::ZkvmMnist
-    ];
-
-    for program in programs.iter() {
+    for program in config.programs.list.iter() {
         let mut group = c.benchmark_group(&format!("{}", program));
         group.sample_size(10);
-        for (profile, _) in config.iter() {
-            add_benchmarks_for(&program, &ProverId::SP1, &mut group, profile);
-            add_benchmarks_for(&program, &ProverId::Risc0, &mut group, profile);
+        for (profile, _) in config.profiles.iter() {
+            for prover in config.zkvms.iter() {
+                add_benchmarks_for(&program, &prover, &mut group, profile);
+            }
         }
         group.finish();
     }

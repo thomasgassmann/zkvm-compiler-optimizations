@@ -21,11 +21,7 @@ pub fn exec_risc0(p: &mut ExecutorImpl<'_>) {
 pub fn prove_core_risc0_prepare<'a>(
     elf: &'a [u8],
     program: &'a ProgramId,
-) -> (
-    Rc<dyn ProverServer>,
-    VerifierContext,
-    Session
-) {
+) -> (Rc<dyn ProverServer>, VerifierContext, Session) {
     let mut exec = exec_risc0_setup(elf, program);
     let session = exec.run().unwrap();
 

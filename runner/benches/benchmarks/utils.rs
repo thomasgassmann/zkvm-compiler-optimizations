@@ -1,15 +1,11 @@
-use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 
-use crate::benchmarks::risc0_utils::{
-    exec_risc0, prove_core_risc0, prove_core_risc0_prepare,
-};
-use crate::benchmarks::sp1_utils::{
-     exec_sp1, prove_core_sp1, prove_core_sp1_prepare,
-};
+use crate::benchmarks::risc0_utils::{exec_risc0, prove_core_risc0, prove_core_risc0_prepare};
+use crate::benchmarks::sp1_utils::{exec_sp1, prove_core_sp1, prove_core_sp1_prepare};
 use criterion::measurement::WallTime;
 use criterion::BenchmarkId;
+use runner::types::Config;
 use runner::{
     types::{ProgramId, ProverId},
     utils::read_elf,
@@ -18,8 +14,8 @@ use serde_json::from_reader;
 
 use super::risc0_utils::exec_risc0_setup;
 
-pub fn read_config_json() -> HashMap<String, String> {
-    let file = File::open("flags.json").expect("could not read config file");
+pub fn read_config_json() -> Config {
+    let file = File::open("config.json").expect("could not read config file");
     let reader = BufReader::new(file);
 
     from_reader(reader).expect("Failed to parse JSON")
@@ -66,7 +62,8 @@ fn add_sp1_exec_and_prove(
     group.bench_function(prove_name, |b| {
         b.iter_with_setup(
             || program.clone(),
-            |cloned_program| prove_core_sp1(&stdin, &prover, cloned_program, &pk_d, opts));
+            |cloned_program| prove_core_sp1(&stdin, &prover, cloned_program, &pk_d, opts),
+        );
     });
 }
 
@@ -81,9 +78,10 @@ fn add_risc0_exec_and_prove(
     group.bench_function(execute_name, |b| {
         b.iter_with_setup(
             || exec_risc0_setup(&elf, program),
-            |mut executor| exec_risc0(&mut executor));
+            |mut executor| exec_risc0(&mut executor),
+        );
     });
-    
+
     let (prover, ctx, session) = prove_core_risc0_prepare(&elf, program);
     group.bench_function(prove_name, |b| {
         b.iter(|| prove_core_risc0(&prover, &ctx, &session));
