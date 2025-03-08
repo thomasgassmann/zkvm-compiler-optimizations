@@ -7,9 +7,9 @@ pub enum ProgramId {
     LoopSum,
     Factorial,
     Sha256,
-    RustTests,
     Keccak256,
     ZkvmMnist,
+    Tailcall
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -25,9 +25,9 @@ impl Display for ProgramId {
             ProgramId::LoopSum => write!(f, "loop-sum"),
             ProgramId::Factorial => write!(f, "factorial"),
             ProgramId::Sha256 => write!(f, "sha256"),
-            ProgramId::RustTests => write!(f, "rust-tests"),
             ProgramId::Keccak256 => write!(f, "keccak256"),
             ProgramId::ZkvmMnist => write!(f, "zkvm-mnist"),
+            ProgramId::Tailcall => write!(f, "tailcall"),
         }
     }
 }
