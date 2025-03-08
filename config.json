@@ -16,12 +16,6 @@
                 "adce"
             ]
         },
-        "always-inline": {
-            "rustflags": "-C opt-level=3",
-            "passes": [
-                "always-inline"
-            ]
-        },
         "argpromotion": {
             "rustflags": "-C opt-level=3",
             "passes": [
