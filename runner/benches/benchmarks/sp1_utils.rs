@@ -4,6 +4,7 @@ use sp1_prover::{components::CpuProverComponents, SP1CoreProofData, SP1ProofWith
 use sp1_sdk::{SP1Context, SP1Prover, SP1Stdin, SP1VerifyingKey};
 use sp1_stark::{baby_bear_poseidon2::BabyBearPoseidon2, SP1ProverOpts, StarkProvingKey};
 
+#[allow(dead_code)]
 pub fn exec_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
@@ -49,6 +50,7 @@ pub fn prove_core_sp1(
         .unwrap();
 }
 
+#[allow(dead_code)]
 pub fn verify_core_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
@@ -66,6 +68,7 @@ pub fn verify_core_sp1_prepare(
     (prover, core_proof, vk, opts)
 }
 
+#[allow(dead_code)]
 pub fn verify_core_sp1(
     prover: &SP1Prover<CpuProverComponents>,
     core_proof: &SP1ProofWithMetadata<SP1CoreProofData>,
@@ -76,6 +79,7 @@ pub fn verify_core_sp1(
         .expect("Proof verification failed")
 }
 
+#[allow(dead_code)]
 pub fn compress_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
@@ -88,6 +92,7 @@ pub fn compress_sp1_prepare(
     verify_core_sp1_prepare(elf, program)
 }
 
+#[allow(dead_code)]
 pub fn compress_sp1(
     prover: &SP1Prover<CpuProverComponents>,
     core_proof: SP1ProofWithMetadata<SP1CoreProofData>,
@@ -97,6 +102,7 @@ pub fn compress_sp1(
     prover.compress(vk, core_proof, vec![], opts).unwrap()
 }
 
+#[allow(dead_code)]
 pub fn compress_verify_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
@@ -110,6 +116,7 @@ pub fn compress_verify_sp1_prepare(
     (prover, compress_proof, vk)
 }
 
+#[allow(dead_code)]
 pub fn compress_verify_sp1(
     prover: &SP1Prover<CpuProverComponents>,
     compress_proof: &SP1ReduceProof<BabyBearPoseidon2>,
