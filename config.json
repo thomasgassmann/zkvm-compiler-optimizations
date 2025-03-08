@@ -10,10 +10,10 @@
                 "tailcallelim"
             ]
         },
-        "acde": {
+        "adce": {
             "rustflags": "-C opt-level=3",
             "passes": [
-                "acde"
+                "adce"
             ]
         },
         "always-inline": {
