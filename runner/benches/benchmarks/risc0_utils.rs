@@ -14,14 +14,18 @@ pub fn exec_risc0_setup<'a>(elf: &'a [u8], program: &'a ProgramId) -> ExecutorIm
     ExecutorImpl::from_elf(env.unwrap(), elf).unwrap()
 }
 
-pub fn exec_risc0(mut p: ExecutorImpl<'_>) {
+pub fn exec_risc0(p: &mut ExecutorImpl<'_>) {
     p.run().unwrap();
 }
 
 pub fn prove_core_risc0_prepare<'a>(
-    elf: &[u8],
-    program: &ProgramId,
-) -> (Rc<dyn ProverServer>, VerifierContext, Session) {
+    elf: &'a [u8],
+    program: &'a ProgramId,
+) -> (
+    Rc<dyn ProverServer>,
+    VerifierContext,
+    Session
+) {
     let mut exec = exec_risc0_setup(elf, program);
     let session = exec.run().unwrap();
 
@@ -39,6 +43,7 @@ pub fn prove_core_risc0(
     prover.prove_session(ctx, session).unwrap()
 }
 
+#[allow(dead_code)]
 pub fn verify_core_risc0_prepare(
     elf: &[u8],
     program: &ProgramId,
@@ -52,19 +57,23 @@ pub fn verify_core_risc0_prepare(
     (receipt, image_id, prover)
 }
 
+#[allow(dead_code)]
 pub fn verify_core_risc0(receipt: &Receipt, image_id: Digest) {
     receipt.verify(image_id).unwrap();
 }
 
+#[allow(dead_code)]
 pub fn compress_risc0_prepare(elf: &[u8], program: &ProgramId) -> (Receipt, Rc<dyn ProverServer>) {
     let (receipt, _, prover) = verify_core_risc0_prepare(elf, program);
     (receipt, prover)
 }
 
+#[allow(dead_code)]
 pub fn compress_risc0(receipt: &Receipt, prover: &Rc<dyn ProverServer>) -> Receipt {
     prover.compress(&ProverOpts::succinct(), &receipt).unwrap()
 }
 
+#[allow(dead_code)]
 pub fn compress_verify_risc0_prepare(elf: &[u8], program: &ProgramId) -> (Receipt, Digest) {
     let image_id = compute_image_id(elf).unwrap();
     let (receipt, prover) = compress_risc0_prepare(elf, program);
@@ -72,6 +81,7 @@ pub fn compress_verify_risc0_prepare(elf: &[u8], program: &ProgramId) -> (Receip
     (compressed_receipt, image_id)
 }
 
+#[allow(dead_code)]
 pub fn compress_verify_risc0(compressed_proof: &Receipt, image_id: Digest) {
     compressed_proof.verify(image_id).unwrap();
 }
