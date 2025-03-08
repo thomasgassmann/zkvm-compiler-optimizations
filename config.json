@@ -16,22 +16,10 @@
                 "adce"
             ]
         },
-        "constmerge": {
-            "rustflags": "-C opt-level=3",
-            "passes": [
-                "constmerge"
-            ]
-        },
         "indvars": {
             "rustflags": "-C opt-level=3",
             "passes": [
                 "indvars"
-            ]
-        },
-        "inline": {
-            "rustflags": "-C opt-level=3",
-            "passes": [
-                "inline"
             ]
         },
         "instcombine": {
@@ -50,12 +38,6 @@
             "rustflags": "-C opt-level=3",
             "passes": [
                 "lcssa"
-            ]
-        },
-        "loop-extract": {
-            "rustflags": "-C opt-level=3",
-            "passes": [
-                "loop-extract"
             ]
         },
         "loop-reduce": {
@@ -118,7 +100,8 @@
             "sha256",
             "keccak256",
             "zkvm-mnist",
-            "tailcall"
+            "tailcall",
+            "bigmem"
         ],
         "specific": ["keccak256"]
     }

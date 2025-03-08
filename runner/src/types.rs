@@ -16,6 +16,7 @@ pub enum ProgramId {
     Keccak256,
     ZkvmMnist,
     Tailcall,
+    Bigmem
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -55,6 +56,7 @@ impl Display for ProgramId {
             ProgramId::Keccak256 => write!(f, "keccak256"),
             ProgramId::ZkvmMnist => write!(f, "zkvm-mnist"),
             ProgramId::Tailcall => write!(f, "tailcall"),
+            ProgramId::Bigmem => write!(f, "bigmem"),
         }
     }
 }
