@@ -2,7 +2,121 @@
     "profiles": {
         "baseline": {
             "rustflags": "-C opt-level=3",
-            "passes": ["tailcallelim"]
+            "passes": []
+        },
+        "tailcall": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "tailcallelim"
+            ]
+        },
+        "acde": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "acde"
+            ]
+        },
+        "always-inline": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "always-inline"
+            ]
+        },
+        "argpromotion": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "argpromotion"
+            ]
+        },
+        "constmerge": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "constmerge"
+            ]
+        },
+        "indvars": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "indvars"
+            ]
+        },
+        "inline": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "inline"
+            ]
+        },
+        "instcombine": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "aggressive-instcombine"
+            ]
+        },
+        "jump-threading": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "jump-threading"
+            ]
+        },
+        "lcssa": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "lcssa"
+            ]
+        },
+        "loop-extract": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "loop-extract"
+            ]
+        },
+        "loop-reduce": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "loop-reduce"
+            ]
+        },
+        "loop-rotate": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "loop-rotate"
+            ]
+        },
+        "loop-simplify": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "loop-simplify"
+            ]
+        },
+        "loop-unroll": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "loop-unroll"
+            ]
+        },
+        "loop-unroll-and-jam": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "loop-unroll-and-jam"
+            ]
+        },
+        "mem2reg": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "mem2reg"
+            ]
+        },
+        "reg2mem": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "reg2mem"
+            ]
+        },
+        "simple-loop-unswitch": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "simple-loop-unswitch"
+            ]
         }
     },
     "zkvms": [
