@@ -1,0 +1,23 @@
+{
+    "profiles": {
+        "baseline": {
+            "rustflags": "-C opt-level=3",
+            "passes": ["tailcallelim"]
+        }
+    },
+    "zkvms": [
+        "risc0",
+        "sp1"
+    ],
+    "programs": {
+        "list": [
+            "loop-sum",
+            "factorial",
+            "sha256",
+            "keccak256",
+            "zkvm-mnist",
+            "tailcall"
+        ],
+        "specific": ["keccak256"]
+    }
+}

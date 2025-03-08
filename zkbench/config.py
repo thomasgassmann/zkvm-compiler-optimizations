@@ -1,0 +1,54 @@
+import json
+from dataclasses import dataclass
+from typing import List
+
+@dataclass
+class Profile:
+    profile_name: str
+    rustflags: str
+    passes: List[str]
+
+CONFIG = json.load(open("config.json", "r"))
+
+def get_profile_by_name(profile_name: str) -> Profile:
+    return Profile(
+        profile_name,
+        CONFIG["profiles"][profile_name]["rustflags"],
+        CONFIG["profiles"][profile_name]["passes"]
+    )
+
+def get_profiles() -> List[Profile]:
+    return [get_profile_by_name(profile_name) for profile_name in get_profiles_ids()]
+
+def get_programs():
+    return CONFIG["programs"]["list"]
+
+def get_zkvms():
+    return CONFIG["zkvms"]
+
+def get_zkvm_specific_programs():
+    return CONFIG["programs"]["specific"]
+
+def is_zkvm_specific(program_id: str):
+    return program_id in get_zkvm_specific_programs()
+
+def get_profiles_ids():
+    return CONFIG["profiles"].keys()
+
+def get_program_dir_name(program_id: str, zkvm: str) -> str:
+    return program_id if program_id not in get_zkvm_specific_programs() else f"{program_id}-{zkvm}"
+
+def get_program_path(program_id: str, zkvm: str) -> str:
+    return f"./programs/{get_program_dir_name(program_id, zkvm)}"
+
+def get_binary_path(program_id: str, zkvm: str, profile_name: str | None) -> str:
+    dir_name = get_program_dir_name(program_id, zkvm)
+    if zkvm == "sp1":
+        path = f"./programs/{dir_name}/target/riscv32im-succinct-zkvm-elf/release/{dir_name}"
+    elif zkvm == "risc0":
+        path = f"./programs/{dir_name}/target/riscv32im-risc0-zkvm-elf/release/{dir_name}"
+    else:
+        raise ValueError(f"Unknown zkvm: {zkvm}")
+    if profile_name:
+        path += f"-{profile_name}"
+    return path
