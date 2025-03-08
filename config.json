@@ -16,12 +16,6 @@
                 "adce"
             ]
         },
-        "argpromotion": {
-            "rustflags": "-C opt-level=3",
-            "passes": [
-                "argpromotion"
-            ]
-        },
         "constmerge": {
             "rustflags": "-C opt-level=3",
             "passes": [
