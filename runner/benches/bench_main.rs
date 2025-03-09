@@ -13,16 +13,16 @@ fn benches_setup(c: &mut Criterion) {
 
     for program in config.programs.list.iter() {
         for measurement in config.measurements.iter() {
-            let mut group = c.benchmark_group(&format!("{}-{}", program, measurement));
-            group.sample_size(10);
-
             for prover in config.zkvms.iter() {
+                let mut group = c.benchmark_group(&format!("{}-{}-{}", program, prover, measurement));
+                group.sample_size(10);
+
                 for (profile, _) in config.profiles.iter() {
                     add_benchmarks_for(&program, &prover, &mut group, measurement, profile);
                 }
+                
+                group.finish();
             }
-
-            group.finish();
         }
     }
 }
