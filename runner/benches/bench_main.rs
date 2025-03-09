@@ -14,8 +14,8 @@ fn benches_setup(c: &mut Criterion) {
     for program in config.programs.list.iter() {
         let mut group = c.benchmark_group(&format!("{}", program));
         group.sample_size(10);
-        for (profile, _) in config.profiles.iter() {
-            for prover in config.zkvms.iter() {
+        for prover in config.zkvms.iter() {
+            for (profile, _) in config.profiles.iter() {
                 add_benchmarks_for(&program, &prover, &mut group, profile);
             }
         }
