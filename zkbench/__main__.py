@@ -1,6 +1,7 @@
 import logging
 import click
 
+from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_with_plot
@@ -53,9 +54,16 @@ def clean_cli(program: str | None, zkvm: str | None):
 def run_cli():
     run_with_plot()
 
+
+@click.command(name="bench")
+def bench_cli():
+    run_bench()
+
+
 zkbench_cli.add_command(build_cli)
 zkbench_cli.add_command(clean_cli)
 zkbench_cli.add_command(run_cli)
+zkbench_cli.add_command(bench_cli)
 
 if __name__ == '__main__':
     zkbench_cli()
