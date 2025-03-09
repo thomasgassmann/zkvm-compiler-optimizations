@@ -20,7 +20,6 @@ def run(program: str, zkvm: str, file: str, profile: str):
         raise ValueError(f"Error: Run failed with code {res}")
 
 
-
 def run_with_plot():
     scores = dict()
     groups = list()

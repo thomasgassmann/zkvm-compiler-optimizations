@@ -1,16 +1,18 @@
 [workspace]
 [package]
-name = "c-sp1"
+name = "c"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
 libc = "0.2.170"
+risc0-zkvm = { version = "1.2.3", default-features = false, features = ["std"] }
 sp1-zkvm = "=4.1.1"
 
 [build-dependencies]
-bindgen = "0.71.1"
 cc = "1.2.16"
 
 [features]
+risc0 = []
 sp1 = []

@@ -24,10 +24,6 @@ pub fn get_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> Stri
             program_dir.push('-');
             program_dir.push_str(&prover.to_string());
         },
-        ProgramId::C => {
-            program_dir.push('-');
-            program_dir.push_str(&prover.to_string());
-        },
         _ => {}
     };
 

@@ -4,7 +4,7 @@ import click
 from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
-from zkbench.run import run_with_plot
+from zkbench.run import run, run_with_plot
 
 def get_log_level(level_str: str) -> int:
     try:
@@ -60,10 +60,19 @@ def bench_cli():
     run_bench()
 
 
+@click.command(name="exec")
+@click.option("--program", nargs=1, required=True)
+@click.option("--zkvm", nargs=1, required=True)
+@click.option("--profile", nargs=1, required=True)
+def exec_cli(program: str, zkvm: str, profile: str):
+    run(program, zkvm, "out.json", profile)
+
+
 zkbench_cli.add_command(build_cli)
 zkbench_cli.add_command(clean_cli)
 zkbench_cli.add_command(run_cli)
 zkbench_cli.add_command(bench_cli)
+zkbench_cli.add_command(exec_cli)
 
 if __name__ == '__main__':
     zkbench_cli()
