@@ -18,9 +18,9 @@ pub enum ProgramId {
     Tailcall,
     Bigmem,
     Fibonacci,
-    Sha2,
+    Sha2Bench,
     Sha2Chain,
-    Sha3,
+    Sha3Bench,
     Sha3Chain,
 }
 
@@ -63,9 +63,9 @@ impl Display for ProgramId {
             ProgramId::Tailcall => write!(f, "tailcall"),
             ProgramId::Bigmem => write!(f, "bigmem"),
             ProgramId::Fibonacci => write!(f, "fibonacci"),
-            ProgramId::Sha2 => write!(f, "sha2"),
+            ProgramId::Sha2Bench => write!(f, "sha2-bench"),
             ProgramId::Sha2Chain => write!(f, "sha2-chain"),
-            ProgramId::Sha3 => write!(f, "sha3"),
+            ProgramId::Sha3Bench => write!(f, "sha3-bench"),
             ProgramId::Sha3Chain => write!(f, "sha3-chain"),
         }
     }
