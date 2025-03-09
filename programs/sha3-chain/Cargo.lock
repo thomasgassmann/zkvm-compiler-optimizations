@@ -1015,15 +1015,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sha2-chain"
-version = "0.1.0"
-dependencies = [
- "risc0-zkvm",
- "sha3",
- "sp1-zkvm",
-]
-
-[[package]]
 name = "sha3"
 version = "0.10.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1031,6 +1022,15 @@ checksum = "75872d278a8f37ef87fa0ddbda7802605cb18344497949862c0d4dcb291eba60"
 dependencies = [
  "digest",
  "keccak",
+]
+
+[[package]]
+name = "sha3-chain"
+version = "0.1.0"
+dependencies = [
+ "risc0-zkvm",
+ "sha3",
+ "sp1-zkvm",
 ]
 
 [[package]]
