@@ -119,8 +119,7 @@
             "c"
         ],
         "specific": [
-            "keccak256",
-            "c"
+            "keccak256"
         ]
     }
 }

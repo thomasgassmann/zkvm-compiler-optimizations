@@ -5,3 +5,5 @@ reports/
 data/
 factorial/
 criterion*/
+__pycache__/
+zkbench/__pycache__/
