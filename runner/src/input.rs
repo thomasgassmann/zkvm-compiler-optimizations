@@ -76,10 +76,10 @@ pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
         ProgramId::Fibonacci => {
             stdin.write::<u32>(&1000);
         }
-        ProgramId::Sha2 => {
+        ProgramId::Sha2Bench => {
             stdin.write(&vec![5u8; 64]);
         }
-        ProgramId::Sha3 => {
+        ProgramId::Sha3Bench => {
             stdin.write(&vec![5u8; 64]);
         }
         ProgramId::Sha2Chain => {
@@ -115,10 +115,10 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
         ProgramId::Fibonacci => {
             let _ = builder.write::<u32>(&1000);
         }
-        ProgramId::Sha2 => {
+        ProgramId::Sha2Bench => {
             let _ = builder.write(&vec![5u8; 64]);
         }
-        ProgramId::Sha3 => {
+        ProgramId::Sha3Bench => {
             let _ = builder.write(&vec![5u8; 64]);
         }
         ProgramId::Sha2Chain => {

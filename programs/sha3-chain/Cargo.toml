@@ -1,7 +1,7 @@
 [workspace]
 [package]
 version = "0.1.0"
-name = "sha2-chain"
+name = "sha3-chain"
 edition = "2021"
 
 [dependencies]
