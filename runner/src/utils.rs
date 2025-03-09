@@ -23,7 +23,11 @@ pub fn get_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> Stri
         ProgramId::Keccak256 => {
             program_dir.push('-');
             program_dir.push_str(&prover.to_string());
-        }
+        },
+        ProgramId::C => {
+            program_dir.push('-');
+            program_dir.push_str(&prover.to_string());
+        },
         _ => {}
     };
 

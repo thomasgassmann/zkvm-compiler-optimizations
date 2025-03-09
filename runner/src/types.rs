@@ -22,6 +22,7 @@ pub enum ProgramId {
     Sha2Chain,
     Sha3Bench,
     Sha3Chain,
+    C
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -67,6 +68,7 @@ impl Display for ProgramId {
             ProgramId::Sha2Chain => write!(f, "sha2-chain"),
             ProgramId::Sha3Bench => write!(f, "sha3-bench"),
             ProgramId::Sha3Chain => write!(f, "sha3-chain"),
+            ProgramId::C => write!(f, "c"),
         }
     }
 }

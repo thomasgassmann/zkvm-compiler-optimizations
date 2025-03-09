@@ -106,8 +106,12 @@
             "sha2-bench",
             "sha2-chain",
             "sha3-bench",
-            "sha3-chain"
+            "sha3-chain",
+            "c"
         ],
-        "specific": ["keccak256"]
+        "specific": [
+            "keccak256",
+            "c"
+        ]
     }
 }

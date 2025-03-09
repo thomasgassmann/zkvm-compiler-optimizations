@@ -45,12 +45,15 @@ def run_build(program: str | None, zkvm: str | None, profile_name: str | None, f
 
 def _build_sp1(profile: Profile):
     passes_string = ",".join(["lower-atomic"] + profile.passes)
-    return os.system(f"""
-        RUSTFLAGS="-C no-prepopulate-passes -C passes={passes_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
+    return os.system(
+        f"""
+        CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
+            RUSTFLAGS="-C no-prepopulate-passes -C passes={passes_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
             RUSTUP_TOOLCHAIN=succinct \
             CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
             cargo build --release --locked --features sp1
-    """.strip())
+    """.strip()
+    )
 
 def _build_risc0(profile: Profile):
     passes_string = ",".join(["loweratomic"] + profile.passes)

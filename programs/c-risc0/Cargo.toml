@@ -1,0 +1,16 @@
+[workspace]
+[package]
+name = "c-risc0"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libc = "0.2.170"
+risc0-zkvm = { version = "1.2.3", default-features = false, features = ["std"] }
+
+[build-dependencies]
+bindgen = "0.71.1"
+cc = "1.2.16"
+
+[features]
+risc0 = []
