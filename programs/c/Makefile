@@ -2,7 +2,7 @@ CC=clang
 OPT=opt
 LLC=llc
 CFLAGS=--target=riscv32-unknown-none -march=rv32im -mabi=ilp32 -O0 -Xclang -disable-O0-optnone
-LLVMFLAGS=-disable-verify -passes=dse
+LLVMFLAGS=-disable-verify -passes=$(PASSES)
 
 # Target library (static object file)
 LIBNAME=libhello.a

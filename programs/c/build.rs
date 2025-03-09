@@ -1,10 +1,18 @@
-use std::process::Command;
+use std::{env, process::Command};
 
 fn main() {
     println!("cargo:rerun-if-changed=src/hello.c");
     println!("cargo:rerun-if-changed=Makefile");
 
+    let passes = env::var("PASSES").unwrap();
+    let mut passes_string = String::from("PASSES=lower-atomic");
+    if !passes.is_empty() {
+        passes_string = format!("PASSES=lower-atomic,{}", &passes);
+    }
+
     let status = Command::new("make")
+        .arg(passes_string)
+        .arg("-B")
         .arg("all")
         .status()
         .expect("Failed to run make");

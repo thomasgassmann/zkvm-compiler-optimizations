@@ -30,6 +30,8 @@ def run_build(program: str | None, zkvm: str | None, profile_name: str | None, f
                 logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
 
                 os.chdir(program_dir)
+                passes = ",".join(profile.passes)
+                os.environ["PASSES"] = passes
                 if zkvm == "sp1":
                     ret = _build_sp1(profile)
                 elif zkvm == "risc0":
@@ -40,6 +42,7 @@ def run_build(program: str | None, zkvm: str | None, profile_name: str | None, f
                 if ret != 0:
                     raise ValueError(f"Error: Build failed with code {ret}")
 
+                del os.environ["PASSES"]
                 shutil.copyfile(source, target)
                 logging.info(f"Copied binary to {target}")
 
