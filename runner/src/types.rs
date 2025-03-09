@@ -33,6 +33,14 @@ pub enum ProverId {
     SP1,
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub enum MeasurementType {
+    #[serde(rename = "prove")]
+    Prove,
+    #[serde(rename = "exec")]
+    Exec,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProgramConfig {
     pub list: Vec<ProgramId>,
@@ -50,6 +58,7 @@ pub struct Config {
     pub profiles: HashMap<String, Profile>,
     pub zkvms: Vec<ProverId>,
     pub programs: ProgramConfig,
+    pub measurements: Vec<MeasurementType>,
 }
 
 impl Display for ProgramId {
@@ -76,6 +85,15 @@ impl Display for ProverId {
         match self {
             ProverId::Risc0 => write!(f, "risc0"),
             ProverId::SP1 => write!(f, "sp1"),
+        }
+    }
+}
+
+impl Display for MeasurementType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            MeasurementType::Prove => write!(f, "prove"),
+            MeasurementType::Exec => write!(f, "exec"),
         }
     }
 }
