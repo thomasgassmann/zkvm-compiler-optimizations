@@ -87,11 +87,21 @@
             "passes": [
                 "simple-loop-unswitch"
             ]
+        },
+        "mergereturn": {
+            "rustflags": "-C opt-level=3",
+            "passes": [
+                "mergereturn"
+            ]
         }
     },
     "zkvms": [
         "risc0",
         "sp1"
+    ],
+    "measurements": [
+        "prove",
+        "exec"
     ],
     "programs": {
         "list": [
@@ -99,7 +109,6 @@
             "factorial",
             "sha256",
             "keccak256",
-            "zkvm-mnist",
             "tailcall",
             "bigmem",
             "fibonacci",
