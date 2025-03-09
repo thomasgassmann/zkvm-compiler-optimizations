@@ -69,10 +69,27 @@ pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
             let (train, test) = load_mnist();
             stdin.write(&train);
             stdin.write(&test);
-        },
+        }
         ProgramId::Bigmem => {
             stdin.write::<u32>(&42);
-        },
+        }
+        ProgramId::Fibonacci => {
+            stdin.write::<u32>(&1000);
+        }
+        ProgramId::Sha2 => {
+            stdin.write(&vec![5u8; 64]);
+        }
+        ProgramId::Sha3 => {
+            stdin.write(&vec![5u8; 64]);
+        }
+        ProgramId::Sha2Chain => {
+            stdin.write(&vec![5u8; 32]);
+            stdin.write(&32u32);
+        }
+        ProgramId::Sha3Chain => {
+            stdin.write(&vec![5u8; 32]);
+            stdin.write(&32u32);
+        }
         _ => {}
     }
 
@@ -91,10 +108,27 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
             let (train, test) = load_mnist();
             let _ = builder.write(&train);
             let _ = builder.write(&test);
-        },
+        }
         ProgramId::Bigmem => {
             let _ = builder.write::<u32>(&42);
-        },
+        }
+        ProgramId::Fibonacci => {
+            let _ = builder.write::<u32>(&1000);
+        }
+        ProgramId::Sha2 => {
+            let _ = builder.write(&vec![5u8; 64]);
+        }
+        ProgramId::Sha3 => {
+            let _ = builder.write(&vec![5u8; 64]);
+        }
+        ProgramId::Sha2Chain => {
+            let _ = builder.write(&vec![5u8; 32]);
+            let _ = builder.write::<u32>(&32u32);
+        }
+        ProgramId::Sha3Chain => {
+            let _ = builder.write(&vec![5u8; 32]);
+            let _ = builder.write::<u32>(&32u32);
+        }
         _ => {}
     }
 }

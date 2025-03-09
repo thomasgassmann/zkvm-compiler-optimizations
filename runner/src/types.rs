@@ -16,7 +16,12 @@ pub enum ProgramId {
     Keccak256,
     ZkvmMnist,
     Tailcall,
-    Bigmem
+    Bigmem,
+    Fibonacci,
+    Sha2,
+    Sha2Chain,
+    Sha3,
+    Sha3Chain,
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -57,6 +62,11 @@ impl Display for ProgramId {
             ProgramId::ZkvmMnist => write!(f, "zkvm-mnist"),
             ProgramId::Tailcall => write!(f, "tailcall"),
             ProgramId::Bigmem => write!(f, "bigmem"),
+            ProgramId::Fibonacci => write!(f, "fibonacci"),
+            ProgramId::Sha2 => write!(f, "sha2"),
+            ProgramId::Sha2Chain => write!(f, "sha2-chain"),
+            ProgramId::Sha3 => write!(f, "sha3"),
+            ProgramId::Sha3Chain => write!(f, "sha3-chain"),
         }
     }
 }
