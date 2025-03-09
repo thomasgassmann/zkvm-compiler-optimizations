@@ -103,9 +103,9 @@
             "tailcall",
             "bigmem",
             "fibonacci",
-            "sha2",
+            "sha2-bench",
             "sha2-chain",
-            "sha3",
+            "sha3-bench",
             "sha3-chain"
         ],
         "specific": ["keccak256"]
