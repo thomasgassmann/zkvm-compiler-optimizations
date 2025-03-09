@@ -12,14 +12,18 @@ fn benches_setup(c: &mut Criterion) {
     let config: Config = read_config_json();
 
     for program in config.programs.list.iter() {
-        let mut group = c.benchmark_group(&format!("{}", program));
-        group.sample_size(10);
-        for prover in config.zkvms.iter() {
-            for (profile, _) in config.profiles.iter() {
-                add_benchmarks_for(&program, &prover, &mut group, profile);
+        for measurement in config.measurements.iter() {
+            for prover in config.zkvms.iter() {
+                let mut group = c.benchmark_group(&format!("{}-{}-{}", program, prover, measurement));
+                group.sample_size(10);
+
+                for (profile, _) in config.profiles.iter() {
+                    add_benchmarks_for(&program, &prover, &mut group, measurement, profile);
+                }
+                
+                group.finish();
             }
         }
-        group.finish();
     }
 }
 

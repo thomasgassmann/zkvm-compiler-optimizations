@@ -1,91 +1,97 @@
 {
     "profiles": {
         "baseline": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": []
         },
         "tailcall": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "tailcallelim"
             ]
         },
         "adce": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "adce"
             ]
         },
         "indvars": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "indvars"
             ]
         },
         "instcombine": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "aggressive-instcombine"
             ]
         },
         "jump-threading": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "jump-threading"
             ]
         },
         "lcssa": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "lcssa"
             ]
         },
         "loop-reduce": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "loop-reduce"
             ]
         },
         "loop-rotate": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "loop-rotate"
             ]
         },
         "loop-simplify": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "loop-simplify"
             ]
         },
         "loop-unroll": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "loop-unroll"
             ]
         },
         "loop-unroll-and-jam": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "loop-unroll-and-jam"
             ]
         },
         "mem2reg": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "mem2reg"
             ]
         },
         "reg2mem": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "reg2mem"
             ]
         },
         "simple-loop-unswitch": {
-            "rustflags": "-C opt-level=3",
+            "rustflags": "-C opt-level=0",
             "passes": [
                 "simple-loop-unswitch"
+            ]
+        },
+        "mergereturn": {
+            "rustflags": "-C opt-level=0",
+            "passes": [
+                "mergereturn"
             ]
         }
     },
@@ -93,13 +99,16 @@
         "risc0",
         "sp1"
     ],
+    "measurements": [
+        "prove",
+        "exec"
+    ],
     "programs": {
         "list": [
             "loop-sum",
             "factorial",
             "sha256",
             "keccak256",
-            "zkvm-mnist",
             "tailcall",
             "bigmem",
             "fibonacci",
