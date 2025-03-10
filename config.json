@@ -4,6 +4,26 @@
             "rustflags": "-C opt-level=0",
             "passes": []
         },
+        "all": {
+            "rustflags": "-C opt-level=0",
+            "passes": [
+                "tailcallelim",
+                "adce",
+                "indvars",
+                "aggressive-instcombine",
+                "jump-threading",
+                "lcssa",
+                "loop-reduce",
+                "loop-rotate",
+                "loop-simplify",
+                "loop-unroll",
+                "loop-unroll-and-jam",
+                "mem2reg",
+                "reg2mem",
+                "simple-loop-unswitch",
+                "mergereturn"
+            ]
+        },
         "tailcall": {
             "rustflags": "-C opt-level=0",
             "passes": [
