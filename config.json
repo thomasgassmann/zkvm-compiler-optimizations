@@ -8,6 +8,8 @@
         "all": {
             "rustflags": "-C opt-level=0",
             "passes": [
+                "sccp",
+                "gvn",
                 "tailcallelim",
                 "adce",
                 "indvars",
@@ -23,6 +25,20 @@
                 "reg2mem",
                 "simple-loop-unswitch",
                 "mergereturn"
+            ],
+            "prepopulate_passes": false
+        },
+        "sccp": {
+            "rustflags": "-C opt-level=0",
+            "passes": [
+                "sccp"
+            ],
+            "prepopulate_passes": false
+        },
+        "gvn": {
+            "rustflags": "-C opt-level=0",
+            "passes": [
+                "gvn"
             ],
             "prepopulate_passes": false
         },
@@ -182,8 +198,7 @@
             "sha2-bench",
             "sha2-chain",
             "sha3-bench",
-            "sha3-chain",
-            "c"
+            "sha3-chain"
         ],
         "specific": [
             "keccak256"
