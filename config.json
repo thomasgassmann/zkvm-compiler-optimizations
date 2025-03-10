@@ -22,7 +22,7 @@
                 "loop-unroll",
                 "loop-unroll-and-jam",
                 "loop-unroll-full",
-                "licm",
+                "loop-mssa(licm)",
                 "loop-deletion",
                 "memcpyopt",
                 "simplifycfg",
