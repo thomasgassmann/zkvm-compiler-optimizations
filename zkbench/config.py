@@ -7,6 +7,7 @@ class Profile:
     profile_name: str
     rustflags: str
     passes: List[str]
+    prepopulate_passes: bool
 
 CONFIG = json.load(open("config.json", "r"))
 
@@ -14,7 +15,8 @@ def get_profile_by_name(profile_name: str) -> Profile:
     return Profile(
         profile_name,
         CONFIG["profiles"][profile_name]["rustflags"],
-        CONFIG["profiles"][profile_name]["passes"]
+        CONFIG["profiles"][profile_name]["passes"],
+        CONFIG["profiles"][profile_name]["prepopulate_passes"],
     )
 
 def get_profiles() -> List[Profile]:
