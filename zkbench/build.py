@@ -1,10 +1,21 @@
+import asyncio
 import logging
 import os
 import shutil
 
-from zkbench.config import Profile, get_binary_path, get_profile_by_name, get_profiles_ids, get_program_dir_name, get_program_path, get_programs, get_zkvms
+from zkbench.config import (
+    get_binary_path,
+    get_profile_by_name,
+    get_profiles_ids,
+    get_program_path,
+    get_programs,
+    get_zkvms,
+)
 
-def run_build(program: str | None, zkvm: str | None, profile_name: str | None, force: bool):
+
+async def run_build(
+    program: str | None, zkvm: str | None, profile_name: str | None, force: bool, j: int
+):
     programs_to_build = [program] if program else get_programs()
     zkvms = [zkvm] if zkvm else get_zkvms()
     profiles_to_build = [profile_name] if profile_name else get_profiles_ids()
@@ -13,67 +24,123 @@ def run_build(program: str | None, zkvm: str | None, profile_name: str | None, f
     logging.info(f"zkVMs to build on: {', '.join(zkvms)}")
     logging.info(f"Profiles to build: {', '.join(profiles_to_build)}")
 
-    for zkvm in zkvms:
-        for program in programs_to_build:
+    build_jobs: dict[str, list[str]] = dict()
+    for program in programs_to_build:
+        build_jobs[program] = []
+        for zkvm in zkvms:
             for profile_name in profiles_to_build:
                 program_dir = get_program_path(program, zkvm)
                 if not os.path.isdir(program_dir):
                     raise ValueError(f"Error: Program directory {program_dir} does not exist")
 
-                source = get_binary_path(program, zkvm, None)
                 target = get_binary_path(program, zkvm, profile_name)
                 if os.path.isfile(target) and not force:
                     logging.info(f"Skipping build as target already exists")
                     continue
 
-                profile = get_profile_by_name(profile_name)
-                logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
+                build_jobs[program].append((profile_name, zkvm))
 
-                os.chdir(program_dir)
-                passes = ",".join(profile.passes)
-                os.environ["PASSES"] = passes
-                if zkvm == "sp1":
-                    ret = _build_sp1(profile)
-                elif zkvm == "risc0":
-                    ret = _build_risc0(profile)
-                else:
-                    raise ValueError(f"Unknown zkvm: {zkvm}")
-                os.chdir("../..")
-                if ret != 0:
-                    raise ValueError(f"Error: Build failed with code {ret}")
+    while any([len(build_jobs[program]) > 0 for program in build_jobs.keys()]):
+        number_of_jobs = min(
+            j, len([job for job in build_jobs.keys() if len(build_jobs[job]) > 0])
+        )
+        jobs_to_run = []
+        for program in build_jobs.keys():
+            if len(build_jobs[program]) > 0:
+                profile_name, zkvm = build_jobs[program].pop(0)
+                jobs_to_run.append((program, profile_name, zkvm))
+                if len(jobs_to_run) == number_of_jobs:
+                    break
 
-                del os.environ["PASSES"]
-                shutil.copyfile(source, target)
-                logging.info(f"Copied binary to {target}")
+        logging.info(
+            "Running build jobs: {}".format(
+                ", ".join([f"{p}-{profile}-{zk}" for p, profile, zk in jobs_to_run])
+            )
+        )
+        await asyncio.gather(
+            *[
+                _build(program, profile_name, zkvm)
+                for program, profile_name, zkvm in jobs_to_run
+            ]
+        )
 
-def _build_sp1(profile: Profile):
-    passes_string = ",".join(["lower-atomic"] + profile.passes)
+
+async def _build(program: str, profile_name: str, zkvm: str):
+    source = get_binary_path(program, zkvm, None)
+    target = get_binary_path(program, zkvm, profile_name)
+    name = "{}-{}-{}".format(program, zkvm, profile_name)
+
+    profile = get_profile_by_name(profile_name)
+    logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
+
+    passes = ",".join(profile.passes)
+    env = {
+        **os.environ,
+        "PASSES": passes,
+    }
+    passes_string = ",".join(
+        ["loweratomic" if zkvm == "risc0" else "lower-atomic"] + profile.passes
+    )
     pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
     prepopulate_passes = (
         "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
     )
-    return os.system(
-        f"""
-        CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
-            RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
-            RUSTUP_TOOLCHAIN=succinct \
-            CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
-            cargo build --release --locked --features sp1
-    """.strip()
+    program_dir = get_program_path(program, zkvm)
+    if zkvm == "sp1":
+        ret = await _run_command(
+            f"""
+            CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
+                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
+                RUSTUP_TOOLCHAIN=succinct \
+                CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
+                cargo build --release --locked --features sp1
+        """.strip(),
+            program_dir,
+            env,
+            name,
+        )
+    elif zkvm == "risc0":
+        ret = await _run_command(
+            f"""
+            CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
+                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
+                RISC0_FEATURE_bigint2=1 \
+                cargo +risc0 build --release --locked \
+                    --target riscv32im-risc0-zkvm-elf --manifest-path Cargo.toml --features risc0
+        """.strip(),
+            program_dir,
+            env,
+            name,
+        )
+    else:
+        raise ValueError(f"Unknown zkvm: {zkvm}")
+    if ret != 0:
+        raise ValueError(f"Error: Build failed with code {ret}")
+
+    shutil.copyfile(source, target)
+    logging.info(f"Copied binary to {target}")
+
+
+async def _run_command(cmd, cwd, env, task_name):
+    process = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+        cwd=cwd,
+        env=env,
     )
 
-def _build_risc0(profile: Profile):
-    passes_string = ",".join(["loweratomic"] + profile.passes)
-    pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
-    prepopulate_passes = (
-        "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
+    async def stream_output(stream, name):
+        while True:
+            line = await stream.readline()
+            if line:
+                logging.info(f"[{task_name}, {name}] {line.decode().rstrip()}")
+            else:
+                break
+
+    await asyncio.gather(
+        stream_output(process.stdout, "stdout"),
+        stream_output(process.stderr, "stderr"),
     )
-    return os.system(
-        f"""
-        CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
-            RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
-            RISC0_FEATURE_bigint2=1 \
-            cargo +risc0 build --release --locked \
-                --target riscv32im-risc0-zkvm-elf --manifest-path Cargo.toml --features risc0
-    """
-    )
+
+    return await process.wait()
