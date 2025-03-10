@@ -1,6 +1,7 @@
 import logging
 import click
 
+from zkbench.common import coro
 from zkbench.config import get_profiles_ids, get_programs, get_zkvms
 from zkbench.plot.plot import average_improvement_cli, better_worse_cli
 from zkbench.bench import run_bench
@@ -43,8 +44,12 @@ def zkbench_cli(log_level: str):
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--profile", type=click.Choice(get_profiles_ids()), required=False)
 @click.option("--force", required=False, is_flag=True, default=False)
-def build_cli(program: str | None, zkvm: str | None, profile: str | None, force: bool):
-    run_build(program, zkvm, profile, force)
+@click.option("-j", required=True, type=int)
+@coro
+async def build_cli(
+    program: str | None, zkvm: str | None, profile: str | None, force: bool, j: int
+):
+    await run_build(program, zkvm, profile, force, j)
 
 
 @click.command(name="clean")
