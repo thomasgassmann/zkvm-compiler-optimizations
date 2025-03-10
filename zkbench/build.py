@@ -134,7 +134,7 @@ async def _run_command(cmd, cwd, env, task_name):
         while True:
             line = await stream.readline()
             if line:
-                logging.info(f"[{task_name}, {name}] {line.decode().rstrip()}")
+                logging.debug(f"[{task_name}, {name}] {line.decode().rstrip()}")
             else:
                 break
 
