@@ -48,10 +48,14 @@ def run_build(program: str | None, zkvm: str | None, profile_name: str | None, f
 
 def _build_sp1(profile: Profile):
     passes_string = ",".join(["lower-atomic"] + profile.passes)
+    pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
+    prepopulate_passes = (
+        "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
+    )
     return os.system(
         f"""
         CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
-            RUSTFLAGS="-C no-prepopulate-passes -C passes={passes_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
+            RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
             RUSTUP_TOOLCHAIN=succinct \
             CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
             cargo build --release --locked --features sp1
@@ -60,10 +64,16 @@ def _build_sp1(profile: Profile):
 
 def _build_risc0(profile: Profile):
     passes_string = ",".join(["loweratomic"] + profile.passes)
-    return os.system(f"""
+    pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
+    prepopulate_passes = (
+        "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
+    )
+    return os.system(
+        f"""
         CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
-            RUSTFLAGS="-C no-prepopulate-passes -C passes={passes_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
+            RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags}" \
             RISC0_FEATURE_bigint2=1 \
             cargo +risc0 build --release --locked \
                 --target riscv32im-risc0-zkvm-elf --manifest-path Cargo.toml --features risc0
-    """)
+    """
+    )
