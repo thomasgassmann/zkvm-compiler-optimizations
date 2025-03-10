@@ -23,6 +23,11 @@ def get_profiles() -> List[Profile]:
 def get_programs():
     return CONFIG["programs"]["list"]
 
+
+def get_measurements():
+    return CONFIG["measurements"]
+
+
 def get_zkvms():
     return CONFIG["zkvms"]
 
@@ -32,8 +37,10 @@ def get_zkvm_specific_programs():
 def is_zkvm_specific(program_id: str):
     return program_id in get_zkvm_specific_programs()
 
-def get_profiles_ids():
-    return CONFIG["profiles"].keys()
+
+def get_profiles_ids() -> List[str]:
+    return list(CONFIG["profiles"].keys())
+
 
 def get_program_dir_name(program_id: str, zkvm: str) -> str:
     return program_id if program_id not in get_zkvm_specific_programs() else f"{program_id}-{zkvm}"

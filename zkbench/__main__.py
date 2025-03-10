@@ -1,6 +1,8 @@
 import logging
 import click
 
+from zkbench.config import get_profiles_ids, get_programs, get_zkvms
+from zkbench.plot.plot import average_improvement_cli, better_worse_cli
 from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
@@ -36,17 +38,18 @@ def zkbench_cli(log_level: str):
     setup_logger(log_level)
 
 
-@click.command(name='build')
-@click.option('--program', nargs=1, required=False)
-@click.option('--zkvm', nargs=1, required=False)
-@click.option('--profile', nargs=1, required=False)
-@click.option('--force', required=False, is_flag=True, default=False)
+@click.command(name="build")
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=False)
+@click.option("--force", required=False, is_flag=True, default=False)
 def build_cli(program: str | None, zkvm: str | None, profile: str | None, force: bool):
     run_build(program, zkvm, profile, force)
 
-@click.command(name='clean')
-@click.option('--program', nargs=1, required=False)
-@click.option('--zkvm', nargs=1, required=False)
+
+@click.command(name="clean")
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 def clean_cli(program: str | None, zkvm: str | None):
     run_clean(program, zkvm)
 
@@ -61,11 +64,17 @@ def bench_cli():
 
 
 @click.command(name="exec")
-@click.option("--program", nargs=1, required=True)
-@click.option("--zkvm", nargs=1, required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
 @click.option("--profile", nargs=1, required=True)
 def exec_cli(program: str, zkvm: str, profile: str):
     run(program, zkvm, "out.json", profile)
+
+
+@click.group(name="plot")
+@click.option("--dir", nargs=1, required=True, help="Directory with Criterion data")
+def plot_cli(dir: str):
+    pass
 
 
 zkbench_cli.add_command(build_cli)
@@ -73,6 +82,10 @@ zkbench_cli.add_command(clean_cli)
 zkbench_cli.add_command(run_cli)
 zkbench_cli.add_command(bench_cli)
 zkbench_cli.add_command(exec_cli)
+zkbench_cli.add_command(plot_cli)
+
+plot_cli.add_command(better_worse_cli)
+plot_cli.add_command(average_improvement_cli)
 
 if __name__ == '__main__':
     zkbench_cli()
