@@ -30,16 +30,16 @@ pub fn add_benchmarks_for(
 ) {
     match prover {
         ProverId::Risc0 => add_risc0_exec_and_prove(
-            BenchmarkId::new(format!("{}-execute", prover), profile),
-            BenchmarkId::new(format!("{}-prove", prover), profile),
+            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Exec), profile),
+            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Prove), profile),
             group,
             program,
             measurement,
             profile,
         ),
         ProverId::SP1 => add_sp1_exec_and_prove(
-            BenchmarkId::new(format!("{}-execute", prover), profile),
-            BenchmarkId::new(format!("{}-prove", prover), profile),
+            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Exec), profile),
+            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Prove), profile),
             group,
             program,
             measurement,
