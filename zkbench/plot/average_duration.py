@@ -10,4 +10,6 @@ def plot_average_duration(dir: str, zkvm: str | None, measurement: str | None, p
         dir, zkvm, measurement, program, profiles, lambda dir, program, zkvm, profile, measurement: get_mean_ms(dir, program, zkvm, profile, measurement)
     )
 
-    plot_sorted(relative_improvements, profiles, title, 'average duration (ms)')
+    plot_sorted(
+        [relative_improvements], profiles, title, "average duration (ms)", [None]
+    )

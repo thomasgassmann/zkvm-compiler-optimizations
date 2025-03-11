@@ -226,6 +226,18 @@
             "prepopulate_passes": true
         }
     },
+    "disabled_profiles": {
+        "loop-unroll-threshold-0": {
+            "rustflags": "-C opt-level=0 -C llvm-args=-unroll-threshold=0",
+            "passes": [],
+            "prepopulate_passes": true
+        },
+        "loop-unroll-threshold-100": {
+            "rustflags": "-C opt-level=3 -C llvm-args=-unroll-threshold=",
+            "passes": [],
+            "prepopulate_passes": true
+        }
+    },
     "zkvms": [
         "risc0",
         "sp1"
