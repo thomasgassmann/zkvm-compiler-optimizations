@@ -4,6 +4,7 @@ import os
 import json
 import matplotlib.pyplot as plt
 
+from zkbench.common import get_run_config
 from zkbench.config import get_profiles_ids, get_programs, get_zkvms
 
 PLOT_PROPERTY = "execution_duration"
@@ -20,13 +21,14 @@ def run(program: str, zkvm: str, file: str, profile: str):
         raise ValueError(f"Error: Run failed with code {res}")
 
 
-def run_with_plot():
+def run_with_plot(program: str | None, zkvm: str | None, profile: str | None):
     scores = dict()
     groups = list()
-    for profile in get_profiles_ids():
+    programs, zkvms, profiles = get_run_config(program, zkvm, profile)
+    for profile in profiles:
         scores[profile] = []
-        for zkvm in get_zkvms():
-            for program in get_programs():
+        for zkvm in zkvms:
+            for program in programs:
                 if program == 'zkvm-mnist':
                     continue
                 fn = filename(program, zkvm, profile)
