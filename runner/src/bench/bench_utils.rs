@@ -1,8 +1,8 @@
 use std::fs::File;
 use std::io::BufReader;
 
-use crate::benchmarks::risc0_utils::{exec_risc0, prove_core_risc0, prove_core_risc0_prepare};
-use crate::benchmarks::sp1_utils::{exec_sp1, prove_core_sp1, prove_core_sp1_prepare};
+use crate::bench::risc0_utils::{exec_risc0, prove_core_risc0, prove_core_risc0_prepare};
+use crate::bench::sp1_utils::{exec_sp1, prove_core_sp1, prove_core_sp1_prepare};
 use criterion::measurement::WallTime;
 use criterion::BenchmarkId;
 use runner::types::{Config, MeasurementType};

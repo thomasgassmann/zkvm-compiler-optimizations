@@ -22,7 +22,3 @@ sp1-core-machine = "4.1.1"
 sp1-prover = "4.1.1"
 sp1-sdk = "4.1.1"
 sp1-stark = "4.1.1"
-
-[[bench]]
-name = "bench_main"
-harness = false

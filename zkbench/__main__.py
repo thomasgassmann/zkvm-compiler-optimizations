@@ -2,12 +2,15 @@ import logging
 import click
 
 from zkbench.common import coro
-from zkbench.config import get_profiles_ids, get_programs, get_zkvms
-from zkbench.plot.plot import average_improvement_cli, better_worse_cli
+from zkbench.config import get_measurements, get_profiles_ids, get_programs, get_zkvms
+from zkbench.plot.plot import (
+    average_duration_cli,
+    average_improvement_cli,
+    better_worse_cli,
+)
 from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
-from zkbench.run import run, run_with_plot
 
 def get_log_level(level_str: str) -> int:
     try:
@@ -59,28 +62,12 @@ def clean_cli(program: str | None, zkvm: str | None):
     run_clean(program, zkvm)
 
 
-@click.command(name="run")
-@click.option("--program", type=click.Choice(get_programs()), required=False)
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-@click.option("--profile", type=click.Choice(get_profiles_ids()), required=False)
-def run_cli(program: str | None, zkvm: str | None, profile: str | None):
-    run_with_plot(program, zkvm, profile)
-
-
 @click.command(name="bench")
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-@click.option("--profile", type=click.Choice(get_profiles_ids()), required=False)
-def bench_cli(program: str | None, zkvm: str | None, profile: str | None):
-    run_bench()
-
-
-@click.command(name="exec")
-@click.option("--program", type=click.Choice(get_programs()), required=True)
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
-@click.option("--profile", nargs=1, required=True)
-def exec_cli(program: str, zkvm: str, profile: str):
-    run(program, zkvm, "out.json", profile)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
+def bench_cli(program: str | None, zkvm: str | None, measurement: str | None):
+    run_bench(program, zkvm, measurement)
 
 
 @click.group(name="plot")
@@ -91,13 +78,12 @@ def plot_cli(dir: str):
 
 zkbench_cli.add_command(build_cli)
 zkbench_cli.add_command(clean_cli)
-zkbench_cli.add_command(run_cli)
 zkbench_cli.add_command(bench_cli)
-zkbench_cli.add_command(exec_cli)
 zkbench_cli.add_command(plot_cli)
 
 plot_cli.add_command(better_worse_cli)
 plot_cli.add_command(average_improvement_cli)
+plot_cli.add_command(average_duration_cli)
 
 if __name__ == '__main__':
     zkbench_cli()

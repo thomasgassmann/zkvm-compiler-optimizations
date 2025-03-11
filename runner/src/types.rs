@@ -34,7 +34,7 @@ pub enum ProverId {
     SP1,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(clap::ValueEnum, Clone, Debug, Serialize, Deserialize)]
 pub enum MeasurementType {
     #[serde(rename = "prove")]
     Prove,
