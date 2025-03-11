@@ -15,13 +15,10 @@ def better_worse_cli(zkvm: str | None, measurement: str | None):
 
 @click.command(name="average-improvement")
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
-def average_improvement_cli(
-    zkvm: str | None, measurement: str | None, program: str | None
-):
+def average_improvement_cli(zkvm: str | None, program: str | None):
     dir = click.get_current_context().parent.params["dir"]
-    plot_average_improvement(dir, zkvm, measurement, program)
+    plot_average_improvement(dir, zkvm, program)
 
 
 @click.command(name="average-duration")

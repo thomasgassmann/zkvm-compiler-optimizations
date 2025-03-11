@@ -15,7 +15,7 @@ BASELINE = 'baseline'
 def get_title(base: str, info: list[str | None]):
     title = base
     if any(map(lambda x: x is not None, info)):
-        title += "(" + ", ".join([x for x in info if x is not None]) + ")"
+        title += " (" + ", ".join([x for x in info if x is not None]) + ")"
     return title
 
 
@@ -28,27 +28,44 @@ def get_mean_ms(dir: str, program: str, zkvm: str, profile: str, measurement: st
     return data['mean']['point_estimate'] / 1_000_000
 
 
-def plot_sorted(values, labels, title, y_label):
-    sorted_indices = np.argsort(values)[::-1]
+def plot_sorted(values, labels, title, y_label, series_labels):
+    sorted_indices = np.argsort(values[0])[::-1]
     profiles_sorted = [labels[i] for i in sorted_indices]
-    increase_values_sorted = [values[i] for i in sorted_indices]
+    increase_values_sorted = [
+        [values[j][i] for i in sorted_indices] for j in range(len(values))
+    ]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-
     x_pos = np.arange(len(profiles_sorted))
 
-    ax.bar(x_pos, increase_values_sorted, width=0.4, color="gray")
+    bar_width = 0.8 / len(values)
+
+    for i in range(len(values)):
+        ax.bar(
+            x_pos + i * bar_width - (0.8 - bar_width) / 2,
+            increase_values_sorted[i],
+            width=bar_width,
+            label=series_labels[i],
+        )
+
+    for x in x_pos:
+        ax.axvline(
+            x + bar_width / 2 - (0.8 - bar_width) / 2,
+            color="gray",
+            linestyle="--",
+            alpha=0.2,
+        )
 
     ax.set_xticks(x_pos)
     ax.set_xticklabels(profiles_sorted, rotation=45, ha="right")
     ax.set_ylabel(y_label)
     ax.set_title(title)
-    ax.legend()
+    if any(map(lambda x: x is not None, series_labels)):
+        ax.legend()
 
     ax.grid(axis="y", linestyle="--", alpha=0.7)
 
-    plt.tight_layout
-
+    plt.tight_layout()
     plt.show()
 
 

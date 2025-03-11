@@ -120,6 +120,7 @@ async def _build(program: str, profile_name: str, zkvm: str):
 
 
 async def _run_command(cmd, cwd, env, task_name):
+    logging.debug(f"[{task_name}] Running command: {cmd}")
     process = await asyncio.create_subprocess_shell(
         cmd,
         stdout=asyncio.subprocess.PIPE,

@@ -14,18 +14,22 @@ def f(dir, program, zkvm, profile, measurement):
     return -(compared - baseline) / baseline
 
 
-def plot_average_improvement(dir: str, zkvm: str | None, measurement: str | None, program: str | None):
-    title = get_title("Average improvement by profile", [zkvm, measurement, program])
+def plot_average_improvement(dir: str, zkvm: str | None, program: str | None):
+    title = get_title("Average improvement by profile", [zkvm, program])
 
     profiles = get_profiles_ids()
     profiles.remove(BASELINE)
-    relative_improvements = get_average_across(
-        dir, zkvm, measurement, program, profiles, f
+    relative_improvements_prove = get_average_across(
+        dir, zkvm, "prove", program, profiles, f
+    )
+    relative_improvements_exec = get_average_across(
+        dir, zkvm, "exec", program, profiles, f
     )
 
     plot_sorted(
-        relative_improvements,
+        [relative_improvements_prove, relative_improvements_exec],
         profiles,
         title,
         "improvement/degradation compared to baseline",
+        ["prove", "exec"],
     )
