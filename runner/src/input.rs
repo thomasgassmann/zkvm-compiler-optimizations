@@ -56,6 +56,7 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     (train, test)
 }
 
+// TODO: merge with risc0 input below
 pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
     let mut stdin = SP1Stdin::new();
     match program {
@@ -89,6 +90,11 @@ pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
         ProgramId::Sha3Chain => {
             stdin.write(&vec![5u8; 32]);
             stdin.write(&32u32);
+        }
+        ProgramId::RegexMatch => {
+            // sample from https://docs.rs/regex/latest/regex/
+            stdin.write(&String::from("[0-9]{4}-[0-9]{2}-[0-9]{2}"));
+            stdin.write(&String::from("What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?"));
         }
         _ => {}
     }
@@ -128,6 +134,11 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
         ProgramId::Sha3Chain => {
             let _ = builder.write(&vec![5u8; 32]);
             let _ = builder.write::<u32>(&32u32);
+        }
+        ProgramId::RegexMatch => {
+            // sample from https://docs.rs/regex/latest/regex/
+            let _ = builder.write(&String::from("[0-9]{4}-[0-9]{2}-[0-9]{2}"));
+            let _ = builder.write(&String::from("What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?"));
         }
         _ => {}
     }

@@ -248,6 +248,11 @@
             "sha3-bench",
             "sha3-chain"
         ],
+        "disabled": [
+            "regex-match",
+            "c",
+            "zkvm-mnist"
+        ],
         "specific": [
             "keccak256"
         ]
