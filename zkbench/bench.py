@@ -1,18 +1,31 @@
+import logging
 import os
 
 
-def run_bench(program: str | None, zkvm: str | None, measurement: str | None):
+def run_bench(
+    program: list[str], zkvm: list[str], measurement: list[str], profile: list[str]
+):
     args = []
     if program:
-        args.append(f"--program {program}")
+        for p in program:
+            args.append(f"--program {p}")
     if zkvm:
-        args.append(f"--zkvm {zkvm}")
+        for z in zkvm:
+            args.append(f"--zkvm {z}")
     if measurement:
-        args.append(f"--measurement {measurement}")
+        for m in measurement:
+            args.append(f"--measurement {m}")
+    if profile:
+        for p in profile:
+            args.append(f"--profile {p}")
 
+    # TODO: be a bit smarter with caching
+    # if the profile did not change
+    arg_string = " ".join(args)
+    logging.info(f"Running bench with args: {arg_string}")
     res = os.system(
         f"""
-        cargo run --release -p runner -- {' '.join(args)}
+        cargo run --release -p runner -- {arg_string}
     """.strip()
     )
     if res != 0:

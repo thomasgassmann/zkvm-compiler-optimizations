@@ -18,9 +18,9 @@ fn main() {
     #[cfg(feature = "risc0")]
     let value = risc0_zkvm::guest::env::read::<u32>();
 
-    let array = [value; 128000];
+    let array = [value; 12800];
     black_box(array);
-    let result = array[16000];
+    let result = array[1600];
 
     #[cfg(feature = "sp1")]
     sp1_zkvm::io::commit(&result);

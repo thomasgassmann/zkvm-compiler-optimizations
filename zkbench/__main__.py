@@ -63,11 +63,23 @@ def clean_cli(program: str | None, zkvm: str | None):
 
 
 @click.command(name="bench")
-@click.option("--program", type=click.Choice(get_programs()), required=False)
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
-def bench_cli(program: str | None, zkvm: str | None, measurement: str | None):
-    run_bench(program, zkvm, measurement)
+@click.option(
+    "--program", type=click.Choice(get_programs()), required=False, multiple=True
+)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
+@click.option(
+    "--measurement",
+    type=click.Choice(get_measurements()),
+    required=False,
+    multiple=True,
+)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
+)
+def bench_cli(
+    program: list[str], zkvm: list[str], measurement: list[str], profile: list[str]
+):
+    run_bench(program, zkvm, measurement, profile)
 
 
 @click.group(name="plot")
