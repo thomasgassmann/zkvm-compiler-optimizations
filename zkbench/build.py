@@ -3,22 +3,20 @@ import logging
 import os
 import shutil
 
+from zkbench.common import get_run_config
 from zkbench.config import (
     get_binary_path,
     get_profile_by_name,
-    get_profiles_ids,
     get_program_path,
-    get_programs,
-    get_zkvms,
 )
 
 
 async def run_build(
     program: str | None, zkvm: str | None, profile_name: str | None, force: bool, j: int
 ):
-    programs_to_build = [program] if program else get_programs()
-    zkvms = [zkvm] if zkvm else get_zkvms()
-    profiles_to_build = [profile_name] if profile_name else get_profiles_ids()
+    programs_to_build, zkvms, profiles_to_build = get_run_config(
+        program, zkvm, profile_name
+    )
 
     logging.info(f"Programs to build: {', '.join(programs_to_build)}")
     logging.info(f"zkVMs to build on: {', '.join(zkvms)}")

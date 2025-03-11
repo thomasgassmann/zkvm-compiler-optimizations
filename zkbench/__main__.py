@@ -58,13 +58,20 @@ async def build_cli(
 def clean_cli(program: str | None, zkvm: str | None):
     run_clean(program, zkvm)
 
-@click.command(name='run')
-def run_cli():
-    run_with_plot()
+
+@click.command(name="run")
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=False)
+def run_cli(program: str | None, zkvm: str | None, profile: str | None):
+    run_with_plot(program, zkvm, profile)
 
 
 @click.command(name="bench")
-def bench_cli():
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=False)
+def bench_cli(program: str | None, zkvm: str | None, profile: str | None):
     run_bench()
 
 

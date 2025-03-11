@@ -1,11 +1,11 @@
 import logging
 import os
+from zkbench.common import get_run_config
 from zkbench.config import get_program_path, get_programs, get_zkvms, is_zkvm_specific
 
 
 def run_clean(program: str | None, zkvm: str | None):
-    programs_to_build = [program] if program else get_programs()
-    zkvms = [zkvm] if zkvm else get_zkvms()
+    programs_to_build, zkvms, _ = get_run_config(program, zkvm, None)
 
     for program in programs_to_build:
         if is_zkvm_specific(program):
