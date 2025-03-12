@@ -4,8 +4,8 @@ from zkbench.common import get_run_config
 from zkbench.config import get_program_path, get_programs, get_zkvms, is_zkvm_specific
 
 
-def run_clean(program: str | None, zkvm: str | None):
-    programs_to_build, zkvms, _ = get_run_config(program, zkvm, None)
+def run_clean(program: list[str], zkvm: list[str]):
+    programs_to_build, zkvms, _ = get_run_config(program, zkvm, [])
 
     for program in programs_to_build:
         if is_zkvm_specific(program):
@@ -14,6 +14,7 @@ def run_clean(program: str | None, zkvm: str | None):
         else:
             # second argument does not matter
             _clean(get_program_path(program, 'sp1'))
+
 
 def _clean(program_dir: str):
     if not os.path.isdir(program_dir):

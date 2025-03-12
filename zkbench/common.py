@@ -11,8 +11,8 @@ def coro(f):
     return wrapper
 
 
-def get_run_config(program: str | None, zkvm: str | None, profile: str | None):
-    programs = [program] if program else get_programs()
-    zkvms = [zkvm] if zkvm else get_zkvms()
-    profiles = [profile] if profile else get_profiles_ids()
+def get_run_config(programs: list[str], zkvms: list[str], profiles: list[str]):
+    programs = programs if len(programs) > 0 else get_programs()
+    zkvms = zkvms if len(zkvms) > 0 else get_zkvms()
+    profiles = profiles if len(profiles) > 0 else get_profiles_ids()
     return programs, zkvms, profiles
