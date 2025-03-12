@@ -1,3 +1,3 @@
 # fibonacci
 
-Source: https://github.com/a16z/zkvm-benchmarks
+Source: https://github.com/succinctlabs/zkvm-perf
