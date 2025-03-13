@@ -17,6 +17,7 @@ pub fn exec_sp1_prepare(
 }
 
 pub fn exec_sp1(stdin: &SP1Stdin, prover: &SP1Prover<CpuProverComponents>, elf: &[u8]) {
+    // TODO: redirect stdout once https://github.com/succinctlabs/sp1/pull/2143 is released
     prover.execute(&elf, stdin, SP1Context::default()).unwrap();
 }
 
