@@ -86,10 +86,15 @@ def clean_cli(program: list[str], zkvm: list[str]):
 @click.option(
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
 )
+@click.option("--profile-time", type=int, required=False)
 def bench_cli(
-    program: list[str], zkvm: list[str], measurement: list[str], profile: list[str]
+    program: list[str],
+    zkvm: list[str],
+    measurement: list[str],
+    profile: list[str],
+    profile_time: int,
 ):
-    run_bench(program, zkvm, measurement, profile)
+    run_bench(program, zkvm, measurement, profile, profile_time)
 
 
 @click.group(name="plot")
