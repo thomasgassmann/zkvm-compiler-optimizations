@@ -53,7 +53,7 @@ pub struct ProgramConfig {
 pub struct Profile {
     pub rustflags: String,
     pub passes: Vec<String>,
-    pub prepopulate_passes: bool
+    pub prepopulate_passes: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

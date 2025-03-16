@@ -6,12 +6,22 @@ use risc0_zkvm::{
 };
 use runner::{input::set_risc0_input, types::ProgramId};
 
+use super::utils::ElfStats;
+
 pub fn exec_risc0_setup<'a>(elf: &'a [u8], program: &'a ProgramId) -> ExecutorImpl<'a> {
     let mut builder = ExecutorEnv::builder();
     builder.stdout(std::io::sink());
     set_risc0_input(program, &mut builder);
     let env = builder.build();
     ExecutorImpl::from_elf(env.unwrap(), elf).unwrap()
+}
+
+pub fn get_risc0_stats<'a>(elf: &'a [u8], program: &'a ProgramId) -> ElfStats {
+    let mut exec = exec_risc0_setup(elf, program);
+    let session = exec.run().unwrap();
+    ElfStats {
+        cycle_count: session.user_cycles,
+    }
 }
 
 pub fn exec_risc0(p: &mut ExecutorImpl<'_>) {

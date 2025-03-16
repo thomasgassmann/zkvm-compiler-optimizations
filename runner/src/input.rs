@@ -94,7 +94,9 @@ pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
         ProgramId::RegexMatch => {
             // sample from https://docs.rs/regex/latest/regex/
             stdin.write(&String::from("[0-9]{4}-[0-9]{2}-[0-9]{2}"));
-            stdin.write(&String::from("What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?"));
+            stdin.write(&String::from(
+                "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
+            ));
         }
         _ => {}
     }
@@ -138,7 +140,9 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
         ProgramId::RegexMatch => {
             // sample from https://docs.rs/regex/latest/regex/
             let _ = builder.write(&String::from("[0-9]{4}-[0-9]{2}-[0-9]{2}"));
-            let _ = builder.write(&String::from("What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?"));
+            let _ = builder.write(&String::from(
+                "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
+            ));
         }
         _ => {}
     }

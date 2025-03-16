@@ -1,8 +1,12 @@
 use runner::{input::get_sp1_stdin, types::ProgramId};
 use sp1_core_executor::{Program, SP1ReduceProof};
-use sp1_prover::{components::CpuProverComponents, SP1CoreProofData, SP1ProofWithMetadata};
+use sp1_prover::{
+    components::CpuProverComponents, utils::get_cycles, SP1CoreProofData, SP1ProofWithMetadata,
+};
 use sp1_sdk::{SP1Context, SP1Prover, SP1Stdin, SP1VerifyingKey};
 use sp1_stark::{baby_bear_poseidon2::BabyBearPoseidon2, SP1ProverOpts, StarkProvingKey};
+
+use super::utils::ElfStats;
 
 #[allow(dead_code)]
 pub fn exec_sp1_prepare(
@@ -14,6 +18,13 @@ pub fn exec_sp1_prepare(
     let prover = SP1Prover::<CpuProverComponents>::new();
     let (_, _, _, _) = prover.setup(&elf);
     (stdin, prover)
+}
+
+pub fn get_sp1_stats(elf: &[u8], program: &ProgramId) -> ElfStats {
+    let (stdin, _) = exec_sp1_prepare(elf, program);
+    ElfStats {
+        cycle_count: get_cycles(&elf, &stdin),
+    }
 }
 
 pub fn exec_sp1(stdin: &SP1Stdin, prover: &SP1Prover<CpuProverComponents>, elf: &[u8]) {

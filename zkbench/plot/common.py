@@ -20,7 +20,9 @@ def get_title(base: str, info: list[str | None]):
 
 
 def read_data(dir: str, program: str, zkvm: str, profile: str, measurement: str):
-    path = os.path.join(dir, f"{program}-{zkvm}-{measurement}/{zkvm}-{measurement}", profile, "new/estimates.json")
+    path = os.path.join(
+        dir, f"{program}-{zkvm}/{zkvm}-{measurement}", profile, "new/estimates.json"
+    )
     return json.load(open(path, 'r'))
 
 def get_mean_ms(dir: str, program: str, zkvm: str, profile: str, measurement: str):

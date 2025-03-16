@@ -1,12 +1,15 @@
-
 mod bench;
 
 use bench::bench_utils::{add_benchmarks_for, read_config_json};
 use clap::{command, Parser};
-use criterion::{Criterion, profiler::Profiler};
+use cpuprofiler::PROFILER;
+use criterion::{profiler::Profiler, Criterion};
 use runner::types::{Config, MeasurementType, ProgramId, ProverId};
-use cpuprofiler::PROFILER; 
-use std::{fs, path::{Path, PathBuf}, time::Duration};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    time::Duration,
+};
 
 #[derive(Parser, Clone)]
 #[command(about = "Evaluate the performance of a zkVM on a program.")]
@@ -31,7 +34,11 @@ impl Profiler for Cpuprofiler {
         let path_name = absolute_path.join(PathBuf::from(format!("{}.profile", benchmark_id)));
         fs::create_dir_all(&path_name.parent().unwrap()).unwrap();
         println!("Profiling to: {:?}", path_name);
-        PROFILER.lock().unwrap().start(path_name.to_str().unwrap()).unwrap();
+        PROFILER
+            .lock()
+            .unwrap()
+            .start(path_name.to_str().unwrap())
+            .unwrap();
     }
 
     fn stop_profiling(&mut self, _benchmark_id: &str, _benchmark_dir: &Path) {
@@ -57,26 +64,26 @@ fn main() {
 
     let programs = match args.program {
         Some(program) => program,
-        None => config.programs.list
+        None => config.programs.list,
     };
     let measurements = match args.measurement {
         Some(measurement) => measurement,
-        None => config.measurements
+        None => config.measurements,
     };
     let zkvms = match args.zkvm {
         Some(zkvm) => zkvm,
-        None => config.zkvms
+        None => config.zkvms,
     };
     let profiles = match args.profile {
         Some(profile) => profile,
-        None => config.profiles.keys().cloned().collect()
+        None => config.profiles.keys().cloned().collect(),
     };
 
     for program in programs.iter() {
         for measurement in measurements.iter() {
             for prover in zkvms.iter() {
                 for profile in profiles.iter() {
-                    println!("Bench: {}-{}-{}-{}", program, prover, measurement, profile);                    
+                    println!("Bench: {}-{}-{}-{}", program, prover, measurement, profile);
                 }
             }
         }
@@ -85,12 +92,12 @@ fn main() {
     for program in programs {
         for measurement in measurements.iter() {
             for prover in zkvms.iter() {
-                let mut group = c.benchmark_group(&format!("{}-{}-{}", program, prover, measurement));
+                let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
 
                 for profile in profiles.iter() {
                     add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile);
                 }
-                
+
                 group.finish();
             }
         }
