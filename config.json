@@ -224,16 +224,14 @@
             "rustflags": "-C opt-level=z",
             "passes": [],
             "prepopulate_passes": true
-        }
-    },
-    "disabled_profiles": {
+        },
         "loop-unroll-threshold-0": {
             "rustflags": "-C opt-level=0 -C llvm-args=-unroll-threshold=0",
             "passes": [],
             "prepopulate_passes": true
         },
         "loop-unroll-threshold-100": {
-            "rustflags": "-C opt-level=3 -C llvm-args=-unroll-threshold=",
+            "rustflags": "-C opt-level=0 -C llvm-args=-unroll-threshold=100",
             "passes": [],
             "prepopulate_passes": true
         }
@@ -257,13 +255,11 @@
             "fibonacci",
             "sha2-bench",
             "sha2-chain",
-            "sha3-bench",
-            "sha3-chain"
-        ],
-        "disabled": [
             "regex-match",
             "c",
-            "zkvm-mnist"
+            "zkvm-mnist",
+            "sha3-bench",
+            "sha3-chain"
         ],
         "specific": [
             "keccak256"

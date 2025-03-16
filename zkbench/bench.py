@@ -3,7 +3,11 @@ import os
 
 
 def run_bench(
-    program: list[str], zkvm: list[str], measurement: list[str], profile: list[str]
+    program: list[str],
+    zkvm: list[str],
+    measurement: list[str],
+    profile: list[str],
+    profile_time: int,
 ):
     args = []
     if program:
@@ -18,6 +22,8 @@ def run_bench(
     if profile:
         for p in profile:
             args.append(f"--profile {p}")
+    if profile_time:
+        args.append(f"--profile-time {profile_time}")
 
     # TODO: be a bit smarter with caching
     # if the profile did not change
