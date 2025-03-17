@@ -4,7 +4,7 @@ fn main() {
     println!("cargo:rerun-if-changed=src/hello.c");
     println!("cargo:rerun-if-changed=Makefile");
 
-    let passes = env::var("PASSES").unwrap();
+    let passes = env::var("PASSES").unwrap_or("".to_string());
     let mut passes_string = String::from("PASSES=lower-atomic");
     if !passes.is_empty() {
         passes_string = format!("PASSES=lower-atomic,{}", &passes);

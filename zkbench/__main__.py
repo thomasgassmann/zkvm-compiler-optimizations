@@ -11,6 +11,7 @@ from zkbench.plot.plot import (
 from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
+from zkbench.run import run_single
 
 def get_log_level(level_str: str) -> int:
     try:
@@ -97,6 +98,18 @@ def bench_cli(
     profile_time: int,
 ):
     run_bench(program, zkvm, measurement, profile, profile_time)
+
+
+@click.command(name="run")
+@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
+@click.option(
+    "--elf",
+    type=click.Path(exists=True, file_okay=True, dir_okay=False),
+    required=True,
+)
+def bench_cli(program: str, zkvm: str, elf: str):
+    run_single(program, zkvm, elf)
 
 
 @click.group(name="plot")
