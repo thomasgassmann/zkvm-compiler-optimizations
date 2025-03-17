@@ -1,4 +1,5 @@
 #![no_main]
+#![allow(unused)]
 
 #[cfg(feature = "risc0")]
 risc0_zkvm::guest::entry!(main);
@@ -6,15 +7,15 @@ risc0_zkvm::guest::entry!(main);
 #[cfg(feature = "sp1")]
 sp1_zkvm::entrypoint!(main);
 
-extern crate libc;
+use zkvmlib;
 
-#[link(name = "hello", kind = "static")]
+#[link(name = "zkvmc", kind = "static")]
 extern "C" {
-    fn hello() -> i32;
+    fn cmain() -> ();
 }
 
 fn main() {
     unsafe {
-        println!("{}", hello());
+        cmain();
     }
 }

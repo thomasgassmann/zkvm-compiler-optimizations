@@ -1,8 +1,8 @@
 use std::{env, process::Command};
 
 fn main() {
-    println!("cargo:rerun-if-changed=src/hello.c");
-    println!("cargo:rerun-if-changed=Makefile");
+    println!("cargo:rerun-if-changed=../guest/main.c");
+    println!("cargo:rerun-if-changed=../Makefile");
 
     let passes = env::var("PASSES").unwrap_or("".to_string());
     let mut passes_string = String::from("PASSES=lower-atomic");
@@ -11,6 +11,7 @@ fn main() {
     }
 
     let status = Command::new("make")
+        .current_dir("..")
         .arg(passes_string)
         .arg("-B")
         .arg("all")
@@ -22,5 +23,5 @@ fn main() {
     }
 
     println!("cargo:rustc-link-search=native=./ctarget");
-    println!("cargo:rustc-link-lib=static=hello");
+    println!("cargo:rustc-link-lib=static=zkvmc");
 }
