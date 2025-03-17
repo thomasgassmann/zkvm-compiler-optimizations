@@ -102,3 +102,42 @@ impl Display for MeasurementType {
         }
     }
 }
+
+#[derive(Debug, Serialize, Default)]
+pub struct PerformanceReport {
+    /// The program that is being evaluated.
+    pub program: String,
+    /// The prover that is being evaluated.
+    pub prover: String,
+    /// The number of shards.
+    pub shards: usize,
+    /// The reported number of cycles.
+    ///
+    /// Note that this number may vary based on the zkVM.
+    pub cycles: u64,
+    /// The reported speed in cycles per second.
+    pub speed: f64,
+    /// The reported duration of the execution in seconds.
+    pub execution_duration: f64,
+    /// The reported duration of the prover in seconds.
+    pub prove_duration: f64,
+
+    /// The reported duration of the core proving time in seconds.
+    pub core_prove_duration: f64,
+    /// The reported duration of the verifier in seconds.
+    pub core_verify_duration: f64,
+    /// The size of the core proof.
+    pub core_proof_size: usize,
+    /// The speed of the core proving time in KHz.
+    pub core_khz: f64,
+
+    /// The reported duration of the recursive proving time in seconds.
+    pub compress_prove_duration: f64,
+    /// The reported duration of the verifier in seconds.
+    pub compress_verify_duration: f64,
+    /// The size of the recursive proof in bytes.
+    pub compress_proof_size: usize,
+
+    /// The overall speed in KHz.
+    pub overall_khz: f64,
+}

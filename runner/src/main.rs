@@ -1,7 +1,7 @@
 mod bench;
 
 use bench::bench_utils::{add_benchmarks_for, read_config_json};
-use clap::{command, Parser};
+use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
 use criterion::{profiler::Profiler, Criterion};
 use runner::types::{Config, MeasurementType, ProgramId, ProverId};
@@ -11,9 +11,21 @@ use std::{
     time::Duration,
 };
 
+#[derive(Subcommand, Clone)]
+pub enum EvalSubcommand {
+    Criterion(CriterionArgs),
+    Run(RunArgs),
+}
+
 #[derive(Parser, Clone)]
 #[command(about = "Evaluate the performance of a zkVM on a program.")]
 pub struct EvalArgs {
+    #[command(subcommand)]
+    command: EvalSubcommand,
+}
+
+#[derive(Parser, Clone)]
+pub struct CriterionArgs {
     #[arg(long)]
     program: Option<Vec<ProgramId>>,
     #[arg(long)]
@@ -24,6 +36,16 @@ pub struct EvalArgs {
     profile: Option<Vec<String>>,
     #[arg(long = "profile-time")]
     profile_time: Option<u64>,
+}
+
+#[derive(Parser, Clone)]
+pub struct RunArgs {
+    #[arg(long)]
+    program: ProgramId,
+    #[arg(long)]
+    zkvm: ProverId,
+    #[arg(long)]
+    elf: String,
 }
 
 struct Cpuprofiler;
@@ -47,11 +69,9 @@ impl Profiler for Cpuprofiler {
     }
 }
 
-fn main() {
-    sp1_core_machine::utils::setup_logger();
+fn run_criterion(args: CriterionArgs) {
     let config: Config = read_config_json();
 
-    let args = EvalArgs::parse();
     let c: &mut criterion::Criterion = &mut Criterion::default()
         .profile_time(if args.profile_time.is_some() {
             println!("Profiling for {} seconds", args.profile_time.unwrap());
@@ -104,4 +124,27 @@ fn main() {
     }
 
     c.final_summary();
+}
+
+fn run_runner(run_args: RunArgs) {
+    let elf: Vec<u8> = fs::read(run_args.elf).unwrap();
+    let res = match run_args.zkvm {
+        ProverId::Risc0 => {
+            runner::report_risc0::Risc0Evaluator::eval(&elf, &run_args.program)
+        }
+        ProverId::SP1 => {
+            runner::report_sp1::SP1Evaluator::eval(&elf, &run_args.program)
+        }
+    };
+    println!("{:?}", res);
+}
+
+fn main() {
+    sp1_core_machine::utils::setup_logger();
+    let args = EvalArgs::parse();
+
+    match args.command {
+        EvalSubcommand::Criterion(criterion_args) => run_criterion(criterion_args),
+        EvalSubcommand::Run(run_args) => run_runner(run_args),
+    }
 }
