@@ -108,7 +108,7 @@ def bench_cli(
     type=click.Path(exists=True, file_okay=True, dir_okay=False),
     required=True,
 )
-def bench_cli(program: str, zkvm: str, elf: str):
+def run_single_cli(program: str, zkvm: str, elf: str):
     run_single(program, zkvm, elf)
 
 
@@ -121,6 +121,7 @@ def plot_cli(dir: str):
 zkbench_cli.add_command(build_cli)
 zkbench_cli.add_command(clean_cli)
 zkbench_cli.add_command(bench_cli)
+zkbench_cli.add_command(run_single_cli)
 zkbench_cli.add_command(plot_cli)
 
 plot_cli.add_command(better_worse_cli)
