@@ -24,4 +24,4 @@ def plot_average_duration(
             dir, program, zkvm, profile, measurement
         ),
     )
-    plot_grouped_boxplot([values], profiles, title, "Duration (ms)", [""])
+    plot_grouped_boxplot([values], profiles, title, "Duration (ms)", [])

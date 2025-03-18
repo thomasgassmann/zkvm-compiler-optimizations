@@ -25,6 +25,16 @@ def read_data(dir: str, program: str, zkvm: str, profile: str, measurement: str)
     )
     return json.load(open(path, 'r'))
 
+
+def read_program_meta(dir: str, program: str, zkvm: str, profile: str):
+    path = os.path.join(dir, f"{program}-{zkvm}/{profile}.json")
+    return json.load(open(path, "r"))
+
+
+def get_cycle_count(dir: str, program: str, zkvm: str, profile: str):
+    return read_program_meta(dir, program, zkvm, profile)["cycle_count"]
+
+
 def get_mean_ms(dir: str, program: str, zkvm: str, profile: str, measurement: str):
     data = read_data(dir, program, zkvm, profile, measurement)
     return data['mean']['point_estimate'] / 1_000_000
