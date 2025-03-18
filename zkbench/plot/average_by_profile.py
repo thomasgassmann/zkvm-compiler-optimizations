@@ -1,7 +1,7 @@
 from zkbench.config import get_profiles_ids
 from zkbench.plot.common import (
     BASELINE,
-    get_point_estimate_ms,
+    get_point_estimate_mean_ms,
     get_title,
     get_values_by_profile,
     plot_grouped_boxplot,
@@ -9,8 +9,8 @@ from zkbench.plot.common import (
 
 
 def f(dir, program, zkvm, profile, measurement):
-    baseline = get_point_estimate_ms(dir, program, zkvm, BASELINE, measurement)
-    compared = get_point_estimate_ms(dir, program, zkvm, profile, measurement)
+    baseline = get_point_estimate_mean_ms(dir, program, zkvm, BASELINE, measurement)
+    compared = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
     return -(compared - baseline) / baseline
 
 
