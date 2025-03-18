@@ -25,8 +25,6 @@ def average_improvement_cli(zkvm: str | None, program: str | None):
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
-def average_duration_cli(
-    zkvm: str | None, measurement: str | None, program: str | None
-):
+def average_duration_cli(zkvm: str | None, measurement: str, program: str | None):
     dir = click.get_current_context().parent.params["dir"]
     plot_average_duration(dir, zkvm, measurement, program)
