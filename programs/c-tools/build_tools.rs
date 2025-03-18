@@ -5,11 +5,19 @@ pub fn setup_build(program: &str) {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-env-changed=PASSES");
     println!("cargo:rerun-if-env-changed=RUSTFLAGS");
+    println!("cargo:rerun-if-env-changed=LLVM_VERSION");
 
     let passes = env::var("PASSES").unwrap_or("".to_string());
-    let mut passes_string = String::from("PASSES=lower-atomic");
+    let llvm_version = env::var("C_LLVM_VERSION").unwrap_or("".to_string());
+    let flag_name = match llvm_version.as_str() {
+        "18" => "loweratomic",
+        "19" => "lower-atomic",
+        _ => panic!("Invalid LLVM version: {}", llvm_version),
+    };
+
+    let mut passes_string = String::from(format!("PASSES={}", &flag_name));
     if !passes.is_empty() {
-        passes_string = format!("PASSES=lower-atomic,{}", &passes);
+        passes_string = format!("PASSES={},{}", &flag_name, &passes);
     }
 
     println!("cargo::warning=Cleaning and building C with passes: {}", passes_string);
