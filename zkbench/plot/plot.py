@@ -32,8 +32,7 @@ def average_duration_cli(zkvm: str | None, measurement: str, program: str | None
 
 
 @click.command(name="cycle-count")
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
-def cycle_count_cli(zkvm: str | None, program: str | None):
+def cycle_count_cli(program: str | None):
     dir = click.get_current_context().parent.params["dir"]
-    plot_cycle_count(dir, zkvm, program)
+    plot_cycle_count(dir, program)
