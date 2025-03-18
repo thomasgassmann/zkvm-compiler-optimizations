@@ -110,16 +110,15 @@ fn run_criterion(args: CriterionArgs) {
     }
 
     for program in programs {
-        for measurement in measurements.iter() {
-            for prover in zkvms.iter() {
-                let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
-
+        for prover in zkvms.iter() {
+            let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
+            for measurement in measurements.iter() {
                 for profile in profiles.iter() {
                     add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile);
                 }
-
-                group.finish();
             }
+
+            group.finish();
         }
     }
 
