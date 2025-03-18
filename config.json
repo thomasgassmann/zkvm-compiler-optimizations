@@ -12,6 +12,7 @@
                 "gvn",
                 "tailcallelim",
                 "adce",
+                "dse",
                 "indvars",
                 "aggressive-instcombine",
                 "jump-threading",
@@ -59,6 +60,13 @@
             "rustflags": "-C opt-level=0",
             "passes": [
                 "adce"
+            ],
+            "prepopulate_passes": false
+        },
+        "dse": {
+            "rustflags": "-C opt-level=0",
+            "passes": [
+                "dse"
             ],
             "prepopulate_passes": false
         },

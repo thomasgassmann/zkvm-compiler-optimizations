@@ -97,7 +97,7 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RUSTUP_TOOLCHAIN=succinct \
                 CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
-                cargo build --release --locked --features sp1
+                cargo build --verbose --release --locked --features sp1
         """.strip(),
             program_dir,
             env,
@@ -109,7 +109,7 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
             CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RISC0_FEATURE_bigint2=1 \
-                cargo +risc0 build --release --locked \
+                cargo +risc0 build --verbose --release --locked \
                     --target riscv32im-risc0-zkvm-elf --manifest-path Cargo.toml --features risc0
         """.strip(),
             program_dir,
