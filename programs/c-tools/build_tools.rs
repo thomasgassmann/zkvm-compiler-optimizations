@@ -1,5 +1,4 @@
 use std::{env, process::Command};
-use std::{thread, time};
 
 pub fn setup_build(program: &str) {
     println!("cargo:rerun-if-changed=NULL");
@@ -23,7 +22,6 @@ pub fn setup_build(program: &str) {
         panic!("Make clean failed with status: {:?}", status);
     }
 
-    thread::sleep(time::Duration::from_secs(3));
     println!("cargo::warning=Done cleaning");
     let mut binding = Command::new("make");
     let make_command = binding
