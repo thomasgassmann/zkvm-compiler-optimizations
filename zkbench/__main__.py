@@ -9,6 +9,7 @@ from zkbench.plot.plot import (
     better_worse_cli,
     cycle_count_cli,
     cycle_count_duration_cli,
+    prove_exec_cli,
 )
 from zkbench.bench import run_bench
 from zkbench.build import run_build
@@ -131,6 +132,7 @@ plot_cli.add_command(average_improvement_cli)
 plot_cli.add_command(average_duration_cli)
 plot_cli.add_command(cycle_count_cli)
 plot_cli.add_command(cycle_count_duration_cli)
+plot_cli.add_command(prove_exec_cli)
 
 if __name__ == '__main__':
     zkbench_cli()

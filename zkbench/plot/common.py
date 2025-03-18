@@ -88,6 +88,26 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
     plt.show()
 
 
+def plot_scatter_by_zkvm(
+    title: str,
+    get_by_zkvm: Callable[[str], tuple[np.ndarray, np.ndarray]],
+    x_label: str,
+    y_label: str,
+):
+    for zkvm in get_zkvms():
+        x, y = get_by_zkvm(zkvm)
+        correlation = np.corrcoef(x, y)[0, 1]
+        plt.scatter(x, y, label=f"{zkvm}, r={correlation:.3f}")
+        plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
+
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.grid(linestyle="--", alpha=0.7)
+    plt.legend()
+    plt.show()
+
+
 def get_values_by_profile(
     dir: str,
     zkvm: str | None,
