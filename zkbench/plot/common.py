@@ -19,7 +19,9 @@ def get_title(base: str, info: list[str | None]):
     return title
 
 
-def read_data(dir: str, program: str, zkvm: str, profile: str, measurement: str):
+def read_estimates_data(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str
+):
     path = os.path.join(
         dir, f"{program}-{zkvm}/{zkvm}-{measurement}", profile, "new/estimates.json"
     )
@@ -35,10 +37,10 @@ def get_cycle_count(dir: str, program: str, zkvm: str, profile: str):
     return read_program_meta(dir, program, zkvm, profile)["cycle_count"]
 
 
-def get_point_estimate_ms(
+def get_point_estimate_mean_ms(
     dir: str, program: str, zkvm: str, profile: str, measurement: str
 ):
-    data = read_data(dir, program, zkvm, profile, measurement)
+    data = read_estimates_data(dir, program, zkvm, profile, measurement)
     return data['mean']['point_estimate'] / 1_000_000
 
 

@@ -1,6 +1,6 @@
 from zkbench.config import get_profiles_ids
 from zkbench.plot.common import (
-    get_point_estimate_ms,
+    get_point_estimate_mean_ms,
     get_title,
     get_values_by_profile,
     plot_grouped_boxplot,
@@ -20,7 +20,7 @@ def plot_average_duration(
         measurement,
         program,
         profiles,
-        lambda dir, program, zkvm, profile, measurement: get_point_estimate_ms(
+        lambda dir, program, zkvm, profile, measurement: get_point_estimate_mean_ms(
             dir, program, zkvm, profile, measurement
         ),
     )

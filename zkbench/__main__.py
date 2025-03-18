@@ -6,7 +6,6 @@ from zkbench.config import get_measurements, get_profiles_ids, get_programs, get
 from zkbench.plot.plot import (
     average_duration_cli,
     average_improvement_cli,
-    better_worse_cli,
     cycle_count_cli,
     cycle_count_duration_cli,
     prove_exec_cli,
@@ -127,7 +126,6 @@ zkbench_cli.add_command(bench_cli)
 zkbench_cli.add_command(run_single_cli)
 zkbench_cli.add_command(plot_cli)
 
-plot_cli.add_command(better_worse_cli)
 plot_cli.add_command(average_improvement_cli)
 plot_cli.add_command(average_duration_cli)
 plot_cli.add_command(cycle_count_cli)
