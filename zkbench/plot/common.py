@@ -35,7 +35,9 @@ def get_cycle_count(dir: str, program: str, zkvm: str, profile: str):
     return read_program_meta(dir, program, zkvm, profile)["cycle_count"]
 
 
-def get_mean_ms(dir: str, program: str, zkvm: str, profile: str, measurement: str):
+def get_point_estimate_ms(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str
+):
     data = read_data(dir, program, zkvm, profile, measurement)
     return data['mean']['point_estimate'] / 1_000_000
 

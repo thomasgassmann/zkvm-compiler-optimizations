@@ -5,6 +5,7 @@ from zkbench.plot.average_by_profile import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.better_worse import plot_better_worse
 from zkbench.plot.cycle_count import plot_cycle_count
+from zkbench.plot.cycle_prove_duration import plot_cycle_count_duration
 
 @click.command(name="better-worse")
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
@@ -36,3 +37,12 @@ def average_duration_cli(zkvm: str | None, measurement: str, program: str | None
 def cycle_count_cli(program: str | None):
     dir = click.get_current_context().parent.params["dir"]
     plot_cycle_count(dir, program)
+
+
+@click.command(name="cycle-count-duration")
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+def cycle_count_duration_cli(zkvm: str | None, measurement: str, program: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_cycle_count_duration(dir, zkvm, measurement, program)
