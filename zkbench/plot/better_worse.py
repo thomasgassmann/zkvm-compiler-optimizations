@@ -2,7 +2,7 @@ import logging
 from matplotlib import pyplot as plt
 import numpy as np
 from zkbench.config import get_measurements, get_profiles_ids, get_programs, get_zkvms
-from zkbench.plot.common import BASELINE, get_mean_ms, get_title
+from zkbench.plot.common import BASELINE, get_point_estimate_ms, get_title
 
 
 def get_number_of_programs_improving_degrading(dir: str, zkvm: str, profile: str, measurement: str):
@@ -10,8 +10,12 @@ def get_number_of_programs_improving_degrading(dir: str, zkvm: str, profile: str
     worse = 0
     for program in get_programs():
         try:
-            baseline_mean = get_mean_ms(dir, program, zkvm, BASELINE, measurement)
-            current_mean = get_mean_ms(dir, program, zkvm, profile, measurement)
+            baseline_mean = get_point_estimate_ms(
+                dir, program, zkvm, BASELINE, measurement
+            )
+            current_mean = get_point_estimate_ms(
+                dir, program, zkvm, profile, measurement
+            )
             if current_mean > baseline_mean:
                 better += 1
             elif current_mean < baseline_mean:
