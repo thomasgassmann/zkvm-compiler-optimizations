@@ -1,10 +1,10 @@
 from zkbench.config import get_profiles_ids
 from zkbench.plot.common import (
     BASELINE,
-    get_average_across,
     get_mean_ms,
     get_title,
-    plot_sorted,
+    get_values_by_profile,
+    plot_grouped_boxplot,
 )
 
 
@@ -15,21 +15,23 @@ def f(dir, program, zkvm, profile, measurement):
 
 
 def plot_average_improvement(dir: str, zkvm: str | None, program: str | None):
-    title = get_title("Average improvement by profile", [zkvm, program])
+    title = get_title(
+        "Average improvement by profile compared to baseline", [zkvm, program]
+    )
 
     profiles = get_profiles_ids()
     profiles.remove(BASELINE)
-    relative_improvements_prove = get_average_across(
+    relative_improvements_prove = get_values_by_profile(
         dir, zkvm, "prove", program, profiles, f
     )
-    relative_improvements_exec = get_average_across(
+    relative_improvements_exec = get_values_by_profile(
         dir, zkvm, "exec", program, profiles, f
     )
 
-    plot_sorted(
+    plot_grouped_boxplot(
         [relative_improvements_prove, relative_improvements_exec],
         profiles,
         title,
-        "improvement/degradation compared to baseline",
+        "relative duration improvement percentage",
         ["prove", "exec"],
     )
