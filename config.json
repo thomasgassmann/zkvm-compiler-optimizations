@@ -267,10 +267,12 @@
             "c",
             "zkvm-mnist",
             "sha3-bench",
-            "sha3-chain"
+            "sha3-chain",
+            "rsp"
         ],
         "specific": [
-            "keccak256"
+            "keccak256",
+            "rsp"
         ]
     }
 }
