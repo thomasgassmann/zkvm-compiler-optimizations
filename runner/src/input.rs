@@ -1,4 +1,7 @@
+use std::path::PathBuf;
+
 use ndarray::Array2;
+use rsp_client_executor::io::ClientExecutorInput;
 use sp1_sdk::SP1Stdin;
 
 use crate::types::ProgramId;
@@ -56,6 +59,13 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     (train, test)
 }
 
+pub fn load_rsp_input() -> Vec<u8> {
+    let cache_path = PathBuf::from("./inputs/rsp/20526624.bin");
+    let mut cache_file = std::fs::File::open(cache_path).unwrap();
+    let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
+    bincode::serialize(&client_input).unwrap()
+}
+
 // TODO: merge with risc0 input below
 pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
     let mut stdin = SP1Stdin::new();
@@ -97,6 +107,9 @@ pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
             stdin.write(&String::from(
                 "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
             ));
+        }
+        ProgramId::Rsp => {
+            stdin.write_vec(load_rsp_input());
         }
         _ => {}
     }
@@ -143,6 +156,11 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
             let _ = builder.write(&String::from(
                 "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
             ));
+        }
+        ProgramId::Rsp => {
+            // TODO: use write_slice
+            let input = load_rsp_input();
+            let _ = builder.write(&input);
         }
         _ => {}
     }

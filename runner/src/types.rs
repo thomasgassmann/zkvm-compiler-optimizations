@@ -24,6 +24,7 @@ pub enum ProgramId {
     Sha3Chain,
     C,
     RegexMatch,
+    Rsp,
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -81,6 +82,7 @@ impl Display for ProgramId {
             ProgramId::Sha3Chain => write!(f, "sha3-chain"),
             ProgramId::C => write!(f, "c"),
             ProgramId::RegexMatch => write!(f, "regex-match"),
+            ProgramId::Rsp => write!(f, "rsp"),
         }
     }
 }

@@ -128,12 +128,8 @@ fn run_criterion(args: CriterionArgs) {
 fn run_runner(run_args: RunArgs) {
     let elf: Vec<u8> = fs::read(run_args.elf).unwrap();
     let res = match run_args.zkvm {
-        ProverId::Risc0 => {
-            runner::report_risc0::Risc0Evaluator::eval(&elf, &run_args.program)
-        }
-        ProverId::SP1 => {
-            runner::report_sp1::SP1Evaluator::eval(&elf, &run_args.program)
-        }
+        ProverId::Risc0 => runner::report_risc0::Risc0Evaluator::eval(&elf, &run_args.program),
+        ProverId::SP1 => runner::report_sp1::SP1Evaluator::eval(&elf, &run_args.program),
     };
     println!("{:?}", res);
 }
