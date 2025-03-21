@@ -1,9 +1,11 @@
+import numpy as np
 from zkbench.config import get_profiles_ids
 from zkbench.plot.common import (
     get_point_estimate_mean_ms,
     get_title,
     get_values_by_profile,
     plot_grouped_boxplot,
+    plot_sorted,
 )
 
 
@@ -24,4 +26,8 @@ def plot_average_duration(
             dir, program, zkvm, profile, measurement
         ),
     )
-    plot_grouped_boxplot([values], profiles, title, "Duration (ms)", [])
+    if not program or not zkvm:
+        plot_grouped_boxplot([values], profiles, title, "Duration (ms)", [])
+    else:
+        values = np.squeeze(values, axis=1)
+        plot_sorted([values], profiles, title, "Duration (ms)", [None])

@@ -1,3 +1,4 @@
+import numpy as np
 from zkbench.config import get_profiles_ids
 from zkbench.plot.common import (
     BASELINE,
@@ -5,6 +6,7 @@ from zkbench.plot.common import (
     get_title,
     get_values_by_profile,
     plot_grouped_boxplot,
+    plot_sorted,
 )
 
 
@@ -28,10 +30,24 @@ def plot_average_improvement(dir: str, zkvm: str | None, program: str | None):
         dir, zkvm, "exec", program, profiles, f
     )
 
-    plot_grouped_boxplot(
-        [relative_improvements_prove, relative_improvements_exec],
-        profiles,
-        title,
-        "relative duration improvement percentage",
-        ["prove", "exec"],
-    )
+    if not zkvm or not program:
+        plot_grouped_boxplot(
+            [relative_improvements_prove, relative_improvements_exec],
+            profiles,
+            title,
+            "relative duration improvement percentage",
+            ["prove", "exec"],
+        )
+    else:
+        prove_values = np.squeeze(relative_improvements_prove, axis=1)
+        exec_values = np.squeeze(relative_improvements_exec, axis=1)
+        plot_sorted(
+            [
+                prove_values,
+                exec_values,
+            ],
+            profiles,
+            title,
+            "relative duration improvement percentage",
+            ["prove", "exec"],
+        )
