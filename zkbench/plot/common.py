@@ -110,6 +110,47 @@ def plot_scatter_by_zkvm(
     plt.show()
 
 
+def plot_sorted(values, labels, title, y_label, series_labels):
+    sorted_indices = np.argsort(values[0])[::-1]
+    profiles_sorted = [labels[i] for i in sorted_indices]
+    increase_values_sorted = [
+        [values[j][i] for i in sorted_indices] for j in range(len(values))
+    ]
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    x_pos = np.arange(len(profiles_sorted))
+
+    bar_width = 0.8 / len(values)
+
+    for i in range(len(values)):
+        ax.bar(
+            x_pos + i * bar_width - (0.8 - bar_width) / 2,
+            increase_values_sorted[i],
+            width=bar_width,
+            label=series_labels[i],
+        )
+
+    for x in x_pos:
+        ax.axvline(
+            x + bar_width / 2 - (0.8 - bar_width) / 2,
+            color="gray",
+            linestyle="--",
+            alpha=0.2,
+        )
+
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(profiles_sorted, rotation=45, ha="right")
+    ax.set_ylabel(y_label)
+    ax.set_title(title)
+    if any(map(lambda x: x is not None, series_labels)):
+        ax.legend()
+
+    ax.grid(axis="y", linestyle="--", alpha=0.7)
+
+    plt.tight_layout()
+    plt.show()
+
+
 def get_values_by_profile(
     dir: str,
     zkvm: str | None,

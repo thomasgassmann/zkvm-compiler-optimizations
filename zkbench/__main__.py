@@ -6,6 +6,7 @@ from zkbench.config import get_measurements, get_profiles_ids, get_programs, get
 from zkbench.plot.plot import (
     average_duration_cli,
     average_improvement_cli,
+    cycle_count_abs_cli,
     cycle_count_cli,
     cycle_count_duration_cli,
     prove_exec_cli,
@@ -131,6 +132,7 @@ plot_cli.add_command(average_duration_cli)
 plot_cli.add_command(cycle_count_cli)
 plot_cli.add_command(cycle_count_duration_cli)
 plot_cli.add_command(prove_exec_cli)
+plot_cli.add_command(cycle_count_abs_cli)
 
 if __name__ == '__main__':
     zkbench_cli()
