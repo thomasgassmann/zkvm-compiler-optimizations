@@ -43,6 +43,11 @@ pub enum ProgramId {
     #[serde(rename = "polybench-fdtd-2d")]
     #[clap(name = "polybench-fdtd-2d")]
     PolybenchFdtd2d,
+    PolybenchFloydWarshall,
+    PolybenchGemm,
+    PolybenchGemver,
+    PolybenchGesummv,
+    PolybenchGramschmidt
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -113,6 +118,11 @@ impl Display for ProgramId {
             ProgramId::PolybenchDoitgen => write!(f, "polybench-doitgen"),
             ProgramId::PolybenchDurbin => write!(f, "polybench-durbin"),
             ProgramId::PolybenchFdtd2d => write!(f, "polybench-fdtd-2d"),
+            ProgramId::PolybenchFloydWarshall => write!(f, "polybench-floyd-warshall"),
+            ProgramId::PolybenchGemm => write!(f, "polybench-gemm"),
+            ProgramId::PolybenchGemver => write!(f, "polybench-gemver"),
+            ProgramId::PolybenchGesummv => write!(f, "polybench-gesummv"),
+            ProgramId::PolybenchGramschmidt => write!(f, "polybench-gramschmidt"),
         }
     }
 }
