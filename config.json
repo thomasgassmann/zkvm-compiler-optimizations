@@ -265,10 +265,10 @@
             "sha2-chain",
             "regex-match",
             "c",
-            "zkvm-mnist",
             "sha3-bench",
             "sha3-chain",
-            "rsp"
+            "rsp",
+            "zkvm-mnist"
         ],
         "specific": [
             "keccak256",
