@@ -17,7 +17,7 @@ pub extern "C" fn printsomething(a: i32) -> () {
     println!("Hello from Rust! {}", a);
 }
 
-#[link(name = "c", kind = "static")]
+#[link(name = "c-sample", kind = "static")]
 extern "C" {
     fn cmain() -> ();
 }
