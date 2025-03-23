@@ -736,17 +736,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3b3cff922bd51709b605d9ead9aa71031d81447142d828eb4a6eba76fe619f9b"
 
 [[package]]
-name = "polybench-covariance"
+name = "polybench-rs"
+version = "0.2.0"
+
+[[package]]
+name = "polybench-trmm"
 version = "0.1.0"
 dependencies = [
  "polybench-rs",
  "risc0-zkvm",
  "sp1-zkvm",
 ]
-
-[[package]]
-name = "polybench-rs"
-version = "0.2.0"
 
 [[package]]
 name = "ppv-lite86"

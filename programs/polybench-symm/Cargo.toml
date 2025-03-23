@@ -1,6 +1,6 @@
 [workspace]
 [package]
-name = "polybench-deriche"
+name = "polybench-symm"
 version = "0.1.0"
 edition = "2021"
 
