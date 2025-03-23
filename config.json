@@ -284,6 +284,11 @@
             "polybench-gemver",
             "polybench-gesummv",
             "polybench-gramschmidt",
+            "polybench-heat-3d",
+            "polybench-jacobi-1d",
+            "polybench-jacobi-2d",
+            "polybench-lu",
+            "polybench-ludcmp",
             "rsp",
             "zkvm-mnist"
         ],
