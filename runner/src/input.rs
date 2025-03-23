@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use ndarray::Array2;
 use rsp_client_executor::io::ClientExecutorInput;
+use serde::Serialize;
 use sp1_sdk::SP1Stdin;
 
 use crate::types::ProgramId;
@@ -66,101 +67,91 @@ pub fn load_rsp_input() -> Vec<u8> {
     bincode::serialize(&client_input).unwrap()
 }
 
-// TODO: merge with risc0 input below
-pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
-    let mut stdin = SP1Stdin::new();
-    match program {
-        ProgramId::Factorial => {
-            stdin.write::<u32>(&10);
-        }
-        ProgramId::Keccak256 => {
-            stdin.write(&vec![0u8; 64]);
-        }
-        ProgramId::ZkvmMnist => {
-            let (train, test) = load_mnist();
-            stdin.write(&train);
-            stdin.write(&test);
-        }
-        ProgramId::Bigmem => {
-            stdin.write::<u32>(&42);
-        }
-        ProgramId::Fibonacci => {
-            stdin.write::<u32>(&1000);
-        }
-        ProgramId::Sha2Bench => {
-            stdin.write(&vec![5u8; 64]);
-        }
-        ProgramId::Sha3Bench => {
-            stdin.write(&vec![5u8; 64]);
-        }
-        ProgramId::Sha2Chain => {
-            stdin.write(&vec![5u8; 32]);
-            stdin.write(&32u32);
-        }
-        ProgramId::Sha3Chain => {
-            stdin.write(&vec![5u8; 32]);
-            stdin.write(&32u32);
-        }
-        ProgramId::RegexMatch => {
-            // sample from https://docs.rs/regex/latest/regex/
-            stdin.write(&String::from("[0-9]{4}-[0-9]{2}-[0-9]{2}"));
-            stdin.write(&String::from(
-                "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
-            ));
-        }
-        ProgramId::Rsp => {
-            stdin.write_vec(load_rsp_input());
-        }
-        _ => {}
+pub trait ProgramInputWriter {
+    fn write_string(&mut self, s: &str);
+    fn write_generic<T: Serialize>(&mut self, value: &T);
+    fn write_vec(&mut self, input: Vec<u8>);
+}
+
+impl ProgramInputWriter for SP1Stdin {
+    fn write_string(&mut self, s: &str) {
+        self.write(&String::from(s));
     }
 
+    fn write_generic<T: Serialize>(&mut self, value: &T) {
+        self.write(value);
+    }
+
+    fn write_vec(&mut self, input: Vec<u8>) {
+        self.write_vec(input);
+    }
+}
+
+impl<'a> ProgramInputWriter for risc0_zkvm::ExecutorEnvBuilder<'a> {
+
+    fn write_string(&mut self, s: &str) {
+        let _ = self.write(&String::from(s));
+    }
+    
+    fn write_generic<T: Serialize>(&mut self, value: &T) {
+        let _ = self.write(value);
+    }
+    
+    fn write_vec(&mut self, input: Vec<u8>) {
+        let _ = self.write(&input);
+    }
+}
+
+pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
+    let mut stdin = SP1Stdin::new();
+    write_program_inputs(program, &mut stdin);
     stdin
 }
 
 pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEnvBuilder<'_>) {
+    write_program_inputs(program, builder);
+}
+
+fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut W) {
     match program {
         ProgramId::Factorial => {
-            let _ = builder.write::<u32>(&10);
+            stdin.write_generic(&10);
         }
         ProgramId::Keccak256 => {
-            let _ = builder.write(&vec![0u8; 64]);
+            stdin.write_generic(&vec![0u8; 64]);
         }
         ProgramId::ZkvmMnist => {
             let (train, test) = load_mnist();
-            let _ = builder.write(&train);
-            let _ = builder.write(&test);
+            stdin.write_generic(&train);
+            stdin.write_generic(&test);
         }
         ProgramId::Bigmem => {
-            let _ = builder.write::<u32>(&42);
+            stdin.write_generic(&42);
         }
         ProgramId::Fibonacci => {
-            let _ = builder.write::<u32>(&1000);
+            stdin.write_generic(&1000);
         }
         ProgramId::Sha2Bench => {
-            let _ = builder.write(&vec![5u8; 64]);
+            stdin.write_generic(&vec![5u8; 64]);
         }
         ProgramId::Sha3Bench => {
-            let _ = builder.write(&vec![5u8; 64]);
+            stdin.write_generic(&vec![5u8; 64]);
         }
         ProgramId::Sha2Chain => {
-            let _ = builder.write(&vec![5u8; 32]);
-            let _ = builder.write::<u32>(&32u32);
+            stdin.write_generic(&vec![5u8; 32]);
+            stdin.write_generic(&32);
         }
         ProgramId::Sha3Chain => {
-            let _ = builder.write(&vec![5u8; 32]);
-            let _ = builder.write::<u32>(&32u32);
+            stdin.write_generic(&vec![5u8; 32]);
+            stdin.write_generic(&32);
         }
         ProgramId::RegexMatch => {
             // sample from https://docs.rs/regex/latest/regex/
-            let _ = builder.write(&String::from("[0-9]{4}-[0-9]{2}-[0-9]{2}"));
-            let _ = builder.write(&String::from(
-                "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
-            ));
+            stdin.write_string("[0-9]{4}-[0-9]{2}-[0-9]{2}");
+            stdin.write_string("What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?");
         }
         ProgramId::Rsp => {
-            // TODO: use write_slice
-            let input = load_rsp_input();
-            let _ = builder.write(&input);
+            stdin.write_vec(load_rsp_input());
         }
         _ => {}
     }
