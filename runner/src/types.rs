@@ -27,7 +27,10 @@ pub enum ProgramId {
     Rsp,
     #[serde(rename = "polybench-2mm")]
     #[clap(name = "polybench-2mm")]
-    Polybench2mm
+    Polybench2mm,
+    #[serde(rename = "polybench-3mm")]
+    #[clap(name = "polybench-3mm")]
+    Polybench3mm
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -87,6 +90,7 @@ impl Display for ProgramId {
             ProgramId::RegexMatch => write!(f, "regex-match"),
             ProgramId::Rsp => write!(f, "rsp"),
             ProgramId::Polybench2mm => write!(f, "polybench-2mm"),
+            ProgramId::Polybench3mm => write!(f, "polybench-3mm"),
         }
     }
 }
