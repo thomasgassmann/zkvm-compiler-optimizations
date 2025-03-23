@@ -22,7 +22,7 @@ pub enum ProgramId {
     Sha2Chain,
     Sha3Bench,
     Sha3Chain,
-    C,
+    CSample,
     RegexMatch,
     Rsp,
 }
@@ -80,7 +80,7 @@ impl Display for ProgramId {
             ProgramId::Sha2Chain => write!(f, "sha2-chain"),
             ProgramId::Sha3Bench => write!(f, "sha3-bench"),
             ProgramId::Sha3Chain => write!(f, "sha3-chain"),
-            ProgramId::C => write!(f, "c"),
+            ProgramId::CSample => write!(f, "c-sample"),
             ProgramId::RegexMatch => write!(f, "regex-match"),
             ProgramId::Rsp => write!(f, "rsp"),
         }

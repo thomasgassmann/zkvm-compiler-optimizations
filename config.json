@@ -264,7 +264,7 @@
             "sha2-bench",
             "sha2-chain",
             "regex-match",
-            "c",
+            "c-sample",
             "sha3-bench",
             "sha3-chain",
             "rsp",
