@@ -1,12 +1,12 @@
 {
     "profiles": {
         "baseline": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [],
             "prepopulate_passes": false
         },
         "all": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "sccp",
                 "gvn",
@@ -36,175 +36,175 @@
             "prepopulate_passes": false
         },
         "sccp": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "sccp"
             ],
             "prepopulate_passes": false
         },
         "gvn": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "gvn"
             ],
             "prepopulate_passes": false
         },
         "tailcall": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "tailcallelim"
             ],
             "prepopulate_passes": false
         },
         "adce": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "adce"
             ],
             "prepopulate_passes": false
         },
         "dse": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "dse"
             ],
             "prepopulate_passes": false
         },
         "indvars": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "indvars"
             ],
             "prepopulate_passes": false
         },
         "instcombine": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "aggressive-instcombine"
             ],
             "prepopulate_passes": false
         },
         "jump-threading": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "jump-threading"
             ],
             "prepopulate_passes": false
         },
         "lcssa": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "lcssa"
             ],
             "prepopulate_passes": false
         },
         "loop-reduce": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-reduce"
             ],
             "prepopulate_passes": false
         },
         "loop-rotate": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-rotate"
             ],
             "prepopulate_passes": false
         },
         "loop-simplify": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-simplify"
             ],
             "prepopulate_passes": false
         },
         "loop-unroll": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-unroll"
             ],
             "prepopulate_passes": false
         },
         "loop-unroll-and-jam": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-unroll-and-jam"
             ],
             "prepopulate_passes": false
         },
         "loop-unroll-full": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-unroll-full"
             ],
             "prepopulate_passes": false
         },
         "licm": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-mssa(licm)"
             ],
             "prepopulate_passes": false
         },
         "loop-deletion": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "loop-deletion"
             ],
             "prepopulate_passes": false
         },
         "memcpyopt": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "memcpyopt"
             ],
             "prepopulate_passes": false
         },
         "simplifycfg": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "simplifycfg"
             ],
             "prepopulate_passes": false
         },
         "reassociate": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "reassociate"
             ],
             "prepopulate_passes": false
         },
         "mem2reg": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "mem2reg"
             ],
             "prepopulate_passes": false
         },
         "reg2mem": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "reg2mem"
             ],
             "prepopulate_passes": false
         },
         "simple-loop-unswitch": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "simple-loop-unswitch"
             ],
             "prepopulate_passes": false
         },
         "mergereturn": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
                 "mergereturn"
             ],
             "prepopulate_passes": false
         },
         "o0": {
-            "rustflags": "-C opt-level=0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [],
             "prepopulate_passes": true
         },
@@ -230,16 +230,6 @@
         },
         "oz": {
             "rustflags": "-C opt-level=z",
-            "passes": [],
-            "prepopulate_passes": true
-        },
-        "loop-unroll-threshold-0": {
-            "rustflags": "-C opt-level=0 -C llvm-args=-unroll-threshold=0",
-            "passes": [],
-            "prepopulate_passes": true
-        },
-        "loop-unroll-threshold-100": {
-            "rustflags": "-C opt-level=0 -C llvm-args=-unroll-threshold=100",
             "passes": [],
             "prepopulate_passes": true
         }
