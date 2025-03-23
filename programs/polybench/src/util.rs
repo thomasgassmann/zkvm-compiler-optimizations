@@ -12,13 +12,3 @@ pub fn consume<T: fmt::Display>(dummy: T) -> T {
         ret
     }
 }
-
-fn flush_llc_cache() {
-    const LLC_CACHE_SIZE: usize = 32 * 1024 * 1024; // 32 MiB
-    const NUM_ELEMS: usize = (LLC_CACHE_SIZE - 1) / std::mem::size_of::<usize>() + 1;
-
-    let mut buf: Vec<usize> = Vec::with_capacity(NUM_ELEMS);
-    buf.resize(NUM_ELEMS, Default::default());
-    let sum: usize = buf.iter().sum();
-    consume(sum);
-}

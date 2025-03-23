@@ -35,7 +35,14 @@ pub enum ProgramId {
     PolybenchAtax,
     PolybenchBicg,
     PolybenchCholesky,
-    PolybenchCorrelation
+    PolybenchCorrelation,
+    PolybenchCovariance,
+    PolybenchDeriche,
+    PolybenchDoitgen,
+    PolybenchDurbin,
+    #[serde(rename = "polybench-fdtd-2d")]
+    #[clap(name = "polybench-fdtd-2d")]
+    PolybenchFdtd2d,
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -101,6 +108,11 @@ impl Display for ProgramId {
             ProgramId::PolybenchBicg => write!(f, "polybench-bicg"),
             ProgramId::PolybenchCholesky => write!(f, "polybench-cholesky"),
             ProgramId::PolybenchCorrelation => write!(f, "polybench-correlation"),
+            ProgramId::PolybenchCovariance => write!(f, "polybench-covariance"),
+            ProgramId::PolybenchDeriche => write!(f, "polybench-deriche"),
+            ProgramId::PolybenchDoitgen => write!(f, "polybench-doitgen"),
+            ProgramId::PolybenchDurbin => write!(f, "polybench-durbin"),
+            ProgramId::PolybenchFdtd2d => write!(f, "polybench-fdtd-2d"),
         }
     }
 }

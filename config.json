@@ -274,6 +274,11 @@
             "polybench-bicg",
             "polybench-cholesky",
             "polybench-correlation",
+            "polybench-covariance",
+            "polybench-deriche",
+            "polybench-doitgen",
+            "polybench-durbin",
+            "polybench-fdtd-2d",
             "rsp",
             "zkvm-mnist"
         ],
