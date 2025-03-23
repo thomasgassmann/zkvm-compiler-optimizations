@@ -269,6 +269,11 @@
             "sha3-chain",
             "polybench-2mm",
             "polybench-3mm",
+            "polybench-adi",
+            "polybench-atax",
+            "polybench-bicg",
+            "polybench-cholesky",
+            "polybench-correlation",
             "rsp",
             "zkvm-mnist"
         ],
