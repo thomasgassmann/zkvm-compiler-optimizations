@@ -267,6 +267,7 @@
             "c-sample",
             "sha3-bench",
             "sha3-chain",
+            "polybench-2mm",
             "rsp",
             "zkvm-mnist"
         ],
