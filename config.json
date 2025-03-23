@@ -279,6 +279,11 @@
             "polybench-doitgen",
             "polybench-durbin",
             "polybench-fdtd-2d",
+            "polybench-floyd-warshall",
+            "polybench-gemm",
+            "polybench-gemver",
+            "polybench-gesummv",
+            "polybench-gramschmidt",
             "rsp",
             "zkvm-mnist"
         ],
