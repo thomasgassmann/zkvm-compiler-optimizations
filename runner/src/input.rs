@@ -115,7 +115,7 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
 fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut W) {
     match program {
         ProgramId::Factorial => {
-            stdin.write_generic(&10);
+            stdin.write_generic(&10u32);
         }
         ProgramId::Keccak256 => {
             stdin.write_generic(&vec![0u8; 64]);
@@ -126,10 +126,10 @@ fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut 
             stdin.write_generic(&test);
         }
         ProgramId::Bigmem => {
-            stdin.write_generic(&42);
+            stdin.write_generic(&42u32);
         }
         ProgramId::Fibonacci => {
-            stdin.write_generic(&1000);
+            stdin.write_generic(&1000u32);
         }
         ProgramId::Sha2Bench => {
             stdin.write_generic(&vec![5u8; 64]);
@@ -139,11 +139,11 @@ fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut 
         }
         ProgramId::Sha2Chain => {
             stdin.write_generic(&vec![5u8; 32]);
-            stdin.write_generic(&32);
+            stdin.write_generic(&32u32);
         }
         ProgramId::Sha3Chain => {
             stdin.write_generic(&vec![5u8; 32]);
-            stdin.write_generic(&32);
+            stdin.write_generic(&32u32);
         }
         ProgramId::RegexMatch => {
             // sample from https://docs.rs/regex/latest/regex/
