@@ -44,9 +44,10 @@ def cycle_count_abs_cli(program: str, zkvm: str):
 @click.command(name="cycle-count-duration")
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
-def cycle_count_duration_cli(measurement: str, program: str | None):
+@click.option("--relative", is_flag=True, default=False)
+def cycle_count_duration_cli(measurement: str, program: str | None, relative: bool):
     dir = click.get_current_context().parent.params["dir"]
-    plot_cycle_count_duration(dir, measurement, program)
+    plot_cycle_count_duration(dir, measurement, program, relative)
 
 
 @click.command(name="prove-exec")

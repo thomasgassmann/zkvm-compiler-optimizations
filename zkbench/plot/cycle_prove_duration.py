@@ -10,7 +10,12 @@ from zkbench.plot.common import (
 
 
 def _get_values(
-    dir: str, zkvm: str, programs: list[str], profiles: list[str], measurement: str
+    dir: str,
+    zkvm: str,
+    programs: list[str],
+    profiles: list[str],
+    measurement: str,
+    relative: bool,
 ):
     x, y = [], []
     for program in programs:
@@ -24,22 +29,31 @@ def _get_values(
                 duration = get_point_estimate_mean_ms(
                     dir, program, zkvm, profile, measurement
                 )
-                x.append((cycle_count - baseline_cycle_count) / baseline_cycle_count)
-                y.append((duration - baseline_duration) / baseline_duration)
+                if relative:
+                    x.append(
+                        (cycle_count - baseline_cycle_count) / baseline_cycle_count
+                    )
+                    y.append((duration - baseline_duration) / baseline_duration)
+                else:
+                    x.append(cycle_count)
+                    y.append(duration)
         except FileNotFoundError:
             logging.warning(f"Data for {program}-{zkvm}-{measurement} not found")
     return x, y
 
 
-def plot_cycle_count_duration(dir: str, measurement: str, p: str | None):
+def plot_cycle_count_duration(
+    dir: str, measurement: str, p: str | None, relative: bool
+):
     profiles = get_profiles_ids()
-    profiles.remove(BASELINE)
+    if relative:
+        profiles.remove(BASELINE)
     programs = get_programs() if p is None else [p]
     plot_scatter_by_zkvm(
         get_title(
             "Relative cycle count vs duration compared to baseline", [measurement, p]
         ),
-        lambda zkvm: _get_values(dir, zkvm, programs, profiles, measurement),
+        lambda zkvm: _get_values(dir, zkvm, programs, profiles, measurement, relative),
         "Relative cycle count compared to baseline",
         "Relative duration compared to baseline",
     )
