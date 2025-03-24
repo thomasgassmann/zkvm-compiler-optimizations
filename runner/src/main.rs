@@ -1,13 +1,18 @@
 mod bench;
+mod types;
+mod utils;
+mod fitness;
+mod input;
+mod report_risc0;
+mod report_sp1;
 
 use bench::bench_utils::add_benchmarks_for;
 use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
 use criterion::{profiler::Profiler, Criterion};
-use runner::{
-    types::{Config, MeasurementType, ProgramId, ProverId},
-    utils::read_config_json,
-};
+use types::{Config, MeasurementType, ProgramId, ProverId};
+use utils::read_config_json;
+use fitness::eval_fitness;
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -18,6 +23,7 @@ use std::{
 pub enum EvalSubcommand {
     Criterion(CriterionArgs),
     Run(RunArgs),
+    Fitness(FitnessArgs)
 }
 
 #[derive(Parser, Clone)]
@@ -43,6 +49,16 @@ pub struct CriterionArgs {
 
 #[derive(Parser, Clone)]
 pub struct RunArgs {
+    #[arg(long)]
+    program: ProgramId,
+    #[arg(long)]
+    zkvm: ProverId,
+    #[arg(long)]
+    elf: String,
+}
+
+#[derive(Parser, Clone)]
+pub struct FitnessArgs {
     #[arg(long)]
     program: ProgramId,
     #[arg(long)]
@@ -131,10 +147,15 @@ fn run_criterion(args: CriterionArgs) {
 fn run_runner(run_args: RunArgs) {
     let elf: Vec<u8> = fs::read(run_args.elf).unwrap();
     let res = match run_args.zkvm {
-        ProverId::Risc0 => runner::report_risc0::Risc0Evaluator::eval(&elf, &run_args.program),
-        ProverId::SP1 => runner::report_sp1::SP1Evaluator::eval(&elf, &run_args.program),
+        ProverId::Risc0 => report_risc0::Risc0Evaluator::eval(&elf, &run_args.program),
+        ProverId::SP1 => report_sp1::SP1Evaluator::eval(&elf, &run_args.program),
     };
     println!("{:?}", res);
+}
+
+fn run_fitness(fitness_args: FitnessArgs) {
+    let elf: Vec<u8> = fs::read(fitness_args.elf).unwrap();
+    eval_fitness(&elf, &fitness_args.program, &fitness_args.zkvm);
 }
 
 fn main() {
@@ -144,5 +165,6 @@ fn main() {
     match args.command {
         EvalSubcommand::Criterion(criterion_args) => run_criterion(criterion_args),
         EvalSubcommand::Run(run_args) => run_runner(run_args),
+        EvalSubcommand::Fitness(fitness_args) => run_fitness(fitness_args),
     }
 }

@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use runner::types::{ProgramId, ProverId};
+use super::super::types::{ProgramId, ProverId};
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]

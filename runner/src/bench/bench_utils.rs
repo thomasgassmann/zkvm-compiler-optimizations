@@ -1,13 +1,12 @@
-use crate::bench::risc0_utils::{
+use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
 use crate::bench::sp1_utils::{exec_sp1, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare};
 use crate::bench::utils::write_elf_stats;
 use criterion::measurement::WallTime;
 use criterion::BenchmarkId;
-use runner::types::MeasurementType;
-use runner::{
-    types::{ProgramId, ProverId},
+use super::super::{
+    types::{ProgramId, ProverId, MeasurementType},
     utils::read_elf,
 };
 

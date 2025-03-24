@@ -1,10 +1,10 @@
-use runner::{input::get_sp1_stdin, types::ProgramId};
-use sp1_core_executor::{Program, SP1ReduceProof};
+use super::super::{input::get_sp1_stdin, types::ProgramId};
+use sp1_core_executor::{IoWriter, Program, SP1ReduceProof};
 use sp1_prover::{
-    components::CpuProverComponents, utils::get_cycles, SP1CoreProofData, SP1ProofWithMetadata,
+    components::CpuProverComponents, SP1CoreProofData, SP1ProofWithMetadata,
 };
-use sp1_sdk::{SP1Context, SP1Prover, SP1Stdin, SP1VerifyingKey};
-use sp1_stark::{baby_bear_poseidon2::BabyBearPoseidon2, SP1ProverOpts, StarkProvingKey};
+use sp1_sdk::{Executor, SP1Context, SP1Prover, SP1Stdin, SP1VerifyingKey};
+use sp1_stark::{baby_bear_poseidon2::BabyBearPoseidon2, SP1CoreOpts, SP1ProverOpts, StarkProvingKey};
 
 use super::utils::ElfStats;
 
@@ -20,6 +20,17 @@ pub fn exec_sp1_prepare(
     (stdin, prover)
 }
 
+fn get_cycles(elf: &[u8], stdin: &SP1Stdin) -> u64 {
+    let mut sink = SP1StdoutSink;
+    let writer: Option<&'_ mut dyn IoWriter> = Some(&mut sink);
+    let program = Program::from(elf).unwrap();
+    let mut runtime = Executor::new(program, SP1CoreOpts::default());
+    runtime.write_vecs(&stdin.buffer);
+    runtime.io_options.stdout = writer;
+    runtime.run_fast().unwrap();
+    runtime.state.global_clk
+}
+
 pub fn get_sp1_stats(elf: &[u8], program: &ProgramId) -> ElfStats {
     let (stdin, _) = exec_sp1_prepare(elf, program);
     ElfStats {
@@ -27,9 +38,24 @@ pub fn get_sp1_stats(elf: &[u8], program: &ProgramId) -> ElfStats {
     }
 }
 
+struct SP1StdoutSink;
+
+impl std::io::Write for SP1StdoutSink {
+    fn write(&mut self, _buf: &[u8]) -> std::io::Result<usize> {
+        Ok(_buf.len())
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+}
+
 pub fn exec_sp1(stdin: &SP1Stdin, prover: &SP1Prover<CpuProverComponents>, elf: &[u8]) {
-    // TODO: redirect stdout once https://github.com/succinctlabs/sp1/pull/2143 is released
-    prover.execute(&elf, stdin, SP1Context::default()).unwrap();
+    let mut s = SP1StdoutSink;
+    let context = SP1Context::builder()
+        .stdout(&mut s)
+        .build();
+    prover.execute(&elf, stdin, context).unwrap();
 }
 
 pub fn prove_core_sp1_prepare(
