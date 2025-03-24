@@ -121,6 +121,7 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
     if ret != 0:
+        logging.error(f"{program}-{zkvm}-{profile_name}: Build failed with code {ret}")
         raise ValueError(f"Error: Build failed with code {ret}")
 
     shutil.copyfile(source, target)
