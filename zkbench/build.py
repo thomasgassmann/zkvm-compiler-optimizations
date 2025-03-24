@@ -5,9 +5,10 @@ import shutil
 
 from zkbench.common import get_run_config
 from zkbench.config import (
-    get_binary_path,
+    get_source_binary_path,
     get_profile_by_name,
     get_program_path,
+    get_target_binary_path,
 )
 
 
@@ -36,7 +37,7 @@ async def run_build(
                 if not os.path.isdir(program_dir):
                     raise ValueError(f"Error: Program directory {program_dir} does not exist")
 
-                target = get_binary_path(program, zkvm, profile_name)
+                target = get_target_binary_path(program, zkvm, profile_name)
                 if os.path.isfile(target) and not force:
                     logging.info(f"Skipping build as target already exists")
                     continue
@@ -69,8 +70,9 @@ async def run_build(
 
 
 async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
-    source = get_binary_path(program, zkvm, None)
-    target = get_binary_path(program, zkvm, profile_name)
+    source = get_source_binary_path(program, zkvm)
+    target = get_target_binary_path(program, zkvm, profile_name)
+    os.makedirs(os.path.dirname(target), exist_ok=True)
     name = "{}-{}-{}".format(program, zkvm, profile_name)
 
     profile = get_profile_by_name(profile_name)
