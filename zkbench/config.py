@@ -50,7 +50,8 @@ def get_program_dir_name(program_id: str, zkvm: str) -> str:
 def get_program_path(program_id: str, zkvm: str) -> str:
     return f"./programs/{get_program_dir_name(program_id, zkvm)}"
 
-def get_binary_path(program_id: str, zkvm: str, profile_name: str | None) -> str:
+
+def get_source_binary_path(program_id: str, zkvm: str) -> str:
     dir_name = get_program_dir_name(program_id, zkvm)
     if zkvm == "sp1":
         path = f"./programs/{dir_name}/target/riscv32im-succinct-zkvm-elf/release/{dir_name}"
@@ -58,6 +59,8 @@ def get_binary_path(program_id: str, zkvm: str, profile_name: str | None) -> str
         path = f"./programs/{dir_name}/target/riscv32im-risc0-zkvm-elf/release/{dir_name}"
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
-    if profile_name:
-        path += f"-{profile_name}"
     return path
+
+
+def get_target_binary_path(program_id: str, zkvm: str, profile: str):
+    return f"./bin/{program_id}/{zkvm}/{profile}"

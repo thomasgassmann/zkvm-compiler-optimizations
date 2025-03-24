@@ -28,38 +28,10 @@ pub fn read_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> Vec
 }
 
 pub fn get_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> String {
-    let mut program_dir = program.to_string();
-
-    let config = read_config_json();
-    if config.programs.specific.contains(program) {
-        program_dir.push('-');
-        program_dir.push_str(&prover.to_string());
-    }
-
     let current_dir = env::current_dir().expect("Failed to get current working directory");
-    let path = match prover {
-        ProverId::Risc0 => current_dir
-            .join(format!(
-                "programs/{}/target/riscv32im-risc0-zkvm-elf/release/{}",
-                program_dir, program_dir
-            ))
-            .to_str()
-            .expect("Failed to get path")
-            .to_string(),
-
-        ProverId::SP1 => current_dir
-            .join(format!(
-                "programs/{}/target/riscv32im-succinct-zkvm-elf/release/{}",
-                program_dir, program_dir
-            ))
-            .to_str()
-            .expect("Failed to get path")
-            .to_string(),
-    };
-
-    if profile != "" {
-        format!("{}-{}", path, profile)
-    } else {
-        path
-    }
+    current_dir
+        .join(format!("bin/{}/{}/{}", program, prover, profile))
+        .to_str()
+        .expect("Failed to get path")
+        .to_string()
 }
