@@ -68,7 +68,7 @@ pub enum ProgramId {
     PolybenchSyr2k,
     PolybenchSyrk,
     PolybenchTrisolv,
-    PolybenchTrmm
+    PolybenchTrmm,
 }
 
 /// An identifier used to select the prover to evaluate.

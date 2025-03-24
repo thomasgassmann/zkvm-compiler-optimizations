@@ -88,15 +88,14 @@ impl ProgramInputWriter for SP1Stdin {
 }
 
 impl<'a> ProgramInputWriter for risc0_zkvm::ExecutorEnvBuilder<'a> {
-
     fn write_string(&mut self, s: &str) {
         let _ = self.write(&String::from(s));
     }
-    
+
     fn write_generic<T: Serialize>(&mut self, value: &T) {
         let _ = self.write(value);
     }
-    
+
     fn write_vec(&mut self, input: Vec<u8>) {
         let _ = self.write(&input);
     }
@@ -148,7 +147,9 @@ fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut 
         ProgramId::RegexMatch => {
             // sample from https://docs.rs/regex/latest/regex/
             stdin.write_string("[0-9]{4}-[0-9]{2}-[0-9]{2}");
-            stdin.write_string("What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?");
+            stdin.write_string(
+                "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
+            );
         }
         ProgramId::Rsp => {
             stdin.write_vec(load_rsp_input());
