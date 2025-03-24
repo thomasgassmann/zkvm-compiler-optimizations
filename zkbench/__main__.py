@@ -55,7 +55,7 @@ def zkbench_cli(log_level: str):
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
 )
 @click.option("--force", required=False, is_flag=True, default=False)
-@click.option("-j", required=True, type=int)
+@click.option("-j", required=False, type=int)
 @click.option("--llvm", required=False, is_flag=True, default=False)
 @coro
 async def build_cli(
@@ -63,10 +63,10 @@ async def build_cli(
     zkvm: list[str],
     profile: list[str],
     force: bool,
-    j: int,
+    j: int | None,
     llvm: bool,
 ):
-    await run_build(program, zkvm, profile, force, j, llvm)
+    await run_build(program, zkvm, profile, force, j or 1, llvm)
 
 
 @click.command(name="clean")
