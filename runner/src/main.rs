@@ -1,10 +1,13 @@
 mod bench;
 
-use bench::bench_utils::{add_benchmarks_for, read_config_json};
+use bench::bench_utils::add_benchmarks_for;
 use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
 use criterion::{profiler::Profiler, Criterion};
-use runner::types::{Config, MeasurementType, ProgramId, ProverId};
+use runner::{
+    types::{Config, MeasurementType, ProgramId, ProverId},
+    utils::read_config_json,
+};
 use std::{
     fs,
     path::{Path, PathBuf},
