@@ -287,6 +287,7 @@
             "polybench-syrk",
             "polybench-trisolv",
             "polybench-trmm",
+            "merkle",
             "rsp",
             "zkvm-mnist"
         ],

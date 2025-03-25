@@ -24,3 +24,4 @@ sp1-core-machine = "4.1.4"
 sp1-prover = "4.1.4"
 sp1-sdk = { version = "4.1.4", features = ["profiling"] }
 sp1-stark = "4.1.4"
+rand = "0.9.0"

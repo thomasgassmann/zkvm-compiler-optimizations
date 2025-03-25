@@ -7,6 +7,7 @@ use sp1_sdk::SP1Stdin;
 
 use crate::types::ProgramId;
 use mnist::MnistBuilder;
+use rand::{distr::Alphanumeric, Rng};
 
 fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     let train_size: usize = 20;
@@ -153,6 +154,21 @@ fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut 
         }
         ProgramId::Rsp => {
             stdin.write_vec(load_rsp_input());
+        }
+        ProgramId::Merkle => {
+            let mut rng = rand::rng();
+            const MAX_STRINGS: u32 = 25;
+            let strings: Vec<String> = (0..MAX_STRINGS)
+                .map(|_| {
+                    (0..10) // Generate strings of length 10
+                        .map(|_| rng.sample(Alphanumeric) as char)
+                        .collect()
+                })
+                .collect();
+
+            stdin.write_generic(&strings);
+            let range: std::ops::Range<usize> = 10..13 as usize;
+            stdin.write_generic(&range);
         }
         _ => {}
     }

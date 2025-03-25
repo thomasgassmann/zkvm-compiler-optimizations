@@ -69,6 +69,7 @@ pub enum ProgramId {
     PolybenchSyrk,
     PolybenchTrisolv,
     PolybenchTrmm,
+    Merkle
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -157,6 +158,7 @@ impl Display for ProgramId {
             ProgramId::PolybenchSyrk => write!(f, "polybench-syrk"),
             ProgramId::PolybenchTrisolv => write!(f, "polybench-trisolv"),
             ProgramId::PolybenchTrmm => write!(f, "polybench-trmm"),
+            ProgramId::Merkle => write!(f, "merkle"),
         }
     }
 }
