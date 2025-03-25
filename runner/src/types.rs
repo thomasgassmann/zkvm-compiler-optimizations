@@ -69,7 +69,9 @@ pub enum ProgramId {
     PolybenchSyrk,
     PolybenchTrisolv,
     PolybenchTrmm,
-    Merkle
+    Merkle,
+    EcdsaVerify,
+    EddsaVerify
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -159,6 +161,8 @@ impl Display for ProgramId {
             ProgramId::PolybenchTrisolv => write!(f, "polybench-trisolv"),
             ProgramId::PolybenchTrmm => write!(f, "polybench-trmm"),
             ProgramId::Merkle => write!(f, "merkle"),
+            ProgramId::EcdsaVerify => write!(f, "ecdsa-verify"),
+            ProgramId::EddsaVerify => write!(f, "eddsa-verify"),
         }
     }
 }

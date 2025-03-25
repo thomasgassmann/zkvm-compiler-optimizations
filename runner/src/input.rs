@@ -5,9 +5,11 @@ use rsp_client_executor::io::ClientExecutorInput;
 use serde::Serialize;
 use sp1_sdk::SP1Stdin;
 
-use crate::types::ProgramId;
+use k256::ecdsa::signature::SignerMut;
+
+use crate::types::{ProgramId, ProverId};
 use mnist::MnistBuilder;
-use rand::{distr::Alphanumeric, Rng};
+use rand::{distributions::Alphanumeric, Rng};
 
 fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     let train_size: usize = 20;
@@ -68,6 +70,30 @@ pub fn load_rsp_input() -> Vec<u8> {
     bincode::serialize(&client_input).unwrap()
 }
 
+pub fn rand_ecdsa_signature() -> (k256::EncodedPoint, Vec<u8>, k256::ecdsa::Signature) {
+    use rand::rngs::OsRng;
+    use k256::ecdsa::{SigningKey, VerifyingKey};
+
+    let mut signing_key = SigningKey::random(&mut OsRng);
+    let verifying_key = VerifyingKey::from(&signing_key);
+
+    let message = b"Hello, world!";
+    let signature = signing_key.sign(message);
+
+    (verifying_key.to_encoded_point(true), message.to_vec(), signature)
+}
+
+pub fn rand_eddsa_signature() -> (ed25519_dalek::VerifyingKey, Vec<u8>, ed25519_dalek::Signature) {
+    use rand::rngs::OsRng;
+    use ed25519_dalek::{SigningKey, Signer};
+
+    let signing_key = SigningKey::generate(&mut OsRng);
+    let message = b"Hello, world!";
+    let signature = signing_key.sign(message);
+
+    (signing_key.verifying_key(), message.to_vec(), signature)
+}
+
 pub trait ProgramInputWriter {
     fn write_string(&mut self, s: &str);
     fn write_generic<T: Serialize>(&mut self, value: &T);
@@ -104,15 +130,15 @@ impl<'a> ProgramInputWriter for risc0_zkvm::ExecutorEnvBuilder<'a> {
 
 pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
     let mut stdin = SP1Stdin::new();
-    write_program_inputs(program, &mut stdin);
+    write_program_inputs(program, &mut stdin, ProverId::SP1);
     stdin
 }
 
 pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEnvBuilder<'_>) {
-    write_program_inputs(program, builder);
+    write_program_inputs(program, builder, ProverId::Risc0);
 }
 
-fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut W) {
+fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut W, prover: ProverId) {
     match program {
         ProgramId::Factorial => {
             stdin.write_generic(&10u32);
@@ -156,7 +182,7 @@ fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut 
             stdin.write_vec(load_rsp_input());
         }
         ProgramId::Merkle => {
-            let mut rng = rand::rng();
+            let mut rng = rand::thread_rng();
             const MAX_STRINGS: u32 = 25;
             let strings: Vec<String> = (0..MAX_STRINGS)
                 .map(|_| {
@@ -169,6 +195,19 @@ fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut 
             stdin.write_generic(&strings);
             let range: std::ops::Range<usize> = 10..13 as usize;
             stdin.write_generic(&range);
+        }
+        ProgramId::EcdsaVerify => {
+            stdin.write_generic(&rand_ecdsa_signature());
+        }
+        ProgramId::EddsaVerify => {
+            let times: u8 = 100;
+            if prover == ProverId::Risc0 {
+                stdin.write_generic(&times);
+            }
+
+            for _ in 0..times {
+                stdin.write_generic(&rand_eddsa_signature());
+            }
         }
         _ => {}
     }

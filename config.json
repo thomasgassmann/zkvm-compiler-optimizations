@@ -288,12 +288,16 @@
             "polybench-trisolv",
             "polybench-trmm",
             "merkle",
+            "ecdsa-verify",
+            "eddsa-verify",
             "rsp",
             "zkvm-mnist"
         ],
         "specific": [
             "keccak256",
-            "rsp"
+            "rsp",
+            "ecdsa-verify",
+            "eddsa-verify"
         ]
     }
 }
