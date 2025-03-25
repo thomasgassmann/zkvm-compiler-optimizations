@@ -5,6 +5,7 @@ import shutil
 
 from zkbench.common import get_run_config
 from zkbench.config import (
+    Profile,
     get_source_binary_path,
     get_profile_by_name,
     get_program_path,
@@ -70,12 +71,19 @@ async def run_build(
 
 
 async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
-    source = get_source_binary_path(program, zkvm)
     target = get_target_binary_path(program, zkvm, profile_name)
     os.makedirs(os.path.dirname(target), exist_ok=True)
-    name = "{}-{}-{}".format(program, zkvm, profile_name)
 
     profile = get_profile_by_name(profile_name)
+    await build_program(program, zkvm, profile, llvm, target)
+
+
+async def build_program(
+    program: str, zkvm: str, profile: Profile, llvm: bool, target: str
+):
+    source = get_source_binary_path(program, zkvm)
+    profile_name = profile.profile_name
+    name = f"{program}-{zkvm}-{profile_name}"
     logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
 
     passes = ",".join(profile.passes)
@@ -84,7 +92,7 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
         "PASSES": passes,
     }
     passes_string = ",".join(
-        ["loweratomic" if zkvm == "risc0" else "lower-atomic"] + profile.passes
+        profile.passes + ["loweratomic" if zkvm == "risc0" else "lower-atomic"]
     )
     pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
     prepopulate_passes = (
@@ -92,7 +100,7 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
     )
     llvm_flag = "--emit=llvm-ir" if llvm else ""
     program_dir = get_program_path(program, zkvm)
-    # TODO: setting CC below uses gcc for dependencies with c code, ideally we should use clang
+    # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
     if zkvm == "sp1":
         ret = await _run_command(
@@ -101,7 +109,7 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RUSTUP_TOOLCHAIN=succinct \
                 CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
-                cargo build --verbose --release --locked --features sp1
+                cargo +succinct build --release --locked --features sp1
         """.strip(),
             program_dir,
             env,
@@ -113,8 +121,7 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
             CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RISC0_FEATURE_bigint2=1 \
-                cargo +risc0 build --verbose --release --locked \
-                    --target riscv32im-risc0-zkvm-elf --manifest-path Cargo.toml --features risc0
+                cargo +risc0 build --release --locked --features risc0
         """.strip(),
             program_dir,
             env,
