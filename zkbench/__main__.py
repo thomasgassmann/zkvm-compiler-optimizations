@@ -15,6 +15,7 @@ from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_single
+from zkbench.tune import run_tune
 
 def get_log_level(level_str: str) -> int:
     try:
@@ -67,6 +68,13 @@ async def build_cli(
     llvm: bool,
 ):
     await run_build(program, zkvm, profile, force, j or 1, llvm)
+
+
+@click.command(name="tune")
+@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
+def tune_cli(program: str, zkvm: str):
+    run_tune(program, zkvm)
 
 
 @click.command(name="clean")
@@ -126,6 +134,7 @@ zkbench_cli.add_command(clean_cli)
 zkbench_cli.add_command(bench_cli)
 zkbench_cli.add_command(run_single_cli)
 zkbench_cli.add_command(plot_cli)
+zkbench_cli.add_command(tune_cli)
 
 plot_cli.add_command(average_improvement_cli)
 plot_cli.add_command(average_duration_cli)

@@ -1,18 +1,16 @@
 mod bench;
 mod types;
 mod utils;
-mod fitness;
 mod input;
 mod report_risc0;
 mod report_sp1;
 
-use bench::bench_utils::add_benchmarks_for;
+use bench::{bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats};
 use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
 use criterion::{profiler::Profiler, Criterion};
 use types::{Config, MeasurementType, ProgramId, ProverId};
 use utils::read_config_json;
-use fitness::eval_fitness;
 use std::{
     fs,
     path::{Path, PathBuf},
@@ -23,7 +21,7 @@ use std::{
 pub enum EvalSubcommand {
     Criterion(CriterionArgs),
     Run(RunArgs),
-    Fitness(FitnessArgs)
+    Stats(StatsArgs)
 }
 
 #[derive(Parser, Clone)]
@@ -58,13 +56,15 @@ pub struct RunArgs {
 }
 
 #[derive(Parser, Clone)]
-pub struct FitnessArgs {
+pub struct StatsArgs {
     #[arg(long)]
     program: ProgramId,
     #[arg(long)]
     zkvm: ProverId,
     #[arg(long)]
     elf: String,
+    #[arg(long)]
+    filename: String
 }
 
 struct Cpuprofiler;
@@ -153,9 +153,15 @@ fn run_runner(run_args: RunArgs) {
     println!("{:?}", res);
 }
 
-fn run_fitness(fitness_args: FitnessArgs) {
-    let elf: Vec<u8> = fs::read(fitness_args.elf).unwrap();
-    eval_fitness(&elf, &fitness_args.program, &fitness_args.zkvm);
+fn run_stats(args: StatsArgs) {
+    let elf: Vec<u8> = fs::read(args.elf).unwrap();
+    let stats = match args.zkvm {
+        ProverId::Risc0 => get_risc0_stats(&elf, &args.program),
+        ProverId::SP1 => get_sp1_stats(&elf, &args.program)
+    };
+    fs::write
+        (args.filename, serde_json::to_string(&stats).unwrap())
+        .unwrap();
 }
 
 fn main() {
@@ -165,6 +171,6 @@ fn main() {
     match args.command {
         EvalSubcommand::Criterion(criterion_args) => run_criterion(criterion_args),
         EvalSubcommand::Run(run_args) => run_runner(run_args),
-        EvalSubcommand::Fitness(fitness_args) => run_fitness(fitness_args),
+        EvalSubcommand::Stats(stats_args) => run_stats(stats_args),
     }
 }
