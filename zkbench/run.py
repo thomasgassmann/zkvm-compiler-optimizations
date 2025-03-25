@@ -7,7 +7,7 @@ def run_single(
 ):
     res = os.system(
         f"""
-        RUSTFLAGS="-C target-cpu=native" cargo run --release -p runner -- run --program {program} --zkvm {zkvm} --elf {elf}
+        RUSTFLAGS="-C target-cpu=native -C target-feature=-avx512f" cargo run --release -p runner -- run --program {program} --zkvm {zkvm} --elf {elf}
     """.strip()
     )
     if res != 0:
