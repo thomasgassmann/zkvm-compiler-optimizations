@@ -31,7 +31,7 @@ def run_bench(
     logging.info(f"Running bench with args: {arg_string}")
     res = os.system(
         f"""
-        RUSTFLAGS="-C target-cpu=native" cargo run --release -p runner -- criterion {arg_string}
+        RUSTFLAGS="-C target-cpu=native -C target-feature=-avx512f" cargo run --release -p runner -- criterion {arg_string}
     """.strip()
     )
     if res != 0:
