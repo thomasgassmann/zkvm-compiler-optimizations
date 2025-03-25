@@ -10,13 +10,16 @@ from zkbench.plot.common import (
 )
 
 
-def f(dir, program, zkvm, profile, measurement):
-    baseline = get_point_estimate_mean_ms(dir, program, zkvm, BASELINE, measurement)
-    compared = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
-    return -(compared - baseline) / baseline
+def plot_average_improvement(
+    dir: str, zkvm: str | None, program: str | None, speedup: bool
+):
+    def f(dir, program, zkvm, profile, measurement):
+        baseline = get_point_estimate_mean_ms(dir, program, zkvm, BASELINE, measurement)
+        compared = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
+        if speedup:
+            return baseline / compared
+        return -(compared - baseline) / baseline
 
-
-def plot_average_improvement(dir: str, zkvm: str | None, program: str | None):
     title = get_title(
         "Average improvement by profile compared to baseline", [zkvm, program]
     )
