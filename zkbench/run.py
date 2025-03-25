@@ -7,7 +7,8 @@ def run_single(
 ):
     res = os.system(
         f"""
-        cargo run --release -p runner -- run --program {program} --zkvm {zkvm} --elf {elf}
-    """.strip())
+        RUSTFLAGS="-C target-cpu=native" cargo run --release -p runner -- run --program {program} --zkvm {zkvm} --elf {elf}
+    """.strip()
+    )
     if res != 0:
         raise ValueError(f"Error: Run failed with code {res}")
