@@ -83,8 +83,12 @@ pub fn prove_core_sp1(
     proving_key: &StarkProvingKey<BabyBearPoseidon2>,
     opts: SP1ProverOpts,
 ) {
+    let mut s = SP1StdoutSink;
+    let context = SP1Context::builder()
+        .stdout(&mut s)
+        .build();
     prover
-        .prove_core(proving_key, program, stdin, opts, SP1Context::default())
+        .prove_core(proving_key, program, stdin, opts, context)
         .unwrap();
 }
 
