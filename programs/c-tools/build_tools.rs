@@ -17,7 +17,7 @@ pub fn setup_build(program: &str) {
 
     let mut passes_string = String::from(format!("PASSES={}", &flag_name));
     if !passes.is_empty() {
-        passes_string = format!("PASSES={},{}", &flag_name, &passes);
+        passes_string = format!("PASSES={},{}", &passes, &flag_name);
     }
 
     println!("cargo::warning=Cleaning and building C with passes: {}", passes_string);
