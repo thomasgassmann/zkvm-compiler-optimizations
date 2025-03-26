@@ -71,8 +71,8 @@ pub fn load_rsp_input() -> Vec<u8> {
 }
 
 pub fn rand_ecdsa_signature() -> (k256::EncodedPoint, Vec<u8>, k256::ecdsa::Signature) {
-    use rand::rngs::OsRng;
     use k256::ecdsa::{SigningKey, VerifyingKey};
+    use rand::rngs::OsRng;
 
     let mut signing_key = SigningKey::random(&mut OsRng);
     let verifying_key = VerifyingKey::from(&signing_key);
@@ -80,12 +80,20 @@ pub fn rand_ecdsa_signature() -> (k256::EncodedPoint, Vec<u8>, k256::ecdsa::Sign
     let message = b"Hello, world!";
     let signature = signing_key.sign(message);
 
-    (verifying_key.to_encoded_point(true), message.to_vec(), signature)
+    (
+        verifying_key.to_encoded_point(true),
+        message.to_vec(),
+        signature,
+    )
 }
 
-pub fn rand_eddsa_signature() -> (ed25519_dalek::VerifyingKey, Vec<u8>, ed25519_dalek::Signature) {
+pub fn rand_eddsa_signature() -> (
+    ed25519_dalek::VerifyingKey,
+    Vec<u8>,
+    ed25519_dalek::Signature,
+) {
+    use ed25519_dalek::{Signer, SigningKey};
     use rand::rngs::OsRng;
-    use ed25519_dalek::{SigningKey, Signer};
 
     let signing_key = SigningKey::generate(&mut OsRng);
     let message = b"Hello, world!";
@@ -138,7 +146,11 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
     write_program_inputs(program, builder, ProverId::Risc0);
 }
 
-fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut W, prover: ProverId) {
+fn write_program_inputs<W: ProgramInputWriter>(
+    program: &ProgramId,
+    stdin: &mut W,
+    prover: ProverId,
+) {
     match program {
         ProgramId::Factorial => {
             stdin.write_generic(&10u32);

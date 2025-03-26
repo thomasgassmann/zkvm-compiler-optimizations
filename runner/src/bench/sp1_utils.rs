@@ -1,10 +1,10 @@
 use super::super::{input::get_sp1_stdin, types::ProgramId};
 use sp1_core_executor::{IoWriter, Program, SP1ReduceProof};
-use sp1_prover::{
-    components::CpuProverComponents, SP1CoreProofData, SP1ProofWithMetadata,
-};
+use sp1_prover::{components::CpuProverComponents, SP1CoreProofData, SP1ProofWithMetadata};
 use sp1_sdk::{Executor, SP1Context, SP1Prover, SP1Stdin, SP1VerifyingKey};
-use sp1_stark::{baby_bear_poseidon2::BabyBearPoseidon2, SP1CoreOpts, SP1ProverOpts, StarkProvingKey};
+use sp1_stark::{
+    baby_bear_poseidon2::BabyBearPoseidon2, SP1CoreOpts, SP1ProverOpts, StarkProvingKey,
+};
 
 use super::utils::ElfStats;
 
@@ -52,9 +52,7 @@ impl std::io::Write for SP1StdoutSink {
 
 pub fn exec_sp1(stdin: &SP1Stdin, prover: &SP1Prover<CpuProverComponents>, elf: &[u8]) {
     let mut s = SP1StdoutSink;
-    let context = SP1Context::builder()
-        .stdout(&mut s)
-        .build();
+    let context = SP1Context::builder().stdout(&mut s).build();
     prover.execute(&elf, stdin, context).unwrap();
 }
 
@@ -84,9 +82,7 @@ pub fn prove_core_sp1(
     opts: SP1ProverOpts,
 ) {
     let mut s = SP1StdoutSink;
-    let context = SP1Context::builder()
-        .stdout(&mut s)
-        .build();
+    let context = SP1Context::builder().stdout(&mut s).build();
     prover
         .prove_core(proving_key, program, stdin, opts, context)
         .unwrap();

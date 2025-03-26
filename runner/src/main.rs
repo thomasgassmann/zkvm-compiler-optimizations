@@ -1,27 +1,29 @@
 mod bench;
-mod types;
-mod utils;
 mod input;
 mod report_risc0;
 mod report_sp1;
+mod types;
+mod utils;
 
-use bench::{bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats};
+use bench::{
+    bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats,
+};
 use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
 use criterion::{profiler::Profiler, Criterion};
-use types::{Config, MeasurementType, ProgramId, ProverId};
-use utils::read_config_json;
 use std::{
     fs,
     path::{Path, PathBuf},
     time::Duration,
 };
+use types::{Config, MeasurementType, ProgramId, ProverId};
+use utils::read_config_json;
 
 #[derive(Subcommand, Clone)]
 pub enum EvalSubcommand {
     Criterion(CriterionArgs),
     Run(RunArgs),
-    Stats(StatsArgs)
+    Stats(StatsArgs),
 }
 
 #[derive(Parser, Clone)]
@@ -64,7 +66,7 @@ pub struct StatsArgs {
     #[arg(long)]
     elf: String,
     #[arg(long)]
-    filename: String
+    filename: String,
 }
 
 struct Cpuprofiler;
@@ -131,7 +133,7 @@ fn run_criterion(args: CriterionArgs) {
     for program in programs {
         for prover in zkvms.iter() {
             let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
-            for measurement in measurements.iter() {
+            for measurement in measurements.iter().rev() {
                 for profile in profiles.iter() {
                     add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile);
                 }
@@ -157,11 +159,9 @@ fn run_stats(args: StatsArgs) {
     let elf: Vec<u8> = fs::read(args.elf).unwrap();
     let stats = match args.zkvm {
         ProverId::Risc0 => get_risc0_stats(&elf, &args.program),
-        ProverId::SP1 => get_sp1_stats(&elf, &args.program)
+        ProverId::SP1 => get_sp1_stats(&elf, &args.program),
     };
-    fs::write
-        (args.filename, serde_json::to_string(&stats).unwrap())
-        .unwrap();
+    fs::write(args.filename, serde_json::to_string(&stats).unwrap()).unwrap();
 }
 
 fn main() {

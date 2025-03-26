@@ -1,3 +1,7 @@
+use super::super::{
+    types::{MeasurementType, ProgramId, ProverId},
+    utils::read_elf,
+};
 use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
@@ -5,10 +9,6 @@ use crate::bench::sp1_utils::{exec_sp1, get_sp1_stats, prove_core_sp1, prove_cor
 use crate::bench::utils::write_elf_stats;
 use criterion::measurement::WallTime;
 use criterion::BenchmarkId;
-use super::super::{
-    types::{ProgramId, ProverId, MeasurementType},
-    utils::read_elf,
-};
 
 pub fn add_benchmarks_for(
     program: &ProgramId,

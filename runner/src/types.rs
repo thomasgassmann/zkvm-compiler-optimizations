@@ -71,7 +71,7 @@ pub enum ProgramId {
     PolybenchTrmm,
     Merkle,
     EcdsaVerify,
-    EddsaVerify
+    EddsaVerify,
 }
 
 /// An identifier used to select the prover to evaluate.
@@ -104,7 +104,7 @@ pub struct Profile {
     pub passes: Vec<String>,
     pub prepopulate_passes: bool,
     #[serde(default)]
-    pub lower_atomic_before: bool
+    pub lower_atomic_before: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
