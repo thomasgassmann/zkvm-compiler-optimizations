@@ -328,7 +328,8 @@
             "passes": [
                 "loop-unroll-and-jam"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "lower_atomic_before": true
         },
         "loop-unroll-full": {
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
