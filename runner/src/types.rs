@@ -1,9 +1,7 @@
-use std::{
-    collections::HashMap,
-    fmt::{Display, Formatter},
-};
+use std::fmt::{Display, Formatter};
 
 use serde::{Deserialize, Serialize};
+use indexmap::IndexMap;
 
 /// An identifier used to select the program to evaluate.
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Eq, Hash)]
@@ -109,9 +107,9 @@ pub struct Profile {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    pub profiles: HashMap<String, Profile>,
+    pub profiles: IndexMap<String, Profile>,
     pub zkvms: Vec<ProverId>,
-    pub programs: HashMap<ProgramId, ProgramConfig>,
+    pub programs: IndexMap<ProgramId, ProgramConfig>,
     pub measurements: Vec<MeasurementType>,
 }
 
