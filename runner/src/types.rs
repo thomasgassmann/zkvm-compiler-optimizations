@@ -102,6 +102,8 @@ pub struct Profile {
     pub rustflags: String,
     pub passes: Vec<String>,
     pub prepopulate_passes: bool,
+    #[serde(default)]
+    pub lower_atomic_before: bool
 }
 
 #[derive(Debug, Serialize, Deserialize)]

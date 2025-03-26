@@ -91,8 +91,11 @@ async def build_program(
         **os.environ,
         "PASSES": passes,
     }
+    lower_atomic_pass = ["loweratomic" if zkvm == "risc0" else "lower-atomic"]
     passes_string = ",".join(
-        profile.passes + ["loweratomic" if zkvm == "risc0" else "lower-atomic"]
+        (profile.passes + lower_atomic_pass)
+        if not profile.lower_atomic_before
+        else (lower_atomic_pass + profile.passes)
     )
     pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
     prepopulate_passes = (
