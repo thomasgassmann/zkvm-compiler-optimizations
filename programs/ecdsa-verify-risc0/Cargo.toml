@@ -7,8 +7,7 @@ edition = "2021"
 [dependencies]
 hex-literal = "0.4"
 k256 = { version = "0.13.4", features = ["arithmetic", "serde", "expose-field", "std", "ecdsa"], default-features = false }
-risc0-zkvm = { version = "=1.2.3", features = ["std", "unstable"] }
-bytemuck_derive = "=1.8.1"
+risc0-zkvm = { version = "=1.2.1", default-features = false, features = ["std", "unstable"] }
 
 [patch.crates-io]
 sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }
