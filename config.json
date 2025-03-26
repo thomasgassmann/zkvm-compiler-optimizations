@@ -444,61 +444,241 @@
         "exec"
     ],
     "programs": {
-        "list": [
-            "loop-sum",
-            "factorial",
-            "sha256",
-            "keccak256",
-            "tailcall",
-            "bigmem",
-            "fibonacci",
-            "sha2-bench",
-            "sha2-chain",
-            "regex-match",
-            "c-sample",
-            "sha3-bench",
-            "sha3-chain",
-            "polybench-2mm",
-            "polybench-3mm",
-            "polybench-adi",
-            "polybench-atax",
-            "polybench-bicg",
-            "polybench-cholesky",
-            "polybench-correlation",
-            "polybench-covariance",
-            "polybench-deriche",
-            "polybench-doitgen",
-            "polybench-durbin",
-            "polybench-fdtd-2d",
-            "polybench-floyd-warshall",
-            "polybench-gemm",
-            "polybench-gemver",
-            "polybench-gesummv",
-            "polybench-gramschmidt",
-            "polybench-heat-3d",
-            "polybench-jacobi-1d",
-            "polybench-jacobi-2d",
-            "polybench-lu",
-            "polybench-ludcmp",
-            "polybench-mvt",
-            "polybench-nussinov",
-            "polybench-seidel-2d",
-            "polybench-symm",
-            "polybench-syr2k",
-            "polybench-syrk",
-            "polybench-trisolv",
-            "polybench-trmm",
-            "merkle",
-            "ecdsa-verify",
-            "eddsa-verify",
-            "rsp",
-            "zkvm-mnist"
-        ],
-        "specific": [
-            "keccak256",
-            "rsp",
-            "ecdsa-verify",
-            "eddsa-verify"
-        ]
+        "loop-sum": {
+            "groups": [
+                "loop-intensive"
+            ]
+        },
+        "factorial": {
+            "groups": []
+        },
+        "sha256": {
+            "groups": [
+                "crypto"
+            ]
+        },
+        "keccak256": {
+            "specific": true,
+            "groups": [
+                "crypto"
+            ]
+        },
+        "tailcall": {
+            "groups": [
+                "recursive"
+            ]
+        },
+        "bigmem": {
+            "groups": [
+                "memory-intensive"
+            ]
+        },
+        "fibonacci": {
+            "groups": [
+                "loop-intensive"
+            ]
+        },
+        "sha2-bench": {
+            "groups": [
+                "crypto"
+            ]
+        },
+        "sha2-chain": {
+            "groups": [
+                "crypto"
+            ]
+        },
+        "regex-match": {
+            "groups": []
+        },
+        "c-sample": {
+            "groups": []
+        },
+        "sha3-bench": {
+            "groups": [
+                "crypto"
+            ]
+        },
+        "sha3-chain": {
+            "groups": [
+                "crypto"
+            ]
+        },
+        "polybench-2mm": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-3mm": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-adi": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-atax": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-bicg": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-cholesky": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-correlation": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-covariance": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-deriche": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-doitgen": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-durbin": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-fdtd-2d": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-floyd-warshall": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-gemm": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-gemver": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-gesummv": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-gramschmidt": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-heat-3d": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-jacobi-1d": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-jacobi-2d": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-lu": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-ludcmp": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-mvt": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-nussinov": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-seidel-2d": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-symm": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-syr2k": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-syrk": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-trisolv": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "polybench-trmm": {
+            "groups": [
+                "polybench"
+            ]
+        },
+        "merkle": {
+            "groups": [
+                "crypto"
+            ]
+        },
+        "ecdsa-verify": {
+            "specific": true,
+            "groups": [
+                "crypto"
+            ]
+        },
+        "eddsa-verify": {
+            "specific": true,
+            "groups": [
+                "crypto"
+            ]
+        },
+        "rsp": {
+            "specific": true,
+            "groups": [
+                "crypto"
+            ]
+        },
+        "zkvm-mnist": {
+            "groups": []
+        }
     }
 }

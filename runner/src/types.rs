@@ -6,7 +6,7 @@ use std::{
 use serde::{Deserialize, Serialize};
 
 /// An identifier used to select the program to evaluate.
-#[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Eq, Hash)]
 #[clap(rename_all = "kebab-case")]
 #[serde(rename_all = "kebab-case")]
 pub enum ProgramId {
@@ -93,8 +93,9 @@ pub enum MeasurementType {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProgramConfig {
-    pub list: Vec<ProgramId>,
-    pub specific: Vec<ProgramId>,
+    #[serde(default)]
+    pub specific: bool,
+    pub groups: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -110,7 +111,7 @@ pub struct Profile {
 pub struct Config {
     pub profiles: HashMap<String, Profile>,
     pub zkvms: Vec<ProverId>,
-    pub programs: ProgramConfig,
+    pub programs: HashMap<ProgramId, ProgramConfig>,
     pub measurements: Vec<MeasurementType>,
 }
 

@@ -103,7 +103,7 @@ fn run_criterion(args: CriterionArgs) {
 
     let programs = match args.program {
         Some(program) => program,
-        None => config.programs.list,
+        None => config.programs.keys().cloned().collect(),
     };
     let measurements = match args.measurement {
         Some(measurement) => measurement,

@@ -25,7 +25,7 @@ def get_profiles() -> List[Profile]:
     return [get_profile_by_name(profile_name) for profile_name in get_profiles_ids()]
 
 def get_programs():
-    return CONFIG["programs"]["list"]
+    return list(CONFIG["programs"].keys())
 
 
 def get_measurements():
@@ -36,7 +36,11 @@ def get_zkvms():
     return CONFIG["zkvms"]
 
 def get_zkvm_specific_programs():
-    return CONFIG["programs"]["specific"]
+    return [
+        program
+        for program in get_programs()
+        if CONFIG["programs"][program].get("specific", False)
+    ]
 
 def is_zkvm_specific(program_id: str):
     return program_id in get_zkvm_specific_programs()
