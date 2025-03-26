@@ -5,33 +5,227 @@
             "passes": [],
             "prepopulate_passes": false
         },
-        "all": {
+        "add-discriminators": {
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
-                "sccp",
-                "gvn",
-                "tailcallelim",
-                "adce",
-                "dse",
-                "indvars",
-                "aggressive-instcombine",
-                "jump-threading",
-                "lcssa",
-                "loop-reduce",
-                "loop-rotate",
-                "loop-simplify",
-                "loop-unroll",
-                "loop-unroll-and-jam",
-                "loop-unroll-full",
-                "loop-mssa(licm)",
-                "loop-deletion",
-                "memcpyopt",
-                "simplifycfg",
-                "reassociate",
-                "mem2reg",
-                "reg2mem",
-                "simple-loop-unswitch",
-                "mergereturn"
+                "add-discriminators"
+            ],
+            "prepopulate_passes": false
+        },
+        "always-inline": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "always-inline"
+            ],
+            "prepopulate_passes": false
+        },
+        "argpromotion": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "argpromotion"
+            ],
+            "prepopulate_passes": false
+        },
+        "attributor": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "attributor"
+            ],
+            "prepopulate_passes": false
+        },
+        "bdce": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "bdce"
+            ],
+            "prepopulate_passes": false
+        },
+        "bypass-slow-division": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "bdce"
+            ],
+            "prepopulate_passes": false
+        },
+        "correlated-propagation": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "correlated-propagation"
+            ],
+            "prepopulate_passes": false
+        },
+        "globaldce": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "globaldce"
+            ],
+            "prepopulate_passes": false
+        },
+        "globalsplit": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "globalsplit"
+            ],
+            "prepopulate_passes": false
+        },
+        "globalopt": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "globalopt"
+            ],
+            "prepopulate_passes": false
+        },
+        "ipsccp": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "ipsccp"
+            ],
+            "prepopulate_passes": false
+        },
+        "inline": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "inline"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-sink": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop-sink"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-data-prefetch": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop-data-prefetch"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-extract": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop-extract"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-fusion": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop-fusion"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-instsimplify": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop(loop-instsimplify)"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-interchange": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop(loop-interchange)"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-predication": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop(loop-predication)"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-versioning-licm": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop(loop-versioning-licm)"
+            ],
+            "prepopulate_passes": false
+        },
+        "mergefunc": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "mergefunc"
+            ],
+            "prepopulate_passes": false
+        },
+        "mergeicmps": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "mergeicmps"
+            ],
+            "prepopulate_passes": false
+        },
+        "mldst-motion": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "mldst-motion"
+            ],
+            "prepopulate_passes": false
+        },
+        "newgvn": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "newgvn"
+            ],
+            "prepopulate_passes": false
+        },
+        "partial-inliner": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "partial-inliner"
+            ],
+            "prepopulate_passes": false
+        },
+        "partially-inline-libcalls": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "partially-inline-libcalls"
+            ],
+            "prepopulate_passes": false
+        },
+        "sroa": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "sroa"
+            ],
+            "prepopulate_passes": false
+        },
+        "sink": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "sink"
+            ],
+            "prepopulate_passes": false
+        },
+        "speculative-execution": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "speculative-execution"
+            ],
+            "prepopulate_passes": false
+        },
+        "slsr": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "slsr"
+            ],
+            "prepopulate_passes": false
+        },
+        "strip": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "strip"
+            ],
+            "prepopulate_passes": false
+        },
+        "wholeprogramdevirt": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "wholeprogramdevirt"
             ],
             "prepopulate_passes": false
         },
