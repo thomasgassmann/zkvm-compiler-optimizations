@@ -8,6 +8,7 @@ class Profile:
     rustflags: str
     passes: List[str]
     prepopulate_passes: bool
+    lower_atomic_before: bool = False
 
 CONFIG = json.load(open("config.json", "r"))
 
@@ -17,6 +18,7 @@ def get_profile_by_name(profile_name: str) -> Profile:
         CONFIG["profiles"][profile_name]["rustflags"],
         CONFIG["profiles"][profile_name]["passes"],
         CONFIG["profiles"][profile_name]["prepopulate_passes"],
+        CONFIG["profiles"][profile_name].get("lower_atomic_before", False),
     )
 
 def get_profiles() -> List[Profile]:
