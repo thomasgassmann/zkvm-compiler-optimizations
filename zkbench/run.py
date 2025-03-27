@@ -1,10 +1,7 @@
 import os
 
-def run_single(
-    program: str,
-    zkvm: str,
-    elf: str,
-):
+
+def run_single(program: str, zkvm: str, elf: str, force: bool):
     res = os.system(
         f"""
         RUSTFLAGS="-C target-cpu=native -C target-feature=-avx512f" cargo run --release -p runner -- run --program {program} --zkvm {zkvm} --elf {elf}

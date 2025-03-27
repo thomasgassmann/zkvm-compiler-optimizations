@@ -6,7 +6,7 @@ mod types;
 mod utils;
 
 use bench::{
-    bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats,
+    bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats, utils::has_previously_run,
 };
 use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
@@ -45,6 +45,8 @@ pub struct CriterionArgs {
     profile: Option<Vec<String>>,
     #[arg(long = "profile-time")]
     profile_time: Option<u64>,
+    #[arg(long)]
+    force: bool
 }
 
 #[derive(Parser, Clone)]
@@ -132,14 +134,20 @@ fn run_criterion(args: CriterionArgs) {
 
     for program in programs {
         for prover in zkvms.iter() {
-            let mut group = c.benchmark_group(&format!("{}-{}", program, prover));
             for measurement in measurements.iter().rev() {
+                if has_previously_run(&program, prover, measurement) && !args.force {
+                    println!("Skipping: {}-{}-{}", program, prover, measurement);
+                    continue;
+                }
+
+                let group_name = format!("{}-{}-{}", program, prover, measurement);
+                let mut group = c.benchmark_group(&group_name);
                 for profile in profiles.iter() {
                     add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile);
                 }
-            }
 
-            group.finish();
+                group.finish();
+            }
         }
     }
 

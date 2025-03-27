@@ -8,6 +8,7 @@ def run_bench(
     measurement: list[str],
     profile: list[str],
     profile_time: int,
+    force: bool,
 ):
     args = []
     if program:
@@ -24,9 +25,9 @@ def run_bench(
             args.append(f"--profile {p}")
     if profile_time:
         args.append(f"--profile-time {profile_time}")
+    if force:
+        args.append("--force")
 
-    # TODO: be a bit smarter with caching
-    # if the profile did not change
     arg_string = " ".join(args)
     logging.info(f"Running bench with args: {arg_string}")
     res = os.system(
