@@ -404,6 +404,224 @@
             ],
             "prepopulate_passes": false
         },
+        "extract-blocks": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "extract-blocks"
+            ],
+            "prepopulate_passes": false
+        },
+        "break-crit-edges": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "break-crit-edges"
+            ],
+            "prepopulate_passes": false
+        },
+        "constmerge": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "constmerge"
+            ],
+            "prepopulate_passes": false
+        },
+        "dce": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "dce"
+            ],
+            "prepopulate_passes": false
+        },
+        "deadargelim": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "deadargelim"
+            ],
+            "prepopulate_passes": false
+        },
+        "function-attrs": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "function-attrs"
+            ],
+            "prepopulate_passes": false
+        },
+        "internalize": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "internalize"
+            ],
+            "prepopulate_passes": false
+        },
+        "lower-global-dtors": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "lower-global-dtors"
+            ],
+            "prepopulate_passes": false
+        },
+        "lower-invoke": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "lower-invoke"
+            ],
+            "prepopulate_passes": false
+        },
+        "lower-switch": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "lower-switch"
+            ],
+            "prepopulate_passes": false
+        },
+        "rel-lookup-table-converter": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "rel-lookup-table-converter"
+            ],
+            "prepopulate_passes": false
+        },
+        "strip-dead-debug-info": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "strip-dead-debug-info"
+            ],
+            "prepopulate_passes": false
+        },
+        "strip-dead-prototypes": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "strip-dead-prototypes"
+            ],
+            "prepopulate_passes": false
+        },
+        "bounds-checking": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "bounds-checking"
+            ],
+            "prepopulate_passes": false
+        },
+        "callsite-splitting": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "callsite-splitting"
+            ],
+            "prepopulate_passes": false
+        },
+        "consthoist": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "consthoist"
+            ],
+            "prepopulate_passes": false
+        },
+        "div-rem-pairs": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "div-rem-pairs"
+            ],
+            "prepopulate_passes": false
+        },
+        "early-cse": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "early-cse"
+            ],
+            "prepopulate_passes": false
+        },
+        "float2int": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "float2int"
+            ],
+            "prepopulate_passes": false
+        },
+        "gvn-hoist": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "gvn-hoist"
+            ],
+            "prepopulate_passes": false
+        },
+        "gvn-sink": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "gvn-sink"
+            ],
+            "prepopulate_passes": false
+        },
+        "guard-widening": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "guard-widening"
+            ],
+            "prepopulate_passes": false
+        },
+        "hotcoldsplit": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "hotcoldsplit"
+            ],
+            "prepopulate_passes": false
+        },
+        "irce": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "irce"
+            ],
+            "prepopulate_passes": false
+        },
+        "instsimplify": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "instsimplify"
+            ],
+            "prepopulate_passes": false
+        },
+        "libcalls-shrinkwrap": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "libcalls-shrinkwrap"
+            ],
+            "prepopulate_passes": false
+        },
+        "loop-idiom": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "loop-idiom"
+            ],
+            "prepopulate_passes": false,
+            "lower_atomic_before": true
+        },
+        "nary-reassociate": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "nary-reassociate"
+            ],
+            "prepopulate_passes": false
+        },
+        "separate-const-offset-from-gep": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "separate-const-offset-from-gep"
+            ],
+            "prepopulate_passes": false
+        },
+        "strip-gc-relocates": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "strip-gc-relocates"
+            ],
+            "prepopulate_passes": false
+        },
+        "synthetic-counts-propagation": {
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "synthetic-counts-propagation"
+            ],
+            "prepopulate_passes": false
+        },
         "o0": {
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [],
