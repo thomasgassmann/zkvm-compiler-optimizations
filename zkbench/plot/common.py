@@ -23,13 +23,13 @@ def read_estimates_data(
     dir: str, program: str, zkvm: str, profile: str, measurement: str
 ):
     path = os.path.join(
-        dir, f"{program}-{zkvm}/{zkvm}-{measurement}", profile, "new/estimates.json"
+        dir, f"{program}-{zkvm}-{measurement}", profile, "new/estimates.json"
     )
     return json.load(open(path, 'r'))
 
 
 def read_program_meta(dir: str, program: str, zkvm: str, profile: str):
-    path = os.path.join(dir, f"{program}-{zkvm}/{profile}.json")
+    path = os.path.join(dir, f"meta/{program}/{zkvm}/{profile}.json")
     return json.load(open(path, "r"))
 
 

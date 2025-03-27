@@ -73,7 +73,7 @@ pub enum ProgramId {
 }
 
 /// An identifier used to select the prover to evaluate.
-#[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
 pub enum ProverId {
     #[serde(rename = "risc0")]
     Risc0,
@@ -81,7 +81,7 @@ pub enum ProverId {
     SP1,
 }
 
-#[derive(clap::ValueEnum, Clone, Debug, Serialize, Deserialize)]
+#[derive(clap::ValueEnum, Clone, Debug, Serialize, Deserialize, Hash)]
 pub enum MeasurementType {
     #[serde(rename = "prove")]
     Prove,
@@ -96,7 +96,7 @@ pub struct ProgramConfig {
     pub groups: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Hash)]
 pub struct Profile {
     pub rustflags: String,
     pub passes: Vec<String>,

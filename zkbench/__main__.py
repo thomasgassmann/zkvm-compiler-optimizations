@@ -101,14 +101,16 @@ def clean_cli(program: list[str], zkvm: list[str]):
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
 )
 @click.option("--profile-time", type=int, required=False)
+@click.option("--force", required=False, is_flag=True, default=False)
 def bench_cli(
     program: list[str],
     zkvm: list[str],
     measurement: list[str],
     profile: list[str],
     profile_time: int,
+    force: bool,
 ):
-    run_bench(program, zkvm, measurement, profile, profile_time)
+    run_bench(program, zkvm, measurement, profile, profile_time, force)
 
 
 @click.command(name="run")
@@ -119,8 +121,9 @@ def bench_cli(
     type=click.Path(exists=True, file_okay=True, dir_okay=False),
     required=True,
 )
-def run_single_cli(program: str, zkvm: str, elf: str):
-    run_single(program, zkvm, elf)
+@click.option("--force", required=False, is_flag=True, default=False)
+def run_single_cli(program: str, zkvm: str, elf: str, force: bool):
+    run_single(program, zkvm, elf, force)
 
 
 @click.group(name="plot")

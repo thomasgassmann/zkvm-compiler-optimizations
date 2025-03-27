@@ -8,7 +8,6 @@ use super::risc0_utils::{
 use crate::bench::sp1_utils::{exec_sp1, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare};
 use crate::bench::utils::write_elf_stats;
 use criterion::measurement::WallTime;
-use criterion::BenchmarkId;
 
 pub fn add_benchmarks_for(
     program: &ProgramId,
@@ -19,16 +18,12 @@ pub fn add_benchmarks_for(
 ) {
     match prover {
         ProverId::Risc0 => add_risc0_exec_and_prove(
-            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Exec), profile),
-            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Prove), profile),
             group,
             program,
             measurement,
             profile,
         ),
         ProverId::SP1 => add_sp1_exec_and_prove(
-            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Exec), profile),
-            BenchmarkId::new(format!("{}-{}", prover, MeasurementType::Prove), profile),
             group,
             program,
             measurement,
@@ -38,8 +33,6 @@ pub fn add_benchmarks_for(
 }
 
 fn add_sp1_exec_and_prove(
-    execute_name: BenchmarkId,
-    prove_name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
     measurement: &MeasurementType,
@@ -56,12 +49,12 @@ fn add_sp1_exec_and_prove(
 
     match measurement {
         MeasurementType::Exec => {
-            group.bench_function(execute_name, |b| {
+            group.bench_function(profile, |b| {
                 b.iter(|| exec_sp1(&stdin, &prover, &elf));
             });
         }
         MeasurementType::Prove => {
-            group.bench_function(prove_name, |b| {
+            group.bench_function(profile, |b| {
                 b.iter_with_setup(
                     || program.clone(),
                     |cloned_program| prove_core_sp1(&stdin, &prover, cloned_program, &pk_d, opts),
@@ -72,8 +65,6 @@ fn add_sp1_exec_and_prove(
 }
 
 fn add_risc0_exec_and_prove(
-    execute_name: BenchmarkId,
-    prove_name: BenchmarkId,
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     program: &ProgramId,
     measurement: &MeasurementType,
@@ -89,7 +80,7 @@ fn add_risc0_exec_and_prove(
 
     match measurement {
         MeasurementType::Exec => {
-            group.bench_function(execute_name, |b| {
+            group.bench_function(profile, |b| {
                 b.iter_with_setup(
                     || exec_risc0_setup(&elf, program),
                     |mut executor| exec_risc0(&mut executor),
@@ -98,7 +89,7 @@ fn add_risc0_exec_and_prove(
         }
         MeasurementType::Prove => {
             let (prover, ctx, session) = prove_core_risc0_prepare(&elf, program);
-            group.bench_function(prove_name, |b| {
+            group.bench_function(profile, |b| {
                 b.iter(|| prove_core_risc0(&prover, &ctx, &session));
             });
         }
