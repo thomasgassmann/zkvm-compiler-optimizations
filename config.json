@@ -446,13 +446,6 @@
             ],
             "prepopulate_passes": false
         },
-        "internalize": {
-            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
-            "passes": [
-                "internalize"
-            ],
-            "prepopulate_passes": false
-        },
         "lower-global-dtors": {
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
