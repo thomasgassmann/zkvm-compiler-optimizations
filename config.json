@@ -453,13 +453,6 @@
             ],
             "prepopulate_passes": false
         },
-        "lower-invoke": {
-            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
-            "passes": [
-                "lower-invoke"
-            ],
-            "prepopulate_passes": false
-        },
         "lower-switch": {
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
