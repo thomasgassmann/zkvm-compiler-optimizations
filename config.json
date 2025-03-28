@@ -702,9 +702,6 @@
         "regex-match": {
             "groups": []
         },
-        "c-sample": {
-            "groups": []
-        },
         "sha3-bench": {
             "groups": [
                 "crypto"
