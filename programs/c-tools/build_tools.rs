@@ -9,6 +9,8 @@ pub fn setup_build(program: &str) {
 
     let passes = env::var("PASSES").unwrap_or("".to_string());
     let llvm_version = env::var("C_LLVM_VERSION").unwrap_or("".to_string());
+    let lower_atomic_before_str = env::var("LOWER_ATOMIC_BEFORE").unwrap_or("".to_string());
+    let lower_atomic_before = lower_atomic_before_str == "True";
     let flag_name = match llvm_version.as_str() {
         "18" => "loweratomic",
         "19" => "lower-atomic",
@@ -17,8 +19,13 @@ pub fn setup_build(program: &str) {
 
     let mut passes_string = String::from(format!("PASSES={}", &flag_name));
     if !passes.is_empty() {
-        passes_string = format!("PASSES={},{}", &passes, &flag_name);
+        if lower_atomic_before {
+            passes_string = format!("PASSES={},{}", &flag_name, &passes);
+        } else {
+            passes_string = format!("PASSES={},{}", &passes, &flag_name);
+        }
     }
+    
 
     println!("cargo::warning=Cleaning and building C with passes: {}", passes_string);
     let status = Command::new("make")

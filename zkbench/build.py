@@ -90,6 +90,7 @@ async def build_program(
     env = {
         **os.environ,
         "PASSES": passes,
+        "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
     }
     lower_atomic_pass = ["lower-atomic"]
     passes_string = ",".join(
