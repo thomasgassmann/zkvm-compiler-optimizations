@@ -132,9 +132,9 @@ fn run_criterion(args: CriterionArgs) {
         }
     }
 
-    for program in programs {
-        for prover in zkvms.iter() {
-            for measurement in measurements.iter().rev() {
+    for measurement in measurements.iter().rev() {
+        for program in programs.iter() {
+            for prover in zkvms.iter() {
                 if has_previously_run(&program, prover, measurement) && !args.force {
                     println!("Skipping: {}-{}-{}", program, prover, measurement);
                     continue;
