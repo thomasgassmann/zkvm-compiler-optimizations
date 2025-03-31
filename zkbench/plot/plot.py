@@ -1,11 +1,18 @@
 import click
 
-from zkbench.config import get_measurements, get_program_groups, get_programs, get_zkvms
+from zkbench.config import (
+    get_measurements,
+    get_profiles_ids,
+    get_program_groups,
+    get_programs,
+    get_zkvms,
+)
 from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
 from zkbench.plot.cycle_prove_duration import plot_cycle_count_duration
+from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.prove_exec import plot_prove_exec
 
 
@@ -64,3 +71,10 @@ def cycle_count_duration_cli(measurement: str, program: str | None, relative: bo
 def prove_exec_cli(program: str | None, program_group: str | None):
     dir = click.get_current_context().parent.params["dir"]
     plot_prove_exec(dir, program, program_group)
+
+
+@click.command(name="opt-by-program")
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+def opt_by_program(profile: str):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_opt_by_program(dir, profile)
