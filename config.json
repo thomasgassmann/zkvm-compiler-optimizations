@@ -40,13 +40,6 @@
             ],
             "prepopulate_passes": false
         },
-        "bypass-slow-division": {
-            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
-            "passes": [
-                "bdce"
-            ],
-            "prepopulate_passes": false
-        },
         "correlated-propagation": {
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "passes": [
