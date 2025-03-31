@@ -142,9 +142,7 @@ fn run_criterion(args: CriterionArgs) {
 
                 let group_name = format!("{}-{}-{}", program, prover, measurement);
                 let mut group = c.benchmark_group(&group_name);
-                if *measurement == MeasurementType::Prove {
-                    group.sample_size(10);
-                }
+                group.sample_size(10);
 
                 for profile in profiles.iter() {
                     add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile);
