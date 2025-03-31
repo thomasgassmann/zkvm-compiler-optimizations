@@ -10,6 +10,14 @@ class Profile:
     prepopulate_passes: bool
     lower_atomic_before: bool = False
 
+
+@dataclass
+class Program:
+    program_name: str
+    specific: bool | None
+    groups: list[str]
+
+
 CONFIG = json.load(open("config.json", "r"))
 
 def get_profile_by_name(profile_name: str) -> Profile:
@@ -26,6 +34,32 @@ def get_profiles() -> List[Profile]:
 
 def get_programs():
     return list(CONFIG["programs"].keys())
+
+
+def get_program_by_name(program_name: str) -> Program:
+    program = CONFIG["programs"][program_name]
+    return Program(
+        program_name,
+        program.get("specific", None),
+        program.get("groups", []),
+    )
+
+
+def get_program_groups() -> set[str]:
+    groups = set()
+    for program_id in get_programs():
+        program = get_program_by_name(program_id)
+        groups.update(program.groups)
+    return groups
+
+
+def get_programs_by_group(group: str) -> List[str]:
+    programs = []
+    for program_id in get_programs():
+        program = get_program_by_name(program_id)
+        if group in program.groups:
+            programs.append(program_id)
+    return programs
 
 
 def get_measurements():
