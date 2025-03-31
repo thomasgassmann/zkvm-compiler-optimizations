@@ -13,7 +13,7 @@ def run_clean(program: list[str], zkvm: list[str]):
                 _clean(get_program_path(program, zkvm))
         else:
             # second argument does not matter
-            _clean(get_program_path(program, 'sp1'))
+            _clean(get_program_path(program, "sp1"))
 
 
 def _clean(program_dir: str):

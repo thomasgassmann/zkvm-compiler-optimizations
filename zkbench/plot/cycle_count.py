@@ -1,5 +1,12 @@
 from zkbench.config import get_measurements, get_profiles_ids, get_programs, get_zkvms
-from zkbench.plot.common import BASELINE, get_cycle_count, get_title, get_values_by_profile, plot_grouped_boxplot
+from zkbench.plot.common import (
+    BASELINE,
+    get_cycle_count,
+    get_title,
+    get_values_by_profile,
+    plot_grouped_boxplot,
+)
+
 
 def f(dir, program, zkvm, profile):
     baseline = get_cycle_count(dir, program, zkvm, BASELINE)

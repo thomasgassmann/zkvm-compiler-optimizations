@@ -36,7 +36,9 @@ async def run_build(
             for profile_name in profiles_to_build:
                 program_dir = get_program_path(program, zkvm)
                 if not os.path.isdir(program_dir):
-                    raise ValueError(f"Error: Program directory {program_dir} does not exist")
+                    raise ValueError(
+                        f"Error: Program directory {program_dir} does not exist"
+                    )
 
                 target = get_target_binary_path(program, zkvm, profile_name)
                 if os.path.isfile(target) and not force:
