@@ -66,7 +66,11 @@ def create_tuner(program: str, zkvm: str):
             try:
                 asyncio.get_event_loop().run_until_complete(
                     build_program(
-                        program=program, zkvm=zkvm, profile=profile, llvm=False, target=out
+                        program=program,
+                        zkvm=zkvm,
+                        profile=profile,
+                        llvm=False,
+                        target=out,
                     )
                 )
             except KeyboardInterrupt:

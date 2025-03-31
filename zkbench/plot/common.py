@@ -14,7 +14,7 @@ from zkbench.config import (
 )
 
 
-BASELINE = 'baseline'
+BASELINE = "baseline"
 
 
 def get_program_selection(
@@ -54,7 +54,7 @@ def read_estimates_data(
     path = os.path.join(
         dir, f"{program}-{zkvm}-{measurement}", profile, "new/estimates.json"
     )
-    return json.load(open(path, 'r'))
+    return json.load(open(path, "r"))
 
 
 def read_program_meta(dir: str, program: str, zkvm: str, profile: str):
@@ -70,7 +70,7 @@ def get_point_estimate_mean_ms(
     dir: str, program: str, zkvm: str, profile: str, measurement: str
 ):
     data = read_estimates_data(dir, program, zkvm, profile, measurement)
-    return data['mean']['point_estimate'] / 1_000_000
+    return data["mean"]["point_estimate"] / 1_000_000
 
 
 def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_width=0.35):

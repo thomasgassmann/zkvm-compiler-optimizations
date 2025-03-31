@@ -3,6 +3,7 @@ from functools import wraps
 
 from zkbench.config import get_profiles_ids, get_programs, get_zkvms
 
+
 def coro(f):
     @wraps(f)
     def wrapper(*args, **kwargs):

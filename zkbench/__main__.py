@@ -18,20 +18,23 @@ from zkbench.clean import run_clean
 from zkbench.run import run_single
 from zkbench.tune import run_tune
 
+
 def get_log_level(level_str: str) -> int:
     try:
         try:
-            import pydevd # type: ignore
+            import pydevd  # type: ignore
+
             return logging.DEBUG
         except ImportError:
             return getattr(logging, level_str) if level_str else logging.INFO
     except AttributeError:
-        raise click.ClickException(f'Log level {level_str} not found.')
+        raise click.ClickException(f"Log level {level_str} not found.")
 
 
 def setup_logger(level_str: str):
     log_formatter = logging.Formatter(
-        "%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+        "%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s"
+    )
     root_logger = logging.getLogger()
     root_logger.propagate = True
     level = get_log_level(level_str)
@@ -43,7 +46,7 @@ def setup_logger(level_str: str):
 
 
 @click.group()
-@click.option('--log-level', nargs=1, required=False)
+@click.option("--log-level", nargs=1, required=False)
 def zkbench_cli(log_level: str):
     setup_logger(log_level)
 
@@ -150,5 +153,5 @@ plot_cli.add_command(prove_exec_cli)
 plot_cli.add_command(cycle_count_abs_cli)
 plot_cli.add_command(opt_by_program)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     zkbench_cli()
