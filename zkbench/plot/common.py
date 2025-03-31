@@ -185,13 +185,14 @@ def get_values_by_profile(
     zkvm: str | None,
     measurement: str | None,
     program: str | None,
+    program_group: str | None,
     profiles: list[str],
     fn: Callable[[str, str, str, str, str], float],
 ):
     res = []
     zkvms = get_zkvms() if zkvm is None else [zkvm]
     measurements = get_measurements() if measurement is None else [measurement]
-    programs = get_programs() if program is None else [program]
+    programs = get_program_selection(program, program_group)
     for profile in profiles:
         values_list = []
         for prog in programs:

@@ -21,6 +21,7 @@ def plot_average_duration(
         zkvm,
         measurement,
         program,
+        None,
         profiles,
         lambda dir, program, zkvm, profile, measurement: get_point_estimate_mean_ms(
             dir, program, zkvm, profile, measurement

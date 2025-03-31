@@ -20,6 +20,7 @@ def plot_cycle_count(dir: str, program: str | None):
                 zkvm,
                 [get_measurements()[0]],  # can be arbitrary
                 program,
+                None,
                 profiles,
                 lambda dir, program, zkvm, profile, _: f(dir, program, zkvm, profile),
             )

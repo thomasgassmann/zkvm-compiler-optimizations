@@ -7,7 +7,15 @@ def plot_cycle_count_abs(dir: str, program: str, zkvm: str):
 
     profiles = get_profiles_ids()
     cycle_counts = get_values_by_profile(
-        dir, zkvm, 'prove', program, profiles, lambda dir, program, zkvm, profile, _: get_cycle_count(dir, program, zkvm, profile)
+        dir,
+        zkvm,
+        "prove",
+        program,
+        None,
+        profiles,
+        lambda dir, program, zkvm, profile, _: get_cycle_count(
+            dir, program, zkvm, profile
+        ),
     )
 
     cycle_counts = np.squeeze(cycle_counts, axis=1)
