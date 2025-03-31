@@ -1,7 +1,7 @@
 use std::fmt::{Display, Formatter};
 
-use serde::{Deserialize, Serialize};
 use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
 
 /// An identifier used to select the program to evaluate.
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Eq, Hash)]
@@ -81,7 +81,7 @@ pub enum ProverId {
     SP1,
 }
 
-#[derive(clap::ValueEnum, Clone, Debug, Serialize, Deserialize, Hash)]
+#[derive(clap::ValueEnum, Clone, Debug, Serialize, Deserialize, Hash, PartialEq)]
 pub enum MeasurementType {
     #[serde(rename = "prove")]
     Prove,

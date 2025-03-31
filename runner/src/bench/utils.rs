@@ -10,7 +10,11 @@ pub struct ElfStats {
     pub cycle_count: u64,
 }
 
-pub fn has_previously_run(program: &ProgramId, zkvm: &ProverId, measurement: &MeasurementType) -> bool {
+pub fn has_previously_run(
+    program: &ProgramId,
+    zkvm: &ProverId,
+    measurement: &MeasurementType,
+) -> bool {
     let mut path: PathBuf = get_criterion_dir();
     path.push(format!("{}-{}-{}", program, zkvm, measurement));
     path.exists()

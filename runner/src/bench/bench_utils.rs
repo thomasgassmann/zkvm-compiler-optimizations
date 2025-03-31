@@ -17,18 +17,8 @@ pub fn add_benchmarks_for(
     profile: &String,
 ) {
     match prover {
-        ProverId::Risc0 => add_risc0_exec_and_prove(
-            group,
-            program,
-            measurement,
-            profile,
-        ),
-        ProverId::SP1 => add_sp1_exec_and_prove(
-            group,
-            program,
-            measurement,
-            profile,
-        ),
+        ProverId::Risc0 => add_risc0_exec_and_prove(group, program, measurement, profile),
+        ProverId::SP1 => add_sp1_exec_and_prove(group, program, measurement, profile),
     }
 }
 
