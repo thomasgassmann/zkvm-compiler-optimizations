@@ -6,7 +6,8 @@ mod types;
 mod utils;
 
 use bench::{
-    bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats, utils::has_previously_run,
+    bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats,
+    utils::has_previously_run,
 };
 use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
@@ -46,7 +47,7 @@ pub struct CriterionArgs {
     #[arg(long = "profile-time")]
     profile_time: Option<u64>,
     #[arg(long)]
-    force: bool
+    force: bool,
 }
 
 #[derive(Parser, Clone)]
@@ -102,8 +103,7 @@ fn run_criterion(args: CriterionArgs) {
         } else {
             None
         })
-        .with_profiler(Cpuprofiler)
-        .sample_size(10);
+        .with_profiler(Cpuprofiler);
 
     let programs = match args.program {
         Some(program) => program,
@@ -142,6 +142,10 @@ fn run_criterion(args: CriterionArgs) {
 
                 let group_name = format!("{}-{}-{}", program, prover, measurement);
                 let mut group = c.benchmark_group(&group_name);
+                if *measurement == MeasurementType::Prove {
+                    group.sample_size(10);
+                }
+
                 for profile in profiles.iter() {
                     add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile);
                 }
