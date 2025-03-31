@@ -35,6 +35,7 @@ pub fn get_sp1_stats(elf: &[u8], program: &ProgramId) -> ElfStats {
     let (stdin, _) = exec_sp1_prepare(elf, program);
     ElfStats {
         cycle_count: get_cycles(&elf, &stdin),
+        size: elf.len(),
     }
 }
 

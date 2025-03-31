@@ -48,6 +48,8 @@ pub struct CriterionArgs {
     profile_time: Option<u64>,
     #[arg(long)]
     force: bool,
+    #[arg(long)]
+    meta_only: bool
 }
 
 #[derive(Parser, Clone)]
@@ -148,7 +150,7 @@ fn run_criterion(args: CriterionArgs) {
                 }
 
                 for profile in profiles.iter() {
-                    add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile);
+                    add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile, args.meta_only);
                 }
 
                 group.finish();

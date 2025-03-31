@@ -8,6 +8,7 @@ use serde::Serialize;
 #[derive(Debug, Serialize)]
 pub struct ElfStats {
     pub cycle_count: u64,
+    pub size: usize,
 }
 
 pub fn has_previously_run(
