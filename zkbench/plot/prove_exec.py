@@ -2,6 +2,7 @@ import logging
 from zkbench.config import get_profiles_ids, get_programs
 from zkbench.plot.common import (
     get_point_estimate_mean_ms,
+    get_program_selection,
     get_title,
     plot_scatter_by_zkvm,
 )
@@ -24,12 +25,11 @@ def _get_values(dir: str, zkvm: str, programs: list[str]):
     return x, y
 
 
-def plot_prove_exec(dir: str, program: str | None):
-    programs = get_programs() if program is None else [program]
+def plot_prove_exec(dir: str, program: str | None, program_group: str | None):
+    programs = get_program_selection(program, program_group)
+    logging.info(f"Programs: {programs}")
     plot_scatter_by_zkvm(
-        get_title(
-            "Prove vs. exec time", [program]
-        ),
+        get_title("Prove vs. exec time", [program, program_group]),
         lambda zkvm: _get_values(dir, zkvm, programs),
         "Exec time (ms)",
         "Prove time (ms)",

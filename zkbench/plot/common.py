@@ -6,10 +6,39 @@ from typing import Callable
 from matplotlib import pyplot as plt
 import numpy as np
 
-from zkbench.config import get_measurements, get_programs, get_zkvms
+from zkbench.config import (
+    get_measurements,
+    get_programs,
+    get_programs_by_group,
+    get_zkvms,
+)
 
 
 BASELINE = 'baseline'
+
+
+def get_program_selection(
+    program: list[str] | str | None, program_group: list[str] | str | None
+) -> list[str]:
+    if program is None and program_group is None:
+        return get_programs()
+
+    programs = []
+    if program is not None:
+        if isinstance(program, str):
+            programs.append(program)
+        else:
+            programs.extend(program)
+
+    if program_group is not None:
+        if isinstance(program_group, str):
+            program_groups = [program_group]
+        else:
+            program_groups = program_group
+        for group in program_groups:
+            programs.extend(get_programs_by_group(group))
+
+    return programs
 
 
 def get_title(base: str, info: list[str | None]):
