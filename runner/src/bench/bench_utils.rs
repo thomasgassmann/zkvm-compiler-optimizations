@@ -15,10 +15,11 @@ pub fn add_benchmarks_for(
     group: &mut criterion::BenchmarkGroup<'_, WallTime>,
     measurement: &MeasurementType,
     profile: &String,
+    meta_only: bool,
 ) {
     match prover {
-        ProverId::Risc0 => add_risc0_exec_and_prove(group, program, measurement, profile),
-        ProverId::SP1 => add_sp1_exec_and_prove(group, program, measurement, profile),
+        ProverId::Risc0 => add_risc0_exec_and_prove(group, program, measurement, profile, meta_only),
+        ProverId::SP1 => add_sp1_exec_and_prove(group, program, measurement, profile, meta_only),
     }
 }
 
@@ -27,6 +28,7 @@ fn add_sp1_exec_and_prove(
     program: &ProgramId,
     measurement: &MeasurementType,
     profile: &String,
+    meta_only: bool,
 ) {
     let elf = read_elf(program, &ProverId::SP1, profile);
     write_elf_stats(
@@ -35,6 +37,10 @@ fn add_sp1_exec_and_prove(
         profile,
         &get_sp1_stats(&elf, program),
     );
+    if meta_only {
+        return;
+    }
+
     let (stdin, prover, program, pk_d, opts, _) = prove_core_sp1_prepare(&elf, program);
 
     match measurement {
@@ -59,6 +65,7 @@ fn add_risc0_exec_and_prove(
     program: &ProgramId,
     measurement: &MeasurementType,
     profile: &String,
+    meta_only: bool,
 ) {
     let elf = read_elf(program, &ProverId::Risc0, profile);
     write_elf_stats(
@@ -67,6 +74,9 @@ fn add_risc0_exec_and_prove(
         profile,
         &get_risc0_stats(&elf, program),
     );
+    if meta_only {
+        return;
+    }
 
     match measurement {
         MeasurementType::Exec => {

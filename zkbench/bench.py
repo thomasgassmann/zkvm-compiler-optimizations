@@ -9,6 +9,7 @@ def run_bench(
     profile: list[str],
     profile_time: int,
     force: bool,
+    meta_only: bool,
 ):
     args = []
     if program:
@@ -27,6 +28,8 @@ def run_bench(
         args.append(f"--profile-time {profile_time}")
     if force:
         args.append("--force")
+    if meta_only:
+        args.append("--meta-only")
 
     arg_string = " ".join(args)
     logging.info(f"Running bench with args: {arg_string}")

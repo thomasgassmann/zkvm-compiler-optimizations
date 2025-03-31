@@ -21,6 +21,7 @@ pub fn get_risc0_stats<'a>(elf: &'a [u8], program: &'a ProgramId) -> ElfStats {
     let session = exec.run().unwrap();
     ElfStats {
         cycle_count: session.user_cycles,
+        size: elf.len(),
     }
 }
 
