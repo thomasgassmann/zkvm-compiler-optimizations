@@ -20,7 +20,7 @@ BASELINE = "baseline"
 def get_program_selection(
     program: list[str] | str | None, program_group: list[str] | str | None
 ) -> list[str]:
-    if program is None and program_group is None:
+    if program is None and program_group is None or not program and not program_group:
         return get_programs()
 
     programs = []

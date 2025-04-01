@@ -115,7 +115,7 @@ def plot_cli(dir: str):
 @click.option(
     "--program",
     type=click.Choice(get_programs()),
-    required=True,
+    required=False,
     multiple=True,
     default=[],
 )
@@ -129,7 +129,7 @@ def plot_cli(dir: str):
 @click.option(
     "--program-group",
     type=click.Choice(get_program_groups()),
-    required=True,
+    required=False,
     multiple=True,
     default=[],
 )
