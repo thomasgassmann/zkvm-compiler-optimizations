@@ -3,7 +3,7 @@ import logging
 import os
 import shutil
 
-from zkbench.common import get_run_config
+from zkbench.common import get_run_config, run_command
 from zkbench.config import (
     Profile,
     get_source_binary_path,
@@ -109,7 +109,7 @@ async def build_program(
     # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
     if zkvm == "sp1":
-        ret = await _run_command(
+        ret = await run_command(
             f"""
             CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
@@ -122,7 +122,7 @@ async def build_program(
             name,
         )
     elif zkvm == "risc0":
-        ret = await _run_command(
+        ret = await run_command(
             f"""
             CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
@@ -142,29 +142,3 @@ async def build_program(
 
     shutil.copyfile(source, target)
     logging.info(f"Copied binary to {target}")
-
-
-async def _run_command(cmd, cwd, env, task_name):
-    logging.debug(f"[{task_name}] Running command: {cmd}")
-    process = await asyncio.create_subprocess_shell(
-        cmd,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-        cwd=cwd,
-        env=env,
-    )
-
-    async def stream_output(stream, name):
-        while True:
-            line = await stream.readline()
-            if line:
-                logging.debug(f"[{task_name}, {name}] {line.decode().rstrip()}")
-            else:
-                break
-
-    await asyncio.gather(
-        stream_output(process.stdout, "stdout"),
-        stream_output(process.stderr, "stderr"),
-    )
-
-    return await process.wait()

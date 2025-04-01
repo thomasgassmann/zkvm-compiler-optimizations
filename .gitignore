@@ -7,3 +7,5 @@ factorial/
 criterion*/
 __pycache__/
 ctarget/
+opentuner.db/
+opentuner.log
