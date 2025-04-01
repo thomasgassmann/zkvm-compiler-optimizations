@@ -42,7 +42,9 @@ async def _build_and_eval(program: str, zkvm: str, profile: Profile, out: str):
         ./target/release/runner stats --program {program} --zkvm {zkvm} --elf {out} --filename {stats_file}
     """,
         None,
-        {},
+        {
+            **os.environ,
+        },
         out,
     )
 
@@ -99,22 +101,26 @@ def create_tuner(programs: list[str], zkvms: list[str]):
 
             current_sum = 0
             for zkvm in zkvms:
-                res = asyncio.get_event_loop().run_until_complete(
-                    asyncio.gather(
-                        *[
-                            _build_and_eval(
-                                program,
-                                zkvm,
-                                profile,
-                                get_out_path(profile_config, zkvm, program),
-                            )
-                            for program in programs
-                        ]
+                try:
+                    res = asyncio.get_event_loop().run_until_complete(
+                        asyncio.gather(
+                            *[
+                                _build_and_eval(
+                                    program,
+                                    zkvm,
+                                    profile,
+                                    get_out_path(profile_config, zkvm, program),
+                                )
+                                for program in programs
+                            ]
+                        )
                     )
-                )
 
-                current_sum += sum(res)
-                if current_sum == float("inf"):
+                    current_sum += sum(res)
+                    if current_sum == float("inf"):
+                        return Result(time=float("inf"))
+                except Exception as e:
+                    logging.error(f"Error during evaluation: {e}")
                     return Result(time=float("inf"))
 
             if current_sum < self._best:
@@ -131,4 +137,5 @@ def create_tuner(programs: list[str], zkvms: list[str]):
 def run_tune_genetic(programs: list[str], zkvms: list[str]):
     os.makedirs(OUT, exist_ok=True)
     arg_parser = opentuner.default_argparser()
+    # TODO: opentuner overwrites the logging config
     create_tuner(programs, zkvms).main(arg_parser.parse_args([]))
