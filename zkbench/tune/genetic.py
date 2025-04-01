@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import os
+import uuid
 from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter
 from opentuner import MeasurementInterface
@@ -15,22 +16,22 @@ from zkbench.common import run_command
 from zkbench.config import Profile
 from zkbench.tune.common import (
     ALL_PASSES,
+    OUT_GENETIC,
     ProfileConfig,
     build_pass_list,
     build_profile,
 )
 
-OUT = "./bin/tune/genetic/"
 CLEAN_CYCLE = 15
 
 
 def get_out_path(config: ProfileConfig, zkvm: str, program: str) -> str:
-    return os.path.join(OUT, config.get_unique_id(zkvm, program))
+    return os.path.join(OUT_GENETIC, config.get_unique_id(zkvm, program))
 
 
 async def _eval(metric: str, zkvm: str, program: str, elf: str):
     filename = os.path.basename(elf)
-    stats_file = os.path.join(OUT, f"{filename}.json")
+    stats_file = os.path.join(OUT_GENETIC, f"{filename}.json")
     res = await run_command(
         f"""
         ./target/release/runner tune 
@@ -75,12 +76,13 @@ async def _build(program: str, zkvm: str, profile: Profile, out: str):
     logging.info(f"Built {program} for {zkvm}")
 
 
-def create_tuner(programs: list[str], zkvms: list[str], metric: str):
+def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: str):
     class PassTuner(MeasurementInterface):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self._best = float("inf")
             self._best_config = None
+            self._values = []
 
         def manipulator(self):
             manipulator = ConfigurationManipulator()
@@ -158,6 +160,16 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str):
                         logging.error(f"Error during evaluation: {e}")
                         return Result(time=float("inf"), state="ERROR")
 
+            # TODO: plot this
+            self._values.append(metric_sum)
+            with open(out_stats, "w") as f:
+                json.dump(
+                    {
+                        "values": self._values,
+                    },
+                    f,
+                )
+
             logging.info(f"Configuration {profile_config} has metric {metric_sum}")
             if metric_sum < self._best or self._best_config is None:
                 logging.info(
@@ -176,7 +188,7 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str):
 
 
 def run_tune_genetic(programs: list[str], zkvms: list[str], metric: str):
-    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(OUT_GENETIC, exist_ok=True)
     arg_parser = opentuner.default_argparser()
 
     the_logging_config["handlers"]["console"]["level"] = logging.getLevelName(
@@ -186,4 +198,8 @@ def run_tune_genetic(programs: list[str], zkvms: list[str], metric: str):
         logging.getLogger().level
     )
 
-    create_tuner(programs, zkvms, metric).main(arg_parser.parse_args([]))
+    out_stats = os.path.join(
+        OUT_GENETIC,
+        f"stats-{'-'.join(zkvms)}-{'-'.join(programs)}-{metric}-{str(uuid.uuid4())[:5]}.json",
+    )
+    create_tuner(programs, zkvms, metric, out_stats).main(arg_parser.parse_args([]))

@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import dataclasses
 import hashlib
 import json
+import os
 from typing import Literal
 from zkbench.config import Profile
 
@@ -95,6 +96,10 @@ LOOP_PASSES = [
 ]
 # TODO: might want to map dependencies too; can specify dependencies in autotuner config!
 ALL_PASSES = MODULE_PASSES + FUNCTION_PASSES + LOOP_PASSES
+
+OUT = "./bin/tune"
+OUT_GENETIC = os.path.join(OUT, "genetic")
+OUT_EXHAUSTIVE = os.path.join(OUT, "exhaustive")
 
 
 def build_pass_list(ordered_passes: list[str]) -> str:

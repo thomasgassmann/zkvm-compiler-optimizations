@@ -22,7 +22,7 @@ from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_single
-from zkbench.tune.tune import TUNE_METRICS, tune_genetic_cli
+from zkbench.tune.tune import TUNE_METRICS, tune_exhaustive_cli, tune_genetic_cli
 
 
 @click.group()
@@ -161,6 +161,7 @@ plot_cli.add_command(cycle_count_abs_cli)
 plot_cli.add_command(opt_by_program_cli)
 
 tune_cli.add_command(tune_genetic_cli)
+tune_cli.add_command(tune_exhaustive_cli)
 
 if __name__ == "__main__":
     zkbench_cli()
