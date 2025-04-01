@@ -36,7 +36,7 @@ async def _build_and_eval(program: str, zkvm: str, profile: Profile, out: str):
     logging.info(f"Built {program} for {zkvm}")
     filename = os.path.basename(out)
     stats_file = os.path.join(OUT, f"{filename}.json")
-    # TODO: support metrics other than cycle count
+    # TODO: support metrics other than cycle count, e.g. prove time
     res = await run_command(
         f"""
         ./target/release/runner stats --program {program} --zkvm {zkvm} --elf {out} --filename {stats_file}
@@ -143,5 +143,4 @@ def create_tuner(programs: list[str], zkvms: list[str]):
 def run_tune_genetic(programs: list[str], zkvms: list[str]):
     os.makedirs(OUT, exist_ok=True)
     arg_parser = opentuner.default_argparser()
-    # TODO: opentuner overwrites the logging config
     create_tuner(programs, zkvms).main(arg_parser.parse_args([]))
