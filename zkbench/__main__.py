@@ -117,7 +117,7 @@ def plot_cli(dir: str):
     type=click.Choice(get_programs()),
     required=True,
     multiple=True,
-    default=get_programs(),
+    default=[],
 )
 @click.option(
     "--zkvm",
@@ -131,7 +131,7 @@ def plot_cli(dir: str):
     type=click.Choice(get_program_groups()),
     required=True,
     multiple=True,
-    default=get_program_groups(),
+    default=[],
 )
 def tune_cli(program: list[str], zkvm: list[str], program_group: list[str]):
     pass
