@@ -18,7 +18,9 @@ pub fn add_benchmarks_for(
     meta_only: bool,
 ) {
     match prover {
-        ProverId::Risc0 => add_risc0_exec_and_prove(group, program, measurement, profile, meta_only),
+        ProverId::Risc0 => {
+            add_risc0_exec_and_prove(group, program, measurement, profile, meta_only)
+        }
         ProverId::SP1 => add_sp1_exec_and_prove(group, program, measurement, profile, meta_only),
     }
 }

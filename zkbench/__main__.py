@@ -22,7 +22,7 @@ from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_single
-from zkbench.tune.tune import tune_genetic_cli
+from zkbench.tune.tune import TUNE_METRICS, tune_genetic_cli
 
 
 @click.group()
@@ -133,7 +133,15 @@ def plot_cli(dir: str):
     multiple=True,
     default=[],
 )
-def tune_cli(program: list[str], zkvm: list[str], program_group: list[str]):
+@click.option(
+    "--metric",
+    type=click.Choice(TUNE_METRICS),
+    required=True,
+    multiple=False,
+)
+def tune_cli(
+    program: list[str], zkvm: list[str], program_group: list[str], metric: str
+):
     pass
 
 
