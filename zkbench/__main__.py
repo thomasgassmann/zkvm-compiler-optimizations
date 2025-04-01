@@ -2,7 +2,13 @@ import logging
 import click
 
 from zkbench.common import coro, setup_logger
-from zkbench.config import get_measurements, get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import (
+    get_measurements,
+    get_profiles_ids,
+    get_program_groups,
+    get_programs,
+    get_zkvms,
+)
 from zkbench.plot.plot import (
     average_duration_cli,
     average_improvement_cli,
@@ -120,7 +126,14 @@ def plot_cli(dir: str):
     multiple=True,
     default=get_zkvms(),
 )
-def tune_cli(program: list[str], zkvm: list[str]):
+@click.option(
+    "--program-group",
+    type=click.Choice(get_program_groups()),
+    required=True,
+    multiple=True,
+    default=get_program_groups(),
+)
+def tune_cli(program: list[str], zkvm: list[str], program_group: list[str]):
     pass
 
 
