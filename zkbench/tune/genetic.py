@@ -138,7 +138,7 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str):
                     logging.error(
                         f"Error during build for profile {profile_config}: {e}"
                     )
-                    return Result(time=float("inf"))
+                    return Result(time=float("inf"), state="ERROR")
 
             # then calcualte metrics
             metric_sum = 0
@@ -156,7 +156,7 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str):
                         metric_sum += current_metric
                     except Exception as e:
                         logging.error(f"Error during evaluation: {e}")
-                        return Result(time=float("inf"))
+                        return Result(time=float("inf"), state="ERROR")
 
             logging.info(f"Configuration {profile_config} has metric {metric_sum}")
             if metric_sum < self._best or self._best_config is None:
@@ -170,7 +170,7 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str):
                     f"Configuration {self._best_config} remains best with metric {self._best}"
                 )
 
-            return Result(time=metric_sum)
+            return Result(time=metric_sum, state="OK")
 
     return PassTuner
 
