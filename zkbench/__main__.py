@@ -1,7 +1,7 @@
 import logging
 import click
 
-from zkbench.common import coro
+from zkbench.common import coro, setup_logger
 from zkbench.config import get_measurements, get_profiles_ids, get_programs, get_zkvms
 from zkbench.plot.plot import (
     average_duration_cli,
@@ -9,40 +9,14 @@ from zkbench.plot.plot import (
     cycle_count_abs_cli,
     cycle_count_cli,
     cycle_count_duration_cli,
-    opt_by_program,
+    opt_by_program_cli,
     prove_exec_cli,
 )
 from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_single
-from zkbench.tune import run_tune
-
-
-def get_log_level(level_str: str) -> int:
-    try:
-        try:
-            import pydevd  # type: ignore
-
-            return logging.DEBUG
-        except ImportError:
-            return getattr(logging, level_str) if level_str else logging.INFO
-    except AttributeError:
-        raise click.ClickException(f"Log level {level_str} not found.")
-
-
-def setup_logger(level_str: str):
-    log_formatter = logging.Formatter(
-        "%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s"
-    )
-    root_logger = logging.getLogger()
-    root_logger.propagate = True
-    level = get_log_level(level_str)
-    root_logger.setLevel(level)
-
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(log_formatter)
-    root_logger.addHandler(console_handler)
+from zkbench.tune.tune import tune_genetic_cli
 
 
 @click.group()
@@ -72,13 +46,6 @@ async def build_cli(
     llvm: bool,
 ):
     await run_build(program, zkvm, profile, force, j or 1, llvm)
-
-
-@click.command(name="tune")
-@click.option("--program", type=click.Choice(get_programs()), required=True)
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
-def tune_cli(program: str, zkvm: str):
-    run_tune(program, zkvm)
 
 
 @click.command(name="clean")
@@ -138,6 +105,25 @@ def plot_cli(dir: str):
     pass
 
 
+@click.group(name="tune")
+@click.option(
+    "--program",
+    type=click.Choice(get_programs()),
+    required=True,
+    multiple=True,
+    default=get_programs(),
+)
+@click.option(
+    "--zkvm",
+    type=click.Choice(get_zkvms()),
+    required=True,
+    multiple=True,
+    default=get_zkvms(),
+)
+def tune_cli(program: list[str], zkvm: list[str]):
+    pass
+
+
 zkbench_cli.add_command(build_cli)
 zkbench_cli.add_command(clean_cli)
 zkbench_cli.add_command(bench_cli)
@@ -151,7 +137,9 @@ plot_cli.add_command(cycle_count_cli)
 plot_cli.add_command(cycle_count_duration_cli)
 plot_cli.add_command(prove_exec_cli)
 plot_cli.add_command(cycle_count_abs_cli)
-plot_cli.add_command(opt_by_program)
+plot_cli.add_command(opt_by_program_cli)
+
+tune_cli.add_command(tune_genetic_cli)
 
 if __name__ == "__main__":
     zkbench_cli()
