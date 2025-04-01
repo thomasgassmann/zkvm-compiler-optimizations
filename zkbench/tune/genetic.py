@@ -124,6 +124,9 @@ def create_tuner(programs: list[str], zkvms: list[str]):
                     logging.error(f"Error during evaluation: {e}")
                     return Result(time=float("inf"))
 
+            logging.info(
+                f"Configuration {profile_config} has cycle count {current_sum}"
+            )
             if current_sum < self._best or self._best_config is None:
                 logging.info(
                     f"Found better configuration: {profile_config} with cycle count {current_sum}"
