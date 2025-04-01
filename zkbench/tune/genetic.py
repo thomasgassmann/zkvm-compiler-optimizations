@@ -63,6 +63,7 @@ def create_tuner(programs: list[str], zkvms: list[str]):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self._best = float("inf")
+            self._best_config = None
 
         def manipulator(self):
             manipulator = ConfigurationManipulator()
@@ -123,11 +124,16 @@ def create_tuner(programs: list[str], zkvms: list[str]):
                     logging.error(f"Error during evaluation: {e}")
                     return Result(time=float("inf"))
 
-            if current_sum < self._best:
+            if current_sum < self._best or self._best_config is None:
                 logging.info(
                     f"Found better configuration: {profile_config} with cycle count {current_sum}"
                 )
                 self._best = current_sum
+                self._best_config = profile_config
+            else:
+                logging.info(
+                    f"Configuration {self._best_config} remains best with cycle count {self._best}"
+                )
 
             return Result(time=current_sum)
 
