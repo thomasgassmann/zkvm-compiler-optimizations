@@ -6,10 +6,12 @@ from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter
 from opentuner import MeasurementInterface
 from opentuner import Result
+from opentuner.tuningrunmain import the_logging_config
 import opentuner
 
 from zkbench.build import build_program
-from zkbench.common import run_command, setup_logger
+from zkbench.clean import run_clean
+from zkbench.common import run_command
 from zkbench.config import Profile
 from zkbench.tune.common import (
     ALL_PASSES,
@@ -18,47 +20,62 @@ from zkbench.tune.common import (
     build_profile,
 )
 
-
 OUT = "./bin/tune/genetic/"
+CLEAN_CYCLE = 15
 
 
 def get_out_path(config: ProfileConfig, zkvm: str, program: str) -> str:
     return os.path.join(OUT, config.get_unique_id(zkvm, program))
 
 
-async def _build_and_eval(program: str, zkvm: str, profile: Profile, out: str):
-    try:
-        await build_program(program, zkvm, profile, False, out)
-    except Exception as e:
-        # TODO: some configuration are still invalid, figure out if we can further reduce that
-        logging.error(f"Failed to build {program} for {zkvm}: {e}")
-        return float("inf")
-    logging.info(f"Built {program} for {zkvm}")
-    filename = os.path.basename(out)
+async def _eval(metric: str, zkvm: str, program: str, elf: str):
+    filename = os.path.basename(elf)
     stats_file = os.path.join(OUT, f"{filename}.json")
-    # TODO: support metrics other than cycle count, e.g. prove time
     res = await run_command(
         f"""
-        ./target/release/runner stats --program {program} --zkvm {zkvm} --elf {out} --filename {stats_file}
-    """,
+        ./target/release/runner tune 
+            --program {program} 
+            --zkvm {zkvm} 
+            --elf {elf}
+            --filename {stats_file}
+            --metric {metric}
+    """.strip().replace(
+            "\n", " "
+        ),
         None,
         {
             **os.environ,
         },
-        out,
+        filename,
     )
 
     if res != 0:
-        raise Exception(f"Failed to run the program: {profile}")
+        raise Exception(f"Failed to calculate metric the program: {elf}")
 
-    cycle_count = json.loads(open(stats_file).read())["cycle_count"]
-    logging.info(f"Cycle count for {program} on {zkvm}: {cycle_count}")
+    metric = int(json.loads(open(stats_file).read())["metric"])
+    logging.info(f"Metric for {program} on {zkvm}: {metric}")
     os.remove(stats_file)
-    os.remove(out)
-    return cycle_count
+    os.remove(elf)
+    return metric
 
 
-def create_tuner(programs: list[str], zkvms: list[str]):
+clean_cycles = {}
+
+
+async def _build(program: str, zkvm: str, profile: Profile, out: str):
+    global clean_cycles
+    if program not in clean_cycles:
+        clean_cycles[program] = 0
+    if clean_cycles[program] >= CLEAN_CYCLE:
+        clean_cycles[program] = 0
+        logging.info(f"Cleaning {program} for {zkvm}")
+        run_clean([program], [zkvm])
+    await build_program(program, zkvm, profile, False, out)
+    clean_cycles[program] += 1
+    logging.info(f"Built {program} for {zkvm}")
+
+
+def create_tuner(programs: list[str], zkvms: list[str], metric: str):
     class PassTuner(MeasurementInterface):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -89,6 +106,7 @@ def create_tuner(programs: list[str], zkvms: list[str]):
                 if cfg[current_pass] == "on":
                     used_passes.append(current_pass)
 
+            # TODO: currently pass it only applied once, we can apply pass multiple times
             pass_list = [build_pass_list(used_passes)]
             profile_config = ProfileConfig(
                 name="genetic",
@@ -100,13 +118,13 @@ def create_tuner(programs: list[str], zkvms: list[str]):
             )
             profile = build_profile(profile_config)
 
-            current_sum = 0
+            # first build all the binaries
             for zkvm in zkvms:
                 try:
-                    res = asyncio.get_event_loop().run_until_complete(
+                    asyncio.get_event_loop().run_until_complete(
                         asyncio.gather(
                             *[
-                                _build_and_eval(
+                                _build(
                                     program,
                                     zkvm,
                                     profile,
@@ -116,34 +134,56 @@ def create_tuner(programs: list[str], zkvms: list[str]):
                             ]
                         )
                     )
-
-                    current_sum += sum(res)
-                    if current_sum == float("inf"):
-                        return Result(time=float("inf"))
                 except Exception as e:
-                    logging.error(f"Error during evaluation: {e}")
+                    logging.error(
+                        f"Error during build for profile {profile_config}: {e}"
+                    )
                     return Result(time=float("inf"))
 
-            logging.info(
-                f"Configuration {profile_config} has cycle count {current_sum}"
-            )
-            if current_sum < self._best or self._best_config is None:
+            # then calcualte metrics
+            metric_sum = 0
+            for zkvm in zkvms:
+                for program in programs:
+                    try:
+                        current_metric = asyncio.get_event_loop().run_until_complete(
+                            _eval(
+                                metric,
+                                zkvm,
+                                program,
+                                get_out_path(profile_config, zkvm, program),
+                            )
+                        )
+                        metric_sum += current_metric
+                    except Exception as e:
+                        logging.error(f"Error during evaluation: {e}")
+                        return Result(time=float("inf"))
+
+            logging.info(f"Configuration {profile_config} has metric {metric_sum}")
+            if metric_sum < self._best or self._best_config is None:
                 logging.info(
-                    f"Found better configuration: {profile_config} with cycle count {current_sum}"
+                    f"Found better configuration: {profile_config} with metric {metric_sum}"
                 )
-                self._best = current_sum
+                self._best = metric_sum
                 self._best_config = profile_config
             else:
                 logging.info(
-                    f"Configuration {self._best_config} remains best with cycle count {self._best}"
+                    f"Configuration {self._best_config} remains best with metric {self._best}"
                 )
 
-            return Result(time=current_sum)
+            return Result(time=metric_sum)
 
     return PassTuner
 
 
-def run_tune_genetic(programs: list[str], zkvms: list[str]):
+def run_tune_genetic(programs: list[str], zkvms: list[str], metric: str):
     os.makedirs(OUT, exist_ok=True)
     arg_parser = opentuner.default_argparser()
-    create_tuner(programs, zkvms).main(arg_parser.parse_args([]))
+
+    the_logging_config["handlers"]["console"]["level"] = logging.getLevelName(
+        logging.getLogger().level
+    )
+    the_logging_config["loggers"][""]["level"] = logging.getLevelName(
+        logging.getLogger().level
+    )
+
+    create_tuner(programs, zkvms, metric).main(arg_parser.parse_args([]))

@@ -72,6 +72,12 @@ pub enum ProgramId {
     EddsaVerify,
 }
 
+#[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
+pub enum TuneMetric {
+    CycleCount,
+    ProveTime,
+}
+
 /// An identifier used to select the prover to evaluate.
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
 pub enum ProverId {

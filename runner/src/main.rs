@@ -2,13 +2,11 @@ mod bench;
 mod input;
 mod report_risc0;
 mod report_sp1;
+mod tune;
 mod types;
 mod utils;
 
-use bench::{
-    bench_utils::add_benchmarks_for, risc0_utils::get_risc0_stats, sp1_utils::get_sp1_stats,
-    utils::has_previously_run,
-};
+use bench::{bench_utils::add_benchmarks_for, utils::has_previously_run};
 use clap::{command, Parser, Subcommand};
 use cpuprofiler::PROFILER;
 use criterion::{profiler::Profiler, Criterion};
@@ -17,14 +15,15 @@ use std::{
     path::{Path, PathBuf},
     time::Duration,
 };
-use types::{Config, MeasurementType, ProgramId, ProverId};
+use tune::run_tune;
+use types::{Config, MeasurementType, ProgramId, ProverId, TuneMetric};
 use utils::read_config_json;
 
 #[derive(Subcommand, Clone)]
 pub enum EvalSubcommand {
     Criterion(CriterionArgs),
     Run(RunArgs),
-    Stats(StatsArgs),
+    Tune(TuneArgs),
 }
 
 #[derive(Parser, Clone)]
@@ -49,7 +48,7 @@ pub struct CriterionArgs {
     #[arg(long)]
     force: bool,
     #[arg(long)]
-    meta_only: bool
+    meta_only: bool,
 }
 
 #[derive(Parser, Clone)]
@@ -63,7 +62,7 @@ pub struct RunArgs {
 }
 
 #[derive(Parser, Clone)]
-pub struct StatsArgs {
+pub struct TuneArgs {
     #[arg(long)]
     program: ProgramId,
     #[arg(long)]
@@ -72,6 +71,8 @@ pub struct StatsArgs {
     elf: String,
     #[arg(long)]
     filename: String,
+    #[arg(long)]
+    metric: TuneMetric,
 }
 
 struct Cpuprofiler;
@@ -150,7 +151,14 @@ fn run_criterion(args: CriterionArgs) {
                 }
 
                 for profile in profiles.iter() {
-                    add_benchmarks_for(&program, &prover, &mut group, &measurement, &profile, args.meta_only);
+                    add_benchmarks_for(
+                        &program,
+                        &prover,
+                        &mut group,
+                        &measurement,
+                        &profile,
+                        args.meta_only,
+                    );
                 }
 
                 group.finish();
@@ -170,15 +178,6 @@ fn run_runner(run_args: RunArgs) {
     println!("{:?}", res);
 }
 
-fn run_stats(args: StatsArgs) {
-    let elf: Vec<u8> = fs::read(args.elf).unwrap();
-    let stats = match args.zkvm {
-        ProverId::Risc0 => get_risc0_stats(&elf, &args.program),
-        ProverId::SP1 => get_sp1_stats(&elf, &args.program),
-    };
-    fs::write(args.filename, serde_json::to_string(&stats).unwrap()).unwrap();
-}
-
 fn main() {
     sp1_core_machine::utils::setup_logger();
     let args = EvalArgs::parse();
@@ -186,6 +185,6 @@ fn main() {
     match args.command {
         EvalSubcommand::Criterion(criterion_args) => run_criterion(criterion_args),
         EvalSubcommand::Run(run_args) => run_runner(run_args),
-        EvalSubcommand::Stats(stats_args) => run_stats(stats_args),
+        EvalSubcommand::Tune(tune_args) => run_tune(tune_args),
     }
 }
