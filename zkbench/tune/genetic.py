@@ -1,4 +1,5 @@
 import asyncio
+import dataclasses
 import json
 import logging
 import os
@@ -83,6 +84,7 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
             self._best = float("inf")
             self._best_config = None
             self._values = []
+            self._profile_configs = []
 
         def manipulator(self):
             manipulator = ConfigurationManipulator()
@@ -162,9 +164,11 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
 
             # TODO: plot this
             self._values.append(metric_sum)
+            self._profile_configs.append(dataclasses.asdict(profile_config))
             with open(out_stats, "w") as f:
                 json.dump(
                     {
+                        "profile_configs": self._profile_configs,
                         "values": self._values,
                     },
                     f,
