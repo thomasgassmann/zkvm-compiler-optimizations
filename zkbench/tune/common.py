@@ -83,6 +83,7 @@ FUNCTION_PASSES = [
     "nary-reassociate",
     "separate-const-offset-from-gep",
 ]
+# TODO: this does not incldue e.g. licm
 LOOP_PASSES = [
     "loop-idiom",
     "loop-reduce",

@@ -39,7 +39,7 @@ def _get_values(
                     y.append(duration)
         except FileNotFoundError:
             logging.warning(f"Data for {program}-{zkvm}-{measurement} not found")
-    return x, y
+    return x, y, None
 
 
 def plot_cycle_count_duration(
@@ -50,10 +50,8 @@ def plot_cycle_count_duration(
         profiles.remove(BASELINE)
     programs = get_programs() if p is None else [p]
     plot_scatter_by_zkvm(
-        get_title(
-            "Relative cycle count vs duration compared to baseline", [measurement, p]
-        ),
+        get_title("Cycle count vs duration", [measurement, p]),
         lambda zkvm: _get_values(dir, zkvm, programs, profiles, measurement, relative),
-        "Relative cycle count compared to baseline",
-        "Relative duration compared to baseline",
+        "Cycle count",
+        "Duration (ms)",
     )

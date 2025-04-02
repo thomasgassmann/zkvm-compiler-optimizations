@@ -40,6 +40,7 @@ def plot_average_improvement(
 
     if len(relative_improvements_exec[0]) == 1:
         # if we only have one value, no need to plot boxplot
+        # TODO: in this case, plot all values that criterion recorded
         prove_values = np.squeeze(relative_improvements_prove, axis=1)
         exec_values = np.squeeze(relative_improvements_exec, axis=1)
         plot_sorted(

@@ -22,7 +22,7 @@ def _get_values(dir: str, zkvm: str, programs: list[str]):
                 )
             except FileNotFoundError:
                 logging.warning(f"Data for {program}-{zkvm}-{profile} not found")
-    return x, y
+    return x, y, None
 
 
 def plot_prove_exec(dir: str, program: str | None, program_group: str | None):
