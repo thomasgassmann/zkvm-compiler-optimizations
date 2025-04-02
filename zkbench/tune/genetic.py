@@ -104,6 +104,7 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
             return manipulator
 
         def run(self, desired_result, input, limit):
+            # TODO: we can prebild binaries using compile, run_precompiled and compile_and_run
             cfg = desired_result.configuration.data
             used_passes = []
             for current_pass in cfg["passes"]:
@@ -162,7 +163,6 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
                         logging.error(f"Error during evaluation: {e}")
                         return Result(time=float("inf"), state="ERROR")
 
-            # TODO: plot this
             self._values.append(metric_sum)
             self._profile_configs.append(dataclasses.asdict(profile_config))
             with open(out_stats, "w") as f:

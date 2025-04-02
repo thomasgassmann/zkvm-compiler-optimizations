@@ -1,3 +1,4 @@
+import os
 import click
 
 from zkbench.config import (
@@ -12,6 +13,7 @@ from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
 from zkbench.plot.cycle_prove_duration import plot_cycle_count_duration
+from zkbench.plot.genetic import plot_genetic
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.prove_exec import plot_prove_exec
 
@@ -78,3 +80,11 @@ def prove_exec_cli(program: str | None, program_group: str | None):
 def opt_by_program_cli(profile: str):
     dir = click.get_current_context().parent.params["dir"]
     plot_opt_by_program(dir, profile)
+
+
+@click.command(name="tune-genetic")
+@click.option("--stats", required=True)
+def plot_genetic_cli(stats: str):
+    if not os.path.exists(stats):
+        raise click.ClickException(f"File {stats} does not exist.")
+    plot_genetic(stats)

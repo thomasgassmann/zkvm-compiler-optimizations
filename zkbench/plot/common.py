@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from typing import Callable
+from scipy import stats
 
 from matplotlib import pyplot as plt
 import numpy as np
@@ -126,10 +127,28 @@ def plot_scatter_by_zkvm(
     y_label: str,
 ):
     for zkvm in get_zkvms():
-        x, y = get_by_zkvm(zkvm)
-        correlation = np.corrcoef(x, y)[0, 1]
-        plt.scatter(x, y, label=f"{zkvm}, r={correlation:.3f}")
-        plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
+        x, y, group_ids = get_by_zkvm(zkvm)
+        if group_ids is not None:
+            cmap = plt.get_cmap("tab10")
+            group_to_color = {
+                group: cmap(i % 10)
+                for i, group in enumerate(np.unique(np.array(group_ids)))
+            }
+            color = []
+            for group in group_ids:
+                color.append(group_to_color[group])
+        else:
+            color = None
+
+        p = np.corrcoef(x, y)[0, 1]
+        spearman = stats.spearmanr(x, y).statistic
+        plt.scatter(
+            x, y, c=color, label=f"{zkvm}, Pearson={p:.3f}, Spearman={spearman:.3f}"
+        )
+        plt.plot(
+            np.unique(x),
+            np.poly1d(np.polyfit(x, y, 1))(np.unique(x)),
+        )
 
     plt.title(title)
     plt.xlabel(x_label)
