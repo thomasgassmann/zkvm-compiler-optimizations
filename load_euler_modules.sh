@@ -1,6 +1,3 @@
 #!/bin/bash
 
-module load stack/2024-06
-module load cuda/12.1.1
-module load openssl/3.1.3-zhfub4o
-module load gperftools/2.13
+module load stack/2024-06 openssl/3.1.3-zhfub4o cuda/12.1.1 gperftools/2.13
