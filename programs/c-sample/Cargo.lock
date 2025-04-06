@@ -295,10 +295,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
-name = "c-sample"
+name = "c-build"
+version = "0.1.0"
+
+[[package]]
+name = "c-platform"
 version = "0.1.0"
 dependencies = [
  "printf-compat",
+]
+
+[[package]]
+name = "c-sample"
+version = "0.1.0"
+dependencies = [
+ "c-build",
+ "c-platform",
  "risc0-zkvm",
  "sp1-zkvm",
 ]

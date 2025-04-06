@@ -1,6 +1,7 @@
 extern void printsomething(int a);
 extern int add(int a, int b);
-extern int printf(const char *fmt, ...);
+
+#include <zkvm.h>
 
 int cmain()
 {
@@ -8,6 +9,6 @@ int cmain()
   int a = 21;
   printsomething(a);
   printf("Hello, world!\n");
-  printf("Hello, world! formatted: %d\n", a);
+  printf("The answer is %d\n", add(a, a));
   return add(a, a);
 }

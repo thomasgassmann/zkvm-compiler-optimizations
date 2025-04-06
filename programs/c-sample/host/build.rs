@@ -1,4 +1,4 @@
-include!("../../c-tools/build_tools.rs");
+use c_build::setup_build;
 
 fn main() {
     setup_build("c-sample");
