@@ -15,7 +15,6 @@ cpuprofiler = "0.0.4"
 criterion = { version = "0.5.1", features = ["html_reports"] }
 mnist = { version = "0.6.0", features = ["download"] }
 ndarray = "0.16.1"
-risc0-groth16 = "1.2.4"
 risc0-zkvm = { version = "1.2.4", features = ["prove"] }
 serde = { version = "1.0.218", features = ["derive"] }
 serde_json = "1.0.139"
@@ -29,3 +28,6 @@ rand_core = "0.6.4"
 k256 = { version = "=0.13.4", features = ["serde"] }
 ed25519-dalek = { version = "2.1.1", features = ["digest", "rand_core", "serde", "signature"] }
 indexmap = { version = "2.8.0", features = ["serde"] }
+
+[features]
+cuda = ["risc0-zkvm/cuda"]
