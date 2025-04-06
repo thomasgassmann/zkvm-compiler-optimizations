@@ -880,6 +880,9 @@
         },
         "zkvm-mnist": {
             "groups": []
+        },
+        "c-sample": {
+            "groups": []
         }
     }
 }

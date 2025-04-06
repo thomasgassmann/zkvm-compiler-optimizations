@@ -25,7 +25,6 @@ pub fn setup_build(program: &str) {
             passes_string = format!("PASSES={},{}", &passes, &flag_name);
         }
     }
-    
 
     println!("cargo::warning=Cleaning and building C with passes: {}", passes_string);
     let status = Command::new("make")
