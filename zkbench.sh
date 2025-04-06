@@ -1,3 +1,3 @@
 #!/bin/sh
 
-uv run -m zkbench $@
+uv run --config-file /dev/null -m zkbench $@
