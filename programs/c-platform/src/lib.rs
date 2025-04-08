@@ -9,6 +9,9 @@ macro_rules! include_platform {
         use $crate::printf_compat::{format, argument::Argument, argument::Specifier};
         use core::str;
         use core::fmt;
+        use std::alloc::{alloc, dealloc, Layout};
+        use std::mem;
+        use std::ptr;
 
         pub fn fmt_write() -> impl FnMut(Argument) -> c_int {
             move |arg: Argument| -> c_int {
@@ -48,6 +51,44 @@ macro_rules! include_platform {
                     fmt_write(),
                 );
                 bytes_written
+            }
+        }
+
+        #[unsafe(no_mangle)]
+        pub extern "C" fn malloc(size: i32) -> *mut u8 {
+            unsafe {
+                let header_size = mem::size_of::<usize>();
+                let user_size = size as usize;
+                let total_size = header_size.checked_add(user_size)
+                    .expect("Size overflow");
+
+                let layout = Layout::from_size_align(total_size, mem::align_of::<usize>())
+                    .expect("Invalid layout");
+
+                let raw_ptr = alloc(layout);
+                if raw_ptr.is_null() {
+                    panic!("malloc failed");
+                }
+
+                (raw_ptr as *mut usize).write(total_size);
+                // Return a pointer to memory immediately after the header
+                raw_ptr.add(header_size)
+            }
+        }
+
+        #[unsafe(no_mangle)]
+        pub extern "C" fn free(ptr: *mut u8) {
+            unsafe {
+                if ptr.is_null() {
+                    return;
+                }
+
+                let header_size = mem::size_of::<usize>();
+                let orig_ptr = ptr.sub(header_size);
+                let total_size = (orig_ptr as *mut usize).read();
+                let layout = Layout::from_size_align(total_size, mem::align_of::<usize>())
+                    .expect("Invalid layout");
+                dealloc(orig_ptr, layout);
             }
         }
     };
