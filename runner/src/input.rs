@@ -221,6 +221,11 @@ fn write_program_inputs<W: ProgramInputWriter>(
                 stdin.write_generic(&rand_eddsa_signature());
             }
         }
+        ProgramId::Spec619 => {
+            stdin.write_generic(&1); // timesteps
+            stdin.write_generic(&0); // action: NOTHING = 0, COMPARE, STORE
+            stdin.write_generic(&0); // simType: LDC = 0, CHANNEL
+        }
         _ => {}
     }
 }

@@ -14,7 +14,7 @@ define add
 endef
 
 define archive
-	ar rcs $(OUTDIR)/$(LIBNAME) ${1}
+	ar rcs $(OUTDIR)/$(LIBNAME) ${1} ${2} ${3}
 endef
 
 .PHONY: setup

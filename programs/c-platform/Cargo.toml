@@ -6,3 +6,7 @@ edition = "2024"
 
 [dependencies]
 printf-compat = { version = "0.1", default-features = false }
+
+[features]
+risc0 = []
+sp1 = []

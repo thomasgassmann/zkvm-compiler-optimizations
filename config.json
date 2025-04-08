@@ -881,6 +881,11 @@
         "zkvm-mnist": {
             "groups": []
         },
+        "spec-619": {
+            "groups": [
+                "spec"
+            ]
+        },
         "c-sample": {
             "groups": []
         }
