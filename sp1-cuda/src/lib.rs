@@ -1,11 +1,7 @@
 use std::{
     error::Error as StdError,
     future::Future,
-    process::{Command, Stdio},
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
+    process::{Child, Command, Stdio},
     time::{Duration, Instant},
 };
 
@@ -39,15 +35,7 @@ pub mod proto {
 pub struct SP1CudaProver {
     /// The gRPC client to communicate with the container.
     client: Client,
-    /// The Moongate server container, if managed by the prover.
-    managed_container: Option<CudaProverContainer>,
-}
-
-pub struct CudaProverContainer {
-    /// The name of the container.
-    name: String,
-    /// A flag to indicate whether the container has already been cleaned up.
-    cleaned_up: Arc<AtomicBool>,
+    child: Child,
 }
 
 /// The payload for the [sp1_prover::SP1Prover::setup] method.
@@ -112,16 +100,7 @@ impl SP1CudaProver {
         let reqwest_middlewares = vec![Box::new(LoggingMiddleware) as Box<dyn Middleware>];
 
         let prover = match moongate_endpoint {
-            Some(moongate_endpoint) => {
-                let client = Client::new(
-                    Url::parse(&moongate_endpoint).expect("failed to parse url"),
-                    reqwest::Client::new(),
-                    reqwest_middlewares,
-                )
-                .expect("failed to create client");
-
-                SP1CudaProver { client, managed_container: None }
-            }
+            Some(_) => panic!("expected to not get moongate endpoint"),
             None => Self::start_moongate_server(reqwest_middlewares)?,
         };
 
@@ -156,67 +135,16 @@ impl SP1CudaProver {
         Ok(prover)
     }
 
-    fn check_docker_availability() -> Result<bool, Box<dyn std::error::Error>> {
-        match Command::new("docker").arg("version").output() {
-            Ok(output) => Ok(output.status.success()),
-            Err(_) => Ok(false),
-        }
-    }
-
     fn start_moongate_server(
         reqwest_middlewares: Vec<Box<dyn Middleware>>,
     ) -> Result<SP1CudaProver, Box<dyn StdError>> {
-        // If the moongate endpoint url hasn't been provided, we start the Docker container
-        let container_name = "sp1-gpu";
-        let image_name = std::env::var("SP1_GPU_IMAGE")
-            .unwrap_or_else(|_| "public.ecr.aws/succinct-labs/moongate:v4.1.0".to_string());
-
-        let cleaned_up = Arc::new(AtomicBool::new(false));
-        let cleanup_name = container_name;
-        let cleanup_flag = cleaned_up.clone();
-
-        // Check if Docker is available and the user has necessary permissions
-        if !Self::check_docker_availability()? {
-            return Err("Docker is not available or you don't have the necessary permissions. Please ensure Docker is installed and you are part of the docker group.".into());
-        }
-
-        // Pull the docker image if it's not present
-        if let Err(e) = Command::new("docker").args(["pull", &image_name]).output() {
-            return Err(format!("Failed to pull Docker image: {}. Please check your internet connection and Docker permissions.", e).into());
-        }
-
-        // Start the docker container
         let rust_log_level = std::env::var("RUST_LOG").unwrap_or_else(|_| "none".to_string());
-        Command::new("docker")
-            .args([
-                "run",
-                "-e",
-                &format!("RUST_LOG={}", rust_log_level),
-                "-p",
-                "3000:3000",
-                "--rm",
-                "--gpus",
-                "all",
-                "--name",
-                container_name,
-                &image_name,
-            ])
-            // Redirect stdout and stderr to the parent process
+        let child = Command::new("./sp1-cuda/moongate-server")
+            .env("RUST_LOG", rust_log_level)
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
             .map_err(|e| format!("Failed to start Docker container: {}. Please check your Docker installation and permissions.", e))?;
-
-        // Kill the container on control-c
-        ctrlc::set_handler(move || {
-            tracing::debug!("received Ctrl+C, cleaning up...");
-            if !cleanup_flag.load(Ordering::SeqCst) {
-                cleanup_container(cleanup_name);
-                cleanup_flag.store(true, Ordering::SeqCst);
-            }
-            std::process::exit(0);
-        })
-        .unwrap();
 
         // Wait a few seconds for the container to start
         std::thread::sleep(Duration::from_secs(2));
@@ -228,20 +156,15 @@ impl SP1CudaProver {
         )
         .expect("failed to create client");
 
-        Ok(SP1CudaProver {
-            client,
-            managed_container: Some(CudaProverContainer {
-                name: container_name.to_string(),
-                cleaned_up: cleaned_up.clone(),
-            }),
-        })
+        Ok(SP1CudaProver { client, child })
     }
 
     /// Executes the [sp1_prover::SP1Prover::setup] method inside the container.
     pub fn setup(&self, elf: &[u8]) -> Result<(SP1ProvingKey, SP1VerifyingKey), Box<dyn StdError>> {
         let payload = SetupRequestPayload { elf: elf.to_vec() };
-        let request =
-            crate::proto::api::SetupRequest { data: bincode::serialize(&payload).unwrap() };
+        let request = crate::proto::api::SetupRequest {
+            data: bincode::serialize(&payload).unwrap(),
+        };
         let response = block_on(async { self.client.setup(request).await }).unwrap();
         let payload: SetupResponsePayload = bincode::deserialize(&response.result).unwrap();
         Ok((payload.pk, payload.vk))
@@ -251,9 +174,12 @@ impl SP1CudaProver {
     ///
     /// You will need at least 24GB of VRAM to run this method.
     pub fn prove_core(&self, stdin: &SP1Stdin) -> Result<SP1CoreProof, SP1CoreProverError> {
-        let payload = ProveCoreRequestPayload { stdin: stdin.clone() };
-        let request =
-            crate::proto::api::ProveCoreRequest { data: bincode::serialize(&payload).unwrap() };
+        let payload = ProveCoreRequestPayload {
+            stdin: stdin.clone(),
+        };
+        let request = crate::proto::api::ProveCoreRequest {
+            data: bincode::serialize(&payload).unwrap(),
+        };
         let response = block_on(async { self.client.prove_core(request).await }).unwrap();
         let proof: SP1CoreProof = bincode::deserialize(&response.result).unwrap();
         Ok(proof)
@@ -268,9 +194,14 @@ impl SP1CudaProver {
         proof: SP1CoreProof,
         deferred_proofs: Vec<SP1ReduceProof<InnerSC>>,
     ) -> Result<SP1ReduceProof<InnerSC>, SP1RecursionProverError> {
-        let payload = CompressRequestPayload { vk: vk.clone(), proof, deferred_proofs };
-        let request =
-            crate::proto::api::CompressRequest { data: bincode::serialize(&payload).unwrap() };
+        let payload = CompressRequestPayload {
+            vk: vk.clone(),
+            proof,
+            deferred_proofs,
+        };
+        let request = crate::proto::api::CompressRequest {
+            data: bincode::serialize(&payload).unwrap(),
+        };
 
         let response = block_on(async { self.client.compress(request).await }).unwrap();
         let proof: SP1ReduceProof<InnerSC> = bincode::deserialize(&response.result).unwrap();
@@ -284,9 +215,12 @@ impl SP1CudaProver {
         &self,
         reduced_proof: SP1ReduceProof<InnerSC>,
     ) -> Result<SP1ReduceProof<InnerSC>, SP1RecursionProverError> {
-        let payload = ShrinkRequestPayload { reduced_proof: reduced_proof.clone() };
-        let request =
-            crate::proto::api::ShrinkRequest { data: bincode::serialize(&payload).unwrap() };
+        let payload = ShrinkRequestPayload {
+            reduced_proof: reduced_proof.clone(),
+        };
+        let request = crate::proto::api::ShrinkRequest {
+            data: bincode::serialize(&payload).unwrap(),
+        };
 
         let response = block_on(async { self.client.shrink(request).await }).unwrap();
         let proof: SP1ReduceProof<InnerSC> = bincode::deserialize(&response.result).unwrap();
@@ -300,9 +234,12 @@ impl SP1CudaProver {
         &self,
         reduced_proof: SP1ReduceProof<InnerSC>,
     ) -> Result<SP1ReduceProof<OuterSC>, SP1RecursionProverError> {
-        let payload = WrapRequestPayload { reduced_proof: reduced_proof.clone() };
-        let request =
-            crate::proto::api::WrapRequest { data: bincode::serialize(&payload).unwrap() };
+        let payload = WrapRequestPayload {
+            reduced_proof: reduced_proof.clone(),
+        };
+        let request = crate::proto::api::WrapRequest {
+            data: bincode::serialize(&payload).unwrap(),
+        };
 
         let response = block_on(async { self.client.wrap(request).await }).unwrap();
         let proof: SP1ReduceProof<OuterSC> = bincode::deserialize(&response.result).unwrap();
@@ -318,23 +255,7 @@ impl Default for SP1CudaProver {
 
 impl Drop for SP1CudaProver {
     fn drop(&mut self) {
-        if let Some(container) = &self.managed_container {
-            if !container.cleaned_up.load(Ordering::SeqCst) {
-                tracing::debug!("dropping SP1ProverClient, cleaning up...");
-                cleanup_container(&container.name);
-                container.cleaned_up.store(true, Ordering::SeqCst);
-            }
-        }
-    }
-}
-
-/// Cleans up the a docker container with the given name.
-fn cleanup_container(container_name: &str) {
-    if let Err(e) = Command::new("docker").args(["rm", "-f", container_name]).output() {
-        eprintln!(
-            "Failed to remove container: {}. You may need to manually remove it using 'docker rm -f {}'",
-            e, container_name
-        );
+        self.child.kill().expect("Failed to kill child process");
     }
 }
 
