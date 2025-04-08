@@ -17,7 +17,6 @@ from zkbench.plot.genetic import plot_genetic
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.prove_exec import plot_prove_exec
 
-
 @click.command(name="average-improvement")
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--program", type=click.Choice(get_programs()), required=False)

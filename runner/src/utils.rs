@@ -7,6 +7,10 @@ use serde_json::from_reader;
 
 use crate::types::{Config, ProgramId, ProverId};
 
+pub fn is_gpu_proving() -> bool {
+    cfg!(feature = "cuda")
+}
+
 pub fn time_operation<T, F: FnOnce() -> T>(operation: F) -> (T, time::Duration) {
     let start = Instant::now();
     let result = operation();
