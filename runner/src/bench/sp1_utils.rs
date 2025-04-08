@@ -8,6 +8,8 @@ use sp1_stark::{
 
 use super::utils::ElfStats;
 
+// TODO: use correct prover everywhere
+
 #[allow(dead_code)]
 pub fn exec_sp1_prepare(
     elf: &[u8],

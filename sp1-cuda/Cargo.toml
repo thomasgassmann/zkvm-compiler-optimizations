@@ -1,0 +1,22 @@
+[package]
+name = "sp1-cuda"
+edition = "2021"
+
+[dependencies]
+sp1-core-machine = "4.1.4"
+sp1-prover = "4.1.4"
+prost = "0.13"
+bincode = "1.3.3"
+serde = { version = "1.0.218", features = ["derive"] }
+tokio = { version = "^1.38.0", features = ["full"] }
+tracing = "0.1.40"
+twirp = { package = "twirp-rs", version = "0.13.0-succinct" }
+ctrlc = "3.4.4"
+
+[build-dependencies]
+prost-build = { version = "0.13", optional = true }
+twirp-build = { package = "twirp-build-rs", version = "0.13.0-succinct", optional = true }
+
+[features]
+default = []
+protobuf = ["dep:prost-build", "dep:twirp-build"]

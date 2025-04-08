@@ -1,3 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["runner"]
+members = ["runner", "sp1-cuda"]
+
+[patch.crates-io]
+sp1-cuda = { path = "./sp1-cuda" }
