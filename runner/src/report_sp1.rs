@@ -19,7 +19,7 @@ impl SP1Evaluator {
         let cycles = get_cycles(&elf, &stdin);
         println!("cycles: {}", cycles);
 
-        // TODO: use the correct prover
+        // TODO: use GPU prover here, if cuda feature set
         let prover = SP1Prover::<CpuProverComponents>::new();
 
         // Setup the program.
