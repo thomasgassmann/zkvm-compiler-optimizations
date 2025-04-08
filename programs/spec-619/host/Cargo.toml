@@ -12,5 +12,5 @@ c-platform = { path = "../../c-platform" }
 c-build = { path = "../../c-build" }
 
 [features]
-risc0 = []
-sp1 = []
+risc0 = ["c-platform/risc0"]
+sp1 = ["c-platform/risc0"]

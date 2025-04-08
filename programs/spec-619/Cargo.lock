@@ -306,16 +306,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "c-sample"
-version = "0.1.0"
-dependencies = [
- "c-build",
- "c-platform",
- "risc0-zkvm",
- "sp1-zkvm",
-]
-
-[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1115,6 +1105,16 @@ dependencies = [
  "sha2",
  "sp1-lib",
  "sp1-primitives",
+]
+
+[[package]]
+name = "spec-619"
+version = "0.1.0"
+dependencies = [
+ "c-build",
+ "c-platform",
+ "risc0-zkvm",
+ "sp1-zkvm",
 ]
 
 [[package]]

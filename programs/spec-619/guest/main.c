@@ -4,17 +4,18 @@
 
 #include "main.h"
 #include "lbm.h"
-#include <stdio.h>
-#include <stdlib.h>
+// #include <stdio.h>
+// #include <stdlib.h>
 
 #if defined(SPEC)
-#   include <time.h>
+// #   include <time.h>
 #else
 #   include <sys/times.h>
 #   include <unistd.h>
 #endif
 
-#include <sys/stat.h>
+// #include <sys/stat.h>
+#include <zkvm.h>
 
 /*############################################################################*/
 
@@ -22,14 +23,19 @@ static LBM_GridPtr srcGrid, dstGrid;
 
 /*############################################################################*/
 
-int main( int nArgs, char* arg[] ) {
+void cmain() {
 	MAIN_Param param;
 #if !defined(SPEC)
 	MAIN_Time time;
 #endif
 	int t;
 
-	MAIN_parseCommandLine( nArgs, arg, &param );
+	param.nTimeSteps = read_int();
+	param.action = (MAIN_Action)read_int();
+	param.simType = (MAIN_SimType)read_int();
+	param.resultFilename = malloc(1);
+	param.resultFilename[0] = '\0';
+
 	MAIN_printInfo( &param );
 	MAIN_initialize( &param );
 #if !defined(SPEC)
@@ -54,51 +60,49 @@ int main( int nArgs, char* arg[] ) {
 	MAIN_stopClock( &time, &param );
 #endif
 	MAIN_finalize( &param );
-
-	return 0;
 }
 
 /*############################################################################*/
 
-void MAIN_parseCommandLine( int nArgs, char* arg[], MAIN_Param* param ) {
-	struct stat fileStat;
+// void MAIN_parseCommandLine( int nArgs, char* arg[], MAIN_Param* param ) {
+// 	struct stat fileStat;
 	
-	if( nArgs < 5 || nArgs > 6 ) {
-		printf( "syntax: lbm <time steps> <result file> <0: nil, 1: cmp, 2: str> <0: ldc, 1: channel flow> [<obstacle file>]\n" );
-		exit( 1 );
-	}
+// 	if( nArgs < 5 || nArgs > 6 ) {
+// 		printf( "syntax: lbm <time steps> <result file> <0: nil, 1: cmp, 2: str> <0: ldc, 1: channel flow> [<obstacle file>]\n" );
+// 		exit( 1 );
+// 	}
 
-	param->nTimeSteps     = atoi( arg[1] );
-	param->resultFilename = arg[2];
-	param->action         = (MAIN_Action) atoi( arg[3] );
-	param->simType        = (MAIN_SimType) atoi( arg[4] );
+// 	param->nTimeSteps     = atoi( arg[1] );
+// 	param->resultFilename = arg[2];
+// 	param->action         = (MAIN_Action) atoi( arg[3] );
+// 	param->simType        = (MAIN_SimType) atoi( arg[4] );
 
-	if( nArgs == 6 ) {
-		param->obstacleFilename = arg[5];
+// 	if( nArgs == 6 ) {
+// 		param->obstacleFilename = arg[5];
 
-		if( stat( param->obstacleFilename, &fileStat ) != 0 ) {
-			printf( "MAIN_parseCommandLine: cannot stat obstacle file '%s'\n",
-			         param->obstacleFilename );
-			exit( 1 );
-		}
-		if( fileStat.st_size != SIZE_X*SIZE_Y*SIZE_Z+(SIZE_Y+1)*SIZE_Z ) {
-			printf( "MAIN_parseCommandLine:\n"
-			        "\tsize of file '%s' is %i bytes\n"
-					    "\texpected size is %i bytes\n",
-			        param->obstacleFilename, (int) fileStat.st_size,
-			        SIZE_X*SIZE_Y*SIZE_Z+(SIZE_Y+1)*SIZE_Z );
-			exit( 1 );
-		}
-	}
-	else param->obstacleFilename = NULL;
+// 		if( stat( param->obstacleFilename, &fileStat ) != 0 ) {
+// 			printf( "MAIN_parseCommandLine: cannot stat obstacle file '%s'\n",
+// 			         param->obstacleFilename );
+// 			exit( 1 );
+// 		}
+// 		if( fileStat.st_size != SIZE_X*SIZE_Y*SIZE_Z+(SIZE_Y+1)*SIZE_Z ) {
+// 			printf( "MAIN_parseCommandLine:\n"
+// 			        "\tsize of file '%s' is %i bytes\n"
+// 					    "\texpected size is %i bytes\n",
+// 			        param->obstacleFilename, (int) fileStat.st_size,
+// 			        SIZE_X*SIZE_Y*SIZE_Z+(SIZE_Y+1)*SIZE_Z );
+// 			exit( 1 );
+// 		}
+// 	}
+// 	else param->obstacleFilename = NULL;
 
-	if( param->action == COMPARE &&
-	    stat( param->resultFilename, &fileStat ) != 0 ) {
-		printf( "MAIN_parseCommandLine: cannot stat result file '%s'\n",
-		         param->resultFilename );
-		exit( 1 );
-	}
-}
+// 	if( param->action == COMPARE &&
+// 	    stat( param->resultFilename, &fileStat ) != 0 ) {
+// 		printf( "MAIN_parseCommandLine: cannot stat result file '%s'\n",
+// 		         param->resultFilename );
+// 		exit( 1 );
+// 	}
+// }
 
 /*############################################################################*/
 
@@ -129,8 +133,8 @@ void MAIN_initialize( const MAIN_Param* param ) {
 	LBM_initializeGrid( *dstGrid );
 
 	if( param->obstacleFilename != NULL ) {
-		LBM_loadObstacleFile( *srcGrid, param->obstacleFilename );
-		LBM_loadObstacleFile( *dstGrid, param->obstacleFilename );
+		// LBM_loadObstacleFile( *srcGrid, param->obstacleFilename );
+		// LBM_loadObstacleFile( *dstGrid, param->obstacleFilename );
 	}
 
 	if( param->simType == CHANNEL ) {
@@ -150,10 +154,10 @@ void MAIN_initialize( const MAIN_Param* param ) {
 void MAIN_finalize( const MAIN_Param* param ) {
 	LBM_showGridStatistics( *srcGrid );
 
-	if( param->action == COMPARE )
-		LBM_compareVelocityField( *srcGrid, param->resultFilename, TRUE );
-	if( param->action == STORE )
-	LBM_storeVelocityField( *srcGrid, param->resultFilename, TRUE );
+	// if( param->action == COMPARE )
+	// 	LBM_compareVelocityField( *srcGrid, param->resultFilename, TRUE );
+	// if( param->action == STORE )
+	// LBM_storeVelocityField( *srcGrid, param->resultFilename, TRUE );
 
 	LBM_freeGrid( (double**) &srcGrid );
 	LBM_freeGrid( (double**) &dstGrid );

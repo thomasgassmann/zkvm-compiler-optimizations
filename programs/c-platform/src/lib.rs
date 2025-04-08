@@ -91,5 +91,23 @@ macro_rules! include_platform {
                 dealloc(orig_ptr, layout);
             }
         }
+
+        #[unsafe(no_mangle)]
+        #[inline(always)]
+        pub extern "C" fn exit(code: i32) {
+            unsafe {
+                std::process::exit(code);
+            }
+        }
+
+        #[unsafe(no_mangle)]
+        #[inline(always)]
+        pub extern "C" fn read_int() -> i32 {
+            #[cfg(feature = "risc0")]
+            let n: i32 = risc0_zkvm::guest::env::read();
+            #[cfg(feature = "sp1")]
+            let n: i32 = sp1_zkvm::io::read();
+            n
+        }
     };
 }

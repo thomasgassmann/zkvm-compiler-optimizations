@@ -31,17 +31,17 @@ void LBM_allocateGrid( double** ptr );
 void LBM_freeGrid( double** ptr );
 void LBM_initializeGrid( LBM_Grid grid );
 void LBM_initializeSpecialCellsForLDC( LBM_Grid grid );
-void LBM_loadObstacleFile( LBM_Grid grid, const char* filename );
+// void LBM_loadObstacleFile( LBM_Grid grid, const char* filename );
 void LBM_initializeSpecialCellsForChannel( LBM_Grid grid );
 void LBM_swapGrids( LBM_GridPtr* grid1, LBM_GridPtr* grid2 );
 void LBM_performStreamCollideBGK( LBM_Grid srcGrid, LBM_Grid dstGrid );
 void LBM_performStreamCollideTRT( LBM_Grid srcGrid, LBM_Grid dstGrid );
 void LBM_handleInOutFlow( LBM_Grid srcGrid );
 void LBM_showGridStatistics( LBM_Grid Grid );
-void LBM_storeVelocityField( LBM_Grid grid, const char* filename,
-                           const BOOL binary );
-void LBM_compareVelocityField( LBM_Grid grid, const char* filename,
-                             const BOOL binary );
+// void LBM_storeVelocityField( LBM_Grid grid, const char* filename,
+                        //    const BOOL binary );
+// void LBM_compareVelocityField( LBM_Grid grid, const char* filename,
+//                              const BOOL binary );
 
 /*############################################################################*/
 
