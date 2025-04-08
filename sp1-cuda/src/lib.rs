@@ -138,6 +138,7 @@ impl SP1CudaProver {
     fn start_moongate_server(
         reqwest_middlewares: Vec<Box<dyn Middleware>>,
     ) -> Result<SP1CudaProver, Box<dyn StdError>> {
+        print!("Starting Moongate server...");
         let rust_log_level = std::env::var("RUST_LOG").unwrap_or_else(|_| "none".to_string());
         let child = Command::new("./sp1-cuda/moongate-server")
             .env("RUST_LOG", rust_log_level)
