@@ -1,9 +1,12 @@
-use super::super::{
-    types::{MeasurementType, ProgramId, ProverId},
-    utils::read_elf,
-};
 use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
+};
+use super::{
+    super::{
+        types::{MeasurementType, ProgramId, ProverId},
+        utils::read_elf,
+    },
+    sp1_utils::exec_sp1_prepare,
 };
 use crate::bench::sp1_utils::{exec_sp1, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare};
 use crate::bench::utils::write_elf_stats;
@@ -43,19 +46,21 @@ fn add_sp1_exec_and_prove(
         return;
     }
 
-    let (stdin, prover, program, pk_d, opts, _) = prove_core_sp1_prepare(&elf, program);
-
+    let (pk, _, stdin) = prove_core_sp1_prepare(&elf, program);
     match measurement {
         MeasurementType::Exec => {
             group.bench_function(profile, |b| {
-                b.iter(|| exec_sp1(&stdin, &prover, &elf));
+                b.iter_with_setup(
+                    || exec_sp1_prepare(&elf, program),
+                    |(stdin, prover)| exec_sp1(&stdin, &prover, &elf),
+                );
             });
         }
         MeasurementType::Prove => {
             group.bench_function(profile, |b| {
                 b.iter_with_setup(
-                    || program.clone(),
-                    |cloned_program| prove_core_sp1(&stdin, &prover, cloned_program, &pk_d, opts),
+                    || pk.clone(),
+                    |cloned_pk| prove_core_sp1(&stdin, &cloned_pk),
                 );
             });
         }
