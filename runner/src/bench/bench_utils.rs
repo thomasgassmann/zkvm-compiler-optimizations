@@ -15,7 +15,7 @@ use crate::bench::utils::write_elf_stats;
 use crate::input::get_sp1_stdin;
 use crate::utils::is_gpu_proving;
 use criterion::measurement::WallTime;
-use sp1_sdk::ProverClient;
+use sp1_sdk::{Prover, ProverClient};
 
 pub fn add_benchmarks_for(
     program: &ProgramId,
@@ -54,10 +54,11 @@ fn add_sp1_exec_and_prove(
 
     env::set_var("SP1_PROVER", if is_gpu_proving() { "cuda" } else { "cpu" });
 
-    let prover = ProverClient::from_env();
-    let (pk, _) = prover.setup(&elf);
+    let cpu_prover = ProverClient::builder().cpu().build();
+    let (pk, _) = cpu_prover.setup(&elf);
     let stdin = get_sp1_stdin(program);
-    prover.prove(&pk, &stdin).core().run().unwrap();
+    let prover = ProverClient::from_env();
+    prover.prove(&pk, &stdin).groth16().run().unwrap();
     return;
 
     let (pk, _, stdin) = prove_core_sp1_prepare(&elf, program);
