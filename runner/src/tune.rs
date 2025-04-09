@@ -32,10 +32,8 @@ pub fn run_tune(args: TuneArgs) {
             duration.as_millis()
         }
         (ProverId::SP1, TuneMetric::ProveTime) => {
-            let (stdin, prover, program, pk_d, opts, _) =
-                prove_core_sp1_prepare(&elf, &args.program);
-            let (_, duration) =
-                time_operation(|| prove_core_sp1(&stdin, &prover, program, &pk_d, opts));
+            let (pk, _, stdin) = prove_core_sp1_prepare(&elf, &args.program);
+            let (_, duration) = time_operation(|| prove_core_sp1(&stdin, &pk));
             duration.as_millis()
         }
     };
