@@ -1,3 +1,5 @@
+use std::env;
+
 use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
@@ -10,7 +12,10 @@ use super::{
 };
 use crate::bench::sp1_utils::{exec_sp1, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare};
 use crate::bench::utils::write_elf_stats;
+use crate::input::get_sp1_stdin;
+use crate::utils::is_gpu_proving;
 use criterion::measurement::WallTime;
+use sp1_sdk::ProverClient;
 
 pub fn add_benchmarks_for(
     program: &ProgramId,
@@ -45,6 +50,15 @@ fn add_sp1_exec_and_prove(
     if meta_only {
         return;
     }
+
+
+    env::set_var("SP1_PROVER", if is_gpu_proving() { "cuda" } else { "cpu" });
+
+    let prover = ProverClient::from_env();
+    let (pk, _) = prover.setup(&elf);
+    let stdin = get_sp1_stdin(program);
+    prover.prove(&pk, &stdin).core().run().unwrap();
+    return;
 
     let (pk, _, stdin) = prove_core_sp1_prepare(&elf, program);
     match measurement {
