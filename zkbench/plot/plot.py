@@ -10,6 +10,7 @@ from zkbench.config import (
 )
 from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
+from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
 from zkbench.plot.cycle_prove_duration import plot_cycle_count_duration
@@ -87,3 +88,18 @@ def plot_genetic_cli(stats: str):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
     plot_genetic(stats)
+
+
+@click.command(name="missing")
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def plot_missing_cli(measurement: str | None, zkvm: str | None):
+    measurements = get_measurements() if measurement is None else [measurement]
+    zkvms = get_zkvms() if zkvm is None else [zkvm]
+    programs = get_programs()
+    dir = click.get_current_context().parent.params["dir"]
+    for m in measurements:
+        for z in zkvms:
+            for p in programs:
+                if not has_data_on(dir, p, z, m):
+                    print(f"{p}-{z}-{m}")

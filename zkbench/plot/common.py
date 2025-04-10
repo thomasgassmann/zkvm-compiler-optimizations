@@ -49,6 +49,11 @@ def get_title(base: str, info: list[str | None]):
     return title
 
 
+def has_data_on(dir: str, program: str, zkvm: str, measurement: str):
+    path = os.path.join(dir, f"{program}-{zkvm}-{measurement}")
+    return os.path.exists(path)
+
+
 def read_estimates_data(
     dir: str, program: str, zkvm: str, profile: str, measurement: str
 ):

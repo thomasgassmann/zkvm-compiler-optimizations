@@ -17,6 +17,7 @@ from zkbench.plot.plot import (
     cycle_count_duration_cli,
     opt_by_program_cli,
     plot_genetic_cli,
+    plot_missing_cli,
     prove_exec_cli,
 )
 from zkbench.bench import run_bench
@@ -161,6 +162,7 @@ plot_cli.add_command(prove_exec_cli)
 plot_cli.add_command(cycle_count_abs_cli)
 plot_cli.add_command(opt_by_program_cli)
 plot_cli.add_command(plot_genetic_cli)
+plot_cli.add_command(plot_missing_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)
