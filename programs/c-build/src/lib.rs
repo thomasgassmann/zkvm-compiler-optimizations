@@ -6,7 +6,7 @@ pub fn setup_build(program: &str) {
     println!("cargo:rerun-if-env-changed=PASSES");
     println!("cargo:rerun-if-env-changed=ZK_CFLAGS");
     println!("cargo:rerun-if-env-changed=RUSTFLAGS");
-    println!("cargo:rerun-if-env-changed=LLVM_VERSION");
+    println!("cargo:rerun-if-env-changed=C_LLVM_VERSION");
 
     let passes = env::var("PASSES").unwrap_or("".to_string());
     let llvm_version = env::var("C_LLVM_VERSION").unwrap_or("".to_string());
