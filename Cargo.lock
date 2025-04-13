@@ -6114,6 +6114,7 @@ dependencies = [
  "serde_json",
  "sp1-core-executor",
  "sp1-core-machine",
+ "sp1-cuda",
  "sp1-prover",
  "sp1-sdk",
  "sp1-stark",
@@ -6793,7 +6794,7 @@ dependencies = [
 
 [[package]]
 name = "sp1-cuda"
-version = "4.2.5"
+version = "4.2.0"
 dependencies = [
  "bincode",
  "prost",
