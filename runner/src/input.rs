@@ -212,7 +212,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&rand_ecdsa_signature());
         }
         ProgramId::EddsaVerify => {
-            let times: u8 = 100;
+            let times: u8 = 10;
             if prover == ProverId::Risc0 {
                 stdin.write_generic(&times);
             }

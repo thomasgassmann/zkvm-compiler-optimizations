@@ -6,7 +6,7 @@ use risc0_zkvm::guest::env;
 
 fn main() {
     let times: u8 = env::read();
-    for _ in 0..100 {
+    for _ in 0..times {
         verify_inner();
     }
 }

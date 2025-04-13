@@ -170,6 +170,8 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
                     {
                         "profile_configs": self._profile_configs,
                         "values": self._values,
+                        "best_metric": self._best,
+                        "best_profile": dataclasses.asdict(self._best_config),
                     },
                     f,
                 )
