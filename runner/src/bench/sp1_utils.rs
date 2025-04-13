@@ -17,9 +17,8 @@ use sp1_stark::SP1CoreOpts;
 
 use super::utils::ElfStats;
 
-static PROVER_CLIENT: Lazy<Arc<Mutex<EnvProver>>> = Lazy::new(|| {
+static ENV_PROVER_CLIENT: Lazy<Arc<Mutex<EnvProver>>> = Lazy::new(|| {
     env::set_var("SP1_PROVER", if is_gpu_proving() { "cuda" } else { "cpu" });
-
     let prover = ProverClient::from_env();
     Arc::new(Mutex::new(prover))
 });
@@ -28,8 +27,6 @@ pub fn exec_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
 ) -> (SP1Stdin, SP1Prover<CpuProverComponents>) {
-    // TODO: should we also use PROVER_CLIENT here? rpc might have larger overhead => worse measurements
-    // check whether CudaProver actually executes on GPU?
     let stdin = get_sp1_stdin(program);
 
     let prover = SP1Prover::<CpuProverComponents>::new();
@@ -79,12 +76,12 @@ pub fn prove_core_sp1_prepare(
     program: &ProgramId,
 ) -> (SP1ProvingKey, SP1VerifyingKey, SP1Stdin) {
     let stdin = get_sp1_stdin(program);
-    let (pk, vk) = PROVER_CLIENT.lock().unwrap().setup(elf);
+    let (pk, vk) = ENV_PROVER_CLIENT.lock().unwrap().setup(elf);
     (pk, vk, stdin)
 }
 
 pub fn prove_core_sp1(stdin: &SP1Stdin, pk: &SP1ProvingKey) {
-    PROVER_CLIENT
+    ENV_PROVER_CLIENT
         .lock()
         .unwrap()
         .prove(pk, stdin)

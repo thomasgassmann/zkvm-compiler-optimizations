@@ -8,6 +8,9 @@ use crate::{
     utils::time_operation,
 };
 
+#[cfg(feature = "cuda")]
+use sp1_cuda::SP1CudaProver;
+
 // adapted from https://github.com/succinctlabs/zkvm-perf
 pub struct SP1Evaluator;
 
@@ -16,29 +19,43 @@ impl SP1Evaluator {
         // Get stdin.
         let stdin = get_sp1_stdin(&program_id);
 
+        // Get the elf.
         let cycles = get_cycles(&elf, &stdin);
         println!("cycles: {}", cycles);
 
-        // TODO: use GPU prover here, if cuda feature set
         let prover = SP1Prover::<CpuProverComponents>::new();
 
+        #[cfg(feature = "cuda")]
+        let server = SP1CudaProver::new().expect("Failed to initialize CUDA prover");
+
         // Setup the program.
+        #[cfg(not(feature = "cuda"))]
         let (_, pk_d, program, vk) = prover.setup(&elf);
+
+        #[cfg(feature = "cuda")]
+        let (pk, vk) = server.setup(&elf).unwrap();
 
         // Execute the program.
         let context = SP1Context::default();
-        let (_, execution_duration) =
+        let ((_pv, _), execution_duration) =
             time_operation(|| prover.execute(&elf, &stdin, context.clone()).unwrap());
 
         // Setup the prover opionts.
+        #[cfg(not(feature = "cuda"))]
         let opts = SP1ProverOpts::auto();
 
         // Generate the core proof (CPU).
+        #[cfg(not(feature = "cuda"))]
         let (core_proof, prove_core_duration) = time_operation(|| {
             prover
                 .prove_core(&pk_d, program, &stdin, opts, context)
                 .unwrap()
         });
+
+        // Generate the core proof (CUDA).
+        #[cfg(feature = "cuda")]
+        let (core_proof, prove_core_duration) =
+            time_operation(|| server.prove_core(&stdin).unwrap());
 
         let num_shards = core_proof.proof.0.len();
 
@@ -50,8 +67,13 @@ impl SP1Evaluator {
                 .expect("Proof verification failed")
         });
 
+        #[cfg(not(feature = "cuda"))]
         let (compress_proof, compress_duration) =
             time_operation(|| prover.compress(&vk, core_proof, vec![], opts).unwrap());
+
+        #[cfg(feature = "cuda")]
+        let (compress_proof, compress_duration) =
+            time_operation(|| server.compress(&vk, core_proof, vec![]).unwrap());
 
         let compress_bytes = bincode::serialize(&compress_proof).unwrap();
         println!("recursive proof size: {}", compress_bytes.len());
