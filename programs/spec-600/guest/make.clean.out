@@ -1,5 +1,0 @@
-rm -rf *.o  diffmail.2.550.15.24.23.100.out perfect.b.3.out scrabbl.out splitmail.535.13.25.24.1091.1.out suns.out validate
-find . \( -name \*.o -o -name '*.fppized.f*' -o -name '*.i' -o -name '*.mod' \) -print | xargs rm -rf
-rm -rf perlbench_s
-rm -rf perlbench_s.exe
-rm -rf core
