@@ -1,5 +1,7 @@
 use sp1_core_executor::SP1Context;
 use sp1_prover::{components::CpuProverComponents, utils::get_cycles, SP1Prover};
+
+#[cfg(not(feature = "cuda"))]
 use sp1_stark::SP1ProverOpts;
 
 use crate::{
@@ -33,7 +35,7 @@ impl SP1Evaluator {
         let (_, pk_d, program, vk) = prover.setup(&elf);
 
         #[cfg(feature = "cuda")]
-        let (pk, vk) = server.setup(&elf).unwrap();
+        let (_pk, vk) = server.setup(&elf).unwrap();
 
         // Execute the program.
         let context = SP1Context::default();
