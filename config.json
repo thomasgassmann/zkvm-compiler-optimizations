@@ -982,9 +982,6 @@
             "groups": [
                 "spec"
             ]
-        },
-        "c-sample": {
-            "groups": []
         }
     }
 }
