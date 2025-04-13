@@ -25,6 +25,7 @@ Copyright (c) 2006-2010 LBW.
 #endif
 
 #include "implicit.h"
+#include <zkvm.h>
 
 #ifdef _PROTO_
 static int arc_compare( arc_t **a1, arc_t **a2 )
@@ -222,7 +223,7 @@ LONG resize_prob( net )
             net->max_m * sizeof(arc_t) / 0x100000,
             net->max_m,
             (unsigned LONG)sizeof(arc_t) );
-    fflush( stdout );
+    // fflush( stdout );
 #endif
 
 
@@ -230,7 +231,7 @@ LONG resize_prob( net )
     if( !arc )
     {
         printf( "network %s: not enough memory\n", net->inputfile );
-        fflush( stdout );
+        // fflush( stdout );
         return -1;
     }
     

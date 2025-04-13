@@ -77,6 +77,113 @@ macro_rules! include_platform {
         }
 
         #[unsafe(no_mangle)]
+        pub extern "C" fn calloc(count: i32, size: i32) -> *mut u8 {
+            unsafe {
+                let total_size = (count as usize).checked_mul(size as usize)
+                    .expect("Size overflow");
+                let ptr = malloc(total_size as i32);
+                ptr::write_bytes(ptr, 0, total_size);
+                ptr
+            }
+        }
+
+        #[unsafe(no_mangle)]
+        pub extern "C" fn realloc(ptr: *mut u8, size: i32) -> *mut u8 {
+            unsafe {
+                if ptr.is_null() {
+                    return malloc(size);
+                }
+
+                if size == 0 {
+                    free(ptr);
+                    return ptr::null_mut();
+                }
+
+                let header_size = mem::size_of::<usize>();
+
+                let orig_ptr = ptr.sub(header_size);
+
+                let old_total_size = (orig_ptr as *mut usize).read();
+                let old_user_size = old_total_size - header_size;
+
+                let new_user_size = size as usize;
+                let new_total_size = header_size.checked_add(new_user_size)
+                    .expect("Size overflow");
+
+                let new_layout = Layout::from_size_align(new_total_size, mem::align_of::<usize>())
+                    .expect("Invalid layout");
+
+                let new_raw_ptr = alloc(new_layout);
+                if new_raw_ptr.is_null() {
+                    panic!("realloc failed: allocation returned null");
+                }
+
+                (new_raw_ptr as *mut usize).write(new_total_size);
+
+                let new_user_ptr = new_raw_ptr.add(header_size);
+
+                let copy_size = if old_user_size < new_user_size { old_user_size } else { new_user_size };
+                ptr::copy_nonoverlapping(ptr, new_user_ptr, copy_size);
+
+                let old_layout = Layout::from_size_align(old_total_size, mem::align_of::<usize>())
+                    .expect("Invalid layout");
+                dealloc(orig_ptr, old_layout);
+
+                new_user_ptr
+            }
+        }
+
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn strcpy(dest: *mut u8, src: *const u8) -> *mut u8 {
+            let mut i = 0;
+            loop {
+                let byte = *src.add(i);
+                *dest.add(i) = byte;
+                if byte == 0 {
+                    break;
+                }
+                i += 1;
+            }
+            dest
+        }
+
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn atoi(s: *const u8) -> i32 {
+            if s.is_null() {
+                return 0;
+            }
+
+            let mut ptr = s;
+            let mut result: i32 = 0;
+            let mut sign: i32 = 1;
+
+            while *ptr == b' ' {
+                ptr = ptr.add(1);
+            }
+
+            if *ptr == b'-' {
+                sign = -1;
+                ptr = ptr.add(1);
+            } else if *ptr == b'+' {
+                ptr = ptr.add(1);
+            }
+
+            while *ptr >= b'0' && *ptr <= b'9' {
+                let digit = (*ptr - b'0') as i32;
+
+                if let Some(new_result) = result.checked_mul(10).and_then(|r| r.checked_add(digit)) {
+                    result = new_result;
+                } else {
+                    return if sign == 1 { i32::MAX } else { i32::MIN };
+                }
+
+                ptr = ptr.add(1);
+            }
+
+            result * sign
+        }
+
+        #[unsafe(no_mangle)]
         pub extern "C" fn free(ptr: *mut u8) {
             unsafe {
                 if ptr.is_null() {

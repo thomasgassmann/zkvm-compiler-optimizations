@@ -22,7 +22,7 @@ Copyright (c) 2006-2010 LBW.
 
 
 #include "mcf.h"
-#include "time.h"
+// #include "time.h"
 
 #define REPORT
 
@@ -48,13 +48,13 @@ LONG global_opt( )
   while( new_arcs )
   {
 #ifdef REPORT
-    printf( "active arcs                : %" PRId64 "\n", net.m );
+    printf( "active arcs                : %d\n", net.m );
 #endif
     
     primal_net_simplex( &net );
     
 #ifdef REPORT
-    printf( "simplex iterations         : %" PRId64 "\n", net.iterations );
+    printf( "simplex iterations         : %d\n", net.iterations );
     printf( "objective value            : %0.0f\n", flow_cost(&net) );
 #endif
     
@@ -78,7 +78,7 @@ LONG global_opt( )
       }
 #ifdef REPORT
       if( new_arcs )
-        printf( "erased arcs                : %" PRId64 "\n", new_arcs );
+        printf( "erased arcs                : %d\n", new_arcs );
 #endif
     }
     else 
@@ -121,18 +121,13 @@ LONG global_opt( )
 
 
 
-#ifdef _PROTO_
-int main( int argc, char *argv[] )
-#else
-int main( argc, argv )
-    int argc;
-    char *argv[];
-#endif
+void cmain()
 {
-  int outnum; 
-  char outfile[80];
-  if( argc < 2 )
-    return -1;
+  // int outnum; 
+  // char outfile[80];
+  // if( argc < 2 )
+  //   return -1;
+  char *input_file = "";
   
 #ifndef SPEC
   time_t startTime, endTime;
@@ -152,20 +147,19 @@ int main( argc, argv )
   memset( (void *)(&net), 0, (size_t)sizeof(network_t) );
   net.bigM = (LONG)BIGM;
   
-  
-  strcpy( net.inputfile, argv[1] );
-  if (argc == 3) {
-     outnum = atoi(argv[2]);
-     sprintf(outfile,"mcf.%d.out",outnum);
-  } else {
-     strcpy(outfile,"mcf.out"); 
-  }  
+  strcpy( net.inputfile, input_file );
+  // if (argc == 3) {
+  //    outnum = atoi(argv[2]);
+  //    sprintf(outfile,"mcf.%d.out",outnum);
+  // } else {
+  //    strcpy(outfile,"mcf.out"); 
+  // }  
  
   if( read_min( &net ) )
   {
     printf( "read error, exit\n" );
     getfree( &net );
-    return -1;
+    return;
   }
   
 #ifndef SPEC
@@ -177,7 +171,7 @@ int main( argc, argv )
 #endif
   
 #if defined(REPORT) || defined(SPEC)
-  printf( "nodes                      : %" PRId64 "\n", net.n_trips );
+  printf( "nodes                      : %d\n", net.n_trips );
 #endif
   
   
@@ -186,10 +180,10 @@ int main( argc, argv )
   
   
   
-  if( write_objective_value( outfile, &net ) )
+  if( write_objective_value( "no-out-file", &net ) )
   {
     getfree( &net );
-    return -1;    
+    return;    
   }
   
   
@@ -205,5 +199,5 @@ int main( argc, argv )
 #endif
   
   
-  return 0;
+  return;
 }

@@ -42,9 +42,9 @@
 #  error spec_qsort requires C++11 cstdint when built in C++ mode
 # endif
 #else
-# include <stdlib.h>
-# include <stddef.h>
-# include <stdint.h>
+// # include <stdlib.h>
+// # include <stddef.h>
+// # include <stdint.h>
 #endif
 
 #if defined(__cplusplus) || __STDC_VERSION__ >= 199901L
@@ -52,6 +52,8 @@
 #else
 # define INLINE
 #endif
+
+#include <zkvm.h>
 
 typedef int              cmp_t(const void *, const void *);
 static INLINE char      *med3(char *, char *, char *, cmp_t *);

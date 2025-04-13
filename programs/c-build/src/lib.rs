@@ -4,6 +4,7 @@ pub fn setup_build(program: &str) {
     println!("cargo:rerun-if-changed=NULL");
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-env-changed=PASSES");
+    println!("cargo:rerun-if-env-changed=ZK_CFLAGS");
     println!("cargo:rerun-if-env-changed=RUSTFLAGS");
     println!("cargo:rerun-if-env-changed=LLVM_VERSION");
 
@@ -36,11 +37,13 @@ pub fn setup_build(program: &str) {
         panic!("Make clean failed with status: {:?}", status);
     }
 
+    let cflags = env::var("ZK_CFLAGS").unwrap_or("".to_string());
     println!("cargo::warning=Done cleaning");
     let mut binding = Command::new("make");
     let make_command = binding
         .current_dir("..")
         .arg(passes_string)
+        .arg(format!("ZK_CFLAGS={}", cflags))
         .arg(format!("PROGRAM={}", program))
         .arg("-B")
         .arg("all");

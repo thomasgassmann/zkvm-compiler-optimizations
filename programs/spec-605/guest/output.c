@@ -38,14 +38,14 @@ LONG write_circulations( outfile, net )
      network_t *net;
 #endif 
 {
-  FILE *out = NULL;
+  // FILE *out = NULL;
   arc_t *block;
   arc_t *arc;
   arc_t *arc2;
   arc_t *first_impl = net->stop_arcs - net->m_impl;
   
-  if(( out = fopen( outfile, "w" )) == NULL )
-    return -1;
+  // if(( out = fopen( outfile, "w" )) == NULL )
+  //   return -1;
   
   refresh_neighbour_lists( net, &getArcPosition );
   
@@ -53,22 +53,22 @@ LONG write_circulations( outfile, net )
   {
     if( block->flow )
     {
-      fprintf( out, "()\n" );
+      printf( "()\n" );
       
       arc = block;
       while( arc )
       {
         if( arc >= first_impl )
-          fprintf( out, "***\n" );
+          printf( "***\n" );
         
-        fprintf( out, "%d\n", - arc->head->number );
+        printf( "%d\n", - arc->head->number );
         arc2 = arc->head[net->n_trips].firstout; 
         for( ; arc2; arc2 = arc2->nextout )
           if( arc2->flow )
             break;
         if( !arc2 )
         {
-          fclose( out );
+          // fclose( out );
           return -1;
         }
         
@@ -81,7 +81,7 @@ LONG write_circulations( outfile, net )
   }
   
   
-  fclose(out);
+  // fclose(out);
   
   return 0;
 }
@@ -101,14 +101,14 @@ LONG write_objective_value( outfile, net )
      network_t *net;
 #endif 
 {
-  FILE *out = NULL;
+  // FILE *out = NULL;
   
-  if(( out = fopen( outfile, "w" )) == NULL )
-    return -1;
+  // if(( out = fopen( outfile, "w" )) == NULL )
+  //   return -1;
   
-  fprintf( out, "%.0f\n", flow_cost(net) );
+  printf( "%.0f\n", flow_cost(net) );
   
-  fclose(out);
+  // fclose(out);
   
   return 0;
 }

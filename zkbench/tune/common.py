@@ -170,9 +170,11 @@ def build_profile(config: ProfileConfig) -> Profile:
         rustflags += f" -C lto={config.lto} -C embed-bitcode"
     if config.single_codegen_unit:
         rustflags += " -C codegen-units=1"
+    cflags = f"-O{config.opt_level}"
     return Profile(
         profile_name=config.name,
         rustflags=rustflags,
+        cflags=cflags,
         passes=config.passes,
         prepopulate_passes=config.prepopulate_passes,
     )

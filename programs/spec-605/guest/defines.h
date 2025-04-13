@@ -24,17 +24,18 @@ Copyright (c) 2006-2010 LBW.
 #ifndef _DEFINES_H
 #define _DEFINES_H
 
-#include <stdio.h>
+#include <zkvm.h>
+// #include <stdio.h>
 #ifndef _WIN32
-#include <unistd.h>
+// #include <unistd.h>
 #endif
-#include <math.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <string.h>
-#include <errno.h>
-#include <ctype.h>
-#include <assert.h>
+// #include <math.h>
+// #include <stdlib.h>
+// #include <limits.h>
+// #include <string.h>
+// #include <errno.h>
+// #include <ctype.h>
+// #include <assert.h>
 
 #ifdef INTERNAL_TIMING
 #include <time.h>
@@ -43,11 +44,11 @@ Copyright (c) 2006-2010 LBW.
 #endif
 
 #ifdef SPEC
-#  include <stdint.h>
+// #  include <stdint.h>
 #  if defined(SPEC_WINDOWS) && !defined(SPEC_HAVE_INTTYPES_H)
 #   include "win32/inttypes.h"
 #  else
-#   include <inttypes.h>
+// #   include <inttypes.h>
 #  endif
 /* inttypes.h is just to get PRId64; if it's not present (not C99?), guess */
 #  if !defined(PRId64)

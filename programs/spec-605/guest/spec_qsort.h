@@ -1,7 +1,8 @@
 #ifndef _SPECQSORTH_
 #define _SPECQSORTH_
 
-#include <stddef.h>
+// #include <stddef.h>
+#include <zkvm.h>
 
 #ifdef __cplusplus
 extern "C"

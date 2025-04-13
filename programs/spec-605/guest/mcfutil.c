@@ -351,8 +351,8 @@ LONG dual_feasible(  net )
     return 0;
     
 DUAL_INFEAS:
-    fprintf( stderr, "DUAL NETWORK SIMPLEX: " );
-    fprintf( stderr, "basis dual infeasible\n" );
+    printf("DUAL NETWORK SIMPLEX: " );
+    printf("basis dual infeasible\n" );
     return 1;
 }
 

@@ -92,6 +92,7 @@ async def build_program(
     env = {
         **os.environ,
         "PASSES": passes,
+        "ZK_CFLAGS": profile.cflags,
         "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
     }
     lower_atomic_pass = ["lower-atomic"]

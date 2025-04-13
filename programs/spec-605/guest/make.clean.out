@@ -1,5 +1,0 @@
-rm -rf *.o  inp.out mcf.out
-find . \( -name \*.o -o -name '*.fppized.f*' -o -name '*.i' -o -name '*.mod' \) -print | xargs rm -rf
-rm -rf mcf_s
-rm -rf mcf_s.exe
-rm -rf core
