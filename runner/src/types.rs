@@ -73,6 +73,9 @@ pub enum ProgramId {
     #[serde(rename = "spec-619")]
     #[clap(name = "spec-619")]
     Spec619,
+    #[serde(rename = "spec-605")]
+    #[clap(name = "spec-605")]
+    Spec605,
 }
 
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
@@ -174,6 +177,7 @@ impl Display for ProgramId {
             ProgramId::EcdsaVerify => write!(f, "ecdsa-verify"),
             ProgramId::EddsaVerify => write!(f, "eddsa-verify"),
             ProgramId::Spec619 => write!(f, "spec-619"),
+            ProgramId::Spec605 => write!(f, "spec-605"),
         }
     }
 }

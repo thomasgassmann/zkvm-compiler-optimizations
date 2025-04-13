@@ -7,6 +7,7 @@ from typing import List
 class Profile:
     profile_name: str
     rustflags: str
+    cflags: str
     passes: List[str]
     prepopulate_passes: bool
     lower_atomic_before: bool = False
@@ -26,6 +27,7 @@ def get_profile_by_name(profile_name: str) -> Profile:
     return Profile(
         profile_name,
         CONFIG["profiles"][profile_name]["rustflags"],
+        CONFIG["profiles"][profile_name]["cflags"],
         CONFIG["profiles"][profile_name]["passes"],
         CONFIG["profiles"][profile_name]["prepopulate_passes"],
         CONFIG["profiles"][profile_name].get("lower_atomic_before", False),

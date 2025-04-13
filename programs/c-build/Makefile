@@ -1,7 +1,7 @@
 CC=clang
 OPT=opt
 LLC=llc
-CFLAGS=--target=riscv32-unknown-none -march=rv32im -mabi=ilp32 -O0 -Xclang -disable-O0-optnone -I../c-platform/include -Wno-incompatible-library-redeclaration
+CFLAGS=--target=riscv32-unknown-none -march=rv32im -mabi=ilp32 $(ZK_CFLAGS) -Xclang -disable-O0-optnone -I../c-platform/include -Wno-incompatible-library-redeclaration
 LLVMFLAGS=-disable-verify -passes='$(PASSES)'
 
 LIBNAME=lib$(PROGRAM).a
@@ -14,7 +14,8 @@ define add
 endef
 
 define archive
-	ar rcs $(OUTDIR)/$(LIBNAME) ${1} ${2} ${3}
+    # TODO: this does not support lto
+	ar rcs $(OUTDIR)/$(LIBNAME) ${1} ${2} ${3} ${4} ${5} ${6} ${7} ${8} ${9} ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18} ${19} ${20}
 endef
 
 .PHONY: setup
