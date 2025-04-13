@@ -1,0 +1,16 @@
+[package]
+name = "spec-644"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+risc0-zkvm = { version = "=1.2.3", default-features = false, features = ["std"] }
+sp1-zkvm = "=4.1.1"
+c-platform = { path = "../../c-platform" }
+
+[build-dependencies]
+c-build = { path = "../../c-build" }
+
+[features]
+risc0 = ["c-platform/risc0"]
+sp1 = ["c-platform/risc0"]

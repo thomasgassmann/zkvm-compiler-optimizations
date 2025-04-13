@@ -1,0 +1,19 @@
+
+
+# End dependencies
+# These are the build dependencies
+$(addsuffix $(OBJ), $(basename binpos.c)): binpos.c memutil.h
+$(addsuffix $(OBJ), $(basename chirvol.c)): chirvol.c defreal.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename database.c)): database.c database.h
+$(addsuffix $(OBJ), $(basename errormsg.c)): errormsg.c errormsg.h
+$(addsuffix $(OBJ), $(basename memutil.c)): memutil.c defreal.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename molio.c)): molio.c defreal.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename molutil.c)): molutil.c defreal.h errormsg.h memutil.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename nabmd.c)): nabmd.c nabcode.h
+$(addsuffix $(OBJ), $(basename nblist.c)): nblist.c defreal.h
+$(addsuffix $(OBJ), $(basename prm.c)): prm.c defreal.h errormsg.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename rand2.c)): rand2.c defreal.h
+$(addsuffix $(OBJ), $(basename reslib.c)): reslib.c chirvol.h database.h defreal.h errormsg.h memutil.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename select_atoms.c)): select_atoms.c defreal.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename sff.c)): sff.c debug.h defreal.h eff.c gbsa.c intersect.c memutil.h nab.h nabtypes.h
+$(addsuffix $(OBJ), $(basename traceback.c)): traceback.c errormsg.h
