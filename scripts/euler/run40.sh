@@ -2,8 +2,8 @@
 sbatch <<EOT
 #!/bin/bash
 
-#SBATCH --output=out.txt
-#SBATCH --error=out.txt
+#SBATCH --output=out40.txt
+#SBATCH --error=out40.txt
 #SBATCH --mem-per-cpu=32GB
 #SBATCH --time=15-00:00:00
 #SBATCH --gpus=1
