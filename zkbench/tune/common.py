@@ -18,6 +18,7 @@ MODULE_PASSES = [
     "globalopt",
     "wholeprogramdevirt",
     "lower-global-dtors",
+    "strip",
     "strip-dead-debug-info",
     "strip-dead-prototypes",
     "bounds-checking",
@@ -31,7 +32,10 @@ MODULE_PASSES = [
     "hotcoldsplit",
     "argpromotion",
     "ipsccp",
+    "synthetic-counts-propagation",
     "rel-lookup-table-converter",
+    "aggressive-instcombine",
+    "loop-mssa(licm)",
 ]
 FUNCTION_PASSES = [
     "instcombine",
@@ -83,7 +87,6 @@ FUNCTION_PASSES = [
     "nary-reassociate",
     "separate-const-offset-from-gep",
 ]
-# TODO: this does not incldue e.g. licm
 LOOP_PASSES = [
     "loop-idiom",
     "loop-reduce",
@@ -94,8 +97,8 @@ LOOP_PASSES = [
     "loop-instsimplify",
     "loop-interchange",
     "loop-predication",
+    "loop-versioning-licm",
 ]
-# TODO: might want to map dependencies too; can specify dependencies in autotuner config!
 ALL_PASSES = MODULE_PASSES + FUNCTION_PASSES + LOOP_PASSES
 
 OUT = "./bin/tune"

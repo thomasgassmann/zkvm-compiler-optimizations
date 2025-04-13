@@ -14,4 +14,4 @@
 
 ### sp1
 
-- TODO: list exact versions
+- sp1-sdk = "4.1.4"
