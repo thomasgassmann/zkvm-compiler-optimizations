@@ -881,7 +881,7 @@
         "zkvm-mnist": {
             "groups": []
         },
-        "spec-600": {
+        "spec-605": {
             "groups": [
                 "spec"
             ]
