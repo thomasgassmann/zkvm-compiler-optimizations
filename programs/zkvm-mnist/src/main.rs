@@ -188,6 +188,6 @@ fn main() {
     let test_data: Vec<(Vec<f64>, Vec<f64>)> = sp1_zkvm::io::read();
 
     println!("Training mnist");
-    let mut nn = NeuralNetwork::new(784, 128, 10);
-    nn.train(&training_data, &test_data, 1, 0.1);
+    let mut nn = NeuralNetwork::new(49, 8, 10);
+    nn.train(&training_data, &test_data, 2, 1.0);
 }

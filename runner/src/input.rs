@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use ndarray::Array2;
+use ndarray::{s, Array1, Array2};
 use rsp_client_executor::io::ClientExecutorInput;
 use serde::Serialize;
 use sp1_sdk::SP1Stdin;
@@ -11,9 +11,29 @@ use crate::types::{ProgramId, ProverId};
 use mnist::MnistBuilder;
 use rand::{distributions::Alphanumeric, Rng};
 
+fn downsample_image(image: &Array1<f32>) -> Vec<f64> {
+    let image_2d = image.to_owned().into_shape_with_order((28, 28))
+        .expect("Error reshaping the image to 28x28");
+
+    let mut downsampled = Vec::with_capacity(49);
+
+    for i in 0..7 {
+        for j in 0..7 {
+            // Slice out a 4x4 block from the image
+            let block = image_2d.slice(s![i*4..i*4+4, j*4..j*4+4]);
+            // Sum the block elements, take the average (16 pixels per block)
+            let sum: f32 = block.iter().sum();
+            let avg = sum / 16.0;
+            downsampled.push(avg as f64);
+        }
+    }
+
+    downsampled
+}
+
 fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
-    let train_size: usize = 20;
-    let test_size: usize = 4;
+    let train_size: usize = 150;
+    let test_size: usize = 10;
     let mnist = MnistBuilder::new()
         .training_set_length(train_size as u32)
         .test_set_length(test_size as u32)
@@ -37,11 +57,12 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
         .map(|x| *x as f32 / 256.0);
 
     let test_labels: Array2<f32> = Array2::from_shape_vec((test_size, 1), mnist.tst_lbl)
-        .expect("Error converting training labels to Array2 struct")
+        .expect("Error converting test labels to Array2 struct")
         .map(|x| *x as f32);
 
     for i in 0..train_size {
-        let image_data: Vec<f64> = train_data.row(i).iter().map(|&x| x as f64).collect();
+        let image_flat = train_data.row(i).to_owned();
+        let image_data = downsample_image(&image_flat);
 
         let mut label_data = vec![0.0; 10];
         let label = train_labels[(i, 0)] as usize;
@@ -51,7 +72,8 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     }
 
     for i in 0..test_size {
-        let image_data: Vec<f64> = test_data.row(i).iter().map(|&x| x as f64).collect();
+        let image_flat = test_data.row(i).to_owned();
+        let image_data = downsample_image(&image_flat);
 
         let mut label_data = vec![0.0; 10];
         let label = test_labels[(i, 0)] as usize;
