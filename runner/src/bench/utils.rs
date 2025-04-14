@@ -75,9 +75,9 @@ pub fn get_elf_stats_path(program: &ProgramId, zkvm: &ProverId, profile: &String
 }
 
 pub fn write_elf_stats(program: &ProgramId, zkvm: &ProverId, profile: &String, stats: &ElfStats) {
-    println!("Writing elf stats to {:?}", profile);
     let path = get_elf_stats_path(program, zkvm, profile);
     std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+    println!("Writing elf stats to {:?}", path);
     let file = std::fs::File::create(path).unwrap();
     serde_json::to_writer_pretty(file, stats).unwrap();
 }
