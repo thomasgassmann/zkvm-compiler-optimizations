@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use super::super::{input::set_risc0_input, types::ProgramId};
+use super::{super::{input::set_risc0_input, types::ProgramId}, utils::get_elf_hash};
 use risc0_zkvm::{
     compute_image_id, get_prover_server, sha::Digest, ExecutorEnv, ExecutorImpl, ProveInfo,
     ProverOpts, ProverServer, Receipt, Session, VerifierContext,
@@ -22,6 +22,7 @@ pub fn get_risc0_stats<'a>(elf: &'a [u8], program: &'a ProgramId) -> ElfStats {
     ElfStats {
         cycle_count: session.user_cycles,
         size: elf.len(),
+        hash: get_elf_hash(elf),
     }
 }
 

@@ -1,6 +1,7 @@
 use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
+use super::utils::is_same_as_baseline;
 use super::{
     super::{
         types::{MeasurementType, ProgramId, ProverId},
@@ -42,7 +43,7 @@ fn add_sp1_exec_and_prove(
         profile,
         &get_sp1_stats(&elf, program),
     );
-    if meta_only {
+    if meta_only || is_same_as_baseline(program, &ProverId::SP1, profile) {
         return;
     }
 
@@ -81,7 +82,7 @@ fn add_risc0_exec_and_prove(
         profile,
         &get_risc0_stats(&elf, program),
     );
-    if meta_only {
+    if meta_only || is_same_as_baseline(program, &ProverId::SP1, profile) {
         return;
     }
 

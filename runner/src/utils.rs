@@ -27,7 +27,6 @@ pub fn read_config_json() -> Config {
 
 pub fn read_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> Vec<u8> {
     let elf_path = get_elf(program, prover, profile);
-    println!("Reading ELF: {}", elf_path);
     fs::read(elf_path).unwrap()
 }
 
