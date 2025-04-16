@@ -15,7 +15,9 @@ from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
 from zkbench.plot.cycle_prove_duration import plot_cycle_count_duration
 from zkbench.plot.genetic import plot_genetic
+from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
+from zkbench.plot.opt_no_effect import plot_opt_no_effect
 from zkbench.plot.prove_exec import plot_prove_exec
 
 @click.command(name="average-improvement")
@@ -103,3 +105,21 @@ def plot_missing_cli(measurement: str | None, zkvm: str | None):
             for p in programs:
                 if not has_data_on(dir, p, z, m):
                     print(f"{p}-{z}-{m}")
+
+
+@click.command(
+    name="opt-no-effect",
+    help="Show percentage of optimizations that had no effect (by program)",
+)
+def opt_no_effect_cli():
+    dir = click.get_current_context().parent.params["dir"]
+    plot_opt_no_effect(dir)
+
+
+@click.command(
+    name="no-effect",
+    help="Show for each optimization number of programs where it had no effect",
+)
+def no_effect_cli():
+    dir = click.get_current_context().parent.params["dir"]
+    plot_no_effect(dir)
