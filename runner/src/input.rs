@@ -171,7 +171,7 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
-    prover: ProverId,
+    _: ProverId,
 ) {
     match program {
         ProgramId::Factorial => {
@@ -235,9 +235,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
         }
         ProgramId::EddsaVerify => {
             let times: u8 = 10;
-            if prover == ProverId::Risc0 {
-                stdin.write_generic(&times);
-            }
+            stdin.write_generic(&times);
 
             for _ in 0..times {
                 stdin.write_generic(&rand_eddsa_signature());
