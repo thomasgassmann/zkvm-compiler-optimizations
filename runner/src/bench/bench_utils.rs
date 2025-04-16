@@ -82,7 +82,7 @@ fn add_risc0_exec_and_prove(
         profile,
         &get_risc0_stats(&elf, program),
     );
-    if meta_only || is_same_as_baseline(program, &ProverId::SP1, profile) {
+    if meta_only || is_same_as_baseline(program, &ProverId::Risc0, profile) {
         return;
     }
 
