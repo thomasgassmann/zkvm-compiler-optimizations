@@ -4,8 +4,7 @@ sbatch <<EOT
 
 #SBATCH --output=out.txt
 #SBATCH --error=out.txt
-#SBATCH --mem-per-cpu=32GB
-#SBATCH --time=15-00:00:00
+#SBATCH --time=9-00:00:00
 #SBATCH --gpus=1
 #SBATCH --gres=gpumem:24g
 
