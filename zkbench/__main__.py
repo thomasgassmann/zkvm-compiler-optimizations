@@ -141,8 +141,14 @@ def plot_cli(dir: str):
     required=True,
     multiple=False,
 )
+@click.option(
+    "--config",
+    multiple=False,
+    required=True,
+    type=click.File("r"),
+)
 def tune_cli(
-    program: list[str], zkvm: list[str], program_group: list[str], metric: str
+    program: list[str], zkvm: list[str], program_group: list[str], metric: str, config
 ):
     pass
 
