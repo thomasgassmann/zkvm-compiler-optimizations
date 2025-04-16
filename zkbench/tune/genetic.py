@@ -100,8 +100,11 @@ def create_tuner(
 
         def manipulator(self):
             manipulator = ConfigurationManipulator()
-            manipulator.add_parameter(ScheduleParameter("passes", ALL_PASSES, {}))
-            for current in ALL_PASSES:
+            all_passes = (
+                config.module_passes + config.function_passes + config.loop_passes
+            )
+            manipulator.add_parameter(ScheduleParameter("passes", all_passes, {}))
+            for current in all_passes:
                 manipulator.add_parameter(EnumParameter(current, ["on", "off"]))
             manipulator.add_parameter(
                 EnumParameter(

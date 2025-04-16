@@ -13,6 +13,9 @@ class TuneConfig:
     tune_codegen_units: bool
     tune_opt_level: bool
     tune_prepopulate_passes: bool
+    module_passes: list[str]
+    function_passes: list[str]
+    loop_passes: list[str]
 
 
 MODULE_PASSES = [
