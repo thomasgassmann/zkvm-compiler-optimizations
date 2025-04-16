@@ -22,5 +22,5 @@ def plot_opt_no_effect(dir: str):
         )
 
     plot_sorted(
-        [values], programs, title, "Number of optimizations with no effect", [None]
+        [values], programs, title, "Percentage of optimizations with no effect", [None]
     )
