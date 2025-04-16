@@ -696,7 +696,7 @@
         },
         "o0": {
             "cflags": "-O0",
-            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "rustflags": "-C opt-level=0",
             "passes": [],
             "prepopulate_passes": true
         },

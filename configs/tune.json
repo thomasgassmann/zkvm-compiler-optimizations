@@ -2,5 +2,20 @@
     "tune_lto": false,
     "tune_codegen_units": false,
     "tune_opt_level": false,
-    "tune_prepopulate_passes": false
+    "tune_prepopulate_passes": false,
+    "module_passes": [
+        "always-inline",
+        "inline",
+        "attributor",
+        "ipsccp",
+        "hotcoldsplit"
+    ],
+    "function_passes": [
+        "tailcallelim",
+        "jump-threading",
+        "gvn",
+        "simplifycfg",
+        "sroa"
+    ],
+    "loop_passes": []
 }
