@@ -7,6 +7,14 @@ from typing import Literal
 from zkbench.config import Profile
 
 
+@dataclass
+class TuneConfig:
+    tune_lto: bool
+    tune_codegen_units: bool
+    tune_opt_level: bool
+    tune_prepopulate_passes: bool
+
+
 MODULE_PASSES = [
     "always-inline",
     "inline",

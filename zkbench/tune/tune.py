@@ -1,6 +1,8 @@
+import json
 import click
 
 from zkbench.plot.common import get_program_selection
+from zkbench.tune.common import TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
 from zkbench.tune.genetic import run_tune_genetic
 
@@ -21,8 +23,8 @@ def tune_exhaustive_cli():
 
 @click.command(name="genetic")
 def tune_genetic_cli():
-    (selected_programs, zkvms, metric) = get_config()
-    run_tune_genetic(selected_programs, zkvms, metric)
+    (selected_programs, zkvms, metric, config) = get_config()
+    run_tune_genetic(selected_programs, zkvms, metric, config)
 
 
 def get_config():
@@ -32,6 +34,9 @@ def get_config():
         "program_group"
     ]
     metric: str = click.get_current_context().parent.params["metric"]
+    config: TuneConfig = TuneConfig(
+        **json.load(click.get_current_context().parent.params["config"])
+    )
 
     selected_programs = get_program_selection(programs, program_groups)
-    return (selected_programs, zkvms, metric)
+    return (selected_programs, zkvms, metric, config)

@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import uuid
+from dataclasses import dataclass
 from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter
 from opentuner import MeasurementInterface
@@ -19,6 +20,7 @@ from zkbench.tune.common import (
     ALL_PASSES,
     OUT_GENETIC,
     ProfileConfig,
+    TuneConfig,
     build_pass_list,
     build_profile,
 )
@@ -81,7 +83,13 @@ async def _build(program: str, zkvm: str, profile: Profile, out: str):
     logging.info(f"Built {program} for {zkvm}")
 
 
-def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: str):
+def create_tuner(
+    programs: list[str],
+    zkvms: list[str],
+    metric: str,
+    out_stats: str,
+    config: TuneConfig,
+):
     class PassTuner(MeasurementInterface):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -95,15 +103,28 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
             manipulator.add_parameter(ScheduleParameter("passes", ALL_PASSES, {}))
             for current in ALL_PASSES:
                 manipulator.add_parameter(EnumParameter(current, ["on", "off"]))
-            manipulator.add_parameter(EnumParameter("lto", ["off", "thin", "fat"]))
             manipulator.add_parameter(
-                EnumParameter("single_codegen_unit", [True, False])
+                EnumParameter(
+                    "lto", ["off", "thin", "fat"] if config.tune_lto else ["off"]
+                )
             )
             manipulator.add_parameter(
-                EnumParameter("opt_level", ["0", "1", "2", "3", "s", "z"])
+                EnumParameter(
+                    "single_codegen_unit",
+                    [True, False] if config.tune_codegen_units else [False],
+                )
             )
             manipulator.add_parameter(
-                EnumParameter("prepopulate_passes", [True, False])
+                EnumParameter(
+                    "opt_level",
+                    ["0", "1", "2", "3", "s", "z"] if config.tune_opt_level else ["0"],
+                )
+            )
+            manipulator.add_parameter(
+                EnumParameter(
+                    "prepopulate_passes",
+                    [True, False] if config.tune_prepopulate_passes else [False],
+                )
             )
             return manipulator
 
@@ -213,6 +234,10 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
                         "values": self._values,
                         "best_metric": self._best,
                         "best_profile": dataclasses.asdict(self._best_config),
+                        "metric": metric,
+                        "programs": programs,
+                        "zkvms": zkvms,
+                        "config": dataclasses.asdict(profile_config),
                     },
                     f,
                 )
@@ -222,7 +247,9 @@ def create_tuner(programs: list[str], zkvms: list[str], metric: str, out_stats: 
     return PassTuner
 
 
-def run_tune_genetic(programs: list[str], zkvms: list[str], metric: str):
+def run_tune_genetic(
+    programs: list[str], zkvms: list[str], metric: str, config: TuneConfig
+):
     os.makedirs(OUT_GENETIC, exist_ok=True)
     arg_parser = opentuner.default_argparser()
 
@@ -237,4 +264,6 @@ def run_tune_genetic(programs: list[str], zkvms: list[str], metric: str):
         OUT_GENETIC,
         f"stats-{'-'.join(zkvms)}-{'-'.join(programs)}-{metric}-{str(uuid.uuid4())[:5]}.json",
     )
-    create_tuner(programs, zkvms, metric, out_stats).main(arg_parser.parse_args([]))
+    create_tuner(programs, zkvms, metric, out_stats, config).main(
+        arg_parser.parse_args([])
+    )
