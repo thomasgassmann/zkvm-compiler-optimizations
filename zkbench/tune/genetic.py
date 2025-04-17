@@ -83,6 +83,14 @@ async def _build(program: str, zkvm: str, profile: Profile, out: str):
     logging.info(f"Built {program} for {zkvm}")
 
 
+async def _build_for_all_zkvms(
+    program: str, zkvms: list[str], profile: Profile, profile_config: ProfileConfig
+):
+    for zkvm in zkvms:
+        out = get_out_path(profile_config, zkvm, program)
+        await _build(program, zkvm, profile, out)
+
+
 def create_tuner(
     programs: list[str],
     zkvms: list[str],
@@ -153,26 +161,20 @@ def create_tuner(
             profile = build_profile(profile_config)
 
             # first build all the binaries
-            for zkvm in zkvms:
-                try:
-                    asyncio.get_event_loop().run_until_complete(
-                        asyncio.gather(
-                            *[
-                                _build(
-                                    program,
-                                    zkvm,
-                                    profile,
-                                    get_out_path(profile_config, zkvm, program),
-                                )
-                                for program in programs
-                            ]
-                        )
+            try:
+                asyncio.get_event_loop().run_until_complete(
+                    asyncio.gather(
+                        *[
+                            _build_for_all_zkvms(
+                                program, zkvms, profile, profile_config
+                            )
+                            for program in programs
+                        ]
                     )
-                except Exception as e:
-                    logging.error(
-                        f"Error during build for profile {profile_config}: {e}"
-                    )
-                    return Result(time=float("inf"), state="ERROR")
+                )
+            except Exception as e:
+                logging.error(f"Error during build for profile {profile_config}: {e}")
+                return Result(time=float("inf"), state="ERROR")
 
             # then calculate metrics
             metric_sum = 0
