@@ -267,7 +267,7 @@ def run_tune_genetic(
 
     out_stats = os.path.join(
         OUT_GENETIC,
-        f"stats-{'-'.join(zkvms)}-{'-'.join(programs)}-{metric}-{str(uuid.uuid4())[:5]}.json",
+        f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
     )
     create_tuner(programs, zkvms, metric, out_stats, config).main(
         arg_parser.parse_args([])
