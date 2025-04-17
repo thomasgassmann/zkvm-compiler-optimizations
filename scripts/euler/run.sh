@@ -6,6 +6,7 @@ GPUMEM="${GPUMEM:-24g}"
 sbatch <<EOT
 #!/bin/bash
 
+#SBATCH -J ${OUT}
 #SBATCH --output=${OUT}
 #SBATCH --error=${OUT}
 #SBATCH --time=${TIMED}-00:00:00
