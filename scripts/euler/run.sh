@@ -10,6 +10,7 @@ sbatch <<EOT
 #!/bin/bash
 
 #SBATCH -J ${OUT}
+#SBATCH --mem-per-cpu=8GB
 #SBATCH --output=${OUT}
 #SBATCH --error=${OUT}
 #SBATCH --time=${TIMED}-00:00:00
