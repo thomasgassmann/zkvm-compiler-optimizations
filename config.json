@@ -742,245 +742,303 @@
     "programs": {
         "loop-sum": {
             "groups": [
-                "loop-intensive"
+                "loop-intensive",
+                "rust"
             ]
         },
         "factorial": {
-            "groups": []
+            "groups": [
+                "rust"
+            ]
         },
         "sha256": {
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "keccak256": {
             "specific": true,
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "tailcall": {
             "groups": [
-                "recursive"
+                "recursive",
+                "rust"
             ]
         },
         "bigmem": {
             "groups": [
-                "memory-intensive"
+                "memory-intensive",
+                "rust"
             ]
         },
         "fibonacci": {
             "groups": [
-                "loop-intensive"
+                "loop-intensive",
+                "rust"
             ]
         },
         "sha2-bench": {
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "sha2-chain": {
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "regex-match": {
-            "groups": []
+            "groups": [
+                "rust"
+            ]
         },
         "sha3-bench": {
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "sha3-chain": {
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "polybench-2mm": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-3mm": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-adi": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-atax": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-bicg": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-cholesky": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-correlation": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-covariance": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-deriche": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-doitgen": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-durbin": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-fdtd-2d": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-floyd-warshall": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-gemm": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-gemver": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-gesummv": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-gramschmidt": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-heat-3d": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-jacobi-1d": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-jacobi-2d": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-lu": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-ludcmp": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-mvt": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-nussinov": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-seidel-2d": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-symm": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-syr2k": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-syrk": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-trisolv": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "polybench-trmm": {
             "groups": [
-                "polybench"
+                "polybench",
+                "rust"
             ]
         },
         "merkle": {
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "ecdsa-verify": {
             "specific": true,
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "eddsa-verify": {
             "specific": true,
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "rsp": {
             "specific": true,
             "groups": [
-                "crypto"
+                "crypto",
+                "rust"
             ]
         },
         "zkvm-mnist": {
-            "groups": []
+            "groups": [
+                "rust"
+            ]
         },
         "spec-605": {
             "groups": [
-                "spec"
+                "spec",
+                "c"
             ]
         },
         "spec-619": {
             "groups": [
-                "spec"
+                "spec",
+                "c"
+            ]
+        },
+        "npb-bt": {
+            "groups": [
+                "npb",
+                "rust"
             ]
         }
     }
