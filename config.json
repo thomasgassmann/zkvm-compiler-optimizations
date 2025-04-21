@@ -1040,6 +1040,48 @@
                 "npb",
                 "rust"
             ]
+        },
+        "npb-cg": {
+            "groups": [
+                "npb",
+                "rust"
+            ]
+        },
+        "npb-ep": {
+            "groups": [
+                "npb",
+                "rust"
+            ]
+        },
+        "npb-ft": {
+            "groups": [
+                "npb",
+                "rust"
+            ]
+        },
+        "npb-is": {
+            "groups": [
+                "npb",
+                "rust"
+            ]
+        },
+        "npb-lu": {
+            "groups": [
+                "npb",
+                "rust"
+            ]
+        },
+        "npb-mg": {
+            "groups": [
+                "npb",
+                "rust"
+            ]
+        },
+        "npb-sp": {
+            "groups": [
+                "npb",
+                "rust"
+            ]
         }
     }
 }

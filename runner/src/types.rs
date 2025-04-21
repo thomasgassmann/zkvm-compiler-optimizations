@@ -77,6 +77,13 @@ pub enum ProgramId {
     #[clap(name = "spec-605")]
     Spec605,
     NpbBt,
+    NpbCg,
+    NpbEp,
+    NpbFt,
+    NpbIs,
+    NpbLu,
+    NpbMg,
+    NpbSp,
 }
 
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
@@ -180,6 +187,13 @@ impl Display for ProgramId {
             ProgramId::Spec619 => write!(f, "spec-619"),
             ProgramId::Spec605 => write!(f, "spec-605"),
             ProgramId::NpbBt => write!(f, "npb-bt"),
+            ProgramId::NpbCg => write!(f, "npb-cg"),
+            ProgramId::NpbEp => write!(f, "npb-ep"),
+            ProgramId::NpbFt => write!(f, "npb-ft"),
+            ProgramId::NpbIs => write!(f, "npb-is"),
+            ProgramId::NpbLu => write!(f, "npb-lu"),
+            ProgramId::NpbMg => write!(f, "npb-mg"),
+            ProgramId::NpbSp => write!(f, "npb-sp"),
         }
     }
 }
