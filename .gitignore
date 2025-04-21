@@ -9,3 +9,4 @@ __pycache__/
 ctarget/
 opentuner.db/
 opentuner.log
+results/

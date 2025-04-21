@@ -91,12 +91,105 @@ async def _build_for_all_zkvms(
         await _build(program, zkvm, profile, out)
 
 
+def add_common_params(manipulator: ConfigurationManipulator, config: TuneConfig):
+    manipulator.add_parameter(
+        EnumParameter("lto", ["off", "thin", "fat"] if config.tune_lto else ["off"])
+    )
+    manipulator.add_parameter(
+        EnumParameter(
+            "single_codegen_unit",
+            [True, False] if config.tune_codegen_units else [False],
+        )
+    )
+    manipulator.add_parameter(
+        EnumParameter(
+            "opt_level",
+            ["0", "1", "2", "3", "s", "z"] if config.tune_opt_level else ["0"],
+        )
+    )
+    manipulator.add_parameter(
+        EnumParameter(
+            "prepopulate_passes",
+            [True, False] if config.tune_prepopulate_passes else [False],
+        )
+    )
+
+
+class Mode:
+    def get_manipulator(self, config: TuneConfig):
+        raise NotImplementedError("This method should be overridden by subclasses.")
+
+    def get_profile_config(self, desired_result) -> ProfileConfig:
+        raise NotImplementedError("This method should be overridden by subclasses.")
+
+
+class DepthMode(Mode):
+    def __init__(self, depth: int):
+        self.depth = depth
+
+    def get_profile_config(self, desired_result):
+        cfg = desired_result.configuration.data
+        used_passes = []
+        for i in range(self.depth):
+            current_pass = cfg[f"depth-{i}"]
+            used_passes.append(current_pass)
+        return ProfileConfig(
+            name="genetic",
+            lto=cfg["lto"],
+            single_codegen_unit=cfg["single_codegen_unit"],
+            opt_level=cfg["opt_level"],
+            prepopulate_passes=cfg["prepopulate_passes"],
+            passes=[build_pass_list(used_passes)],
+        )
+
+    def get_manipulator(self, config: TuneConfig):
+        manipulator = ConfigurationManipulator()
+        all_passes = config.module_passes + config.function_passes + config.loop_passes
+        for i in range(self.depth):
+            manipulator.add_parameter(EnumParameter(f"depth-{i}", all_passes))
+        add_common_params(manipulator, config)
+        return manipulator
+
+
+class DefaultMode(Mode):
+
+    def get_profile_config(self, desired_result):
+        # we can prebild binaries using compile, run_precompiled and compile_and_run
+        # however this might cause issues if we build the same program in parallel
+        cfg = desired_result.configuration.data
+        used_passes = []
+        for current_pass in cfg["passes"]:
+            if cfg[current_pass] == "on":
+                used_passes.append(current_pass)
+
+        # TODO: currently pass it only applied once, we can apply pass multiple times
+        pass_list = [build_pass_list(used_passes)]
+        return ProfileConfig(
+            name="genetic",
+            lto=cfg["lto"],
+            single_codegen_unit=cfg["single_codegen_unit"],
+            opt_level=cfg["opt_level"],
+            prepopulate_passes=cfg["prepopulate_passes"],
+            passes=pass_list,
+        )
+
+    def get_manipulator(self, config: TuneConfig):
+        manipulator = ConfigurationManipulator()
+        all_passes = config.module_passes + config.function_passes + config.loop_passes
+        manipulator.add_parameter(ScheduleParameter("passes", all_passes, {}))
+        for current in all_passes:
+            manipulator.add_parameter(EnumParameter(current, ["on", "off"]))
+        add_common_params(manipulator, config)
+        return manipulator
+
+
 def create_tuner(
     programs: list[str],
     zkvms: list[str],
     metric: str,
     out_stats: str,
     config: TuneConfig,
+    mode: Mode,
 ):
     class PassTuner(MeasurementInterface):
         def __init__(self, *args, **kwargs):
@@ -107,57 +200,10 @@ def create_tuner(
             self._profile_configs = []
 
         def manipulator(self):
-            manipulator = ConfigurationManipulator()
-            all_passes = (
-                config.module_passes + config.function_passes + config.loop_passes
-            )
-            manipulator.add_parameter(ScheduleParameter("passes", all_passes, {}))
-            for current in all_passes:
-                manipulator.add_parameter(EnumParameter(current, ["on", "off"]))
-            manipulator.add_parameter(
-                EnumParameter(
-                    "lto", ["off", "thin", "fat"] if config.tune_lto else ["off"]
-                )
-            )
-            manipulator.add_parameter(
-                EnumParameter(
-                    "single_codegen_unit",
-                    [True, False] if config.tune_codegen_units else [False],
-                )
-            )
-            manipulator.add_parameter(
-                EnumParameter(
-                    "opt_level",
-                    ["0", "1", "2", "3", "s", "z"] if config.tune_opt_level else ["0"],
-                )
-            )
-            manipulator.add_parameter(
-                EnumParameter(
-                    "prepopulate_passes",
-                    [True, False] if config.tune_prepopulate_passes else [False],
-                )
-            )
-            return manipulator
+            return mode.get_manipulator(config)
 
         def run(self, desired_result, input, limit):
-            # we can prebild binaries using compile, run_precompiled and compile_and_run
-            # however this might cause issues if we build the same program in parallel
-            cfg = desired_result.configuration.data
-            used_passes = []
-            for current_pass in cfg["passes"]:
-                if cfg[current_pass] == "on":
-                    used_passes.append(current_pass)
-
-            # TODO: currently pass it only applied once, we can apply pass multiple times
-            pass_list = [build_pass_list(used_passes)]
-            profile_config = ProfileConfig(
-                name="genetic",
-                lto=cfg["lto"],
-                single_codegen_unit=cfg["single_codegen_unit"],
-                opt_level=cfg["opt_level"],
-                prepopulate_passes=cfg["prepopulate_passes"],
-                passes=pass_list,
-            )
+            profile_config = mode.get_profile_config(desired_result)
             profile = build_profile(profile_config)
 
             # first build all the binaries
@@ -242,7 +288,7 @@ def create_tuner(
                         "metric": metric,
                         "programs": programs,
                         "zkvms": zkvms,
-                        "config": dataclasses.asdict(profile_config),
+                        "config": dataclasses.asdict(config),
                     },
                     f,
                 )
@@ -253,7 +299,12 @@ def create_tuner(
 
 
 def run_tune_genetic(
-    programs: list[str], zkvms: list[str], metric: str, config: TuneConfig
+    programs: list[str],
+    zkvms: list[str],
+    metric: str,
+    config: TuneConfig,
+    mode: str,
+    depth: int | None,
 ):
     os.makedirs(OUT_GENETIC, exist_ok=True)
     arg_parser = opentuner.default_argparser()
@@ -269,6 +320,12 @@ def run_tune_genetic(
         OUT_GENETIC,
         f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
     )
-    create_tuner(programs, zkvms, metric, out_stats, config).main(
+
+    if mode == "default":
+        mode = DefaultMode()
+    elif mode == "depth":
+        mode = DepthMode(depth)
+
+    create_tuner(programs, zkvms, metric, out_stats, config, mode).main(
         arg_parser.parse_args([])
     )

@@ -22,9 +22,19 @@ def tune_exhaustive_cli():
 
 
 @click.command(name="genetic")
-def tune_genetic_cli():
+@click.option(
+    "--mode",
+    type=click.Choice(["default", "depth"]),
+    required=True,
+    multiple=False,
+)
+@click.option("--depth", multiple=False, type=int, required=False)
+def tune_genetic_cli(mode: str, depth: int | None):
+    if mode == "depth" and depth is None:
+        raise click.UsageError("Depth must be provided when mode is 'depth'.")
+
     (selected_programs, zkvms, metric, config) = get_config()
-    run_tune_genetic(selected_programs, zkvms, metric, config)
+    run_tune_genetic(selected_programs, zkvms, metric, config, mode, depth)
 
 
 def get_config():
