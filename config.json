@@ -1045,6 +1045,9 @@
             "groups": [
                 "npb",
                 "rust"
+            ],
+            "skip": [
+                "attributor"
             ]
         },
         "npb-ep": {

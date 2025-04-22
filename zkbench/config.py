@@ -18,6 +18,7 @@ class Program:
     program_name: str
     specific: bool | None
     groups: list[str]
+    skip: list[str] | None
 
 
 CONFIG = json.load(open("config.json", "r"))
@@ -48,6 +49,7 @@ def get_program_by_name(program_name: str) -> Program:
         program_name,
         program.get("specific", None),
         program.get("groups", []),
+        program.get("skip", []),
     )
 
 

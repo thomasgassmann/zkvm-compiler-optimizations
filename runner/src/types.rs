@@ -114,6 +114,8 @@ pub struct ProgramConfig {
     #[serde(default)]
     pub specific: bool,
     pub groups: Vec<String>,
+    #[serde(default)]
+    pub skip: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Hash)]

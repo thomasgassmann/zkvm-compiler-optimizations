@@ -136,6 +136,7 @@ fn run_criterion(args: CriterionArgs) {
     }
 
     for program in programs.iter() {
+        let program_config = config.programs.get(program).unwrap();
         for measurement in measurements.iter().rev() {
             for prover in zkvms.iter() {
                 if has_previously_run(&program, prover, measurement) && !args.force {
@@ -148,6 +149,12 @@ fn run_criterion(args: CriterionArgs) {
                 group.sample_size(10);
 
                 for profile in profiles.iter() {
+                    if program_config.skip.contains(profile) {
+                        println!("Skipping: {}-{}-{}-{}", program, prover, measurement, profile);
+                        continue;
+                    }
+
+                    println!("Running: {}-{}-{}-{}", program, prover, measurement, profile);
                     add_benchmarks_for(
                         &program,
                         &prover,
