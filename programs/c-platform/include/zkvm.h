@@ -38,6 +38,18 @@ extern double sqrt(double x);
 extern void *memset(void *s, int c, size_t n);
 extern char *strcpy(char *dest, const char *src);
 extern int atoi(const char *str);
+extern int isdigit(int arg);
+extern int isalpha(int argument);
+extern size_t strlen(const char *str);
+extern int strncmp(const char *s1, const char *s2, size_t n);
+extern char *strstr(const char *haystack, const char *needle);
+extern int sprintf(char *str, const char *format, ...);
+extern char *strcat(char *dest, const char *src);
+extern void *rmemcpy(void *dest, const void *src, size_t n);
+extern int abs(int x);
+extern int strcmp(const char *s1, const char *s2);
+extern void *rmemset(void *ptr, int x, size_t n);
+
 
 extern int read_int();
 
