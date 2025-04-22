@@ -1074,7 +1074,8 @@
         "npb-mg": {
             "groups": [
                 "npb",
-                "rust"
+                "rust",
+                "memory-intensive"
             ]
         },
         "npb-sp": {
