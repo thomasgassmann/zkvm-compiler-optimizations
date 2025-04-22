@@ -1,0 +1,17 @@
+[workspace]
+[package]
+name = "npb-lu"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sp1-zkvm = "=4.1.1"
+risc0-zkvm = { version = "1.2.3", default-features = false, features = ["std"] }
+npb-common = { path = "../npb-common" }
+
+[features]
+risc0 = []
+sp1 = []
+
+[lints.rust]
+unexpected_cfgs = {level = "warn", check-cfg = ['cfg(class,values("S","W","A","B","C","D","E","F","Z"))','cfg(safe,values("true"))','cfg(timers,values("true"))']}
