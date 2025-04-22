@@ -8,6 +8,22 @@ typedef unsigned int uint;
 #define int64_t long
 #endif
 
+#ifndef uint64_t
+#define uint64_t unsigned long
+#endif
+
+#ifndef int32_t
+#define int32_t int
+#endif
+
+#ifndef uint32_t
+#define uint32_t unsigned int
+#endif
+
+#ifndef uint8_t
+#define uint8_t unsigned char
+#endif
+
 #ifndef NULL
 #define NULL 0
 #endif
