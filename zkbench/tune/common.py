@@ -7,6 +7,23 @@ from typing import Literal
 from zkbench.config import Profile
 
 
+def is_metric_parallelizable(metric: str) -> bool:
+    return metric in ["cycle-count"]
+
+
+@dataclass(frozen=True)
+class MetricValue:
+    zkvm: str
+    program: str
+    metric: int
+
+
+@dataclass
+class EvalResult:
+    has_error: bool
+    values: list[MetricValue]
+
+
 @dataclass
 class TuneConfig:
     tune_lto: bool
@@ -111,6 +128,9 @@ LOOP_PASSES = [
     "loop-versioning-licm",
 ]
 ALL_PASSES = MODULE_PASSES + FUNCTION_PASSES + LOOP_PASSES
+
+LTO_OPTIONS = ["off", "thin", "fat"]
+OPT_LEVEL_OPTIONS = ["0", "1", "2", "3", "s", "z"]
 
 OUT = "./bin/tune"
 OUT_GENETIC = os.path.join(OUT, "genetic")

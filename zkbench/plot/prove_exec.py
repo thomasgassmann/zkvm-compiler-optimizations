@@ -14,12 +14,10 @@ def _get_values(dir: str, zkvm: str, programs: list[str]):
     for profile in profiles:
         for program in programs:
             try:
-                x.append(
-                    get_point_estimate_mean_ms(dir, program, zkvm, profile, "exec")
-                )
-                y.append(
-                    get_point_estimate_mean_ms(dir, program, zkvm, profile, "prove")
-                )
+                exec = get_point_estimate_mean_ms(dir, program, zkvm, profile, "exec")
+                prove = get_point_estimate_mean_ms(dir, program, zkvm, profile, "prove")
+                x.append(exec)
+                y.append(prove)
             except FileNotFoundError:
                 logging.warning(f"Data for {program}-{zkvm}-{profile} not found")
     return x, y, None

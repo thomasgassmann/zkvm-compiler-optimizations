@@ -1,8 +1,10 @@
 import json
+import os
+import uuid
 import click
 
 from zkbench.plot.common import get_program_selection
-from zkbench.tune.common import TuneConfig
+from zkbench.tune.common import OUT_EXHAUSTIVE, OUT_GENETIC, TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
 from zkbench.tune.genetic import run_tune_genetic
 
@@ -16,9 +18,14 @@ TUNE_METRICS = ["cycle-count", "prove-time"]
     type=int,
     help="Depth to test",
 )
-def tune_exhaustive_cli():
-    (selected_programs, zkvms, metric) = get_config()
-    run_tune_exhaustive(selected_programs, zkvms, metric)
+def tune_exhaustive_cli(depth: int):
+    (selected_programs, zkvms, metric, config) = get_config()
+    out_stats = os.path.join(
+        OUT_EXHAUSTIVE,
+        f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
+    )
+    os.makedirs(OUT_EXHAUSTIVE, exist_ok=True)
+    run_tune_exhaustive(selected_programs, zkvms, metric, config, out_stats, depth)
 
 
 @click.command(name="genetic")
@@ -34,7 +41,12 @@ def tune_genetic_cli(mode: str, depth: int | None):
         raise click.UsageError("Depth must be provided when mode is 'depth'.")
 
     (selected_programs, zkvms, metric, config) = get_config()
-    run_tune_genetic(selected_programs, zkvms, metric, config, mode, depth)
+    out_stats = os.path.join(
+        OUT_GENETIC,
+        f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
+    )
+    os.makedirs(OUT_GENETIC, exist_ok=True)
+    run_tune_genetic(selected_programs, zkvms, metric, config, mode, out_stats, depth)
 
 
 def get_config():
