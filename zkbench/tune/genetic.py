@@ -162,7 +162,7 @@ class DefaultMode(Mode):
             if cfg[current_pass] == "on":
                 used_passes.append(current_pass)
 
-        # TODO: currently pass it only applied once, we can apply pass multiple times
+        # pass is only applied once, we can apply pass multiple times
         pass_list = [build_pass_list(used_passes)]
         return ProfileConfig(
             name="genetic",

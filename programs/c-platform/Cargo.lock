@@ -12,7 +12,6 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 name = "c-platform"
 version = "0.1.0"
 dependencies = [
- "libc",
  "printf-compat",
 ]
 
@@ -46,12 +45,6 @@ checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
 dependencies = [
  "either",
 ]
-
-[[package]]
-name = "libc"
-version = "0.2.171"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c19937216e9d3aa9956d9bb8dfc0b0c8beb6058fc4f7a4dc4d850edf86a237d6"
 
 [[package]]
 name = "memchr"
