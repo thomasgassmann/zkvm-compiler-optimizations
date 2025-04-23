@@ -14,7 +14,7 @@
                 
 void init_parameters( gamestate_t *g ) {        
 #ifdef SMALL_MEMORY
-    TTSize = 15000000; // ~720M
+    TTSize = 150000; // ~720M
 #elif BIG_MEMORY
     TTSize = 150000000; // ~7.5G
 #else
