@@ -28,29 +28,36 @@ typedef unsigned int uint;
 #define NULL 0
 #endif
 
-extern "C" void printf(const char *fmt, ...);
-extern "C" void *malloc(size_t size);
-extern "C" void *calloc(size_t nmemb, size_t size);
-extern "C" void *realloc(void *ptr, size_t size);
-extern "C" void free(void *ptr);
-extern "C" void exit(int status);
-extern "C" double sqrt(double x);
-extern "C" void *memset(void *s, int c, size_t n);
-extern "C" char *strcpy(char *dest, const char *src);
-extern "C" int atoi(const char *str);
-extern "C" int isdigit(int arg);
-extern "C" int isalpha(int argument);
-extern "C" size_t strlen(const char *str);
-extern "C" int strncmp(const char *s1, const char *s2, size_t n);
-extern "C" char *strstr(const char *haystack, const char *needle);
-extern "C" int sprintf(char *str, const char *format, ...);
-extern "C" char *strcat(char *dest, const char *src);
-extern "C" void *memcpy(void *dest, const void *src, size_t n);
-extern "C" int abs(int x);
-extern "C" int strcmp(const char *s1, const char *s2);
+#ifdef __clang__
+  #ifdef __cplusplus
+    #define DEFINE_FUNCTION(name, ret_type, ...) extern "C" ret_type name(__VA_ARGS__)
+  #else
+    #define DEFINE_FUNCTION(name, ret_type, ...) extern ret_type name(__VA_ARGS__)
+  #endif
+#endif
 
-
-extern int read_int();
+DEFINE_FUNCTION(printf, int, const char *fmt, ...);
+DEFINE_FUNCTION(malloc, void *, size_t size);
+DEFINE_FUNCTION(calloc, void *, size_t nmemb, size_t size);
+DEFINE_FUNCTION(realloc, void *, void *ptr, size_t size);
+DEFINE_FUNCTION(free, void, void *ptr);
+DEFINE_FUNCTION(exit, void, int status);
+DEFINE_FUNCTION(sqrt, double, double x);
+DEFINE_FUNCTION(memset, void *, void *s, int c, size_t n);
+DEFINE_FUNCTION(strcpy, char *, char *dest, const char *src);
+DEFINE_FUNCTION(atoi, int, const char *str);
+DEFINE_FUNCTION(isdigit, int, int arg);
+DEFINE_FUNCTION(isalpha, int, int argument);
+DEFINE_FUNCTION(strlen, size_t, const char *str);
+DEFINE_FUNCTION(strncmp, int, const char *s1, const char *s2, size_t n);
+DEFINE_FUNCTION(strstr, char *, const char *haystack, const char *needle);
+DEFINE_FUNCTION(sprintf, int, char *str, const char *format, ...);
+DEFINE_FUNCTION(strcat, char *, char *dest, const char *src);
+DEFINE_FUNCTION(memcpy, void *, void *dest, const void *src, size_t n);
+DEFINE_FUNCTION(abs, int, int x);
+DEFINE_FUNCTION(strcmp, int, const char *s1, const char *s2);
+DEFINE_FUNCTION(read_int, int, void);
+DEFINE_FUNCTION(read_string, char *, void);
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) > (b) ? (b) : (a))

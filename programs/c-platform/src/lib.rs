@@ -217,6 +217,18 @@ macro_rules! include_platform {
         }
 
         #[unsafe(no_mangle)]
+        #[inline(always)]
+        pub unsafe extern "C" fn read_string() -> *mut c_char {
+            #[cfg(feature = "risc0")]
+            let s: String = risc0_zkvm::guest::env::read();
+            #[cfg(feature = "sp1")]
+            let s: String = sp1_zkvm::io::read();
+
+            let c_string = std::ffi::CString::new(s).expect("Failed to create CString");
+            c_string.into_raw()
+        }
+
+        #[unsafe(no_mangle)]
         pub unsafe extern "C" fn sprintf(
             buffer: *mut c_char,
             format_str: *const c_char,
