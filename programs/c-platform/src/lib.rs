@@ -358,5 +358,27 @@ macro_rules! include_platform {
 
             ptr::null()
         }
+
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn puts(s: *const c_char) -> c_int {
+            if s.is_null() {
+                return -1;
+            }
+
+            let c_str = std::ffi::CStr::from_ptr(s);
+            if let Ok(string) = c_str.to_str() {
+                println!("{}", string);
+                string.len() as c_int
+            } else {
+                -1
+            }
+        }
+
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn putchar(c: c_int) -> c_int {
+            let character = c as u8 as char;
+            print!("{}", character);
+            c
+        }
     };
 }

@@ -58,6 +58,8 @@ DEFINE_FUNCTION(abs, int, int x);
 DEFINE_FUNCTION(strcmp, int, const char *s1, const char *s2);
 DEFINE_FUNCTION(read_int, int, void);
 DEFINE_FUNCTION(read_string, char *, void);
+DEFINE_FUNCTION(putchar, int, int);
+DEFINE_FUNCTION(puts, int, char *);
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) > (b) ? (b) : (a))
