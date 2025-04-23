@@ -246,6 +246,10 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&0); // action: NOTHING = 0, COMPARE, STORE
             stdin.write_generic(&0); // simType: LDC = 0, CHANNEL
         }
+        ProgramId::Spec631 => {
+            let str = include_str!("../../inputs/spec-631/in.txt");
+            stdin.write_string(str);
+        }
         _ => {}
     }
 }
