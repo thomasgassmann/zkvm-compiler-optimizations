@@ -1,2 +1,101 @@
-def run_tune_exhaustive(programs: list[str], zkvms: list[str], metric: str):
-    pass
+import asyncio
+from dataclasses import dataclass
+import dataclasses
+import json
+import logging
+from zkbench.tune.runner import TuneRunner
+from zkbench.tune.common import (
+    LTO_OPTIONS,
+    OPT_LEVEL_OPTIONS,
+    OUT_EXHAUSTIVE,
+    EvalResult,
+    ProfileConfig,
+    TuneConfig,
+    build_pass_list,
+)
+from itertools import product
+
+
+@dataclass
+class ExhaustiveResult:
+    passes: list[str]
+    profile_config: ProfileConfig
+    build_error: bool
+    eval_result: EvalResult
+
+
+def run_tune_exhaustive(
+    programs: list[str],
+    zkvms: list[str],
+    metric: str,
+    config: TuneConfig,
+    out_stats: str,
+    depth: int,
+):
+    passes = config.module_passes + config.function_passes + config.loop_passes
+    lto = ["off"] if not config.tune_lto else LTO_OPTIONS
+    single_codegen_unit = [False] if not config.tune_codegen_units else [False, True]
+    opt_level = OPT_LEVEL_OPTIONS if config.tune_opt_level else ["0"]
+    prepopulate_passes = [True, False] if config.tune_prepopulate_passes else [False]
+    builder_runner = TuneRunner(OUT_EXHAUSTIVE, metric)
+
+    results = []
+
+    def append_and_write(new_result: ExhaustiveResult):
+        results.append(dataclasses.asdict(new_result))
+        with open(out_stats, "w") as f:
+            json.dump(
+                {
+                    "results": results,
+                    "metric": metric,
+                    "programs": programs,
+                    "zkvms": zkvms,
+                    "config": dataclasses.asdict(config),
+                },
+                f,
+            )
+
+    for pass_config in product(passes, repeat=depth):
+        for lto_config in lto:
+            for codegen_unit_single in single_codegen_unit:
+                for opt_level_config in opt_level:
+                    for prepopulate_pass in prepopulate_passes:
+                        profile_config = ProfileConfig(
+                            name="exhaustive",
+                            lto=lto_config,
+                            passes=[build_pass_list(pass_config)],
+                            single_codegen_unit=codegen_unit_single,
+                            opt_level=opt_level_config,
+                            prepopulate_passes=prepopulate_pass,
+                        )
+                        try:
+                            asyncio.get_event_loop().run_until_complete(
+                                builder_runner.run_build(
+                                    programs, zkvms, profile_config
+                                )
+                            )
+                        except Exception as e:
+                            logging.error(
+                                f"Error building with config {profile_config}: {e}"
+                            )
+                            append_and_write(
+                                ExhaustiveResult(
+                                    passes=pass_config,
+                                    profile_config=profile_config,
+                                    build_error=True,
+                                    eval_result=None,
+                                )
+                            )
+                            continue
+
+                        eval_result = builder_runner.eval_all(
+                            programs, zkvms, profile_config
+                        )
+                        append_and_write(
+                            ExhaustiveResult(
+                                passes=pass_config,
+                                profile_config=profile_config,
+                                build_error=False,
+                                eval_result=eval_result,
+                            )
+                        )

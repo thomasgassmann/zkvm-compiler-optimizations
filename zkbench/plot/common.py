@@ -71,9 +71,10 @@ def read_estimates_data(
             meta = read_program_meta(dir, program, zkvm, profile)
             # in case this directory does not exist, the optimization was not applied
             # hence we did not run it and the two binaries must be the same
-            assert (
-                meta["hash"] == baseline_meta["hash"]
-            ), f"Expected {profile} for {program}-{zkvm}-{measurement} to be the same as {BASELINE}, but is not"
+            if meta["hash"] != baseline_meta["hash"]:
+                raise FileNotFoundError(
+                    f"Expected {profile} for {program}-{zkvm}-{measurement} to be the same as {BASELINE}, but is not"
+                )
 
         # as the binaries are the same, we use the baseline estimates
         opt_path = os.path.join(dir, f"{program}-{zkvm}-{measurement}", BASELINE)

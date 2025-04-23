@@ -2,9 +2,6 @@ import asyncio
 import dataclasses
 import json
 import logging
-import os
-import uuid
-from dataclasses import dataclass
 from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter
 from opentuner import MeasurementInterface
@@ -12,88 +9,20 @@ from opentuner import Result
 from opentuner.tuningrunmain import the_logging_config
 import opentuner
 
-from zkbench.build import build_program
-from zkbench.clean import run_clean
-from zkbench.common import run_command
-from zkbench.config import Profile
+from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
-    ALL_PASSES,
+    LTO_OPTIONS,
+    OPT_LEVEL_OPTIONS,
     OUT_GENETIC,
     ProfileConfig,
     TuneConfig,
     build_pass_list,
-    build_profile,
 )
-
-CLEAN_CYCLE = 15
-
-
-def is_metric_parallelizable(metric: str) -> bool:
-    return metric in ["cycle-count"]
-
-
-def get_out_path(config: ProfileConfig, zkvm: str, program: str) -> str:
-    return os.path.join(OUT_GENETIC, config.get_unique_id(zkvm, program))
-
-
-async def _eval(metric: str, zkvm: str, program: str, elf: str):
-    filename = os.path.basename(elf)
-    stats_file = os.path.join(OUT_GENETIC, f"{filename}.json")
-    res = await run_command(
-        f"""
-        ./target/release/runner tune 
-            --program {program} 
-            --zkvm {zkvm} 
-            --elf {elf}
-            --filename {stats_file}
-            --metric {metric}
-    """.strip().replace(
-            "\n", " "
-        ),
-        None,
-        {
-            **os.environ,
-        },
-        filename,
-    )
-
-    if res != 0:
-        raise Exception(f"Failed to calculate metric the program: {elf}")
-
-    metric = int(json.loads(open(stats_file).read())["metric"])
-    logging.info(f"Metric for {program} on {zkvm}: {metric}")
-    os.remove(stats_file)
-    os.remove(elf)
-    return metric
-
-
-clean_cycles = {}
-
-
-async def _build(program: str, zkvm: str, profile: Profile, out: str):
-    global clean_cycles
-    if program not in clean_cycles:
-        clean_cycles[program] = 0
-    if clean_cycles[program] >= CLEAN_CYCLE:
-        clean_cycles[program] = 0
-        logging.info(f"Cleaning {program} for {zkvm}")
-        run_clean([program], [zkvm])
-    await build_program(program, zkvm, profile, False, out)
-    clean_cycles[program] += 1
-    logging.info(f"Built {program} for {zkvm}")
-
-
-async def _build_for_all_zkvms(
-    program: str, zkvms: list[str], profile: Profile, profile_config: ProfileConfig
-):
-    for zkvm in zkvms:
-        out = get_out_path(profile_config, zkvm, program)
-        await _build(program, zkvm, profile, out)
 
 
 def add_common_params(manipulator: ConfigurationManipulator, config: TuneConfig):
     manipulator.add_parameter(
-        EnumParameter("lto", ["off", "thin", "fat"] if config.tune_lto else ["off"])
+        EnumParameter("lto", LTO_OPTIONS if config.tune_lto else ["off"])
     )
     manipulator.add_parameter(
         EnumParameter(
@@ -104,7 +33,7 @@ def add_common_params(manipulator: ConfigurationManipulator, config: TuneConfig)
     manipulator.add_parameter(
         EnumParameter(
             "opt_level",
-            ["0", "1", "2", "3", "s", "z"] if config.tune_opt_level else ["0"],
+            OPT_LEVEL_OPTIONS if config.tune_opt_level else ["0"],
         )
     )
     manipulator.add_parameter(
@@ -191,6 +120,8 @@ def create_tuner(
     config: TuneConfig,
     mode: Mode,
 ):
+    runner = TuneRunner(out=OUT_GENETIC, metric=metric)
+
     class PassTuner(MeasurementInterface):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
@@ -198,24 +129,21 @@ def create_tuner(
             self._best_config = None
             self._values = []
             self._profile_configs = []
+            self._metrics = []
 
         def manipulator(self):
             return mode.get_manipulator(config)
 
         def run(self, desired_result, input, limit):
             profile_config = mode.get_profile_config(desired_result)
-            profile = build_profile(profile_config)
 
             # first build all the binaries
             try:
                 asyncio.get_event_loop().run_until_complete(
-                    asyncio.gather(
-                        *[
-                            _build_for_all_zkvms(
-                                program, zkvms, profile, profile_config
-                            )
-                            for program in programs
-                        ]
+                    runner.run_build(
+                        programs,
+                        zkvms,
+                        profile_config,
                     )
                 )
             except Exception as e:
@@ -223,46 +151,13 @@ def create_tuner(
                 return Result(time=float("inf"), state="ERROR")
 
             # then calculate metrics
-            metric_sum = 0
-            if is_metric_parallelizable(metric):
-                try:
-                    values = asyncio.get_event_loop().run_until_complete(
-                        asyncio.gather(
-                            *[
-                                _eval(
-                                    metric,
-                                    zkvm,
-                                    program,
-                                    get_out_path(profile_config, zkvm, program),
-                                )
-                                for zkvm in zkvms
-                                for program in programs
-                            ]
-                        )
-                    )
-                    metric_sum = sum(values)
-                except Exception as e:
-                    logging.error(f"Error during evaluation: {e}")
-                    return Result(time=float("inf"), state="ERROR")
-            else:
-                for zkvm in zkvms:
-                    for program in programs:
-                        try:
-                            current_metric = (
-                                asyncio.get_event_loop().run_until_complete(
-                                    _eval(
-                                        metric,
-                                        zkvm,
-                                        program,
-                                        get_out_path(profile_config, zkvm, program),
-                                    )
-                                )
-                            )
-                            metric_sum += current_metric
-                        except Exception as e:
-                            logging.error(f"Error during evaluation: {e}")
-                            return Result(time=float("inf"), state="ERROR")
+            eval_result = runner.eval_all(programs, zkvms, profile_config)
+            if eval_result.has_error:
+                return Result(time=float("inf"), state="ERROR")
 
+            values = eval_result.values
+            self._metrics.append([dataclasses.asdict(value) for value in values])
+            metric_sum = sum([v.metric for v in values])
             self._values.append(metric_sum)
             self._profile_configs.append(dataclasses.asdict(profile_config))
 
@@ -283,6 +178,7 @@ def create_tuner(
                     {
                         "profile_configs": self._profile_configs,
                         "values": self._values,
+                        "metrics": self._metrics,
                         "best_metric": self._best,
                         "best_profile": dataclasses.asdict(self._best_config),
                         "metric": metric,
@@ -304,9 +200,9 @@ def run_tune_genetic(
     metric: str,
     config: TuneConfig,
     mode: str,
+    out_stats: str,
     depth: int | None,
 ):
-    os.makedirs(OUT_GENETIC, exist_ok=True)
     arg_parser = opentuner.default_argparser()
 
     the_logging_config["handlers"]["console"]["level"] = logging.getLevelName(
@@ -314,11 +210,6 @@ def run_tune_genetic(
     )
     the_logging_config["loggers"][""]["level"] = logging.getLevelName(
         logging.getLogger().level
-    )
-
-    out_stats = os.path.join(
-        OUT_GENETIC,
-        f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
     )
 
     if mode == "default":
