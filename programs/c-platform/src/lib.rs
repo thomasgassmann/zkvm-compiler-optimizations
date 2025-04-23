@@ -258,14 +258,6 @@ macro_rules! include_platform {
         }
 
         #[unsafe(no_mangle)]
-        pub unsafe extern "C" fn rmemcpy(dest: *mut u8, src: *const u8, n: usize) -> *mut u8 {
-            for i in 0..n {
-                *dest.add(i) = *src.add(i);
-            }
-            dest
-        }
-
-        #[unsafe(no_mangle)]
         pub extern "C" fn abs(n: i32) -> i32 {
             if n < 0 { -n } else { n }
         }
@@ -291,11 +283,68 @@ macro_rules! include_platform {
         }
 
         #[unsafe(no_mangle)]
-        pub unsafe extern "C" fn rmemset(dest: *mut u8, value: i32, count: usize) -> *mut u8 {
-            for i in 0..count {
-                *dest.add(i) = value as u8;
+        pub unsafe extern "C" fn isdigit(c: i32) -> i32 {
+            if c >= b'0' as i32 && c <= b'9' as i32 {
+                1
+            } else {
+                0
             }
-            dest
+        }
+
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn isalpha(c: i32) -> i32 {
+            if (c >= b'A' as i32 && c <= b'Z' as i32) || (c >= b'a' as i32 && c <= b'z' as i32) {
+                1
+            } else {
+                0
+            }
+        }
+
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn strncmp(s1: *const u8, s2: *const u8, n: usize) -> i32 {
+            let mut i = 0;
+            while i < n {
+                let c1 = *s1.add(i);
+                let c2 = *s2.add(i);
+
+                if c1 != c2 {
+                    return c1 as i32 - c2 as i32;
+                }
+
+                if c1 == 0 {
+                    break;
+                }
+
+                i += 1;
+            }
+            0
+        }
+
+        #[unsafe(no_mangle)]
+        pub unsafe extern "C" fn strstr(haystack: *const u8, needle: *const u8) -> *const u8 {
+            if haystack.is_null() || needle.is_null() {
+                return ptr::null();
+            }
+
+            let mut h_ptr = haystack;
+
+            while *h_ptr != 0 {
+                let mut h_sub_ptr = h_ptr;
+                let mut n_ptr = needle;
+
+                while *n_ptr != 0 && *h_sub_ptr == *n_ptr {
+                    h_sub_ptr = h_sub_ptr.add(1);
+                    n_ptr = n_ptr.add(1);
+                }
+
+                if *n_ptr == 0 {
+                    return h_ptr;
+                }
+
+                h_ptr = h_ptr.add(1);
+            }
+
+            ptr::null()
         }
     };
 }

@@ -84,6 +84,9 @@ pub enum ProgramId {
     NpbLu,
     NpbMg,
     NpbSp,
+    #[serde(rename = "spec-631")]
+    #[clap(name = "spec-631")]
+    Spec631,
 }
 
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
@@ -194,6 +197,7 @@ impl Display for ProgramId {
             ProgramId::NpbLu => write!(f, "npb-lu"),
             ProgramId::NpbMg => write!(f, "npb-mg"),
             ProgramId::NpbSp => write!(f, "npb-sp"),
+            ProgramId::Spec631 => write!(f, "spec-631"),
         }
     }
 }

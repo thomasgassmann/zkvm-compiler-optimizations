@@ -28,27 +28,26 @@ typedef unsigned int uint;
 #define NULL 0
 #endif
 
-extern void printf(const char *fmt, ...);
-extern void *malloc(size_t size);
-extern void *calloc(size_t nmemb, size_t size);
-extern void *realloc(void *ptr, size_t size);
-extern void free(void *ptr);
-extern void exit(int status);
-extern double sqrt(double x);
-extern void *memset(void *s, int c, size_t n);
-extern char *strcpy(char *dest, const char *src);
-extern int atoi(const char *str);
-extern int isdigit(int arg);
-extern int isalpha(int argument);
-extern size_t strlen(const char *str);
-extern int strncmp(const char *s1, const char *s2, size_t n);
-extern char *strstr(const char *haystack, const char *needle);
-extern int sprintf(char *str, const char *format, ...);
-extern char *strcat(char *dest, const char *src);
-extern void *rmemcpy(void *dest, const void *src, size_t n);
-extern int abs(int x);
-extern int strcmp(const char *s1, const char *s2);
-extern void *rmemset(void *ptr, int x, size_t n);
+extern "C" void printf(const char *fmt, ...);
+extern "C" void *malloc(size_t size);
+extern "C" void *calloc(size_t nmemb, size_t size);
+extern "C" void *realloc(void *ptr, size_t size);
+extern "C" void free(void *ptr);
+extern "C" void exit(int status);
+extern "C" double sqrt(double x);
+extern "C" void *memset(void *s, int c, size_t n);
+extern "C" char *strcpy(char *dest, const char *src);
+extern "C" int atoi(const char *str);
+extern "C" int isdigit(int arg);
+extern "C" int isalpha(int argument);
+extern "C" size_t strlen(const char *str);
+extern "C" int strncmp(const char *s1, const char *s2, size_t n);
+extern "C" char *strstr(const char *haystack, const char *needle);
+extern "C" int sprintf(char *str, const char *format, ...);
+extern "C" char *strcat(char *dest, const char *src);
+extern "C" void *memcpy(void *dest, const void *src, size_t n);
+extern "C" int abs(int x);
+extern "C" int strcmp(const char *s1, const char *s2);
 
 
 extern int read_int();
