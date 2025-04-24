@@ -1,5 +1,3 @@
-
-
 import asyncio
 import json
 import logging
@@ -10,7 +8,8 @@ from zkbench.common import run_command
 from zkbench.tune.common import EvalResult, MetricValue, ProfileConfig, build_profile, is_metric_parallelizable
 
 
-CLEAN_CYCLE = 15
+CLEAN_CYCLE = 10
+
 
 class TuneRunner:
 
@@ -21,7 +20,6 @@ class TuneRunner:
 
     def get_out_path(self, config: ProfileConfig, zkvm: str, program: str) -> str:
         return os.path.join(self._out, config.get_unique_id(zkvm, program))
-
 
     async def _build(self, program: str, zkvm: str, profile_config: ProfileConfig, out: str):
         profile = build_profile(profile_config)
@@ -35,14 +33,12 @@ class TuneRunner:
         self._clean_cycles[program] += 1
         logging.info(f"Built {program} for {zkvm}")
 
-
     async def _build_for_all_zkvms(self, 
         program: str, zkvms: list[str], profile_config: ProfileConfig
     ):
         for zkvm in zkvms:
             out = self.get_out_path(profile_config, zkvm, program)
             await self._build(program, zkvm, profile_config, out)
-
 
     async def run_build(
             self,
