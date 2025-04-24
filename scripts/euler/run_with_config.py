@@ -22,7 +22,7 @@ if not timed:
 
 config = {
     "npb-ft": {"sp1": "GPUS=rtx_3090:1", "risc0": "GPUS=rtx_3090:1"},
-    "npb-bt": {"sp1": "GPUS=rtx_3090:1", "risc0": "GPUS=rtx_4090:1"},
+    "npb-bt": {"sp1": "GPUS=rtx_3090:1", "risc0": "GPUS=rtx_3090:1"},
     "default_sp1": "GPUS=rtx_3090:1",
     "default_risc0": "GPUS=rtx_3090:1",
 }
@@ -42,5 +42,4 @@ command = f"""
 """.strip().replace(
     "\n", " "
 )
-print(f"Running: {command}")
-os.system(command)
+print(command)
