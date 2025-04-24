@@ -14,6 +14,7 @@ from zkbench.plot.plot import (
     average_improvement_cli,
     cycle_count_abs_cli,
     cycle_count_cli,
+    cycle_count_stats_cli,
     cycle_count_duration_cli,
     no_effect_cli,
     opt_by_program_cli,
@@ -166,6 +167,7 @@ plot_cli.add_command(average_improvement_cli)
 plot_cli.add_command(average_duration_cli)
 plot_cli.add_command(cycle_count_cli)
 plot_cli.add_command(cycle_count_duration_cli)
+plot_cli.add_command(cycle_count_stats_cli)
 plot_cli.add_command(prove_exec_cli)
 plot_cli.add_command(cycle_count_abs_cli)
 plot_cli.add_command(opt_by_program_cli)

@@ -13,7 +13,10 @@ from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
-from zkbench.plot.cycle_prove_duration import plot_cycle_count_duration
+from zkbench.plot.cycle_count_duration import (
+    plot_cycle_count_duration,
+    plot_cycle_count_stats,
+)
 from zkbench.plot.genetic import plot_genetic
 from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
@@ -65,6 +68,14 @@ def cycle_count_abs_cli(program: str, zkvm: str):
 def cycle_count_duration_cli(measurement: str, program: str | None, relative: bool):
     dir = click.get_current_context().parent.params["dir"]
     plot_cycle_count_duration(dir, measurement, program, relative)
+
+
+@click.command(name="cycle-count-stats")
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+@click.option("--relative", is_flag=True, default=False)
+def cycle_count_stats_cli(measurement: str, relative: bool):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_cycle_count_stats(dir, measurement, relative)
 
 
 @click.command(name="prove-exec")
