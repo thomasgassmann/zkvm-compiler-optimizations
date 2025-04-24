@@ -33,8 +33,7 @@ gpu_config = config.get(f'default_{zkvm}') if program not in config else config[
 if gpu_config is None:
     raise ValueError(f"Unsupported program {program} for zkVM {zkvm}")
 
-os.system(
-    f"""
+command = f"""
           TIMED={timed}
           OUT={f'{program}-{zkvm}'} 
           {gpu_config}
@@ -43,6 +42,7 @@ os.system(
               --zkvm risc0 
               --measurement prove
 """.strip().replace(
-        "\n", " "
-    )
+    "\n", " "
 )
+print(f"Running: {command}")
+os.system(command)
