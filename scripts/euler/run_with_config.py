@@ -1,7 +1,7 @@
+#!/usr/bin/env python
+
 import argparse
 import os
-
-#!/usr/bin/env python
 
 parser = argparse.ArgumentParser(description="Run prove with predetermined config")
 parser.add_argument("zkvm", type=str, help="zkVM to use", required=True)
