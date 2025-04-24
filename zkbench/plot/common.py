@@ -249,7 +249,9 @@ def get_values_by_profile(
             for zk in zkvms:
                 for meas in measurements:
                     try:
-                        values_list.append(fn(dir, prog, zk, profile, meas))
+                        r = fn(dir, prog, zk, profile, meas)
+                        if r is not None:
+                            values_list.append(r)
                     except FileNotFoundError:
                         logging.warning(
                             f"Data for {prog}-{zk}-{meas}-{profile} not found"

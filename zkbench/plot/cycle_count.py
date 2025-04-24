@@ -11,6 +11,9 @@ from zkbench.plot.common import (
 def f(dir, program, zkvm, profile):
     baseline = get_cycle_count(dir, program, zkvm, BASELINE)
     compared = get_cycle_count(dir, program, zkvm, profile)
+    if compared is None:
+        return None
+
     return (compared - baseline) / baseline
 
 
