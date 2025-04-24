@@ -84,11 +84,21 @@ def read_estimates_data(
 
 
 def read_program_meta(dir: str, program: str, zkvm: str, profile: str):
+    program_config = get_program_by_name(program)
+    if profile in program_config.skip:
+        logging.warning(f"{profile} is skipped for {program}, returning None")
+        return None
+
     path = os.path.join(dir, f"meta/{program}/{zkvm}/{profile}.json")
     return json.load(open(path, "r"))
 
 
 def get_cycle_count(dir: str, program: str, zkvm: str, profile: str):
+    program_config = get_program_by_name(program)
+    if profile in program_config.skip:
+        logging.warning(f"{profile} is skipped for {program}, returning None")
+        return None
+
     return read_program_meta(dir, program, zkvm, profile)["cycle_count"]
 
 
@@ -145,6 +155,14 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
     plt.show()
 
 
+def get_spearman(x, y):
+    return stats.spearmanr(x, y).statistic
+
+
+def get_pearson(x, y):
+    return np.corrcoef(x, y)[0, 1]
+
+
 def plot_scatter_by_zkvm(
     title: str,
     get_by_zkvm: Callable[[str], tuple[np.ndarray, np.ndarray]],
@@ -152,23 +170,11 @@ def plot_scatter_by_zkvm(
     y_label: str,
 ):
     for zkvm in get_zkvms():
-        x, y, group_ids = get_by_zkvm(zkvm)
-        if group_ids is not None:
-            cmap = plt.get_cmap("tab10")
-            group_to_color = {
-                group: cmap(i % 10)
-                for i, group in enumerate(np.unique(np.array(group_ids)))
-            }
-            color = []
-            for group in group_ids:
-                color.append(group_to_color[group])
-        else:
-            color = None
-
-        p = np.corrcoef(x, y)[0, 1]
-        spearman = stats.spearmanr(x, y).statistic
+        x, y = get_by_zkvm(zkvm)
+        pearson = get_pearson(x, y)
+        spearman = get_spearman(x, y)
         plt.scatter(
-            x, y, c=color, label=f"{zkvm}, Pearson={p:.3f}, Spearman={spearman:.3f}"
+            x, y, label=f"{zkvm}, Pearson={pearson:.3f}, Spearman={spearman:.3f}"
         )
         plt.plot(
             np.unique(x),
