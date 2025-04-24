@@ -39,7 +39,7 @@ command = f"""
           {gpu_config}
           ./scripts/euler/run.sh bench 
               --program {program} 
-              --zkvm risc0 
+              --zkvm {zkvm} 
               --measurement prove
 """.strip().replace(
     "\n", " "
