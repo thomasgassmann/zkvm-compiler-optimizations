@@ -27,11 +27,7 @@ pub fn is_same_as_baseline(program: &ProgramId, prover: &ProverId, profile: &Str
 
     let elf = read_elf(program, prover, profile);
     let baseline_elf = read_elf(program, prover, &String::from(BASLINE_PROFILE));
-    elf.len() == baseline_elf.len()
-        && elf
-            .iter()
-            .zip(baseline_elf.iter())
-            .all(|(a, b)| a == b)
+    elf.len() == baseline_elf.len() && elf.iter().zip(baseline_elf.iter()).all(|(a, b)| a == b)
 }
 
 pub fn get_elf_hash(elf: &[u8]) -> String {
@@ -45,9 +41,11 @@ pub fn has_previously_run(
     program: &ProgramId,
     zkvm: &ProverId,
     measurement: &MeasurementType,
+    profile: &String,
 ) -> bool {
     let mut path: PathBuf = get_criterion_dir();
-    path.push(format!("{}-{}-{}", program, zkvm, measurement));
+    path.push(format!("{program}-{zkvm}-{measurement}"));
+    path.push(format!("{profile}"));
     path.exists()
 }
 

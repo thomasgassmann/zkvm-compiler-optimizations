@@ -139,22 +139,27 @@ fn run_criterion(args: CriterionArgs) {
         let program_config = config.programs.get(program).unwrap();
         for measurement in measurements.iter().rev() {
             for prover in zkvms.iter() {
-                if has_previously_run(&program, prover, measurement) && !args.force {
-                    println!("Skipping: {}-{}-{}", program, prover, measurement);
-                    continue;
-                }
-
                 let group_name = format!("{}-{}-{}", program, prover, measurement);
                 let mut group = c.benchmark_group(&group_name);
                 group.sample_size(10);
 
                 for profile in profiles.iter() {
                     if program_config.skip.contains(profile) {
-                        println!("Skipping: {}-{}-{}-{}", program, prover, measurement, profile);
+                        println!(
+                            "Skipping: {program}-{prover}-{measurement}-{profile} (skip config)"
+                        );
                         continue;
                     }
 
-                    println!("Running: {}-{}-{}-{}", program, prover, measurement, profile);
+                    if has_previously_run(&program, prover, measurement, profile) && !args.force {
+                        println!("Skipping: {program}-{prover}-{measurement}-{profile} (already run, ENSURE YOU ARE RUNNING ON THE SAME HARDWARE)");
+                        continue;
+                    }
+
+                    println!(
+                        "Running: {}-{}-{}-{}",
+                        program, prover, measurement, profile
+                    );
                     add_benchmarks_for(
                         &program,
                         &prover,
