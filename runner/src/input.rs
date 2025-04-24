@@ -12,7 +12,9 @@ use mnist::MnistBuilder;
 use rand::{distributions::Alphanumeric, Rng};
 
 fn downsample_image(image: &Array1<f32>) -> Vec<f64> {
-    let image_2d = image.to_owned().into_shape_with_order((28, 28))
+    let image_2d = image
+        .to_owned()
+        .into_shape_with_order((28, 28))
         .expect("Error reshaping the image to 28x28");
 
     let mut downsampled = Vec::with_capacity(49);
@@ -20,7 +22,7 @@ fn downsample_image(image: &Array1<f32>) -> Vec<f64> {
     for i in 0..7 {
         for j in 0..7 {
             // Slice out a 4x4 block from the image
-            let block = image_2d.slice(s![i*4..i*4+4, j*4..j*4+4]);
+            let block = image_2d.slice(s![i * 4..i * 4 + 4, j * 4..j * 4 + 4]);
             // Sum the block elements, take the average (16 pixels per block)
             let sum: f32 = block.iter().sum();
             let avg = sum / 16.0;
@@ -168,11 +170,7 @@ pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEn
     write_program_inputs(program, builder, ProverId::Risc0);
 }
 
-fn write_program_inputs<W: ProgramInputWriter>(
-    program: &ProgramId,
-    stdin: &mut W,
-    _: ProverId,
-) {
+fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut W, _: ProverId) {
     match program {
         ProgramId::Factorial => {
             stdin.write_generic(&10u32);

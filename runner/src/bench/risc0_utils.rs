@@ -1,6 +1,9 @@
 use std::rc::Rc;
 
-use super::{super::{input::set_risc0_input, types::ProgramId}, utils::get_elf_hash};
+use super::{
+    super::{input::set_risc0_input, types::ProgramId},
+    utils::get_elf_hash,
+};
 use risc0_zkvm::{
     compute_image_id, get_prover_server, sha::Digest, ExecutorEnv, ExecutorImpl, ProveInfo,
     ProverOpts, ProverServer, Receipt, Session, VerifierContext,

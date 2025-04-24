@@ -5,7 +5,10 @@ use std::{
 
 use crate::utils::is_gpu_proving;
 
-use super::{super::{input::get_sp1_stdin, types::ProgramId}, utils::get_elf_hash};
+use super::{
+    super::{input::get_sp1_stdin, types::ProgramId},
+    utils::get_elf_hash,
+};
 use once_cell::sync::Lazy;
 use sp1_core_executor::{IoWriter, Program};
 use sp1_prover::components::CpuProverComponents;
