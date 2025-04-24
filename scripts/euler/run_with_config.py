@@ -4,17 +4,21 @@ import argparse
 import os
 
 parser = argparse.ArgumentParser(description="Run prove with predetermined config")
-parser.add_argument("zkvm", type=str, help="zkVM to use", required=True)
-parser.add_argument("program", type=str, help="program to run", required=True)
-parser.add_argument("timed", type=int, help="time", required=True)
-parser.add_argument("out", type=str, help="out file", required=True)
+parser.add_argument("--zkvm", type=str, help="zkVM to use", required=True)
+parser.add_argument("--program", type=str, help="program to run", required=True)
+parser.add_argument("--timed", type=int, help="time", required=True)
 
 args = parser.parse_args()
 
 zkvm = args.zkvm
 program = args.program
 timed = args.timed
-out = args.out
+if not zkvm in ["sp1", "risc0"]:
+    raise ValueError(f"Unsupported zkVM {zkvm}")
+if not program:
+    raise ValueError(f"Unsupported program {program}")
+if not timed:
+    raise ValueError(f"Unsupported time {timed}")
 
 config = {
     'npb-ft': {
@@ -29,12 +33,16 @@ gpu_config = config.get(f'default_{zkvm}') if program not in config else config[
 if gpu_config is None:
     raise ValueError(f"Unsupported program {program} for zkVM {zkvm}")
 
-os.system(f"""
+os.system(
+    f"""
           TIMED={timed}
-          OUT={out} 
+          OUT={f'{program}-{zkvm}'} 
           {gpu_config}
           ./scripts/euler/run.sh bench 
               --program {program} 
               --zkvm risc0 
               --measurement prove
-""".strip().replace('\n', ' '))
+""".strip().replace(
+        "\n", " "
+    )
+)
