@@ -8,7 +8,7 @@ from zkbench.common import run_command
 from zkbench.tune.common import EvalResult, MetricValue, ProfileConfig, build_profile, is_metric_parallelizable
 
 
-CLEAN_CYCLE = 3
+CLEAN_CYCLE = 5
 
 
 class TuneRunner:
