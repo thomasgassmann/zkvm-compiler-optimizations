@@ -13,7 +13,7 @@ from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
     LTO_OPTIONS,
     OPT_LEVEL_OPTIONS,
-    OUT_GENETIC,
+    BIN_OUT_GENETIC,
     ProfileConfig,
     TuneConfig,
     build_pass_list,
@@ -120,7 +120,7 @@ def create_tuner(
     config: TuneConfig,
     mode: Mode,
 ):
-    runner = TuneRunner(out=OUT_GENETIC, metric=metric)
+    runner = TuneRunner(out=BIN_OUT_GENETIC, metric=metric)
 
     class PassTuner(MeasurementInterface):
         def __init__(self, *args, **kwargs):

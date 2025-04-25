@@ -132,9 +132,9 @@ ALL_PASSES = MODULE_PASSES + FUNCTION_PASSES + LOOP_PASSES
 LTO_OPTIONS = ["off", "thin", "fat"]
 OPT_LEVEL_OPTIONS = ["0", "1", "2", "3", "s", "z"]
 
-OUT = "./bin/tune"
-OUT_GENETIC = os.path.join(OUT, "genetic")
-OUT_EXHAUSTIVE = os.path.join(OUT, "exhaustive")
+BIN_OUT = "./bin/tune"
+BIN_OUT_GENETIC = os.path.join(BIN_OUT, "genetic")
+BIN_OUT_EXHAUSTIVE = os.path.join(BIN_OUT, "exhaustive")
 
 
 def build_pass_list(ordered_passes: list[str]) -> str:
@@ -190,9 +190,9 @@ class ProfileConfig:
     passes: list[str]
 
     def get_unique_id(self, zkvm: str, program: str) -> str:
-        return f"{self.name}-{zkvm}-{program}-{self._get_hash()[:8]}"
+        return f"{self.name}-{zkvm}-{program}-{self.get_hash()[:8]}"
 
-    def _get_hash(self):
+    def get_hash(self):
         values = dataclasses.asdict(self)
         encoded_string = json.dumps(values).encode("utf-8")
         return hashlib.sha256(encoded_string).hexdigest()

@@ -150,8 +150,14 @@ def plot_cli(dir: str):
     required=True,
     type=click.File("r"),
 )
+@click.option("--out", nargs=1, required=True, help="Output directory")
 def tune_cli(
-    program: list[str], zkvm: list[str], program_group: list[str], metric: str, config
+    program: list[str],
+    zkvm: list[str],
+    program_group: list[str],
+    metric: str,
+    config,
+    out: str,
 ):
     pass
 
