@@ -102,8 +102,8 @@ class TuneRunner:
         res = await run_command(
             f"""
             ./target/release/runner tune 
-                --program {program} 
-                --zkvm {zkvm} 
+                --program {program}
+                --zkvm {zkvm}
                 --elf {elf}
                 --filename {stats_file}
                 --metric {metric}

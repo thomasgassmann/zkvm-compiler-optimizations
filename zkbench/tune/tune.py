@@ -4,7 +4,7 @@ import uuid
 import click
 
 from zkbench.plot.common import get_program_selection
-from zkbench.tune.common import OUT_EXHAUSTIVE, OUT_GENETIC, TuneConfig
+from zkbench.tune.common import BIN_OUT_EXHAUSTIVE, BIN_OUT_GENETIC, TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
 from zkbench.tune.genetic import run_tune_genetic
 
@@ -19,13 +19,9 @@ TUNE_METRICS = ["cycle-count", "prove-time"]
     help="Depth to test",
 )
 def tune_exhaustive_cli(depth: int):
-    (selected_programs, zkvms, metric, config) = get_config()
-    out_stats = os.path.join(
-        OUT_EXHAUSTIVE,
-        f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
-    )
-    os.makedirs(OUT_EXHAUSTIVE, exist_ok=True)
-    run_tune_exhaustive(selected_programs, zkvms, metric, config, out_stats, depth)
+    (selected_programs, zkvms, metric, config, out) = get_config()
+    os.makedirs(out, exist_ok=True)
+    run_tune_exhaustive(selected_programs, zkvms, metric, config, out, depth)
 
 
 @click.command(name="genetic")
@@ -40,12 +36,12 @@ def tune_genetic_cli(mode: str, depth: int | None):
     if mode == "depth" and depth is None:
         raise click.UsageError("Depth must be provided when mode is 'depth'.")
 
-    (selected_programs, zkvms, metric, config) = get_config()
+    (selected_programs, zkvms, metric, config, out) = get_config()
     out_stats = os.path.join(
-        OUT_GENETIC,
+        out,
         f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
     )
-    os.makedirs(OUT_GENETIC, exist_ok=True)
+    os.makedirs(out, exist_ok=True)
     run_tune_genetic(selected_programs, zkvms, metric, config, mode, out_stats, depth)
 
 
@@ -59,6 +55,7 @@ def get_config():
     config: TuneConfig = TuneConfig(
         **json.load(click.get_current_context().parent.params["config"])
     )
+    output_dir: str = click.get_current_context().parent.params["out"]
 
     selected_programs = get_program_selection(programs, program_groups)
-    return (selected_programs, zkvms, metric, config)
+    return (selected_programs, zkvms, metric, config, output_dir)
