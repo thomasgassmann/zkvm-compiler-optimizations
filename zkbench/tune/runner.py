@@ -10,7 +10,7 @@ from zkbench.tune.common import EvalResult, MetricValue, ProfileConfig, build_pr
 from dacite import from_dict
 
 
-CLEAN_CYCLE = 5
+CLEAN_CYCLE = 10
 
 
 class TuneRunner:
