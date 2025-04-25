@@ -8,13 +8,13 @@
         "inline",
         "attributor",
         "ipsccp",
-        "hotcoldsplit"
+        "partial-inliner"
     ],
     "function_passes": [
         "tailcallelim",
         "jump-threading",
         "gvn",
-        "simplifycfg",
+        "early-cse",
         "sroa"
     ],
     "loop_passes": []
