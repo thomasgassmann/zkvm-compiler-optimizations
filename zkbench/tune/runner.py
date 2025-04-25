@@ -26,7 +26,8 @@ class TuneRunner:
     ):
         h = profile_config.get_hash()[:10]
         return os.path.join(
-            self._cache_dir, f"{profile_config.name}-{program}-{zkvm}-{metric}-{h}.json"
+            self._cache_dir,
+            f"{h}/{profile_config.name}-{program}-{zkvm}-{metric}.json",
         )
 
     def get_out_path(self, config: ProfileConfig, zkvm: str, program: str) -> str:
@@ -160,6 +161,7 @@ class TuneRunner:
             )
 
             if self._cache_dir is not None:
+                os.makedirs(os.path.dirname(f), exist_ok=True)
                 with open(f, "w") as f:
                     f.write(json.dumps(dataclasses.asdict(val)))
 
