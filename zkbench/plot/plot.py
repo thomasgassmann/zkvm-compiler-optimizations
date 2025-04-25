@@ -10,6 +10,7 @@ from zkbench.config import (
 )
 from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
+from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
@@ -93,6 +94,14 @@ def prove_exec_cli(program: str | None, program_group: str | None):
 def opt_by_program_cli(profile: str):
     dir = click.get_current_context().parent.params["dir"]
     plot_opt_by_program(dir, profile)
+
+
+@click.command(name="khz")
+@click.option("--program", type=click.Choice(get_programs()))
+@click.option("--zkvm", type=click.Choice(get_zkvms()))
+def khz_cli(program: str | None, zkvm: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_khz(dir, zkvm, program)
 
 
 @click.command(name="tune-genetic")
