@@ -39,19 +39,12 @@ def run_tune_exhaustive(
     single_codegen_unit = [False] if not config.tune_codegen_units else [False, True]
     opt_level = OPT_LEVEL_OPTIONS if config.tune_opt_level else ["0"]
     prepopulate_passes = [True, False] if config.tune_prepopulate_passes else [False]
-    builder_runner = TuneRunner(BIN_OUT_EXHAUSTIVE, metric)
+    builder_runner = TuneRunner(BIN_OUT_EXHAUSTIVE, metric, out)
 
     results = []
 
-    def filename(profile_config: ProfileConfig):
-        h = profile_config.get_hash()[:10]
-        return os.path.join(out, f"{profile_config.name}-{h}.json")
-
     def append_and_write(new_result: ExhaustiveResult):
         results.append(dataclasses.asdict(new_result))
-        with open(filename(new_result.profile_config), "w") as f:
-            json.dump(dataclasses.asdict(new_result), f)
-
         with open(os.path.join(out, "stats.json"), "w") as f:
             json.dump(
                 {
@@ -77,14 +70,6 @@ def run_tune_exhaustive(
                             opt_level=opt_level_config,
                             prepopulate_passes=prepopulate_pass,
                         )
-
-                        if os.path.exists(filename(profile_config)):
-                            logging.info(
-                                f"Skipping existing profile config: {profile_config}"
-                            )
-                            r = json.load(open(filename(profile_config), "r"))
-                            append_and_write(from_dict(ExhaustiveResult, r))
-                            continue
 
                         try:
                             asyncio.get_event_loop().run_until_complete(
