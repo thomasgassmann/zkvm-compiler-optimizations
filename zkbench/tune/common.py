@@ -18,6 +18,7 @@ class MetricValue:
     zkvm: str
     program: str
     metric: int
+    timeout: bool = False
 
 
 @dataclass

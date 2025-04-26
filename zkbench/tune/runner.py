@@ -216,6 +216,10 @@ class TuneRunner:
 
             self.write_cache(program, zkvm, profile_config, val)
             return val
+        except asyncio.TimeoutError:
+            val = MetricValue(zkvm=zkvm, program=program, metric=-1, timeout=True)
+            self.write_cache(program, zkvm, profile_config, val)
+            return val
         finally:
             os.remove(stats_file)
             os.remove(elf)
