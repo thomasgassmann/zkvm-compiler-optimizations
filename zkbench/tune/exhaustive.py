@@ -76,7 +76,7 @@ def run_tune_exhaustive(
                         )
                         if not res:
                             logging.error(
-                                f"Error building with config {profile_config}: {e}"
+                                f"Error building with config {profile_config}"
                             )
                             append_and_write(
                                 ExhaustiveResult(
