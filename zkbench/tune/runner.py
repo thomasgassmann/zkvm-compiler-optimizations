@@ -93,16 +93,15 @@ class TuneRunner:
         try:
             await self.try_build(programs, zkvms, profile_config)
             return True
-        except OSError as e:
-            if e.errno == 28:
-                self.clean(programs, zkvms)
-                await self.try_build(programs, zkvms, profile_config)
-                return True
-            else:
-                return False
         except Exception as e:
             logging.error(f"Error during build: {e}")
-            return False
+            self.clean(programs, zkvms)
+            try:
+                await self.try_build(programs, zkvms, profile_config)
+                return True
+            except Exception as e:
+                logging.error(f"Error during build: {e}")
+                return False
 
     def eval_all(self, programs: list[str], zkvms: list[str], profile_config: ProfileConfig):
         values = []
