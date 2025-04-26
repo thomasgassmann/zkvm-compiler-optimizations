@@ -61,15 +61,39 @@ class TuneRunner:
             out = self.get_out_path(profile_config, zkvm, program)
             await self._build(program, zkvm, profile_config, out)
 
-    async def run_build(
-            self,
+    def clean(self, programs: list[str], zkvms: list[str]):
+        run_clean(programs, zkvms)
+        for program in programs:
+            self._clean_cycles[program] = 0
+
+    async def try_build(
+        self,
         programs: list[str],
         zkvms: list[str],
         profile_config: ProfileConfig,
     ):
+
         await asyncio.gather(
-            *[self._build_for_all_zkvms(program, zkvms, profile_config) for program in programs]
+            *[
+                self._build_for_all_zkvms(program, zkvms, profile_config)
+                for program in programs
+            ]
         )
+
+    async def run_build(
+        self,
+        programs: list[str],
+        zkvms: list[str],
+        profile_config: ProfileConfig,
+    ):
+        try:
+            await self.try_build(programs, zkvms, profile_config)
+        except OSError as e:
+            if e.errno == 28:
+                self.clean(programs, zkvms)
+                await self.try_build(programs, zkvms, profile_config)
+            else:
+                raise e
 
     def eval_all(self, programs: list[str], zkvms: list[str], profile_config: ProfileConfig):
         values = []
@@ -114,6 +138,20 @@ class TuneRunner:
             has_error=False,
             values=values,
         )
+
+    def write_cache(
+        self,
+        program: str,
+        zkvm: str,
+        profile_config: ProfileConfig,
+        metric_value: MetricValue,
+    ):
+        if self._cache_dir is None:
+            return
+        f = self.filename(profile_config, program, zkvm, self._metric)
+        os.makedirs(os.path.dirname(f), exist_ok=True)
+        with open(f, "w") as f:
+            f.write(json.dumps(dataclasses.asdict(metric_value)))
 
     async def eval_metric(
         self,
@@ -160,11 +198,7 @@ class TuneRunner:
                 metric=metric,
             )
 
-            if self._cache_dir is not None:
-                os.makedirs(os.path.dirname(f), exist_ok=True)
-                with open(f, "w") as f:
-                    f.write(json.dumps(dataclasses.asdict(val)))
-
+            self.write_cache(program, zkvm, profile_config, val)
             return val
         finally:
             os.remove(stats_file)
