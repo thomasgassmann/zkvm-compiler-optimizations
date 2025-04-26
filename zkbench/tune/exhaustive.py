@@ -71,13 +71,10 @@ def run_tune_exhaustive(
                             prepopulate_passes=prepopulate_pass,
                         )
 
-                        try:
-                            asyncio.get_event_loop().run_until_complete(
-                                builder_runner.run_build(
-                                    programs, zkvms, profile_config
-                                )
-                            )
-                        except Exception as e:
+                        res = asyncio.get_event_loop().run_until_complete(
+                            builder_runner.run_build(programs, zkvms, profile_config)
+                        )
+                        if not res:
                             logging.error(
                                 f"Error building with config {profile_config}: {e}"
                             )

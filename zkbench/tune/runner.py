@@ -43,6 +43,10 @@ class TuneRunner:
             )
             return
 
+        if os.path.exists(out):
+            logging.info(f"Not building, out already exists: {out}")
+            return
+
         profile = build_profile(profile_config)
         if program not in self._clean_cycles:
             self._clean_cycles[program] = 0
@@ -88,12 +92,14 @@ class TuneRunner:
     ):
         try:
             await self.try_build(programs, zkvms, profile_config)
+            return True
         except OSError as e:
             if e.errno == 28:
                 self.clean(programs, zkvms)
                 await self.try_build(programs, zkvms, profile_config)
+                return True
             else:
-                raise e
+                return False
 
     def eval_all(self, programs: list[str], zkvms: list[str], profile_config: ProfileConfig):
         values = []

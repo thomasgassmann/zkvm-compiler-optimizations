@@ -138,15 +138,14 @@ def create_tuner(
             profile_config = mode.get_profile_config(desired_result)
 
             # first build all the binaries
-            try:
-                asyncio.get_event_loop().run_until_complete(
-                    runner.run_build(
-                        programs,
-                        zkvms,
-                        profile_config,
-                    )
+            res = asyncio.get_event_loop().run_until_complete(
+                runner.run_build(
+                    programs,
+                    zkvms,
+                    profile_config,
                 )
-            except Exception as e:
+            )
+            if not res:
                 logging.error(f"Error during build for profile {profile_config}: {e}")
                 return Result(time=float("inf"), state="ERROR")
 
