@@ -7,6 +7,8 @@ from typing import Literal
 from zkbench.config import Profile
 
 
+METRIC_TIMEOUT = {"cycle-count": 600, "prove": 2**31}
+
 def is_metric_parallelizable(metric: str) -> bool:
     return metric in ["cycle-count"]
 

@@ -22,7 +22,7 @@ def get_run_config(programs: list[str], zkvms: list[str], profiles: list[str]):
     return programs, zkvms, profiles
 
 
-async def run_command(cmd, cwd, env, task_name):
+async def run_command(cmd, cwd, env, task_name, timeout=None):
     logging.debug(f"[{task_name}] Running command: {cmd}")
     process = await asyncio.create_subprocess_shell(
         cmd,
@@ -40,10 +40,19 @@ async def run_command(cmd, cwd, env, task_name):
             else:
                 break
 
-    await asyncio.gather(
-        stream_output(process.stdout, "stdout"),
-        stream_output(process.stderr, "stderr"),
-    )
+    try:
+        await asyncio.wait_for(
+            asyncio.gather(
+                stream_output(process.stdout, "stdout"),
+                stream_output(process.stderr, "stderr"),
+            ),
+            timeout=timeout,
+        )
+    except asyncio.TimeoutError:
+        process.kill()
+        raise asyncio.TimeoutError(
+            f"[{task_name}] Command timed out after {timeout} seconds"
+        )
 
     return await process.wait()
 

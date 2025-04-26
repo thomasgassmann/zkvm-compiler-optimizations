@@ -6,7 +6,14 @@ import os
 from zkbench.build import build_program
 from zkbench.clean import run_clean
 from zkbench.common import run_command
-from zkbench.tune.common import EvalResult, MetricValue, ProfileConfig, build_profile, is_metric_parallelizable
+from zkbench.tune.common import (
+    METRIC_TIMEOUT,
+    EvalResult,
+    MetricValue,
+    ProfileConfig,
+    build_profile,
+    is_metric_parallelizable,
+)
 from dacite import from_dict
 
 
@@ -76,7 +83,6 @@ class TuneRunner:
         zkvms: list[str],
         profile_config: ProfileConfig,
     ):
-
         await asyncio.gather(
             *[
                 self._build_for_all_zkvms(program, zkvms, profile_config)
@@ -194,6 +200,7 @@ class TuneRunner:
                     **os.environ,
                 },
                 filename,
+                timeout=METRIC_TIMEOUT[metric],
             )
 
             if res != 0:
