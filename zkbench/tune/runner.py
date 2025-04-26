@@ -100,6 +100,9 @@ class TuneRunner:
                 return True
             else:
                 return False
+        except Exception as e:
+            logging.error(f"Error during build: {e}")
+            return False
 
     def eval_all(self, programs: list[str], zkvms: list[str], profile_config: ProfileConfig):
         values = []
