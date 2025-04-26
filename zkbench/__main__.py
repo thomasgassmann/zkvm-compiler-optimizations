@@ -33,8 +33,9 @@ from zkbench.tune.tune import TUNE_METRICS, tune_exhaustive_cli, tune_genetic_cl
 
 @click.group()
 @click.option("--log-level", nargs=1, required=False)
-def zkbench_cli(log_level: str):
-    setup_logger(log_level)
+@click.option("--log-file", nargs=1, required=False)
+def zkbench_cli(log_level: str, log_file: str):
+    setup_logger(log_level, log_file)
 
 
 @click.command(name="build")

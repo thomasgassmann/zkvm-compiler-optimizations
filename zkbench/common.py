@@ -60,7 +60,7 @@ def get_log_level(level_str: str) -> int:
         raise click.ClickException(f"Log level {level_str} not found.")
 
 
-def setup_logger(level_str: str | int):
+def setup_logger(level_str: str | int, log_file: str | None = None):
     log_formatter = logging.Formatter(
         "%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s"
     )
@@ -71,6 +71,11 @@ def setup_logger(level_str: str | int):
     else:
         level = get_log_level(level_str)
     root_logger.setLevel(level)
+
+    if log_file:
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setFormatter(log_formatter)
+        root_logger.addHandler(file_handler)
 
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(log_formatter)
