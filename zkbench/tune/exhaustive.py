@@ -23,7 +23,16 @@ class ExhaustiveResult:
     passes: list[str]
     profile_config: ProfileConfig
     build_error: bool
-    eval_result: EvalResult
+    eval_result: EvalResult | None
+
+
+@dataclass(frozen=True)
+class Exhaustive:
+    results: list[ExhaustiveResult]
+    metric: str
+    programs: list[str]
+    zkvms: list[str]
+    config: TuneConfig
 
 
 def run_tune_exhaustive(
@@ -44,16 +53,12 @@ def run_tune_exhaustive(
     results = []
 
     def append_and_write(new_result: ExhaustiveResult):
-        results.append(dataclasses.asdict(new_result))
+        results.append(new_result)
         with open(os.path.join(out, "stats.json"), "w") as f:
             json.dump(
-                {
-                    "results": results,
-                    "metric": metric,
-                    "programs": programs,
-                    "zkvms": zkvms,
-                    "config": dataclasses.asdict(config),
-                },
+                dataclasses.asdict(
+                    Exhaustive(results, metric, programs, zkvms, config)
+                ),
                 f,
             )
 

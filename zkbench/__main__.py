@@ -20,7 +20,6 @@ from zkbench.plot.plot import (
     no_effect_cli,
     opt_by_program_cli,
     opt_no_effect_cli,
-    plot_genetic_cli,
     plot_missing_cli,
     prove_exec_cli,
 )
@@ -28,6 +27,7 @@ from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_single
+from zkbench.tune.plot.plot import plot_exhaustive_depth2_cli, plot_genetic_cli
 from zkbench.tune.tune import TUNE_METRICS, tune_exhaustive_cli, tune_genetic_cli
 
 
@@ -118,6 +118,11 @@ def plot_cli(dir: str):
     pass
 
 
+@click.group(name="plot-tune")
+def plot_tune_cli():
+    pass
+
+
 @click.group(name="tune")
 @click.option(
     "--program",
@@ -170,6 +175,7 @@ zkbench_cli.add_command(bench_cli)
 zkbench_cli.add_command(run_single_cli)
 zkbench_cli.add_command(plot_cli)
 zkbench_cli.add_command(tune_cli)
+zkbench_cli.add_command(plot_tune_cli)
 
 plot_cli.add_command(average_improvement_cli)
 plot_cli.add_command(average_duration_cli)
@@ -179,11 +185,13 @@ plot_cli.add_command(cycle_count_stats_cli)
 plot_cli.add_command(prove_exec_cli)
 plot_cli.add_command(cycle_count_abs_cli)
 plot_cli.add_command(opt_by_program_cli)
-plot_cli.add_command(plot_genetic_cli)
 plot_cli.add_command(plot_missing_cli)
 plot_cli.add_command(opt_no_effect_cli)
 plot_cli.add_command(no_effect_cli)
 plot_cli.add_command(khz_cli)
+
+plot_tune_cli.add_command(plot_genetic_cli)
+plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)

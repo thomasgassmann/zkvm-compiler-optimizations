@@ -11,4 +11,5 @@ dependencies = [
     "numpy>=2.2.4",
     "opentuner>=0.8.8",
     "scipy>=1.15.2",
+    "seaborn>=0.13.2",
 ]

@@ -18,7 +18,6 @@ from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_duration,
     plot_cycle_count_stats,
 )
-from zkbench.plot.genetic import plot_genetic
 from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
@@ -111,14 +110,6 @@ def opt_by_program_cli(profile: str, zkvm: str | None):
 def khz_cli(program: str | None, zkvm: str | None):
     dir = click.get_current_context().parent.params["dir"]
     plot_khz(dir, zkvm, program)
-
-
-@click.command(name="tune-genetic")
-@click.option("--stats", required=True)
-def plot_genetic_cli(stats: str):
-    if not os.path.exists(stats):
-        raise click.ClickException(f"File {stats} does not exist.")
-    plot_genetic(stats)
 
 
 @click.command(name="missing")
