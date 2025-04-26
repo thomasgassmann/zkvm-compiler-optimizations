@@ -71,6 +71,7 @@ def run_tune_exhaustive(
                             prepopulate_passes=prepopulate_pass,
                         )
 
+                        logging.info(f"Running with config {profile_config}")
                         res = asyncio.get_event_loop().run_until_complete(
                             builder_runner.run_build(programs, zkvms, profile_config)
                         )

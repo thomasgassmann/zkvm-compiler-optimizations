@@ -176,6 +176,7 @@ class TuneRunner:
 
         filename = os.path.basename(elf)
         stats_file = os.path.join(self._out, f"{filename}.json")
+        logging.info(f"Running {metric} for {program} on {zkvm}")
         try:
             res = await run_command(
                 f"""
