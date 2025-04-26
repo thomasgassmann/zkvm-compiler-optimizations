@@ -16,6 +16,7 @@ def plot_average_improvement(
     program: str | None,
     program_group: str | None,
     speedup: bool,
+    global_average: bool,
 ):
     def f(dir, program, zkvm, profile, measurement):
         baseline = get_point_estimate_mean_ms(dir, program, zkvm, BASELINE, measurement)
@@ -37,12 +38,19 @@ def plot_average_improvement(
     relative_improvements_exec = get_values_by_profile(
         dir, zkvm, "exec", program, program_group, profiles, f
     )
+    if global_average:
+        relative_improvements_exec = np.mean(relative_improvements_exec, axis=1)
+        relative_improvements_prove = np.mean(relative_improvements_prove, axis=1)
 
-    if len(relative_improvements_exec[0]) == 1:
+    if global_average or len(relative_improvements_exec[0]) == 1:
         # if we only have one value, no need to plot boxplot
-        # TODO: in this case, plot all values that criterion recorded
-        prove_values = np.squeeze(relative_improvements_prove, axis=1)
-        exec_values = np.squeeze(relative_improvements_exec, axis=1)
+        # TODO: in this case, consider all values that criterion recorded
+        if not global_average:
+            prove_values = np.squeeze(relative_improvements_prove, axis=1)
+            exec_values = np.squeeze(relative_improvements_exec, axis=1)
+        else:
+            prove_values = relative_improvements_prove
+            exec_values = relative_improvements_exec
         plot_sorted(
             [
                 prove_values,
