@@ -24,6 +24,7 @@ from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
 from zkbench.plot.prove_exec import plot_prove_exec
 
+
 @click.command(name="average-improvement")
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
@@ -31,11 +32,18 @@ from zkbench.plot.prove_exec import plot_prove_exec
     "--program-group", type=click.Choice(get_program_groups()), required=False
 )
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+@click.option(
+    "--global-average", type=bool, is_flag=True, required=False, default=False
+)
 def average_improvement_cli(
-    zkvm: str | None, program: str | None, program_group: str | None, speedup: bool
+    zkvm: str | None,
+    program: str | None,
+    program_group: str | None,
+    speedup: bool,
+    global_average: bool,
 ):
     dir = click.get_current_context().parent.params["dir"]
-    plot_average_improvement(dir, zkvm, program, program_group, speedup)
+    plot_average_improvement(dir, zkvm, program, program_group, speedup, global_average)
 
 
 @click.command(name="average-duration")
