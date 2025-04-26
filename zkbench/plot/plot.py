@@ -99,9 +99,10 @@ def prove_exec_cli(program: str | None, program_group: str | None):
 
 @click.command(name="opt-by-program")
 @click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
-def opt_by_program_cli(profile: str):
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def opt_by_program_cli(profile: str, zkvm: str | None):
     dir = click.get_current_context().parent.params["dir"]
-    plot_opt_by_program(dir, profile)
+    plot_opt_by_program(dir, profile, zkvm)
 
 
 @click.command(name="khz")
