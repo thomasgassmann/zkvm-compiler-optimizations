@@ -55,8 +55,8 @@ def has_data_on(dir: str, program: str, zkvm: str, measurement: str):
     return os.path.exists(path)
 
 
-def read_estimates_data(
-    dir: str, program: str, zkvm: str, profile: str, measurement: str
+def read_data_file(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str, name: str
 ):
     opt_path = os.path.join(dir, f"{program}-{zkvm}-{measurement}", profile)
     if not os.path.exists(opt_path):
@@ -79,8 +79,18 @@ def read_estimates_data(
         # as the binaries are the same, we use the baseline estimates
         opt_path = os.path.join(dir, f"{program}-{zkvm}-{measurement}", BASELINE)
 
-    json_file = os.path.join(opt_path, "new/estimates.json")
+    json_file = os.path.join(opt_path, f"new/{name}.json")
     return json.load(open(json_file, "r"))
+
+
+def read_estimates_data(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str
+):
+    return read_data_file(dir, program, zkvm, profile, measurement, "estimates")
+
+
+def read_sample_data(dir: str, program: str, zkvm: str, profile: str, measurement: str):
+    return read_data_file(dir, program, zkvm, profile, measurement, "sample")
 
 
 def read_program_meta(dir: str, program: str, zkvm: str, profile: str):
