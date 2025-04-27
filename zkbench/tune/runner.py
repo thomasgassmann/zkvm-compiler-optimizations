@@ -28,6 +28,11 @@ class TuneRunner:
         self._out = out
         self._metric = metric
         self._cache_dir = cache_dir
+        self._no_clean = os.environ.get("NO_CLEAN", "False").lower() in (
+            "true",
+            "1",
+            "yes",
+        )
 
     def filename(
         self,
@@ -69,7 +74,7 @@ class TuneRunner:
             profile = profile_config
         if program not in self._clean_cycles:
             self._clean_cycles[program] = 0
-        if self._clean_cycles[program] >= CLEAN_CYCLE:
+        if self._clean_cycles[program] >= CLEAN_CYCLE and not self._no_clean:
             self._clean_cycles[program] = 0
             logging.info(f"Cleaning {program} for {zkvm}")
             run_clean([program], [zkvm])
@@ -113,6 +118,9 @@ class TuneRunner:
             return True
         except Exception as e:
             logging.error(f"Error during build: {e}")
+            if not self._no_clean:
+                return False
+
             self.clean(programs, zkvms)
             try:
                 await self.try_build(programs, zkvms, profile_config)
