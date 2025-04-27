@@ -6,13 +6,13 @@ sbatch <<EOT
 #!/bin/bash
 
 #SBATCH -J ${OUT}
-#SBATCH -c 32
+#SBATCH -c 8
 #SBATCH --mem-per-cpu=32GB
 #SBATCH --output=${OUT}
 #SBATCH --error=${OUT}
 #SBATCH --time=${TIMED}-00:00:00
 
-module load stack/2024-06 openssl/3.1.3-zhfub4o cuda/12.1.1 gperftools/2.13
+module load stack/2024-06 openssl/3.1.3-zhfub4o cuda/12.1.1 gperftools/2.13 eth_proxy
 ./zkbench.sh $@
 
 exit 0
