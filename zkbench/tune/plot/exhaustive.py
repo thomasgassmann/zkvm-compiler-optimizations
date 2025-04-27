@@ -5,11 +5,12 @@ import numpy as np
 import seaborn as sns
 from matplotlib.colors import ListedColormap
 
+from zkbench.plot.common import get_title
 from zkbench.tune.exhaustive import Exhaustive, ExhaustiveResult
 from zkbench.tune.plot.common import read_exhaustive_stats
 
 
-def plot_exhaustive_depth2(stats: str):
+def plot_exhaustive_depth2(stats: str, program: str | None, zkvm: str | None):
     stats: Exhaustive = read_exhaustive_stats(stats)
     passes = stats.config.loop_passes + stats.config.function_passes + stats.config.module_passes
     matrix = []
@@ -25,17 +26,26 @@ def plot_exhaustive_depth2(stats: str):
                 continue
 
             res = res[0]
+
             if res.build_error:
                 row.append(-2)
             elif res.eval_result.has_error:
                 row.append(-3)
-            elif any(map(lambda x: x.timeout, res.eval_result.values)):
-                row.append(-4)
             else:
-                s = sum(map(lambda x: x.metric, res.eval_result.values))
-                largest = max(largest, s)
-                smallest = min(smallest, s)
-                row.append(s)
+                relevant = list(
+                    filter(
+                        lambda x: (x.program == program or program is None)
+                        and (x.zkvm == zkvm or zkvm is None),
+                        res.eval_result.values,
+                    )
+                )
+                if any(map(lambda x: x.timeout, relevant)):
+                    row.append(-4)
+                else:
+                    s = sum(map(lambda x: x.metric, relevant))
+                    largest = max(largest, s)
+                    smallest = min(smallest, s)
+                    row.append(s)
         matrix.append(row)
 
     matrix = np.array(matrix)
@@ -52,7 +62,8 @@ def plot_exhaustive_depth2(stats: str):
         vmax=1,
         mask=np.isnan(matrix_normalized),
     )
-    plt.title("Normalized cumulative cycle count")
+    title = get_title("Normalized cumulative cycle count", [program, zkvm])
+    plt.title(title)
     plt.xlabel("Pass B")
     plt.ylabel("Pass A")
     plt.tight_layout()
