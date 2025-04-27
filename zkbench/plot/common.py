@@ -248,6 +248,7 @@ def get_values_by_profile(
     program_group: str | None,
     profiles: list[str],
     fn: Callable[[str, str, str, str, str], float],
+    skipped_value=None,
 ):
     res = []
     zkvms = get_zkvms() if zkvm is None else [zkvm]
@@ -262,6 +263,8 @@ def get_values_by_profile(
                         r = fn(dir, prog, zk, profile, meas)
                         if r is not None:
                             values_list.append(r)
+                        elif skipped_value is not None:
+                            values_list.append(skipped_value)
                     except FileNotFoundError:
                         logging.warning(
                             f"Data for {prog}-{zk}-{meas}-{profile} not found"

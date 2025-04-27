@@ -15,7 +15,12 @@
         "jump-threading",
         "gvn",
         "early-cse",
-        "sroa"
+        "sroa",
+        "newgvn",
+        "simplifycfg",
+        "mem2reg",
+        "dse",
+        "memcpyopt"
     ],
     "loop_passes": []
 }

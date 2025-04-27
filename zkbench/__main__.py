@@ -22,6 +22,7 @@ from zkbench.plot.plot import (
     opt_no_effect_cli,
     plot_missing_cli,
     prove_exec_cli,
+    total_time_by_profile_cli,
 )
 from zkbench.bench import run_bench
 from zkbench.build import run_build
@@ -189,6 +190,7 @@ plot_cli.add_command(plot_missing_cli)
 plot_cli.add_command(opt_no_effect_cli)
 plot_cli.add_command(no_effect_cli)
 plot_cli.add_command(khz_cli)
+plot_cli.add_command(total_time_by_profile_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)

@@ -7,20 +7,15 @@
         "always-inline",
         "inline",
         "attributor",
-        "ipsccp",
-        "partial-inliner"
+        "ipsccp"
     ],
     "function_passes": [
-        "tailcallelim",
         "jump-threading",
         "gvn",
+        "newgvn",
         "early-cse",
         "sroa",
-        "newgvn",
-        "simplifycfg",
-        "reg2mem",
-        "dse",
-        "irce"
+        "mem2reg"
     ],
     "loop_passes": []
 }

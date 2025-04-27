@@ -22,6 +22,7 @@ from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
 from zkbench.plot.prove_exec import plot_prove_exec
+from zkbench.plot.total_time_by_profile import plot_total_time_by_profile
 
 
 @click.command(name="average-improvement")
@@ -62,9 +63,9 @@ def cycle_count_cli(program: str | None):
 
 
 @click.command(name="cycle-count-abs")
-@click.option("--program", type=click.Choice(get_programs()), required=True)
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
-def cycle_count_abs_cli(program: str, zkvm: str):
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def cycle_count_abs_cli(program: str | None, zkvm: str | None):
     dir = click.get_current_context().parent.params["dir"]
     plot_cycle_count_abs(dir, program, zkvm)
 
@@ -143,3 +144,15 @@ def opt_no_effect_cli():
 def no_effect_cli():
     dir = click.get_current_context().parent.params["dir"]
     plot_no_effect(dir)
+
+
+@click.command(
+    name="total-time-by-profile",
+    help="Total exec/prove time by profile",
+)
+@click.option("--program", type=click.Choice(get_programs()))
+@click.option("--zkvm", type=click.Choice(get_zkvms()))
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+def total_time_by_profile_cli(program: str | None, zkvm: str | None, measurement: str):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_total_time_by_profile(dir, zkvm, program, measurement)
