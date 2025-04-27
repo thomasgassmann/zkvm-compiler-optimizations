@@ -17,7 +17,7 @@ def plot_opt_by_program(dir: str, profile: str, zkvm: str | None):
     title = get_title(f"Average improvement by program for {profile}", [])
     relative_improvements_prove = []
     relative_improvements_exec = []
-    plotted_programs = set()
+    plotted_programs = []
     for program in programs:
         try:
             exec_values = []
@@ -39,10 +39,9 @@ def plot_opt_by_program(dir: str, profile: str, zkvm: str | None):
                 exec_values.append((exec_baseline - exec) / exec_baseline)
                 prove_values.append((prove_baseline - prove) / prove_baseline)
 
-            print(len(exec_values), len(prove_values))
             relative_improvements_exec.append(exec_values)
             relative_improvements_prove.append(prove_values)
-            plotted_programs.add(program)
+            plotted_programs.append(program)
         except FileNotFoundError:
             logging.warning(f"Data for {program}-{current_zkvm}-{profile} not found")
 
@@ -55,7 +54,7 @@ def plot_opt_by_program(dir: str, profile: str, zkvm: str | None):
                 prove_values,
                 exec_values,
             ],
-            list(plotted_programs),
+            plotted_programs,
             title,
             "relative duration improvement percentage",
             ["prove", "exec"],
@@ -63,7 +62,7 @@ def plot_opt_by_program(dir: str, profile: str, zkvm: str | None):
     else:
         plot_grouped_boxplot(
             [relative_improvements_prove, relative_improvements_exec],
-            list(plotted_programs),
+            plotted_programs,
             title,
             "relative improvement compared to baseline",
             ["prove", "exec"],

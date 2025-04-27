@@ -81,7 +81,12 @@ async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
 
 
 async def build_program(
-    program: str, zkvm: str, profile: Profile, llvm: bool, target: str
+    program: str,
+    zkvm: str,
+    profile: Profile,
+    llvm: bool,
+    target: str,
+    verbose: bool = False,
 ):
     source = get_source_binary_path(program, zkvm)
     profile_name = profile.profile_name
@@ -95,6 +100,9 @@ async def build_program(
         "ZK_CFLAGS": profile.cflags,
         "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
     }
+
+    verbosity = "--verbose" if verbose else ""
+
     lower_atomic_pass = ["lower-atomic"]
     passes_string = ",".join(
         (profile.passes + lower_atomic_pass)
@@ -116,7 +124,7 @@ async def build_program(
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RUSTUP_TOOLCHAIN=succinct \
                 CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
-                cargo +succinct build --release --locked --features sp1
+                cargo +succinct build --release --locked --features sp1 {verbosity}
         """.strip(),
             program_dir,
             env,
@@ -129,7 +137,7 @@ async def build_program(
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RISC0_FEATURE_bigint2=1 \
                 cargo +risc0 build --release --locked --features risc0 \
-                    --target riscv32im-risc0-zkvm-elf
+                    --target riscv32im-risc0-zkvm-elf {verbosity}
         """.strip(),
             program_dir,
             env,

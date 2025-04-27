@@ -132,9 +132,10 @@ def plot_missing_cli(measurement: str | None, zkvm: str | None):
     name="opt-no-effect",
     help="Show percentage of optimizations that had no effect (by program)",
 )
-def opt_no_effect_cli():
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def opt_no_effect_cli(zkvm: str | None):
     dir = click.get_current_context().parent.params["dir"]
-    plot_opt_no_effect(dir)
+    plot_opt_no_effect(dir, zkvm)
 
 
 @click.command(

@@ -6,14 +6,6 @@
             "passes": [],
             "prepopulate_passes": false
         },
-        "add-discriminators": {
-            "cflags": "-O0",
-            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
-            "passes": [
-                "add-discriminators"
-            ],
-            "prepopulate_passes": false
-        },
         "always-inline": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",

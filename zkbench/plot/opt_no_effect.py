@@ -7,8 +7,8 @@ from zkbench.config import (
 from zkbench.plot.common import BASELINE, get_title, plot_sorted, read_program_meta
 
 
-def plot_opt_no_effect(dir: str):
-    zkvms = get_zkvms()
+def plot_opt_no_effect(dir: str, zkvm: str | None = None):
+    zkvms = get_zkvms() if zkvm is None else [zkvm]
     title = get_title("Percentage of optimizations that had no effect", [", ".join(zkvms)])
     programs = get_programs()
     values = []
