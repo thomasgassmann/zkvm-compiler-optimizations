@@ -1,5 +1,5 @@
 import numpy as np
-from zkbench.config import get_measurements, get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import get_profiles_ids
 from zkbench.plot.common import (
     BASELINE,
     get_cycle_count,

@@ -1,0 +1,26 @@
+{
+    "tune_lto": false,
+    "tune_codegen_units": false,
+    "tune_opt_level": false,
+    "tune_prepopulate_passes": false,
+    "module_passes": [
+        "always-inline",
+        "inline",
+        "attributor",
+        "ipsccp",
+        "partial-inliner"
+    ],
+    "function_passes": [
+        "tailcallelim",
+        "jump-threading",
+        "gvn",
+        "early-cse",
+        "sroa",
+        "newgvn",
+        "simplifycfg",
+        "reg2mem",
+        "dse",
+        "irce"
+    ],
+    "loop_passes": []
+}
