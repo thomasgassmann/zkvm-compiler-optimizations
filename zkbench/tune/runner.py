@@ -118,7 +118,7 @@ class TuneRunner:
             return True
         except Exception as e:
             logging.error(f"Error during build: {e}")
-            if not self._no_clean:
+            if self._no_clean:
                 return False
 
             self.clean(programs, zkvms)
