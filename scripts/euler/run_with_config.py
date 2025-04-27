@@ -21,7 +21,10 @@ if not timed:
     raise ValueError(f"Unsupported time {timed}")
 
 config = {
-    "rsp": {"sp1": "GPUS=rtx_3090:1", "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g"},
+    "rsp": {
+        "sp1": "GPUS=rtx_3090:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
     "default_sp1": "GPUS=rtx_3090:1 GPUMEM=24g",
     "default_risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
 }
