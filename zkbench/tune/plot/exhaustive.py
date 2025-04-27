@@ -62,7 +62,7 @@ def plot_exhaustive_depth2(stats: str, program: str | None, zkvm: str | None):
         vmax=1,
         mask=np.isnan(matrix_normalized),
     )
-    title = get_title("Normalized cumulative cycle count", [program, zkvm])
+    title = get_title(f"Normalized cumulative {stats.metric}", [program, zkvm])
     plt.title(title)
     plt.xlabel("Pass B")
     plt.ylabel("Pass A")
