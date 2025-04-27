@@ -16,7 +16,6 @@ from zkbench.tune.common import (
     LTO_OPTIONS,
     OPT_LEVEL_OPTIONS,
     BIN_OUT_GENETIC,
-    EvalResult,
     MetricValue,
     ProfileConfig,
     TuneConfig,
@@ -35,6 +34,7 @@ class Genetic:
     programs: list[str]
     zkvms: list[str]
     config: TuneConfig
+    mode_name: str
     baselines: dict[str, list[MetricValue]] | None = None
 
 
@@ -74,6 +74,9 @@ class DepthMode(Mode):
     def __init__(self, depth: int):
         self.depth = depth
 
+    def get_name(self):
+        return f"depth-{self.depth}"
+
     def get_profile_config(self, desired_result):
         cfg = desired_result.configuration.data
         used_passes = []
@@ -99,6 +102,9 @@ class DepthMode(Mode):
 
 
 class DefaultMode(Mode):
+
+    def get_name(self):
+        return "default"
 
     def get_profile_config(self, desired_result):
         # we can prebild binaries using compile, run_precompiled and compile_and_run
@@ -226,6 +232,7 @@ def create_tuner(
                             programs,
                             zkvms,
                             config,
+                            mode_name=mode.get_name(),
                             baselines=baseline_results,
                         )
                     ),

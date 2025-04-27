@@ -1,8 +1,8 @@
 {
-    "tune_lto": true,
-    "tune_codegen_units": true,
-    "tune_opt_level": true,
-    "tune_prepopulate_passes": true,
+    "tune_lto": false,
+    "tune_codegen_units": false,
+    "tune_opt_level": false,
+    "tune_prepopulate_passes": false,
     "module_passes": [
         "always-inline",
         "inline",

@@ -66,7 +66,6 @@ MODULE_PASSES = [
     "synthetic-counts-propagation",
     "rel-lookup-table-converter",
     "aggressive-instcombine",
-    "loop-mssa(licm)",
 ]
 FUNCTION_PASSES = [
     "instcombine",
@@ -117,6 +116,7 @@ FUNCTION_PASSES = [
     "libcalls-shrinkwrap",
     "nary-reassociate",
     "separate-const-offset-from-gep",
+    "loop-mssa(licm)",
 ]
 LOOP_PASSES = [
     "loop-idiom",
