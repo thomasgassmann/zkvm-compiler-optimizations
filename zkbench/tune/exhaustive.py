@@ -1,5 +1,5 @@
 import asyncio
-from dataclasses import dataclass, make_dataclass
+from dataclasses import dataclass
 import dataclasses
 import json
 import logging
