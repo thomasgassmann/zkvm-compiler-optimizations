@@ -1,4 +1,9 @@
-from zkbench.config import get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import (
+    get_profiles_ids,
+    get_program_by_name,
+    get_programs,
+    get_zkvms,
+)
 from zkbench.plot.common import BASELINE, get_title, plot_sorted, read_program_meta
 
 
@@ -15,10 +20,15 @@ def plot_opt_no_effect(dir: str):
                     for x in get_profiles_ids()
                     for zkvm in zkvms
                     if x != BASELINE
-                    and read_program_meta(dir, program, zkvm, x)["hash"]
-                    == read_program_meta(dir, program, zkvm, BASELINE)["hash"]
+                    and (
+                        x in get_program_by_name(program).skip
+                        or read_program_meta(dir, program, zkvm, x)["hash"]
+                        == read_program_meta(dir, program, zkvm, BASELINE)["hash"]
+                    )
                 ]
-            ) / (len(get_profiles_ids()) * len(zkvms)) * 100
+            )
+            / (len(get_profiles_ids()) * len(zkvms))
+            * 100
         )
 
     plot_sorted(
