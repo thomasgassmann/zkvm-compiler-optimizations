@@ -88,6 +88,22 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
 }
 
 pub fn load_rsp_input() -> Vec<u8> {
+    /*
+        Cycle counts for rsp in o3 with respective inputs:
+        input        - updated  - current
+        22317400-bin - 3526886  - 4362939
+        22287700-bin - 37250156 - 55353428
+        20526624-bin - 41116545 - 59700433
+        22264800-bin - 60895845 - 82308159
+        22302600-bin - 54541791 - 80161036
+        22343400-bin - 75719346 - 107782385
+        22323700-bin - 64429101 - 94400495
+
+        middle column represents cycle count we can get when
+        updating rsp to latest version (sp1, o3)
+        however, this breaks risc0, hence we still use the prev.
+        version which is the current column
+     */
     let cache_path = PathBuf::from("./inputs/rsp/20526624.bin");
     let mut cache_file = std::fs::File::open(cache_path).unwrap();
     let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
