@@ -19,7 +19,6 @@ from zkbench.tune.common import (
     build_pass_list,
 )
 
-
 def add_common_params(manipulator: ConfigurationManipulator, config: TuneConfig):
     manipulator.add_parameter(
         EnumParameter("lto", LTO_OPTIONS if config.tune_lto else ["off"])
