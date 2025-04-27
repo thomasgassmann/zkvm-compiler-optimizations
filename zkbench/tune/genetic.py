@@ -4,13 +4,13 @@ import json
 import logging
 import os
 from opentuner import ConfigurationManipulator
-from opentuner import ScheduleParameter, EnumParameter
+from opentuner import ScheduleParameter, EnumParameter, IntegerParameter
 from opentuner import MeasurementInterface
 from opentuner import Result
 from opentuner.tuningrunmain import the_logging_config
 import opentuner
 
-from zkbench.config import get_profile_by_name
+from zkbench.config import Profile, get_profile_by_name
 from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
     LTO_OPTIONS,
@@ -66,8 +66,36 @@ class Mode:
     def get_manipulator(self, config: TuneConfig):
         raise NotImplementedError("This method should be overridden by subclasses.")
 
-    def get_profile_config(self, desired_result) -> ProfileConfig:
+    def get_profile_config(self, desired_result) -> ProfileConfig | Profile:
         raise NotImplementedError("This method should be overridden by subclasses.")
+
+
+class InlineThresholdMode(Mode):
+    def get_name(self):
+        return "inline-threshold"
+
+    def get_profile_config(self, desired_result):
+        cfg = desired_result.configuration.data
+        lto = ""
+        cgu = ""
+        if cfg["lto"] != "off":
+            lto = f" -C lto={cfg["lto"]} -C embed-bitcode"
+        if cfg["single_codegen_unit"]:
+            cgu = " -C codegen-units=1"
+        return Profile(
+            "genetic",
+            f"{lto} {cgu} -Cllvm-args=--inline-threshold={cfg['inline-threshold']} -C opt-level={cfg['opt_level']}",
+            f"-mllvm -inline-threshold={cfg['inline-threshold']} -O{cfg['opt_level']}",
+            ["inline"],
+            cfg["prepopulate_passes"],
+            False,
+        )
+
+    def get_manipulator(self, config: TuneConfig):
+        manipulator = ConfigurationManipulator()
+        add_common_params(manipulator, config)
+        manipulator.add_parameter(IntegerParameter("inline-threshold", 0, 10_000_000))
+        return manipulator
 
 
 class DepthMode(Mode):
@@ -267,6 +295,10 @@ def run_tune_genetic(
         mode = DefaultMode()
     elif mode == "depth":
         mode = DepthMode(depth)
+    elif mode == "inline-threshold":
+        mode = InlineThresholdMode()
+    else:
+        raise ValueError(f"Unknown mode: {mode}")
 
     create_tuner(programs, zkvms, metric, out, config, mode, baselines or []).main(
         arg_parser.parse_args([])

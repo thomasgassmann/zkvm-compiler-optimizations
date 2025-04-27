@@ -28,7 +28,7 @@ def tune_exhaustive_cli(depth: int):
 @click.command(name="genetic")
 @click.option(
     "--mode",
-    type=click.Choice(["default", "depth"]),
+    type=click.Choice(["default", "depth", "inline-threshold"]),
     required=True,
     multiple=False,
 )
