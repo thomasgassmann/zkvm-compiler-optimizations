@@ -3,12 +3,13 @@ from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from matplotlib.colors import ListedColormap
 
 from zkbench.tune.exhaustive import Exhaustive, ExhaustiveResult
 from zkbench.tune.plot.common import read_exhaustive_stats
 
 
-def plot_exhaustive_depth2(stats: str): 
+def plot_exhaustive_depth2(stats: str):
     stats: Exhaustive = read_exhaustive_stats(stats)
     passes = stats.config.loop_passes + stats.config.function_passes + stats.config.module_passes
     matrix = []
@@ -20,19 +21,16 @@ def plot_exhaustive_depth2(stats: str):
             res: ExhaustiveResult = list(filter(lambda x: x.passes[0] == pass_a and x.passes[1] == pass_b, stats.results))
             if len(res) != 1:
                 logging.warning(f"Expected 1 result for {pass_a} and {pass_b}, got {len(res)}")
-                row.append(float("inf"))
+                row.append(-1)
                 continue
-            
+
             res = res[0]
             if res.build_error:
-                # TODO:
-                row.append(np.nan)
+                row.append(-2)
             elif res.eval_result.has_error:
-                # TODO:
-                row.append(np.nan)
+                row.append(-3)
             elif any(map(lambda x: x.timeout, res.eval_result.values)):
-                # TODO:
-                row.append(np.nan)
+                row.append(-4)
             else:
                 s = sum(map(lambda x: x.metric, res.eval_result.values))
                 largest = max(largest, s)
@@ -41,10 +39,19 @@ def plot_exhaustive_depth2(stats: str):
         matrix.append(row)
 
     matrix = np.array(matrix)
-    matrix = matrix / largest
+    matrix_normalized = np.where(matrix < 0, np.nan, matrix / largest)
 
     plt.figure(figsize=(10, 8))
-    sns.heatmap(matrix, annot=True, fmt=".4f", cmap="viridis", xticklabels=passes, yticklabels=passes, vmin=smallest / largest, vmax=1)
+    sns.heatmap(
+        matrix_normalized,
+        annot=True,
+        fmt=".4f",
+        xticklabels=passes,
+        yticklabels=passes,
+        vmin=smallest / largest,
+        vmax=1,
+        mask=np.isnan(matrix_normalized),
+    )
     plt.title("Normalized cumulative cycle count")
     plt.xlabel("Pass B")
     plt.ylabel("Pass A")
