@@ -2,6 +2,7 @@ import asyncio
 import dataclasses
 import json
 import logging
+import os
 from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter
 from opentuner import MeasurementInterface
@@ -9,15 +10,33 @@ from opentuner import Result
 from opentuner.tuningrunmain import the_logging_config
 import opentuner
 
+from zkbench.config import get_profile_by_name
 from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
     LTO_OPTIONS,
     OPT_LEVEL_OPTIONS,
     BIN_OUT_GENETIC,
+    EvalResult,
+    MetricValue,
     ProfileConfig,
     TuneConfig,
     build_pass_list,
 )
+
+
+@dataclasses.dataclass(frozen=True)
+class Genetic:
+    profile_configs: list[ProfileConfig]
+    values: list[int]
+    metrics: list[list[MetricValue]]
+    best_metric: int
+    best_profile: ProfileConfig
+    metric: str
+    programs: list[str]
+    zkvms: list[str]
+    config: TuneConfig
+    baselines: dict[str, list[MetricValue]] | None = None
+
 
 def add_common_params(manipulator: ConfigurationManipulator, config: TuneConfig):
     manipulator.add_parameter(
@@ -115,11 +134,32 @@ def create_tuner(
     programs: list[str],
     zkvms: list[str],
     metric: str,
-    out_stats: str,
+    out: str,
     config: TuneConfig,
     mode: Mode,
+    baselines: list[str],
 ):
-    runner = TuneRunner(out=BIN_OUT_GENETIC, metric=metric)
+    runner = TuneRunner(out=BIN_OUT_GENETIC, metric=metric, cache_dir=out)
+
+    baseline_results: dict[str, list[MetricValue]] = {}
+    for baseline in baselines:
+        profile = get_profile_by_name(baseline)
+        if profile is None:
+            raise ValueError(f"Baseline profile {baseline} not found.")
+
+        success = asyncio.get_event_loop().run_until_complete(
+            runner.run_build(
+                programs,
+                zkvms,
+                profile,
+            )
+        )
+        if not success:
+            raise ValueError(f"Error during build for baseline {baseline}")
+        eval_result = runner.eval_all(programs, zkvms, profile)
+        if eval_result.has_error:
+            raise ValueError(f"Error during evaluation for baseline {baseline}")
+        baseline_results[baseline] = eval_result.values
 
     class PassTuner(MeasurementInterface):
         def __init__(self, *args, **kwargs):
@@ -135,6 +175,7 @@ def create_tuner(
 
         def run(self, desired_result, input, limit):
             profile_config = mode.get_profile_config(desired_result)
+            logging.info(f"Running with profile config: {profile_config}")
 
             # first build all the binaries
             res = asyncio.get_event_loop().run_until_complete(
@@ -145,7 +186,7 @@ def create_tuner(
                 )
             )
             if not res:
-                logging.error(f"Error during build for profile {profile_config}: {e}")
+                logging.error(f"Error during build for profile {profile_config}")
                 return Result(time=float("inf"), state="ERROR")
 
             # then calculate metrics
@@ -154,10 +195,11 @@ def create_tuner(
                 return Result(time=float("inf"), state="ERROR")
 
             values = eval_result.values
-            self._metrics.append([dataclasses.asdict(value) for value in values])
+            self._metrics.append(values)
+
             metric_sum = sum([v.metric for v in values])
             self._values.append(metric_sum)
-            self._profile_configs.append(dataclasses.asdict(profile_config))
+            self._profile_configs.append(profile_config)
 
             logging.info(f"Configuration {profile_config} has metric {metric_sum}")
             if metric_sum < self._best or self._best_config is None:
@@ -171,19 +213,22 @@ def create_tuner(
                     f"Configuration {self._best_config} remains best with metric {self._best}"
                 )
 
-            with open(out_stats, "w") as f:
+            with open(os.path.join(out, "stats.json"), "w") as f:
                 json.dump(
-                    {
-                        "profile_configs": self._profile_configs,
-                        "values": self._values,
-                        "metrics": self._metrics,
-                        "best_metric": self._best,
-                        "best_profile": dataclasses.asdict(self._best_config),
-                        "metric": metric,
-                        "programs": programs,
-                        "zkvms": zkvms,
-                        "config": dataclasses.asdict(config),
-                    },
+                    dataclasses.asdict(
+                        Genetic(
+                            self._profile_configs,
+                            self._values,
+                            self._metrics,
+                            self._best,
+                            self._best_config,
+                            metric,
+                            programs,
+                            zkvms,
+                            config,
+                            baselines=baseline_results,
+                        )
+                    ),
                     f,
                 )
 
@@ -198,8 +243,9 @@ def run_tune_genetic(
     metric: str,
     config: TuneConfig,
     mode: str,
-    out_stats: str,
+    out: str,
     depth: int | None,
+    baselines: list[str] | None = None,
 ):
     arg_parser = opentuner.default_argparser()
 
@@ -215,6 +261,6 @@ def run_tune_genetic(
     elif mode == "depth":
         mode = DepthMode(depth)
 
-    create_tuner(programs, zkvms, metric, out_stats, config, mode).main(
+    create_tuner(programs, zkvms, metric, out, config, mode, baselines or []).main(
         arg_parser.parse_args([])
     )

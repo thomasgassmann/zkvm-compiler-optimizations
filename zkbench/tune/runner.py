@@ -6,6 +6,7 @@ import os
 from zkbench.build import build_program
 from zkbench.clean import run_clean
 from zkbench.common import run_command
+from zkbench.config import Profile
 from zkbench.tune.common import (
     METRIC_TIMEOUT,
     EvalResult,
@@ -29,7 +30,11 @@ class TuneRunner:
         self._cache_dir = cache_dir
 
     def filename(
-        self, profile_config: ProfileConfig, program: str, zkvm: str, metric: str
+        self,
+        profile_config: ProfileConfig | Profile,
+        program: str,
+        zkvm: str,
+        metric: str,
     ):
         h = profile_config.get_hash()[:10]
         return os.path.join(
@@ -37,10 +42,14 @@ class TuneRunner:
             f"{h}/{profile_config.name}-{program}-{zkvm}-{metric}.json",
         )
 
-    def get_out_path(self, config: ProfileConfig, zkvm: str, program: str) -> str:
+    def get_out_path(
+        self, config: ProfileConfig | Profile, zkvm: str, program: str
+    ) -> str:
         return os.path.join(self._out, config.get_unique_id(zkvm, program))
 
-    async def _build(self, program: str, zkvm: str, profile_config: ProfileConfig, out: str):
+    async def _build(
+        self, program: str, zkvm: str, profile_config: ProfileConfig | Profile, out: str
+    ):
         if self._cache_dir is not None and os.path.exists(
             self.filename(profile_config, program, zkvm, self._metric)
         ):
@@ -54,7 +63,10 @@ class TuneRunner:
             logging.info(f"Not building, out already exists: {out}")
             return
 
-        profile = build_profile(profile_config)
+        if not isinstance(profile_config, Profile):
+            profile = build_profile(profile_config)
+        else:
+            profile = profile_config
         if program not in self._clean_cycles:
             self._clean_cycles[program] = 0
         if self._clean_cycles[program] >= CLEAN_CYCLE:
@@ -65,8 +77,8 @@ class TuneRunner:
         self._clean_cycles[program] += 1
         logging.info(f"Built {program} for {zkvm}")
 
-    async def _build_for_all_zkvms(self, 
-        program: str, zkvms: list[str], profile_config: ProfileConfig
+    async def _build_for_all_zkvms(
+        self, program: str, zkvms: list[str], profile_config: ProfileConfig | Profile
     ):
         for zkvm in zkvms:
             out = self.get_out_path(profile_config, zkvm, program)
@@ -81,7 +93,7 @@ class TuneRunner:
         self,
         programs: list[str],
         zkvms: list[str],
-        profile_config: ProfileConfig,
+        profile_config: ProfileConfig | Profile,
     ):
         await asyncio.gather(
             *[
@@ -94,7 +106,7 @@ class TuneRunner:
         self,
         programs: list[str],
         zkvms: list[str],
-        profile_config: ProfileConfig,
+        profile_config: ProfileConfig | Profile,
     ):
         try:
             await self.try_build(programs, zkvms, profile_config)
@@ -109,7 +121,12 @@ class TuneRunner:
                 logging.error(f"Error during build: {e}")
                 return False
 
-    def eval_all(self, programs: list[str], zkvms: list[str], profile_config: ProfileConfig):
+    def eval_all(
+        self,
+        programs: list[str],
+        zkvms: list[str],
+        profile_config: ProfileConfig | Profile,
+    ) -> EvalResult:
         values = []
         if is_metric_parallelizable(self._metric):
             try:
@@ -157,7 +174,7 @@ class TuneRunner:
         self,
         program: str,
         zkvm: str,
-        profile_config: ProfileConfig,
+        profile_config: ProfileConfig | Profile,
         metric_value: MetricValue,
     ):
         if self._cache_dir is None:
@@ -173,12 +190,13 @@ class TuneRunner:
         zkvm: str,
         program: str,
         elf: str,
-        profile_config: ProfileConfig,
+        profile_config: ProfileConfig | Profile,
     ) -> MetricValue:
-        f = self.filename(profile_config, program, zkvm, self._metric)
-        if self._cache_dir is not None and os.path.exists(f):
-            logging.info(f"Not evaluating, already done: " + f)
-            return from_dict(MetricValue, json.loads(open(f, "r").read()))
+        if self._cache_dir is not None:
+            f = self.filename(profile_config, program, zkvm, self._metric)
+            if os.path.exists(f):
+                logging.info(f"Not evaluating, already done: " + f)
+                return from_dict(MetricValue, json.loads(open(f, "r").read()))
 
         filename = os.path.basename(elf)
         stats_file = os.path.join(self._out, f"{filename}.json")

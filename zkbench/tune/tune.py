@@ -3,6 +3,7 @@ import os
 import uuid
 import click
 
+from zkbench.config import get_profiles_ids
 from zkbench.plot.common import get_program_selection
 from zkbench.tune.common import BIN_OUT_EXHAUSTIVE, BIN_OUT_GENETIC, TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
@@ -32,17 +33,21 @@ def tune_exhaustive_cli(depth: int):
     multiple=False,
 )
 @click.option("--depth", multiple=False, type=int, required=False)
-def tune_genetic_cli(mode: str, depth: int | None):
+@click.option(
+    "--baseline",
+    multiple=True,
+    type=click.Choice(get_profiles_ids()),
+    required=False,
+)
+def tune_genetic_cli(mode: str, depth: int | None, baseline: list[str] | None):
     if mode == "depth" and depth is None:
         raise click.UsageError("Depth must be provided when mode is 'depth'.")
 
     (selected_programs, zkvms, metric, config, out) = get_config()
-    out_stats = os.path.join(
-        out,
-        f"stats-{metric}-{str(uuid.uuid4())[:5]}.json",
-    )
     os.makedirs(out, exist_ok=True)
-    run_tune_genetic(selected_programs, zkvms, metric, config, mode, out_stats, depth)
+    run_tune_genetic(
+        selected_programs, zkvms, metric, config, mode, out, depth, baseline
+    )
 
 
 def get_config():

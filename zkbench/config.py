@@ -1,9 +1,11 @@
+import dataclasses
+import hashlib
 import json
 from dataclasses import dataclass
 from typing import List
 
 
-@dataclass
+@dataclass(frozen=True)
 class Profile:
     profile_name: str
     rustflags: str
@@ -11,6 +13,19 @@ class Profile:
     passes: List[str]
     prepopulate_passes: bool
     lower_atomic_before: bool = False
+
+    def __getattribute__(self, name):
+        if name == "name":
+            return self.profile_name
+        return super().__getattribute__(name)
+
+    def get_unique_id(self, zkvm: str, program: str) -> str:
+        return f"{self.name}-{zkvm}-{program}-{self.get_hash()[:8]}"
+
+    def get_hash(self):
+        values = dataclasses.asdict(self)
+        encoded_string = json.dumps(values).encode("utf-8")
+        return hashlib.sha256(encoded_string).hexdigest()
 
 
 @dataclass
