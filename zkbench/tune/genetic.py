@@ -25,11 +25,11 @@ from zkbench.tune.common import (
 
 @dataclasses.dataclass(frozen=True)
 class Genetic:
-    profile_configs: list[ProfileConfig]
+    profile_configs: list[ProfileConfig | Profile]
     values: list[int]
     metrics: list[list[MetricValue]]
     best_metric: int
-    best_profile: ProfileConfig
+    best_profile: ProfileConfig | Profile
     metric: str
     programs: list[str]
     zkvms: list[str]
