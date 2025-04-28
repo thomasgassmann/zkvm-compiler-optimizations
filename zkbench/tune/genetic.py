@@ -173,7 +173,9 @@ def create_tuner(
     mode: Mode,
     baselines: list[str],
 ):
-    runner = TuneRunner(out=BIN_OUT_GENETIC, metric=metric, cache_dir=out)
+    runner = TuneRunner(
+        out=BIN_OUT_GENETIC, metric=metric, cache_dir=out, build_timeout=60 * 20
+    )
 
     baseline_results: dict[str, list[MetricValue]] = {}
     for baseline in baselines:

@@ -23,7 +23,13 @@ CLEAN_CYCLE = 10
 
 class TuneRunner:
 
-    def __init__(self, out: str, metric: str, cache_dir: str = None):
+    def __init__(
+        self,
+        out: str,
+        metric: str,
+        cache_dir: str | None = None,
+        build_timeout: int | None = None,
+    ):
         self._clean_cycles = {}
         self._out = out
         self._metric = metric
@@ -33,6 +39,7 @@ class TuneRunner:
             "1",
             "yes",
         )
+        self._build_timeout = build_timeout
 
     def filename(
         self,
@@ -78,7 +85,15 @@ class TuneRunner:
             self._clean_cycles[program] = 0
             logging.info(f"Cleaning {program} for {zkvm}")
             run_clean([program], [zkvm])
-        await build_program(program, zkvm, profile, False, out)
+        await build_program(
+            program,
+            zkvm,
+            profile,
+            False,
+            out,
+            verbose=False,
+            timeout=self._build_timeout,
+        )
         self._clean_cycles[program] += 1
         logging.info(f"Built {program} for {zkvm}")
 
