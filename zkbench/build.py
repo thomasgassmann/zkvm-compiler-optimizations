@@ -87,6 +87,7 @@ async def build_program(
     llvm: bool,
     target: str,
     verbose: bool = False,
+    timeout=None,
 ):
     source = get_source_binary_path(program, zkvm)
     profile_name = profile.profile_name
@@ -129,6 +130,7 @@ async def build_program(
             program_dir,
             env,
             name,
+            timeout=timeout,
         )
     elif zkvm == "risc0":
         ret = await run_command(
@@ -142,6 +144,7 @@ async def build_program(
             program_dir,
             env,
             name,
+            timeout=timeout,
         )
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
