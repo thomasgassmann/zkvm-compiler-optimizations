@@ -205,6 +205,7 @@ def plot_scatter_by_zkvm(
 ):
     for zkvm in get_zkvms():
         x, y = get_by_zkvm(zkvm)
+        print(x, y)
         pearson = get_pearson(x, y)
         spearman = get_spearman(x, y)
         plt.scatter(
