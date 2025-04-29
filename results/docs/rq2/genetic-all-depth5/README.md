@@ -80,6 +80,190 @@
 ## Overview
   
 ![genetic-plot](./genetic-plot.png)
+## Overview by program
+
+### Program loop-sum
+  
+![genetic-plot-loop-sum](./genetic-plot-loop-sum.png)
+### Program factorial
+  
+![genetic-plot-factorial](./genetic-plot-factorial.png)
+### Program sha256
+  
+![genetic-plot-sha256](./genetic-plot-sha256.png)
+### Program keccak256
+  
+![genetic-plot-keccak256](./genetic-plot-keccak256.png)
+### Program tailcall
+  
+![genetic-plot-tailcall](./genetic-plot-tailcall.png)
+### Program bigmem
+  
+![genetic-plot-bigmem](./genetic-plot-bigmem.png)
+### Program fibonacci
+  
+![genetic-plot-fibonacci](./genetic-plot-fibonacci.png)
+### Program sha2-bench
+  
+![genetic-plot-sha2-bench](./genetic-plot-sha2-bench.png)
+### Program sha2-chain
+  
+![genetic-plot-sha2-chain](./genetic-plot-sha2-chain.png)
+### Program regex-match
+  
+![genetic-plot-regex-match](./genetic-plot-regex-match.png)
+### Program sha3-bench
+  
+![genetic-plot-sha3-bench](./genetic-plot-sha3-bench.png)
+### Program sha3-chain
+  
+![genetic-plot-sha3-chain](./genetic-plot-sha3-chain.png)
+### Program polybench-2mm
+  
+![genetic-plot-polybench-2mm](./genetic-plot-polybench-2mm.png)
+### Program polybench-3mm
+  
+![genetic-plot-polybench-3mm](./genetic-plot-polybench-3mm.png)
+### Program polybench-adi
+  
+![genetic-plot-polybench-adi](./genetic-plot-polybench-adi.png)
+### Program polybench-atax
+  
+![genetic-plot-polybench-atax](./genetic-plot-polybench-atax.png)
+### Program polybench-bicg
+  
+![genetic-plot-polybench-bicg](./genetic-plot-polybench-bicg.png)
+### Program polybench-cholesky
+  
+![genetic-plot-polybench-cholesky](./genetic-plot-polybench-cholesky.png)
+### Program polybench-correlation
+  
+![genetic-plot-polybench-correlation](./genetic-plot-polybench-correlation.png)
+### Program polybench-covariance
+  
+![genetic-plot-polybench-covariance](./genetic-plot-polybench-covariance.png)
+### Program polybench-deriche
+  
+![genetic-plot-polybench-deriche](./genetic-plot-polybench-deriche.png)
+### Program polybench-doitgen
+  
+![genetic-plot-polybench-doitgen](./genetic-plot-polybench-doitgen.png)
+### Program polybench-durbin
+  
+![genetic-plot-polybench-durbin](./genetic-plot-polybench-durbin.png)
+### Program polybench-fdtd-2d
+  
+![genetic-plot-polybench-fdtd-2d](./genetic-plot-polybench-fdtd-2d.png)
+### Program polybench-floyd-warshall
+  
+![genetic-plot-polybench-floyd-warshall](./genetic-plot-polybench-floyd-warshall.png)
+### Program polybench-gemm
+  
+![genetic-plot-polybench-gemm](./genetic-plot-polybench-gemm.png)
+### Program polybench-gemver
+  
+![genetic-plot-polybench-gemver](./genetic-plot-polybench-gemver.png)
+### Program polybench-gesummv
+  
+![genetic-plot-polybench-gesummv](./genetic-plot-polybench-gesummv.png)
+### Program polybench-gramschmidt
+  
+![genetic-plot-polybench-gramschmidt](./genetic-plot-polybench-gramschmidt.png)
+### Program polybench-heat-3d
+  
+![genetic-plot-polybench-heat-3d](./genetic-plot-polybench-heat-3d.png)
+### Program polybench-jacobi-1d
+  
+![genetic-plot-polybench-jacobi-1d](./genetic-plot-polybench-jacobi-1d.png)
+### Program polybench-jacobi-2d
+  
+![genetic-plot-polybench-jacobi-2d](./genetic-plot-polybench-jacobi-2d.png)
+### Program polybench-lu
+  
+![genetic-plot-polybench-lu](./genetic-plot-polybench-lu.png)
+### Program polybench-ludcmp
+  
+![genetic-plot-polybench-ludcmp](./genetic-plot-polybench-ludcmp.png)
+### Program polybench-mvt
+  
+![genetic-plot-polybench-mvt](./genetic-plot-polybench-mvt.png)
+### Program polybench-nussinov
+  
+![genetic-plot-polybench-nussinov](./genetic-plot-polybench-nussinov.png)
+### Program polybench-seidel-2d
+  
+![genetic-plot-polybench-seidel-2d](./genetic-plot-polybench-seidel-2d.png)
+### Program polybench-symm
+  
+![genetic-plot-polybench-symm](./genetic-plot-polybench-symm.png)
+### Program polybench-syr2k
+  
+![genetic-plot-polybench-syr2k](./genetic-plot-polybench-syr2k.png)
+### Program polybench-syrk
+  
+![genetic-plot-polybench-syrk](./genetic-plot-polybench-syrk.png)
+### Program polybench-trisolv
+  
+![genetic-plot-polybench-trisolv](./genetic-plot-polybench-trisolv.png)
+### Program polybench-trmm
+  
+![genetic-plot-polybench-trmm](./genetic-plot-polybench-trmm.png)
+### Program merkle
+  
+![genetic-plot-merkle](./genetic-plot-merkle.png)
+### Program ecdsa-verify
+  
+![genetic-plot-ecdsa-verify](./genetic-plot-ecdsa-verify.png)
+### Program eddsa-verify
+  
+![genetic-plot-eddsa-verify](./genetic-plot-eddsa-verify.png)
+### Program rsp
+  
+![genetic-plot-rsp](./genetic-plot-rsp.png)
+### Program zkvm-mnist
+  
+![genetic-plot-zkvm-mnist](./genetic-plot-zkvm-mnist.png)
+### Program spec-605
+  
+![genetic-plot-spec-605](./genetic-plot-spec-605.png)
+### Program spec-619
+  
+![genetic-plot-spec-619](./genetic-plot-spec-619.png)
+### Program npb-bt
+  
+![genetic-plot-npb-bt](./genetic-plot-npb-bt.png)
+### Program npb-cg
+  
+![genetic-plot-npb-cg](./genetic-plot-npb-cg.png)
+### Program npb-ep
+  
+![genetic-plot-npb-ep](./genetic-plot-npb-ep.png)
+### Program npb-ft
+  
+![genetic-plot-npb-ft](./genetic-plot-npb-ft.png)
+### Program npb-is
+  
+![genetic-plot-npb-is](./genetic-plot-npb-is.png)
+### Program npb-lu
+  
+![genetic-plot-npb-lu](./genetic-plot-npb-lu.png)
+### Program npb-mg
+  
+![genetic-plot-npb-mg](./genetic-plot-npb-mg.png)
+### Program npb-sp
+  
+![genetic-plot-npb-sp](./genetic-plot-npb-sp.png)
+### Program spec-631
+  
+![genetic-plot-spec-631](./genetic-plot-spec-631.png)
+## Overview by zkVM
+
+### zkVM risc0
+  
+![genetic-plot-risc0](./genetic-plot-risc0.png)
+### zkVM sp1
+  
+![genetic-plot-sp1](./genetic-plot-sp1.png)
 ## Baseline values
 
 - o1: [MetricValue(zkvm='risc0', program='loop-sum', metric=4532, timeout=False), MetricValue(zkvm='risc0', program='factorial', metric=3419, timeout=False), MetricValue(zkvm='risc0', program='sha256', metric=228517, timeout=False), MetricValue(zkvm='risc0', program='keccak256', metric=47100, timeout=False), MetricValue(zkvm='risc0', program='tailcall', metric=6013, timeout=False), MetricValue(zkvm='risc0', program='bigmem', metric=80356, timeout=False), MetricValue(zkvm='risc0', program='fibonacci', metric=21639, timeout=False), MetricValue(zkvm='risc0', program='sha2-bench', metric=26877, timeout=False), MetricValue(zkvm='risc0', program='sha2-chain', metric=49691, timeout=False), MetricValue(zkvm='risc0', program='regex-match', metric=1638897, timeout=False), MetricValue(zkvm='risc0', program='sha3-bench', metric=46570, timeout=False), MetricValue(zkvm='risc0', program='sha3-chain', metric=174440, timeout=False), MetricValue(zkvm='risc0', program='polybench-2mm', metric=594779, timeout=False), MetricValue(zkvm='risc0', program='polybench-3mm', metric=855880, timeout=False), MetricValue(zkvm='risc0', program='polybench-adi', metric=2252010, timeout=False), MetricValue(zkvm='risc0', program='polybench-atax', metric=366307, timeout=False), MetricValue(zkvm='risc0', program='polybench-bicg', metric=355810, timeout=False), MetricValue(zkvm='risc0', program='polybench-cholesky', metric=2284353, timeout=False), MetricValue(zkvm='risc0', program='polybench-correlation', metric=776111, timeout=False), MetricValue(zkvm='risc0', program='polybench-covariance', metric=480497, timeout=False), MetricValue(zkvm='risc0', program='polybench-deriche', metric=1823430, timeout=False), MetricValue(zkvm='risc0', program='polybench-doitgen', metric=205519, timeout=False), MetricValue(zkvm='risc0', program='polybench-durbin', metric=147955, timeout=False), MetricValue(zkvm='risc0', program='polybench-fdtd-2d', metric=1123703, timeout=False), MetricValue(zkvm='risc0', program='polybench-floyd-warshall', metric=119570, timeout=False), MetricValue(zkvm='risc0', program='polybench-gemm', metric=598757, timeout=False), MetricValue(zkvm='risc0', program='polybench-gemver', metric=2866179, timeout=False), MetricValue(zkvm='risc0', program='polybench-gesummv', metric=1940192, timeout=False), MetricValue(zkvm='risc0', program='polybench-gramschmidt', metric=557572, timeout=False), MetricValue(zkvm='risc0', program='polybench-heat-3d', metric=801261, timeout=False), MetricValue(zkvm='risc0', program='polybench-jacobi-1d', metric=1599792, timeout=False), MetricValue(zkvm='risc0', program='polybench-jacobi-2d', metric=547539, timeout=False), MetricValue(zkvm='risc0', program='polybench-lu', metric=1138335, timeout=False), MetricValue(zkvm='risc0', program='polybench-ludcmp', metric=1218819, timeout=False), MetricValue(zkvm='risc0', program='polybench-mvt', metric=565391, timeout=False), MetricValue(zkvm='risc0', program='polybench-nussinov', metric=35182, timeout=False), MetricValue(zkvm='risc0', program='polybench-seidel-2d', metric=2518836, timeout=False), MetricValue(zkvm='risc0', program='polybench-symm', metric=1786389, timeout=False), MetricValue(zkvm='risc0', program='polybench-syr2k', metric=2336995, timeout=False), MetricValue(zkvm='risc0', program='polybench-syrk', metric=949716, timeout=False), MetricValue(zkvm='risc0', program='polybench-trisolv', metric=162764, timeout=False), MetricValue(zkvm='risc0', program='polybench-trmm', metric=780027, timeout=False), MetricValue(zkvm='risc0', program='merkle', metric=726852, timeout=False), MetricValue(zkvm='risc0', program='ecdsa-verify', metric=256319, timeout=False), MetricValue(zkvm='risc0', program='eddsa-verify', metric=5482617, timeout=False), MetricValue(zkvm='risc0', program='rsp', metric=245513991, timeout=False), MetricValue(zkvm='risc0', program='zkvm-mnist', metric=124423285, timeout=False), MetricValue(zkvm='risc0', program='spec-605', metric=22082676, timeout=False), MetricValue(zkvm='risc0', program='spec-619', metric=32403122, timeout=False), MetricValue(zkvm='risc0', program='npb-bt', metric=66137375, timeout=False), MetricValue(zkvm='risc0', program='npb-cg', metric=23803882, timeout=False), MetricValue(zkvm='risc0', program='npb-ep', metric=52490595, timeout=False), MetricValue(zkvm='risc0', program='npb-ft', metric=24905668, timeout=False), MetricValue(zkvm='risc0', program='npb-is', metric=13877060, timeout=False), MetricValue(zkvm='risc0', program='npb-lu', metric=32610790, timeout=False), MetricValue(zkvm='risc0', program='npb-mg', metric=16821695, timeout=False), MetricValue(zkvm='risc0', program='npb-sp', metric=46881068, timeout=False), MetricValue(zkvm='risc0', program='spec-631', metric=42907498, timeout=False), MetricValue(zkvm='sp1', program='loop-sum', metric=6953, timeout=False), MetricValue(zkvm='sp1', program='factorial', metric=5966, timeout=False), MetricValue(zkvm='sp1', program='sha256', metric=200465, timeout=False), MetricValue(zkvm='sp1', program='keccak256', metric=16276, timeout=False), MetricValue(zkvm='sp1', program='tailcall', metric=8347, timeout=False), MetricValue(zkvm='sp1', program='bigmem', metric=82910, timeout=False), MetricValue(zkvm='sp1', program='fibonacci', metric=21146, timeout=False), MetricValue(zkvm='sp1', program='sha2-bench', metric=23649, timeout=False), MetricValue(zkvm='sp1', program='sha2-chain', metric=190401, timeout=False), MetricValue(zkvm='sp1', program='regex-match', metric=1495001, timeout=False), MetricValue(zkvm='sp1', program='sha3-bench', metric=37387, timeout=False), MetricValue(zkvm='sp1', program='sha3-chain', metric=771755, timeout=False), MetricValue(zkvm='sp1', program='polybench-2mm', metric=486684, timeout=False), MetricValue(zkvm='sp1', program='polybench-3mm', metric=698300, timeout=False), MetricValue(zkvm='sp1', program='polybench-adi', metric=1804637, timeout=False), MetricValue(zkvm='sp1', program='polybench-atax', metric=299239, timeout=False), MetricValue(zkvm='sp1', program='polybench-bicg', metric=291102, timeout=False), MetricValue(zkvm='sp1', program='polybench-cholesky', metric=1876164, timeout=False), MetricValue(zkvm='sp1', program='polybench-correlation', metric=622384, timeout=False), MetricValue(zkvm='sp1', program='polybench-covariance', metric=390844, timeout=False), MetricValue(zkvm='sp1', program='polybench-deriche', metric=1479648, timeout=False), MetricValue(zkvm='sp1', program='polybench-doitgen', metric=171520, timeout=False), MetricValue(zkvm='sp1', program='polybench-durbin', metric=120947, timeout=False), MetricValue(zkvm='sp1', program='polybench-fdtd-2d', metric=874337, timeout=False), MetricValue(zkvm='sp1', program='polybench-floyd-warshall', metric=117883, timeout=False), MetricValue(zkvm='sp1', program='polybench-gemm', metric=490765, timeout=False), MetricValue(zkvm='sp1', program='polybench-gemver', metric=2319255, timeout=False), MetricValue(zkvm='sp1', program='polybench-gesummv', metric=1567731, timeout=False), MetricValue(zkvm='sp1', program='polybench-gramschmidt', metric=450124, timeout=False), MetricValue(zkvm='sp1', program='polybench-heat-3d', metric=641703, timeout=False), MetricValue(zkvm='sp1', program='polybench-jacobi-1d', metric=1282303, timeout=False), MetricValue(zkvm='sp1', program='polybench-jacobi-2d', metric=437881, timeout=False), MetricValue(zkvm='sp1', program='polybench-lu', metric=932629, timeout=False), MetricValue(zkvm='sp1', program='polybench-ludcmp', metric=996261, timeout=False), MetricValue(zkvm='sp1', program='polybench-mvt', metric=461287, timeout=False), MetricValue(zkvm='sp1', program='polybench-nussinov', metric=35884, timeout=False), MetricValue(zkvm='sp1', program='polybench-seidel-2d', metric=1994384, timeout=False), MetricValue(zkvm='sp1', program='polybench-symm', metric=1448429, timeout=False), MetricValue(zkvm='sp1', program='polybench-syr2k', metric=1902090, timeout=False), MetricValue(zkvm='sp1', program='polybench-syrk', metric=772942, timeout=False), MetricValue(zkvm='sp1', program='polybench-trisolv', metric=133111, timeout=False), MetricValue(zkvm='sp1', program='polybench-trmm', metric=635664, timeout=False), MetricValue(zkvm='sp1', program='merkle', metric=516560, timeout=False), MetricValue(zkvm='sp1', program='ecdsa-verify', metric=4612595, timeout=False), MetricValue(zkvm='sp1', program='eddsa-verify', metric=2630623, timeout=False), MetricValue(zkvm='sp1', program='rsp', metric=79297307, timeout=False), MetricValue(zkvm='sp1', program='zkvm-mnist', metric=101160109, timeout=False), MetricValue(zkvm='sp1', program='spec-605', metric=22067318, timeout=False), MetricValue(zkvm='sp1', program='spec-619', metric=25952200, timeout=False), MetricValue(zkvm='sp1', program='npb-bt', metric=53494263, timeout=False), MetricValue(zkvm='sp1', program='npb-cg', metric=19340136, timeout=False), MetricValue(zkvm='sp1', program='npb-ep', metric=41824857, timeout=False), MetricValue(zkvm='sp1', program='npb-ft', metric=19921536, timeout=False), MetricValue(zkvm='sp1', program='npb-is', metric=11101596, timeout=False), MetricValue(zkvm='sp1', program='npb-lu', metric=26218227, timeout=False), MetricValue(zkvm='sp1', program='npb-mg', metric=13459342, timeout=False), MetricValue(zkvm='sp1', program='npb-sp', metric=37719051, timeout=False), MetricValue(zkvm='sp1', program='spec-631', metric=37307379, timeout=False)]

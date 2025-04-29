@@ -23,6 +23,14 @@
 ## Overview
   
 ![genetic-plot](./genetic-plot.png)
+## Overview by zkVM
+
+### zkVM risc0
+  
+![genetic-plot-risc0](./genetic-plot-risc0.png)
+### zkVM sp1
+  
+![genetic-plot-sp1](./genetic-plot-sp1.png)
 ## Baseline values
 
 - o1: [MetricValue(zkvm='risc0', program='rsp', metric=245506510, timeout=False), MetricValue(zkvm='sp1', program='rsp', metric=79297760, timeout=False)]

@@ -9,10 +9,12 @@ from zkbench.tune.plot.genetic import plot_genetic
 
 @click.command(name="genetic")
 @click.option("--stats", required=True)
-def plot_genetic_cli(stats: str):
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def plot_genetic_cli(stats: str, program: str | None, zkvm: str | None):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
-    plot_genetic(stats)
+    plot_genetic(stats, program, zkvm)
 
 
 @click.command(name="exhaustive-depth2")

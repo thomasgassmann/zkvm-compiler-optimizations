@@ -39,6 +39,30 @@ def export_genetic(stats_path: str, out: str):
         lambda: plot_genetic(stats_path),
     )
 
+    if len(stats.programs) > 1:
+        md_file.new_header(level=2, title=f"Overview by program")
+        for program in stats.programs:
+            md_file.new_header(level=3, title=f"Program {program}")
+            export_plot(
+                out,
+                None,
+                md_file,
+                f"genetic-plot-{program}",
+                lambda: plot_genetic(stats_path, program, None),
+            )
+
+    if len(stats.zkvms) > 1:
+        md_file.new_header(level=2, title=f"Overview by zkVM")
+        for zkvm in stats.zkvms:
+            md_file.new_header(level=3, title=f"zkVM {zkvm}")
+            export_plot(
+                out,
+                None,
+                md_file,
+                f"genetic-plot-{zkvm}",
+                lambda: plot_genetic(stats_path, None, zkvm),
+            )
+
     md_file.new_header(level=2, title=f"Baseline values")
     md_file.new_list(
         f"{baseline}: {stats.baselines[baseline]}" for baseline in stats.baselines
