@@ -110,7 +110,8 @@ class DepthMode(Mode):
         used_passes = []
         for i in range(self.depth):
             current_pass = cfg[f"depth-{i}"]
-            used_passes.append(current_pass)
+            if current_pass != "NOOP":
+                used_passes.append(current_pass)
         return ProfileConfig(
             name="genetic",
             lto=cfg["lto"],
@@ -122,7 +123,12 @@ class DepthMode(Mode):
 
     def get_manipulator(self, config: TuneConfig):
         manipulator = ConfigurationManipulator()
-        all_passes = config.module_passes + config.function_passes + config.loop_passes
+        all_passes = (
+            config.module_passes
+            + config.function_passes
+            + config.loop_passes
+            + ["NOOP"]
+        )
         for i in range(self.depth):
             manipulator.add_parameter(EnumParameter(f"depth-{i}", all_passes))
         add_common_params(manipulator, config)
