@@ -18,6 +18,7 @@ from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_duration,
     plot_cycle_count_stats,
 )
+from zkbench.plot.export import export_report
 from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
@@ -157,3 +158,13 @@ def no_effect_cli():
 def total_time_by_profile_cli(program: str | None, zkvm: str | None, measurement: str):
     dir = click.get_current_context().parent.params["dir"]
     plot_total_time_by_profile(dir, zkvm, program, measurement)
+
+
+@click.command(
+    name="export",
+    help="Export plots to report",
+)
+@click.option("--out", nargs=1, required=True, help="Output directory")
+def export_report_cli(out: str):
+    dir = click.get_current_context().parent.params["dir"]
+    export_report(dir, out)

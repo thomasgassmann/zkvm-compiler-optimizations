@@ -1,0 +1,8 @@
+bench/
+genetic/
+exhaustive/
+
+docs/
+
+!.gitignore
+!.gitkeep

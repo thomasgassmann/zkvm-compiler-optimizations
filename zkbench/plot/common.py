@@ -6,6 +6,7 @@ from scipy import stats
 
 from matplotlib import pyplot as plt
 import numpy as np
+from contextlib import contextmanager
 
 from zkbench.config import (
     get_measurements,
@@ -17,6 +18,20 @@ from zkbench.config import (
 
 
 BASELINE = "baseline"
+
+
+class SaveContext:
+    path = None
+
+
+@contextmanager
+def save_path(val):
+    old_value = SaveContext.path
+    SaveContext.path = val
+    try:
+        yield
+    finally:
+        SaveContext.path = old_value
 
 
 def get_program_selection(
@@ -162,7 +177,7 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
     ax.grid(axis="y", linestyle="--", alpha=0.7)
     ax.grid(axis="x", linestyle="--", alpha=0.5)
     plt.tight_layout()
-    plt.show()
+    show_or_save_plot()
 
 
 def get_spearman(x, y):
@@ -171,6 +186,15 @@ def get_spearman(x, y):
 
 def get_pearson(x, y):
     return np.corrcoef(x, y)[0, 1]
+
+
+def show_or_save_plot():
+    if SaveContext.path is not None:
+        plt.gcf().set_size_inches(18, 10)
+        plt.savefig(SaveContext.path, dpi=200)
+        plt.close()
+    else:
+        plt.show()
 
 
 def plot_scatter_by_zkvm(
@@ -196,7 +220,7 @@ def plot_scatter_by_zkvm(
     plt.ylabel(y_label)
     plt.grid(linestyle="--", alpha=0.7)
     plt.legend()
-    plt.show()
+    show_or_save_plot()
 
 
 def plot_sorted(values, labels, title, y_label, series_labels):
@@ -237,7 +261,7 @@ def plot_sorted(values, labels, title, y_label, series_labels):
     ax.grid(axis="y", linestyle="--", alpha=0.7)
 
     plt.tight_layout()
-    plt.show()
+    show_or_save_plot()
 
 
 def get_values_by_profile(

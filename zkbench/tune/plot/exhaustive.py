@@ -5,7 +5,7 @@ import numpy as np
 import seaborn as sns
 from matplotlib.colors import ListedColormap
 
-from zkbench.plot.common import get_title
+from zkbench.plot.common import get_title, show_or_save_plot
 from zkbench.tune.exhaustive import Exhaustive, ExhaustiveResult
 from zkbench.tune.plot.common import read_exhaustive_stats
 
@@ -67,4 +67,4 @@ def plot_exhaustive_depth2(stats: str, program: str | None, zkvm: str | None):
     plt.xlabel("Pass B")
     plt.ylabel("Pass A")
     plt.tight_layout()
-    plt.show()
+    show_or_save_plot()

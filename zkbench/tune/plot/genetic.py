@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 
+from zkbench.plot.common import show_or_save_plot
 from zkbench.tune.genetic import Genetic
 from zkbench.tune.plot.common import read_genetic_stats
 
@@ -33,4 +34,4 @@ def plot_genetic(stats: str):
     plt.title(f"Passes of best: {', '.join(stats.best_profile.passes)}", fontsize=10)
 
     plt.grid()
-    plt.show()
+    show_or_save_plot()
