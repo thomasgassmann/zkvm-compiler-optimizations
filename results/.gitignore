@@ -2,7 +2,7 @@ bench/
 genetic/
 exhaustive/
 
-docs/
+# docs/
 
 !.gitignore
 !.gitkeep
