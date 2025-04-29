@@ -29,7 +29,11 @@ from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_single
-from zkbench.tune.plot.plot import plot_exhaustive_depth2_cli, plot_genetic_cli
+from zkbench.tune.plot.plot import (
+    export_exhaustive_depth2_cli,
+    plot_exhaustive_depth2_cli,
+    plot_genetic_cli,
+)
 from zkbench.tune.tune import TUNE_METRICS, tune_exhaustive_cli, tune_genetic_cli
 
 
@@ -196,6 +200,7 @@ plot_cli.add_command(export_report_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
+plot_tune_cli.add_command(export_exhaustive_depth2_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)
