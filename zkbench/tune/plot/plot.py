@@ -3,7 +3,7 @@ import click
 
 from zkbench.config import get_programs, get_zkvms
 from zkbench.tune.plot.exhaustive import plot_exhaustive_depth2
-from zkbench.tune.plot.export import export_exhaustive_depth2
+from zkbench.tune.plot.export import export_exhaustive_depth2, export_genetic
 from zkbench.tune.plot.genetic import plot_genetic
 
 
@@ -32,3 +32,12 @@ def export_exhaustive_depth2_cli(stats: str, out: str):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
     export_exhaustive_depth2(stats, out)
+
+
+@click.command(name="export-genetic")
+@click.option("--stats", required=True)
+@click.option("--out", nargs=1, required=True, help="Output directory")
+def export_genetic_cli(stats: str, out: str):
+    if not os.path.exists(stats):
+        raise click.ClickException(f"File {stats} does not exist.")
+    export_genetic(stats, out)

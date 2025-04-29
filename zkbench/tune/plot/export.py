@@ -2,8 +2,49 @@ import os
 import mdutils
 from zkbench.plot.export import export_plot
 from zkbench.tune.exhaustive import Exhaustive
-from zkbench.tune.plot.common import read_exhaustive_stats
+from zkbench.tune.genetic import Genetic
+from zkbench.tune.plot.common import read_exhaustive_stats, read_genetic_stats
 from zkbench.tune.plot.exhaustive import plot_exhaustive_depth2
+from zkbench.tune.plot.genetic import plot_genetic
+
+
+def export_genetic(stats_path: str, out: str):
+    stats: Genetic = read_genetic_stats(stats_path)
+    path = os.path.join(out, "README.md")
+
+    md_file = mdutils.MdUtils(file_name=path)
+    md_file.new_header(level=1, title=f"Genetic run for metric {stats.metric}")
+
+    md_file.new_header(level=2, title=f"Programs")
+    md_file.new_list(items=stats.programs)
+    md_file.new_header(level=2, title=f"zkVMs")
+    md_file.new_list(items=stats.zkvms)
+
+    md_file.new_header(level=2, title=f"Best profile")
+    md_file.new_list(
+        [
+            f"Best profile: {stats.best_profile}",
+            "Metric: " + str(stats.best_metric),
+            "Mode: " + str(stats.mode_name),
+            f"Tune config: {stats.best_profile}",
+        ]
+    )
+
+    md_file.new_header(level=2, title=f"Overview")
+    export_plot(
+        out,
+        None,
+        md_file,
+        "genetic-plot",
+        lambda: plot_genetic(stats_path),
+    )
+
+    md_file.new_header(level=2, title=f"Baseline values")
+    md_file.new_list(
+        f"{baseline}: {stats.baselines[baseline]}" for baseline in stats.baselines
+    )
+
+    md_file.create_md_file()
 
 
 def export_exhaustive_depth2(stats_path: str, out: str):
