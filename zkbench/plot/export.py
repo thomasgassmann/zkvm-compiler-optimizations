@@ -3,6 +3,7 @@ import os
 
 from zkbench.config import (
     get_measurements,
+    get_profiles_ids,
     get_program_by_name,
     get_program_groups,
     get_programs,
@@ -20,6 +21,9 @@ from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_duration,
     plot_cycle_count_stats,
 )
+from zkbench.plot.no_effect import plot_no_effect
+from zkbench.plot.opt_by_program import plot_opt_by_program
+from zkbench.plot.opt_no_effect import plot_opt_no_effect
 from zkbench.plot.prove_exec import plot_prove_exec
 
 
@@ -334,6 +338,83 @@ def export_program_overview(dir: str, out: str):
     md_file.create_md_file()
 
 
+def export_profile(dir: str, out: str, profile_id: str):
+    path = os.path.join(out, "profiles", profile_id + ".md")
+
+    md_file = MdUtils(file_name=path)
+    md_file.new_header(level=1, title=f"{profile_id} report")
+
+    md_file.new_header(level=2, title="Optimization by program")
+    export_plot(
+        out,
+        "profiles",
+        md_file,
+        f"{profile_id}-by-program",
+        lambda: plot_opt_by_program(dir, profile=profile_id, zkvm=None),
+    )
+    for zkvm in get_zkvms():
+        md_file.new_header(level=3, title=f"Optimization by program ({zkvm})")
+        export_plot(
+            out,
+            "profiles",
+            md_file,
+            f"{profile_id}-{zkvm}-by-program",
+            lambda: plot_opt_by_program(dir, profile=profile_id, zkvm=zkvm),
+        )
+
+    md_file.create_md_file()
+
+
+def export_profile_overview(dir: str, out: str):
+    path = os.path.join(out, "profiles.md")
+
+    md_file = MdUtils(file_name=path)
+    md_file.new_header(level=1, title=f"Profiles overview")
+
+    md_file.new_header(level=2, title="All profiles")
+    profile_links = [
+        md_file.new_inline_link(f"./profiles/{profile_id}.md", profile_id)
+        for profile_id in get_profiles_ids()
+    ]
+    md_file.new_list(profile_links)
+
+    md_file.new_header(
+        level=2, title="Optimizations by percentage where they had any effect"
+    )
+    export_plot(
+        out,
+        None,
+        md_file,
+        "opt-no-effect",
+        lambda: plot_no_effect(dir),
+    )
+
+    md_file.new_header(
+        level=2, title="Percentage of optimizations that had no effect by program"
+    )
+    export_plot(
+        out,
+        None,
+        md_file,
+        "opt-no-effect-by-program",
+        lambda: plot_opt_no_effect(dir),
+    )
+    for zkvm in get_zkvms():
+        md_file.new_header(
+            level=3,
+            title=f"Percentage of optimizations that had no effect by program {zkvm}",
+        )
+        export_plot(
+            out,
+            None,
+            md_file,
+            f"opt-no-effect-by-program-{zkvm}",
+            lambda: plot_opt_no_effect(dir, zkvm),
+        )
+
+    md_file.create_md_file()
+
+
 def export_report(dir: str, out: str):
     os.makedirs(out, exist_ok=True)
 
@@ -349,3 +430,23 @@ def export_report(dir: str, out: str):
             export_program_group(dir, out, group_name)
         except Exception as e:
             logging.error(f"Group export failed for {group_name}: {e}")
+
+    for profile in get_profiles_ids():
+        try:
+            export_profile(dir, out, profile)
+        except Exception as e:
+            logging.error(f"Profile export failed for {profile}: {e}")
+    export_profile_overview(dir, out)
+
+    path = os.path.join(out, "README.md")
+
+    md_file = MdUtils(file_name=path)
+    md_file.new_header(level=1, title=f"Results (RQ1)")
+    md_file.new_list(
+        [
+            md_file.new_inline_link(f"./profiles.md", "Profiles"),
+            md_file.new_inline_link(f"./programs.md", "Programs"),
+        ]
+    )
+
+    md_file.create_md_file()
