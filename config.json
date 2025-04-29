@@ -1030,13 +1030,15 @@
         "npb-bt": {
             "groups": [
                 "npb",
-                "rust"
+                "rust",
+                "loop-intensive"
             ]
         },
         "npb-cg": {
             "groups": [
                 "npb",
-                "rust"
+                "rust",
+                "memory-intensive"
             ],
             "skip": [
                 "attributor"
@@ -1057,7 +1059,8 @@
         "npb-is": {
             "groups": [
                 "npb",
-                "rust"
+                "rust",
+                "memory-intensive"
             ],
             "skip": [
                 "attributor"
@@ -1066,7 +1069,8 @@
         "npb-lu": {
             "groups": [
                 "npb",
-                "rust"
+                "rust",
+                "loop-intensive"
             ]
         },
         "npb-mg": {
@@ -1079,7 +1083,8 @@
         "npb-sp": {
             "groups": [
                 "npb",
-                "rust"
+                "rust",
+                "loop-intensive"
             ]
         },
         "spec-631": {

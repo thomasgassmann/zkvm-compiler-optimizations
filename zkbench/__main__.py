@@ -16,6 +16,7 @@ from zkbench.plot.plot import (
     cycle_count_cli,
     cycle_count_stats_cli,
     cycle_count_duration_cli,
+    export_report_cli,
     khz_cli,
     no_effect_cli,
     opt_by_program_cli,
@@ -191,6 +192,7 @@ plot_cli.add_command(opt_no_effect_cli)
 plot_cli.add_command(no_effect_cli)
 plot_cli.add_command(khz_cli)
 plot_cli.add_command(total_time_by_profile_cli)
+plot_cli.add_command(export_report_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
