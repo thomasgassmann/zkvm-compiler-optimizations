@@ -68,6 +68,14 @@ def get_program_by_name(program_name: str) -> Program:
     )
 
 
+def get_program_groups_from_programs(programs: List[str]) -> set[str]:
+    groups = set()
+    for program_id in programs:
+        program = get_program_by_name(program_id)
+        groups.update(program.groups)
+    return groups
+
+
 def get_program_groups() -> set[str]:
     groups = set()
     for program_id in get_programs():
