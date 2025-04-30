@@ -3,6 +3,8 @@
 
 
 # Exhaustive for metric cycle-count
+
+## Overview
   
 ![exhaustive-depth2-main](./exhaustive-depth2-main.png)
 ## Exhaustive for zkvm risc0
@@ -185,3 +187,32 @@
 ## Exhaustive for program spec-631
   
 ![exhaustive-depth2-spec-631](./exhaustive-depth2-spec-631.png)
+## Exhaustive for program group
+
+### Group spec
+  
+![exhaustive-depth2-spec](./exhaustive-depth2-spec.png)
+### Group recursive
+  
+![exhaustive-depth2-recursive](./exhaustive-depth2-recursive.png)
+### Group c
+  
+![exhaustive-depth2-c](./exhaustive-depth2-c.png)
+### Group polybench
+  
+![exhaustive-depth2-polybench](./exhaustive-depth2-polybench.png)
+### Group crypto
+  
+![exhaustive-depth2-crypto](./exhaustive-depth2-crypto.png)
+### Group loop-intensive
+  
+![exhaustive-depth2-loop-intensive](./exhaustive-depth2-loop-intensive.png)
+### Group memory-intensive
+  
+![exhaustive-depth2-memory-intensive](./exhaustive-depth2-memory-intensive.png)
+### Group npb
+  
+![exhaustive-depth2-npb](./exhaustive-depth2-npb.png)
+### Group rust
+  
+![exhaustive-depth2-rust](./exhaustive-depth2-rust.png)

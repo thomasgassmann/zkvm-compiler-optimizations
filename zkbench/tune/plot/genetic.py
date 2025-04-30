@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 
+from zkbench.config import get_programs_by_group
 from zkbench.plot.common import show_or_save_plot
 from zkbench.tune.common import MetricValue
 from zkbench.tune.genetic import Genetic
@@ -7,29 +8,38 @@ from zkbench.tune.plot.common import read_genetic_stats
 
 
 def get_metric_sum(
-    l: list[MetricValue], program: str | None, zkvm: str | None
+    l: list[MetricValue], program_list: list[str] | None, zkvm: str | None
 ) -> float:
     return sum(
         [
             v.metric
             for v in l
-            if (v.program == program or program is None)
+            if (program_list is None or v.program in program_list)
             and (v.zkvm == zkvm or zkvm is None)
         ]
     )
 
 
-def plot_genetic(stats: str, program: str | None = None, zkvm: str | None = None):
+def plot_genetic(
+    stats: str,
+    program: str | None = None,
+    zkvm: str | None = None,
+    program_group: str | None = None,
+):
     stats: Genetic = read_genetic_stats(stats)
 
-    stats_values = [get_metric_sum(v, program, zkvm) for v in stats.metrics]
+    programs = [] if program is None else [program]
+    if program_group is not None:
+        programs.extend(get_programs_by_group(program_group))
+
+    stats_values = [get_metric_sum(v, programs, zkvm) for v in stats.metrics]
 
     plt.plot(stats_values, marker="o", linestyle="-")
 
     colors = plt.cm.tab10.colors
     for i, baseline in enumerate(stats.baselines):
         value = stats.baselines[baseline]
-        metric_sum = get_metric_sum(value, program, zkvm)
+        metric_sum = get_metric_sum(value, programs, zkvm)
         plt.axhline(y=metric_sum, label=baseline, color=colors[i % len(colors)])
 
     best_metric = min(stats_values)

@@ -1,5 +1,6 @@
 import os
 import mdutils
+from zkbench.config import get_program_groups_from_programs
 from zkbench.plot.export import export_plot
 from zkbench.tune.exhaustive import Exhaustive
 from zkbench.tune.genetic import Genetic
@@ -50,6 +51,19 @@ def export_genetic(stats_path: str, out: str):
                 f"genetic-plot-{program}",
                 lambda: plot_genetic(stats_path, program, None),
             )
+
+        groups = get_program_groups_from_programs(stats.programs)
+        if len(groups) > 1:
+            md_file.new_header(level=2, title=f"Overview by program group")
+            for group in groups:
+                md_file.new_header(level=3, title=f"Group {group}")
+                export_plot(
+                    out,
+                    None,
+                    md_file,
+                    f"genetic-plot-{group}",
+                    lambda: plot_genetic(stats_path, None, None),
+                )
 
     if len(stats.zkvms) > 1:
         md_file.new_header(level=2, title=f"Overview by zkVM")
@@ -106,5 +120,18 @@ def export_exhaustive_depth2(stats_path: str, out: str):
             f"exhaustive-depth2-{program}",
             lambda: plot_exhaustive_depth2(stats_path, program, None),
         )
+
+    groups = get_program_groups_from_programs(stats.programs)
+    if len(groups) > 1:
+        md_file.new_header(level=2, title=f"Exhaustive for program group")
+        for group in groups:
+            md_file.new_header(level=3, title=f"Group {group}")
+            export_plot(
+                out,
+                None,
+                md_file,
+                f"exhaustive-depth2-{group}",
+                lambda: plot_exhaustive_depth2(stats_path, None, None, group),
+            )
 
     md_file.create_md_file()
