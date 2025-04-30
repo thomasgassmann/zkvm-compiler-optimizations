@@ -17,3 +17,6 @@
   - NOTE: we also tune the compilers opt-level, lto and codegen units!
   - about 5-6% percentage improvement in cycle count for rsp on sp1 in o3 (lto off)
 - [only two optimizations already result in almost 30% cycle count reduction](./rq2/top15-abs-cycle-count/README.md)
+- [for c benchmarks mem2reg and sroa seem to be more beneficial](./rq2/top15-abs-cycle-count/README.md#group-c)
+  - no such relationship for rust programs
+  - NOTE: sample size small
