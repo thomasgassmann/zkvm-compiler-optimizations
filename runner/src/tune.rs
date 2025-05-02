@@ -21,18 +21,18 @@ pub fn run_tune(args: TuneArgs) {
     let elf: Vec<u8> = fs::read(args.elf).unwrap();
     let metric_value: u128 = match (args.zkvm, args.metric) {
         (ProverId::Risc0, TuneMetric::CycleCount) => {
-            get_risc0_stats(&elf, &args.program).cycle_count as u128
+            get_risc0_stats(&elf, &args.program, &None).cycle_count as u128
         }
         (ProverId::SP1, TuneMetric::CycleCount) => {
-            get_sp1_stats(&elf, &args.program).cycle_count as u128
+            get_sp1_stats(&elf, &args.program, &None).cycle_count as u128
         }
         (ProverId::Risc0, TuneMetric::ProveTime) => {
-            let (prover, context, session) = prove_core_risc0_prepare(&elf, &args.program);
+            let (prover, context, session) = prove_core_risc0_prepare(&elf, &args.program, &None);
             let (_, duration) = time_operation(|| prove_core_risc0(&prover, &context, &session));
             duration.as_millis()
         }
         (ProverId::SP1, TuneMetric::ProveTime) => {
-            let (pk, _, stdin) = prove_core_sp1_prepare(&elf, &args.program);
+            let (pk, _, stdin) = prove_core_sp1_prepare(&elf, &args.program, &None);
             let (_, duration) = time_operation(|| prove_core_sp1(&stdin, &pk));
             duration.as_millis()
         }

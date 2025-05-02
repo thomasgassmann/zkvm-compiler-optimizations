@@ -19,7 +19,7 @@ pub struct SP1Evaluator;
 impl SP1Evaluator {
     pub fn eval(elf: &Vec<u8>, program_id: &ProgramId) -> PerformanceReport {
         // Get stdin.
-        let stdin = get_sp1_stdin(&program_id);
+        let stdin = get_sp1_stdin(&program_id, &None);
 
         // Get the elf.
         let cycles = get_cycles(&elf, &stdin);

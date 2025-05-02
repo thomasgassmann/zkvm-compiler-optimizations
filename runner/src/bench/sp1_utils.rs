@@ -29,8 +29,9 @@ static ENV_PROVER_CLIENT: Lazy<Arc<Mutex<EnvProver>>> = Lazy::new(|| {
 pub fn exec_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
+    input_override: &Option<String>,
 ) -> (SP1Stdin, SP1Prover<CpuProverComponents>) {
-    let stdin = get_sp1_stdin(program);
+    let stdin = get_sp1_stdin(program, input_override);
 
     let prover = SP1Prover::<CpuProverComponents>::new();
     let (_, _, _, _) = prover.setup(&elf);
@@ -48,8 +49,8 @@ fn get_cycles(elf: &[u8], stdin: &SP1Stdin) -> u64 {
     runtime.state.global_clk
 }
 
-pub fn get_sp1_stats(elf: &[u8], program: &ProgramId) -> ElfStats {
-    let (stdin, _) = exec_sp1_prepare(elf, program);
+pub fn get_sp1_stats(elf: &[u8], program: &ProgramId, input_override: &Option<String>) -> ElfStats {
+    let (stdin, _) = exec_sp1_prepare(elf, program, input_override);
     ElfStats {
         cycle_count: get_cycles(&elf, &stdin),
         size: elf.len(),
@@ -78,8 +79,9 @@ pub fn exec_sp1(stdin: &SP1Stdin, prover: &SP1Prover<CpuProverComponents>, elf: 
 pub fn prove_core_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
+    input_override: &Option<String>,
 ) -> (SP1ProvingKey, SP1VerifyingKey, SP1Stdin) {
-    let stdin = get_sp1_stdin(program);
+    let stdin = get_sp1_stdin(program, input_override);
     let (pk, vk) = ENV_PROVER_CLIENT.lock().unwrap().setup(elf);
     (pk, vk, stdin)
 }

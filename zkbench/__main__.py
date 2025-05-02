@@ -94,6 +94,7 @@ def clean_cli(program: list[str], zkvm: list[str]):
 @click.option("--profile-time", type=int, required=False)
 @click.option("--force", required=False, is_flag=True, default=False)
 @click.option("--meta-only", required=False, is_flag=True, default=False)
+@click.option("--input-override", required=False, type=str)
 def bench_cli(
     program: list[str],
     zkvm: list[str],
@@ -102,8 +103,18 @@ def bench_cli(
     profile_time: int,
     force: bool,
     meta_only: bool,
+    input_override: str | None,
 ):
-    run_bench(program, zkvm, measurement, profile, profile_time, force, meta_only)
+    run_bench(
+        program,
+        zkvm,
+        measurement,
+        profile,
+        profile_time,
+        force,
+        meta_only,
+        input_override,
+    )
 
 
 @click.command(name="run")
