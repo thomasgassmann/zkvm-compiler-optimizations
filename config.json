@@ -721,6 +721,20 @@
             "rustflags": "-C opt-level=z",
             "passes": [],
             "prepopulate_passes": true
+        },
+        "o3-lto": {
+            "cflags": "-O3 -flto",
+            "rustflags": "-C opt-level=3 -C lto=fat -C embed-bitcode",
+            "passes": [],
+            "prepopulate_passes": true
+        },
+        "rsp-best": {
+            "cflags": "-O3 -flto",
+            "rustflags": "-C opt-level=3 -C lto=fat -C embed-bitcode",
+            "passes": [
+                "module(wholeprogramdevirt,always-inline),function(lower-switch,loop(loop-reduce,loop-rotate),irce),module(inline),function(loop-simplify),module(extract-blocks),function(loop(loop-rotate)),module(bounds-checking),function(loop(loop-reduce),nary-reassociate,simple-loop-unswitch),module(rel-lookup-table-converter,loop-extract),function(loop-mssa(licm)),module(wholeprogramdevirt),function(correlated-propagation,loop-sink)"
+            ],
+            "prepopulate_passes": true
         }
     },
     "zkvms": [
