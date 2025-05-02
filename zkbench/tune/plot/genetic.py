@@ -31,6 +31,8 @@ def plot_genetic(
     programs = [] if program is None else [program]
     if program_group is not None:
         programs.extend(get_programs_by_group(program_group))
+    if program is None and program_group is None:
+        programs = None
 
     stats_values = [get_metric_sum(v, programs, zkvm) for v in stats.metrics]
 
