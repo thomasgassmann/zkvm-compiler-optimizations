@@ -87,24 +87,25 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     (train, test)
 }
 
-pub fn load_rsp_input() -> Vec<u8> {
+pub fn load_rsp_input(file: &str) -> Vec<u8> {
     /*
-        Cycle counts for rsp in o3 with respective inputs:
-        input        - updated  - current
-        22317400-bin - 3526886  - 4362939
-        22287700-bin - 37250156 - 55353428
-        20526624-bin - 41116545 - 59700433
-        22264800-bin - 60895845 - 82308159
-        22302600-bin - 54541791 - 80161036
-        22343400-bin - 75719346 - 107782385
-        22323700-bin - 64429101 - 94400495
+       Cycle counts for rsp in o3 with respective inputs:
+       input        - updated  - current
+       22317400-bin - 3526886  - 4362939
+       22287700-bin - 37250156 - 55353428
+       20526624-bin - 41116545 - 59700433
+       22264800-bin - 60895845 - 82308159
+       22302600-bin - 54541791 - 80161036
+       22343400-bin - 75719346 - 107782385
+       22323700-bin - 64429101 - 94400495
 
-        middle column represents cycle count we can get when
-        updating rsp to latest version (sp1, o3)
-        however, this breaks risc0, hence we still use the prev.
-        version which is the current column
-     */
-    let cache_path = PathBuf::from("./inputs/rsp/20526624.bin");
+       middle column represents cycle count we can get when
+       updating rsp to latest version (sp1, o3)
+       however, this breaks risc0, hence we still use the prev.
+       version which is the current column
+    */
+    println!("Loading rsp input from file: {file}");
+    let cache_path = PathBuf::from(format!("./inputs/rsp/{file}.bin"));
     let mut cache_file = std::fs::File::open(cache_path).unwrap();
     let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
     bincode::serialize(&client_input).unwrap()
@@ -176,17 +177,26 @@ impl<'a> ProgramInputWriter for risc0_zkvm::ExecutorEnvBuilder<'a> {
     }
 }
 
-pub fn get_sp1_stdin(program: &ProgramId) -> SP1Stdin {
+pub fn get_sp1_stdin(program: &ProgramId, input_override: &Option<String>) -> SP1Stdin {
     let mut stdin = SP1Stdin::new();
-    write_program_inputs(program, &mut stdin, ProverId::SP1);
+    write_program_inputs(program, &mut stdin, ProverId::SP1, input_override);
     stdin
 }
 
-pub fn set_risc0_input(program: &ProgramId, builder: &mut risc0_zkvm::ExecutorEnvBuilder<'_>) {
-    write_program_inputs(program, builder, ProverId::Risc0);
+pub fn set_risc0_input(
+    program: &ProgramId,
+    builder: &mut risc0_zkvm::ExecutorEnvBuilder<'_>,
+    input_override: &Option<String>,
+) {
+    write_program_inputs(program, builder, ProverId::Risc0, input_override);
 }
 
-fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut W, _: ProverId) {
+fn write_program_inputs<W: ProgramInputWriter>(
+    program: &ProgramId,
+    stdin: &mut W,
+    _: ProverId,
+    input_override: &Option<String>,
+) {
     match program {
         ProgramId::Factorial => {
             stdin.write_generic(&10u32);
@@ -227,7 +237,11 @@ fn write_program_inputs<W: ProgramInputWriter>(program: &ProgramId, stdin: &mut 
             );
         }
         ProgramId::Rsp => {
-            stdin.write_vec(load_rsp_input());
+            if input_override.is_some() {
+                stdin.write_vec(load_rsp_input(input_override.as_ref().unwrap()));
+            } else {
+                stdin.write_vec(load_rsp_input("20526624"));
+            }
         }
         ProgramId::Merkle => {
             let mut rng = rand::thread_rng();

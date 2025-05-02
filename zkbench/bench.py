@@ -10,6 +10,7 @@ def run_bench(
     profile_time: int,
     force: bool,
     meta_only: bool,
+    input_override: str = None,
 ):
     args = []
     if program:
@@ -30,6 +31,8 @@ def run_bench(
         args.append("--force")
     if meta_only:
         args.append("--meta-only")
+    if input_override:
+        args.append(f"--input-override {input_override}")
 
     arg_string = " ".join(args)
     logging.info(f"Running bench with args: {arg_string}")
