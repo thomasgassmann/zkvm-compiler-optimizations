@@ -13,8 +13,8 @@ use once_cell::sync::Lazy;
 use sp1_core_executor::{IoWriter, Program};
 use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{
-    EnvProver, Executor, ProverClient, SP1Context, SP1Prover, SP1ProvingKey, SP1Stdin,
-    SP1VerifyingKey,
+    EnvProver, ExecutionReport, Executor, ProverClient, SP1Context, SP1Prover, SP1ProvingKey,
+    SP1PublicValues, SP1Stdin, SP1VerifyingKey,
 };
 use sp1_stark::SP1CoreOpts;
 
@@ -70,10 +70,14 @@ impl std::io::Write for SP1StdoutSink {
     }
 }
 
-pub fn exec_sp1(stdin: &SP1Stdin, prover: &SP1Prover<CpuProverComponents>, elf: &[u8]) {
+pub fn exec_sp1(
+    stdin: &SP1Stdin,
+    prover: &SP1Prover<CpuProverComponents>,
+    elf: &[u8],
+) -> (SP1PublicValues, ExecutionReport) {
     let mut s = SP1StdoutSink;
     let context = SP1Context::builder().stdout(&mut s).build();
-    prover.execute(&elf, stdin, context).unwrap();
+    prover.execute(&elf, stdin, context).unwrap()
 }
 
 pub fn prove_core_sp1_prepare(
