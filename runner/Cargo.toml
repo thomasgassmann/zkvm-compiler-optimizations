@@ -8,7 +8,7 @@ name = "runner"
 path = "src/main.rs"
 
 [dependencies]
-rsp-client-executor = { git = "https://github.com/succinctlabs/rsp/", rev = "3647076" }
+rsp-client-executor = { git = "https://github.com/succinctlabs/rsp/", rev = "4081e40833aebece5958518724a327ede100f6cd" }
 bincode = "1.3.3"
 clap = { version = "4.5.31", features = ["derive"] }
 cpuprofiler = "0.0.4"

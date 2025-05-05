@@ -1,10 +1,9 @@
 use std::path::PathBuf;
 
 use ndarray::{s, Array1, Array2};
-use rsp_client_executor::io::ClientExecutorInput;
 use serde::Serialize;
 use sp1_sdk::SP1Stdin;
-
+use rsp_client_executor::io::EthClientExecutorInput;
 use k256::ecdsa::signature::SignerMut;
 
 use crate::types::{ProgramId, ProverId};
@@ -107,7 +106,7 @@ pub fn load_rsp_input(file: &str) -> Vec<u8> {
     println!("Loading rsp input from file: {file}");
     let cache_path = PathBuf::from(format!("./inputs/rsp/{file}.bin"));
     let mut cache_file = std::fs::File::open(cache_path).unwrap();
-    let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
+    let client_input: EthClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
     bincode::serialize(&client_input).unwrap()
 }
 
@@ -240,7 +239,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             if input_override.is_some() {
                 stdin.write_vec(load_rsp_input(input_override.as_ref().unwrap()));
             } else {
-                stdin.write_vec(load_rsp_input("20526624"));
+                stdin.write_vec(load_rsp_input("18884864"));
             }
         }
         ProgramId::Merkle => {
