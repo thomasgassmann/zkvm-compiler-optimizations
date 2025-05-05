@@ -13,6 +13,7 @@ import opentuner
 from zkbench.config import Profile, get_profile_by_name
 from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
+    ALL_KNOBS,
     LTO_OPTIONS,
     OPT_LEVEL_OPTIONS,
     BIN_OUT_GENETIC,
@@ -20,6 +21,7 @@ from zkbench.tune.common import (
     ProfileConfig,
     TuneConfig,
     build_pass_list,
+    build_profile,
 )
 
 
@@ -70,34 +72,6 @@ class Mode:
         raise NotImplementedError("This method should be overridden by subclasses.")
 
 
-class InlineThresholdMode(Mode):
-    def get_name(self):
-        return "inline-threshold"
-
-    def get_profile_config(self, desired_result):
-        cfg = desired_result.configuration.data
-        lto = ""
-        cgu = ""
-        if cfg["lto"] != "off":
-            lto = f" -C lto={cfg["lto"]} -C embed-bitcode"
-        if cfg["single_codegen_unit"]:
-            cgu = " -C codegen-units=1"
-        return Profile(
-            "genetic",
-            f"{lto} {cgu} -Cllvm-args=--inline-threshold={cfg['inline-threshold']} -C opt-level={cfg['opt_level']}",
-            f"-mllvm -inline-threshold={cfg['inline-threshold']} -O{cfg['opt_level']}",
-            ["inline"],
-            cfg["prepopulate_passes"],
-            False,
-        )
-
-    def get_manipulator(self, config: TuneConfig):
-        manipulator = ConfigurationManipulator()
-        add_common_params(manipulator, config)
-        manipulator.add_parameter(IntegerParameter("inline-threshold", 0, 10_000_000))
-        return manipulator
-
-
 class DepthMode(Mode):
     def __init__(self, depth: int):
         self.depth = depth
@@ -112,13 +86,33 @@ class DepthMode(Mode):
             current_pass = cfg[f"depth-{i}"]
             if current_pass != "NOOP":
                 used_passes.append(current_pass)
-        return ProfileConfig(
-            name="genetic",
-            lto=cfg["lto"],
-            single_codegen_unit=cfg["single_codegen_unit"],
-            opt_level=cfg["opt_level"],
-            prepopulate_passes=cfg["prepopulate_passes"],
-            passes=[build_pass_list(used_passes)],
+
+        profile = build_profile(
+            ProfileConfig(
+                name="genetic",
+                lto=cfg["lto"],
+                single_codegen_unit=cfg["single_codegen_unit"],
+                opt_level=cfg["opt_level"],
+                prepopulate_passes=cfg["prepopulate_passes"],
+                passes=[build_pass_list(used_passes)],
+            )
+        )
+
+        rust_knobs = ""
+        c_knobs = ""
+        for knob, min_int, max_int in ALL_KNOBS:
+            if cfg["enable_" + knob] or True:
+                value = cfg[knob]
+                rust_knobs += f" -Cllvm-args=-{knob}={value}"
+                c_knobs += f" -mllvm -{knob}={value}"
+
+        return Profile(
+            profile.profile_name,
+            profile.rustflags + rust_knobs,
+            profile.cflags + c_knobs,
+            profile.passes,
+            profile.prepopulate_passes,
+            profile.lower_atomic_before,
         )
 
     def get_manipulator(self, config: TuneConfig):
@@ -132,6 +126,11 @@ class DepthMode(Mode):
         for i in range(self.depth):
             manipulator.add_parameter(EnumParameter(f"depth-{i}", all_passes))
         add_common_params(manipulator, config)
+
+        for knob, min_int, max_int in ALL_KNOBS:
+            manipulator.add_parameter(IntegerParameter(knob, min_int, max_int))
+            manipulator.add_parameter(EnumParameter("enable_" + knob, [True, False]))
+
         return manipulator
 
 
@@ -303,8 +302,6 @@ def run_tune_genetic(
         mode = DefaultMode()
     elif mode == "depth":
         mode = DepthMode(depth)
-    elif mode == "inline-threshold":
-        mode = InlineThresholdMode()
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
