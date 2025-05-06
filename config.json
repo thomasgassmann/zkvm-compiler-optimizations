@@ -729,10 +729,10 @@
             "prepopulate_passes": true
         },
         "rsp-best": {
-            "cflags": "-O3 -flto",
-            "rustflags": "-C opt-level=3 -C lto=fat -C embed-bitcode",
+            "cflags": "-O3 -mllvm -available-load-scan-limit=11 -mllvm -bonus-inst-threshold=6 -mllvm -early-ifcvt-limit=73 -mllvm -inline-threshold=5575 -mllvm -jump-threading-implication-search-threshold=9 -mllvm -jump-threading-threshold=17 -mllvm -licm-max-num-uses-traversed=12 -mllvm -licm-versioning-max-depth-threshold=5 -mllvm -loop-distribute-scev-check-threshold=127 -mllvm -loop-interchange-threshold=2 -mllvm -loop-load-elimination-scev-check-threshold=24 -mllvm -max-dependences=96 -mllvm -max-nested-scalar-reduction-interleave=4 -mllvm -max-num-inline-blocks=5 -mllvm -max-speculation-depth=3 -mllvm -max-uses-for-sinking=9 -mllvm -memdep-block-number-limit=1769 -mllvm -memdep-block-scan-limit=20",
+            "rustflags": "-C opt-level=3 -C lto=thin -C embed-bitcode -C codegen-units=1 -Cllvm-args=-available-load-scan-limit=11 -Cllvm-args=-bonus-inst-threshold=6 -Cllvm-args=-early-ifcvt-limit=73 -Cllvm-args=-inline-threshold=5575 -Cllvm-args=-jump-threading-implication-search-threshold=9 -Cllvm-args=-jump-threading-threshold=17 -Cllvm-args=-licm-max-num-uses-traversed=12 -Cllvm-args=-licm-versioning-max-depth-threshold=5 -Cllvm-args=-loop-distribute-scev-check-threshold=127 -Cllvm-args=-loop-interchange-threshold=2 -Cllvm-args=-loop-load-elimination-scev-check-threshold=24 -Cllvm-args=-max-dependences=96 -Cllvm-args=-max-nested-scalar-reduction-interleave=4 -Cllvm-args=-max-num-inline-blocks=5 -Cllvm-args=-max-speculation-depth=3 -Cllvm-args=-max-uses-for-sinking=9 -Cllvm-args=-memdep-block-number-limit=1769 -Cllvm-args=-memdep-block-scan-limit=20",
             "passes": [
-                "module(wholeprogramdevirt,always-inline),function(lower-switch,loop(loop-reduce,loop-rotate),irce),module(inline),function(loop-simplify),module(extract-blocks),function(loop(loop-rotate)),module(bounds-checking),function(loop(loop-reduce),nary-reassociate,simple-loop-unswitch),module(rel-lookup-table-converter,loop-extract),function(loop-mssa(licm)),module(wholeprogramdevirt),function(correlated-propagation,loop-sink)"
+                "module(partial-inliner,argpromotion,add-discriminators),function(memcpyopt,mem2reg,sink),module(partial-inliner),function(mergereturn,gvn),module(argpromotion)"
             ],
             "prepopulate_passes": true
         }

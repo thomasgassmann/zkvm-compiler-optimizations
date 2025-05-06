@@ -22,6 +22,8 @@ pub fn main() {
     let header = executor.execute(input).expect("failed to execute client");
     let block_hash = header.hash_slow();
 
+    println!("Block hash: {:?}", block_hash);
+
     // Commit the block hash.
     sp1_zkvm::io::commit(&block_hash);
 }
