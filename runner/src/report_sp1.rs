@@ -39,10 +39,12 @@ impl SP1Evaluator {
 
         // Execute the program.
         let context = SP1Context::default();
-        let ((_pv, _), execution_duration) =
+        let ((_pv, report), execution_duration) =
             time_operation(|| prover.execute(&elf, &stdin, context.clone()).unwrap());
 
-        // Setup the prover opionts.
+        println!("Prover gas: {}", report.gas.unwrap());
+
+        // Setup the prover options.
         #[cfg(not(feature = "cuda"))]
         let opts = SP1ProverOpts::auto();
 
