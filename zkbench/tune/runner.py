@@ -136,8 +136,8 @@ class TuneRunner:
             if self._no_clean:
                 return False
 
-            self.clean(programs, zkvms)
             try:
+                self.clean(programs, zkvms)
                 await self.try_build(programs, zkvms, profile_config)
                 return True
             except Exception as e:

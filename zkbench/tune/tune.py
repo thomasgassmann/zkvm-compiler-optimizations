@@ -9,7 +9,7 @@ from zkbench.tune.common import BIN_OUT_EXHAUSTIVE, BIN_OUT_GENETIC, TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
 from zkbench.tune.genetic import run_tune_genetic
 
-TUNE_METRICS = ["cycle-count", "prove-time"]
+TUNE_METRICS = ["cycle-count", "prove-time", "gas"]
 
 
 @click.command(name="exhaustive")
@@ -28,7 +28,7 @@ def tune_exhaustive_cli(depth: int):
 @click.command(name="genetic")
 @click.option(
     "--mode",
-    type=click.Choice(["default", "depth", "inline-threshold"]),
+    type=click.Choice(["default", "depth"]),
     required=True,
     multiple=False,
 )

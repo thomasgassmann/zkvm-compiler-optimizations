@@ -10,6 +10,7 @@ from zkbench.plot.common import (
     get_spearman,
     get_title,
     plot_scatter_by_zkvm,
+    show_or_save_plot,
 )
 
 
@@ -79,8 +80,7 @@ def plot_cycle_count_stats(
     plt.ylabel('Spearman coefficient')
     plt.grid(linestyle="--", alpha=0.7)
     plt.legend()
-    plt.show()
-
+    show_or_save_plot()
 
 
 def plot_cycle_count_duration(

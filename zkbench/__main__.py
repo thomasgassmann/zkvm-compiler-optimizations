@@ -16,6 +16,7 @@ from zkbench.plot.plot import (
     cycle_count_cli,
     cycle_count_stats_cli,
     cycle_count_duration_cli,
+    export_report_cli,
     khz_cli,
     no_effect_cli,
     opt_by_program_cli,
@@ -28,7 +29,12 @@ from zkbench.bench import run_bench
 from zkbench.build import run_build
 from zkbench.clean import run_clean
 from zkbench.run import run_single
-from zkbench.tune.plot.plot import plot_exhaustive_depth2_cli, plot_genetic_cli
+from zkbench.tune.plot.plot import (
+    export_exhaustive_depth2_cli,
+    export_genetic_cli,
+    plot_exhaustive_depth2_cli,
+    plot_genetic_cli,
+)
 from zkbench.tune.tune import TUNE_METRICS, tune_exhaustive_cli, tune_genetic_cli
 
 
@@ -88,6 +94,7 @@ def clean_cli(program: list[str], zkvm: list[str]):
 @click.option("--profile-time", type=int, required=False)
 @click.option("--force", required=False, is_flag=True, default=False)
 @click.option("--meta-only", required=False, is_flag=True, default=False)
+@click.option("--input-override", required=False, type=str)
 def bench_cli(
     program: list[str],
     zkvm: list[str],
@@ -96,8 +103,18 @@ def bench_cli(
     profile_time: int,
     force: bool,
     meta_only: bool,
+    input_override: str | None,
 ):
-    run_bench(program, zkvm, measurement, profile, profile_time, force, meta_only)
+    run_bench(
+        program,
+        zkvm,
+        measurement,
+        profile,
+        profile_time,
+        force,
+        meta_only,
+        input_override,
+    )
 
 
 @click.command(name="run")
@@ -191,9 +208,12 @@ plot_cli.add_command(opt_no_effect_cli)
 plot_cli.add_command(no_effect_cli)
 plot_cli.add_command(khz_cli)
 plot_cli.add_command(total_time_by_profile_cli)
+plot_cli.add_command(export_report_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
+plot_tune_cli.add_command(export_exhaustive_depth2_cli)
+plot_tune_cli.add_command(export_genetic_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)

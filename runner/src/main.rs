@@ -49,6 +49,8 @@ pub struct CriterionArgs {
     force: bool,
     #[arg(long)]
     meta_only: bool,
+    #[arg(long = "input-override")]
+    input_override: Option<String>,
 }
 
 #[derive(Parser, Clone)]
@@ -167,6 +169,7 @@ fn run_criterion(args: CriterionArgs) {
                         &measurement,
                         &profile,
                         args.meta_only,
+                        &args.input_override,
                     );
                 }
 

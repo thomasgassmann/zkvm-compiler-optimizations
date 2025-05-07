@@ -23,7 +23,7 @@ def plot_average_improvement(
         compared = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
         if speedup:
             return baseline / compared
-        return -(compared - baseline) / baseline
+        return (-(compared - baseline) / baseline) * 100
 
     title = get_title(
         "Average improvement by profile compared to baseline",
@@ -42,6 +42,7 @@ def plot_average_improvement(
         relative_improvements_exec = np.mean(relative_improvements_exec, axis=1)
         relative_improvements_prove = np.mean(relative_improvements_prove, axis=1)
 
+    y_axis = "speedup" if speedup else "% faster"
     if global_average or len(relative_improvements_exec[0]) == 1:
         # if we only have one value, no need to plot boxplot
         # TODO: in this case, consider all values that criterion recorded
@@ -58,7 +59,7 @@ def plot_average_improvement(
             ],
             profiles,
             title,
-            "relative duration improvement percentage",
+            y_axis,
             ["prove", "exec"],
         )
     else:
@@ -66,6 +67,6 @@ def plot_average_improvement(
             [relative_improvements_prove, relative_improvements_exec],
             profiles,
             title,
-            "relative duration improvement percentage",
+            y_axis,
             ["prove", "exec"],
         )

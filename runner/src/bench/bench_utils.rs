@@ -20,12 +20,25 @@ pub fn add_benchmarks_for(
     measurement: &MeasurementType,
     profile: &String,
     meta_only: bool,
+    input_override: &Option<String>,
 ) {
     match prover {
-        ProverId::Risc0 => {
-            add_risc0_exec_and_prove(group, program, measurement, profile, meta_only)
-        }
-        ProverId::SP1 => add_sp1_exec_and_prove(group, program, measurement, profile, meta_only),
+        ProverId::Risc0 => add_risc0_exec_and_prove(
+            group,
+            program,
+            measurement,
+            profile,
+            meta_only,
+            input_override,
+        ),
+        ProverId::SP1 => add_sp1_exec_and_prove(
+            group,
+            program,
+            measurement,
+            profile,
+            meta_only,
+            input_override,
+        ),
     }
 }
 
@@ -35,24 +48,25 @@ fn add_sp1_exec_and_prove(
     measurement: &MeasurementType,
     profile: &String,
     meta_only: bool,
+    input_override: &Option<String>,
 ) {
     let elf = read_elf(program, &ProverId::SP1, profile);
     write_elf_stats(
         program,
         &ProverId::SP1,
         profile,
-        &get_sp1_stats(&elf, program),
+        &get_sp1_stats(&elf, program, input_override),
     );
     if meta_only || is_same_as_baseline(program, &ProverId::SP1, profile) {
         return;
     }
 
-    let (pk, _, stdin) = prove_core_sp1_prepare(&elf, program);
+    let (pk, _, stdin) = prove_core_sp1_prepare(&elf, program, input_override);
     match measurement {
         MeasurementType::Exec => {
             group.bench_function(profile, |b| {
                 b.iter_with_setup(
-                    || exec_sp1_prepare(&elf, program),
+                    || exec_sp1_prepare(&elf, program, input_override),
                     |(stdin, prover)| exec_sp1(&stdin, &prover, &elf),
                 );
             });
@@ -74,13 +88,14 @@ fn add_risc0_exec_and_prove(
     measurement: &MeasurementType,
     profile: &String,
     meta_only: bool,
+    input_override: &Option<String>,
 ) {
     let elf = read_elf(program, &ProverId::Risc0, profile);
     write_elf_stats(
         program,
         &ProverId::Risc0,
         profile,
-        &get_risc0_stats(&elf, program),
+        &get_risc0_stats(&elf, program, input_override),
     );
     if meta_only || is_same_as_baseline(program, &ProverId::Risc0, profile) {
         return;
@@ -90,13 +105,13 @@ fn add_risc0_exec_and_prove(
         MeasurementType::Exec => {
             group.bench_function(profile, |b| {
                 b.iter_with_setup(
-                    || exec_risc0_setup(&elf, program),
+                    || exec_risc0_setup(&elf, program, input_override),
                     |mut executor| exec_risc0(&mut executor),
                 );
             });
         }
         MeasurementType::Prove => {
-            let (prover, ctx, session) = prove_core_risc0_prepare(&elf, program);
+            let (prover, ctx, session) = prove_core_risc0_prepare(&elf, program, input_override);
             group.bench_function(profile, |b| {
                 b.iter(|| prove_core_risc0(&prover, &ctx, &session));
             });

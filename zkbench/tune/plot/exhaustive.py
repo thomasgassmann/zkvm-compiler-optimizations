@@ -5,12 +5,15 @@ import numpy as np
 import seaborn as sns
 from matplotlib.colors import ListedColormap
 
-from zkbench.plot.common import get_title
+from zkbench.config import get_programs_by_group
+from zkbench.plot.common import get_title, show_or_save_plot
 from zkbench.tune.exhaustive import Exhaustive, ExhaustiveResult
 from zkbench.tune.plot.common import read_exhaustive_stats
 
 
-def plot_exhaustive_depth2(stats: str, program: str | None, zkvm: str | None):
+def plot_exhaustive_depth2(
+    stats: str, program: str | None, zkvm: str | None, program_group: str | None = None
+):
     stats: Exhaustive = read_exhaustive_stats(stats)
     passes = stats.config.loop_passes + stats.config.function_passes + stats.config.module_passes
     matrix = []
@@ -34,7 +37,14 @@ def plot_exhaustive_depth2(stats: str, program: str | None, zkvm: str | None):
             else:
                 relevant = list(
                     filter(
-                        lambda x: (x.program == program or program is None)
+                        lambda x: (
+                            x.program == program
+                            or (
+                                program_group is not None
+                                and x.program in get_programs_by_group(program_group)
+                            )
+                        )
+                        or (program is None and program_group is None)
                         and (x.zkvm == zkvm or zkvm is None),
                         res.eval_result.values,
                     )
@@ -62,9 +72,11 @@ def plot_exhaustive_depth2(stats: str, program: str | None, zkvm: str | None):
         vmax=1,
         mask=np.isnan(matrix_normalized),
     )
-    title = get_title(f"Normalized cumulative {stats.metric}", [program, zkvm])
+    title = get_title(
+        f"Normalized cumulative {stats.metric}", [program, zkvm, program_group]
+    )
     plt.title(title)
     plt.xlabel("Pass B")
     plt.ylabel("Pass A")
     plt.tight_layout()
-    plt.show()
+    show_or_save_plot()
