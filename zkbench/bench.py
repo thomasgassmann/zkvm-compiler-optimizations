@@ -1,6 +1,8 @@
 import logging
 import os
 
+from zkbench.config import get_default_profiles_ids
+
 
 def run_bench(
     program: list[str],
@@ -24,6 +26,9 @@ def run_bench(
             args.append(f"--measurement {m}")
     if profile:
         for p in profile:
+            args.append(f"--profile {p}")
+    else:
+        for p in get_default_profiles_ids():
             args.append(f"--profile {p}")
     if profile_time:
         args.append(f"--profile-time {profile_time}")

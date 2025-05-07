@@ -50,6 +50,14 @@ def get_profile_by_name(profile_name: str) -> Profile:
     )
 
 
+def get_default_profiles_ids() -> List[str]:
+    return [
+        profile_name
+        for profile_name in get_profiles_ids()
+        if not CONFIG["profiles"][profile_name].get("no_default", False)
+    ]
+
+
 def get_profiles() -> List[Profile]:
     return [get_profile_by_name(profile_name) for profile_name in get_profiles_ids()]
 
