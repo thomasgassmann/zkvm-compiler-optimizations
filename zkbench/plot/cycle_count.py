@@ -17,10 +17,11 @@ def f(dir, program, zkvm, profile):
     return (compared - baseline) / baseline
 
 
-def plot_cycle_count(dir: str, program: str | None):
+def plot_cycle_count(dir: str, program: str | None, profiles: list[str] | None = None):
     title = get_title("Relative cycle count compared to baseline", [program])
-    profiles = get_profiles_ids()
-    profiles.remove(BASELINE)
+    profiles = get_profiles_ids() if profiles is None else profiles
+    if BASELINE in profiles:
+        profiles.remove(BASELINE)
     values = []
     series = []
     for zkvm in get_zkvms():

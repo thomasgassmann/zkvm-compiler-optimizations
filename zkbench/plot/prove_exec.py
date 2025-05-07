@@ -20,12 +20,11 @@ def _get_values(dir: str, zkvm: str, programs: list[str]):
                 y.append(prove)
             except FileNotFoundError:
                 logging.warning(f"Data for {program}-{zkvm}-{profile} not found")
-    return x, y, None
+    return x, y
 
 
 def plot_prove_exec(dir: str, program: str | None, program_group: str | None):
     programs = get_program_selection(program, program_group)
-    logging.info(f"Programs: {programs}")
     plot_scatter_by_zkvm(
         get_title("Prove vs. exec time", [program, program_group]),
         lambda zkvm: _get_values(dir, zkvm, programs),

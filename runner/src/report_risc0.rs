@@ -16,7 +16,7 @@ impl Risc0Evaluator {
         let image_id = compute_image_id(elf.as_slice()).unwrap();
 
         let mut builder = ExecutorEnv::builder();
-        set_risc0_input(&program, &mut builder);
+        set_risc0_input(&program, &mut builder, &None);
         let env = builder.build().unwrap();
 
         // Compute some statistics.
@@ -27,7 +27,7 @@ impl Risc0Evaluator {
 
         // Setup the prover.
         let mut builder = ExecutorEnv::builder();
-        set_risc0_input(&program, &mut builder);
+        set_risc0_input(&program, &mut builder, &None);
         let env = builder.build().unwrap();
 
         // Generate the session.

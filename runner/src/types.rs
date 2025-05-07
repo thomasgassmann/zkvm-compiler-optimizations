@@ -96,6 +96,7 @@ pub enum ProgramId {
 pub enum TuneMetric {
     CycleCount,
     ProveTime,
+    Gas,
 }
 
 /// An identifier used to select the prover to evaluate.

@@ -13,8 +13,8 @@ use once_cell::sync::Lazy;
 use sp1_core_executor::{IoWriter, Program};
 use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{
-    EnvProver, Executor, ProverClient, SP1Context, SP1Prover, SP1ProvingKey, SP1Stdin,
-    SP1VerifyingKey,
+    EnvProver, ExecutionReport, Executor, ProverClient, SP1Context, SP1Prover, SP1ProvingKey,
+    SP1PublicValues, SP1Stdin, SP1VerifyingKey,
 };
 use sp1_stark::SP1CoreOpts;
 
@@ -29,8 +29,9 @@ static ENV_PROVER_CLIENT: Lazy<Arc<Mutex<EnvProver>>> = Lazy::new(|| {
 pub fn exec_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
+    input_override: &Option<String>,
 ) -> (SP1Stdin, SP1Prover<CpuProverComponents>) {
-    let stdin = get_sp1_stdin(program);
+    let stdin = get_sp1_stdin(program, input_override);
 
     let prover = SP1Prover::<CpuProverComponents>::new();
     let (_, _, _, _) = prover.setup(&elf);
@@ -48,8 +49,8 @@ fn get_cycles(elf: &[u8], stdin: &SP1Stdin) -> u64 {
     runtime.state.global_clk
 }
 
-pub fn get_sp1_stats(elf: &[u8], program: &ProgramId) -> ElfStats {
-    let (stdin, _) = exec_sp1_prepare(elf, program);
+pub fn get_sp1_stats(elf: &[u8], program: &ProgramId, input_override: &Option<String>) -> ElfStats {
+    let (stdin, _) = exec_sp1_prepare(elf, program, input_override);
     ElfStats {
         cycle_count: get_cycles(&elf, &stdin),
         size: elf.len(),
@@ -69,17 +70,22 @@ impl std::io::Write for SP1StdoutSink {
     }
 }
 
-pub fn exec_sp1(stdin: &SP1Stdin, prover: &SP1Prover<CpuProverComponents>, elf: &[u8]) {
+pub fn exec_sp1(
+    stdin: &SP1Stdin,
+    prover: &SP1Prover<CpuProverComponents>,
+    elf: &[u8],
+) -> (SP1PublicValues, ExecutionReport) {
     let mut s = SP1StdoutSink;
     let context = SP1Context::builder().stdout(&mut s).build();
-    prover.execute(&elf, stdin, context).unwrap();
+    prover.execute(&elf, stdin, context).unwrap()
 }
 
 pub fn prove_core_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
+    input_override: &Option<String>,
 ) -> (SP1ProvingKey, SP1VerifyingKey, SP1Stdin) {
-    let stdin = get_sp1_stdin(program);
+    let stdin = get_sp1_stdin(program, input_override);
     let (pk, vk) = ENV_PROVER_CLIENT.lock().unwrap().setup(elf);
     (pk, vk, stdin)
 }

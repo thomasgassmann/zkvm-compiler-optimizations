@@ -20,9 +20,6 @@ def plot_khz(
     def get_khz(program: str, zkvm: str, profile: str):
         prove_time = get_point_estimate_mean_ms(dir, program, zkvm, profile, 'prove')
         cycle_count = get_cycle_count(dir, program, zkvm, profile)
-        print(profile)
-        print(cycle_count)
-        print(prove_time)
         if cycle_count is None:
             return 0
 

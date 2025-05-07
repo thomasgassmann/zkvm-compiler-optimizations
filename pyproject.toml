@@ -8,6 +8,7 @@ dependencies = [
     "click>=8.1.8",
     "dacite>=1.9.2",
     "matplotlib>=3.10.1",
+    "mdutils>=1.6.0",
     "numpy>=2.2.4",
     "opentuner>=0.8.8",
     "scipy>=1.15.2",

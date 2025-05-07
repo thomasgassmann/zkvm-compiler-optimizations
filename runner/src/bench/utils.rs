@@ -1,10 +1,10 @@
-use std::{fs, path::PathBuf};
+use std::{env, fs, path::PathBuf, process::Command};
 
 use crate::{types::MeasurementType, utils::read_elf};
 
 use super::super::types::{ProgramId, ProverId};
 use k256::sha2;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
 pub struct ElfStats {
@@ -49,11 +49,44 @@ pub fn has_previously_run(
     path.exists()
 }
 
-pub fn get_criterion_dir() -> PathBuf {
-    let mut path = PathBuf::from(std::env::current_dir().unwrap());
-    path.push("target/criterion");
-    fs::create_dir_all(&path).unwrap();
-    path
+// taken from https://github.com/bheisler/criterion.rs/blob/master/src/lib.rs
+fn cargo_target_directory() -> Option<PathBuf> {
+    #[derive(Deserialize)]
+    struct Metadata {
+        target_directory: PathBuf,
+    }
+
+    env::var_os("CARGO_TARGET_DIR")
+        .map(PathBuf::from)
+        .or_else(|| {
+            let output = Command::new(env::var_os("CARGO")?)
+                .args(&["metadata", "--format-version", "1"])
+                .output()
+                .ok()?;
+            let metadata: Metadata = serde_json::from_slice(&output.stdout).ok()?;
+            Some(metadata.target_directory)
+        })
+}
+
+// adapted from https://github.com/bheisler/criterion.rs/blob/master/src/lib.rs
+fn get_criterion_dir() -> PathBuf {
+    // Set criterion home to (in descending order of preference):
+    // - $CRITERION_HOME (cargo-criterion sets this, but other users could as well)
+    // - $CARGO_TARGET_DIR/criterion
+    // - the cargo target dir from `cargo metadata`
+    // - ./target/criterion
+    let res = if let Some(value) = env::var_os("CRITERION_HOME") {
+        PathBuf::from(value)
+    } else if let Some(path) = cargo_target_directory() {
+        path.join("criterion")
+    } else {
+        let mut path = PathBuf::from(std::env::current_dir().unwrap());
+        path.push("target/criterion");
+        path
+    };
+
+    fs::create_dir_all(&res).unwrap();
+    res
 }
 
 pub fn get_criterion_meta_dir() -> PathBuf {
@@ -75,7 +108,10 @@ pub fn get_elf_stats_path(program: &ProgramId, zkvm: &ProverId, profile: &String
 pub fn write_elf_stats(program: &ProgramId, zkvm: &ProverId, profile: &String, stats: &ElfStats) {
     let path = get_elf_stats_path(program, zkvm, profile);
     std::fs::create_dir_all(path.parent().unwrap()).unwrap();
-    println!("Writing elf stats to {:?}", path);
+    println!(
+        "Writing elf stats (cycle count: {:?}) to {:?}",
+        stats.cycle_count, path
+    );
     let file = std::fs::File::create(path).unwrap();
     serde_json::to_writer_pretty(file, stats).unwrap();
 }

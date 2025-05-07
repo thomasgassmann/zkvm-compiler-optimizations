@@ -27,6 +27,7 @@ def plot_average_duration(
             dir, program, zkvm, profile, measurement
         ),
     )
+    # TODO: consider all values that criterion recorded
     if not program or not zkvm:
         plot_grouped_boxplot([values], profiles, title, "Duration (ms)", [])
     else:
