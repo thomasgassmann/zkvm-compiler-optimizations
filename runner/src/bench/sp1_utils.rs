@@ -53,6 +53,7 @@ pub fn get_sp1_stats(elf: &[u8], program: &ProgramId, input_override: &Option<St
     let (stdin, _) = exec_sp1_prepare(elf, program, input_override);
     ElfStats {
         cycle_count: get_cycles(&elf, &stdin),
+        paging_cycles: None,
         size: elf.len(),
         hash: get_elf_hash(elf),
     }
