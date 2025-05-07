@@ -1,8 +1,6 @@
 from zkbench.config import (
     get_default_profiles_ids,
     get_measurements,
-    get_profiles_ids,
-    get_programs,
     get_zkvms,
 )
 from zkbench.plot.common import (
