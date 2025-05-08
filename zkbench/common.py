@@ -4,7 +4,12 @@ import logging
 
 import click
 
-from zkbench.config import get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import (
+    get_default_profiles_ids,
+    get_profiles_ids,
+    get_programs,
+    get_zkvms,
+)
 
 
 def coro(f):
@@ -18,7 +23,7 @@ def coro(f):
 def get_run_config(programs: list[str], zkvms: list[str], profiles: list[str]):
     programs = programs if len(programs) > 0 else get_programs()
     zkvms = zkvms if len(zkvms) > 0 else get_zkvms()
-    profiles = profiles if len(profiles) > 0 else get_profiles_ids()
+    profiles = profiles if len(profiles) > 0 else get_default_profiles_ids()
     return programs, zkvms, profiles
 
 

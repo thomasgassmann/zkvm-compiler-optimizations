@@ -24,6 +24,7 @@ from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
 from zkbench.plot.prove_exec import plot_prove_exec
 from zkbench.plot.total_time_by_profile import plot_total_time_by_profile
+from zkbench.plot.paging_by_profile import plot_paging_by_profile
 
 
 @click.command(name="average-improvement")
@@ -171,3 +172,15 @@ def total_time_by_profile_cli(program: str | None, zkvm: str | None, measurement
 def export_report_cli(out: str):
     dir = click.get_current_context().parent.params["dir"]
     export_report(dir, out)
+
+
+@click.command(
+    name="paging-by-profile",
+    help="Plot paging by profile (currently only risc0)",
+)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+def paging_by_profile_cli(zkvm: str, program: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_paging_by_profile(dir, zkvm, program)
