@@ -129,6 +129,8 @@ pub struct Profile {
     pub prepopulate_passes: bool,
     #[serde(default)]
     pub lower_atomic_before: bool,
+    #[serde(default)]
+    pub no_default: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
