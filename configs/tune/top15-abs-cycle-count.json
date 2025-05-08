@@ -22,5 +22,9 @@
         "dse",
         "memcpyopt"
     ],
-    "loop_passes": []
+    "loop_passes": [],
+    "default_prepopulate_passes": false,
+    "allowed_opt_levels": [
+        "0"
+    ]
 }
