@@ -36,6 +36,8 @@ class TuneConfig:
     module_passes: list[str]
     function_passes: list[str]
     loop_passes: list[str]
+    allowed_opt_levels: list[str]
+    default_prepopulate_passes: bool
 
 
 MODULE_PASSES = [

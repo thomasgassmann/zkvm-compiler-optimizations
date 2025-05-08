@@ -2,7 +2,7 @@
     "tune_lto": true,
     "tune_codegen_units": true,
     "tune_opt_level": true,
-    "tune_prepopulate_passes": true,
+    "tune_prepopulate_passes": false,
     "module_passes": [
         "always-inline",
         "inline",
@@ -94,5 +94,10 @@
         "loop-interchange",
         "loop-predication",
         "loop-versioning-licm"
+    ],
+    "default_prepopulate_passes": true,
+    "allowed_opt_levels": [
+        "2",
+        "3"
     ]
 }

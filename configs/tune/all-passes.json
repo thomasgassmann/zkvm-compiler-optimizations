@@ -94,5 +94,14 @@
         "loop-interchange",
         "loop-predication",
         "loop-versioning-licm"
+    ],
+    "default_prepopulate_passes": true,
+    "allowed_opt_levels": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "s",
+        "z"
     ]
 }
