@@ -53,13 +53,17 @@ def add_common_params(manipulator: ConfigurationManipulator, config: TuneConfig)
     manipulator.add_parameter(
         EnumParameter(
             "opt_level",
-            OPT_LEVEL_OPTIONS if config.tune_opt_level else ["0"],
+            config.allowed_opt_levels if config.tune_opt_level else ["0"],
         )
     )
     manipulator.add_parameter(
         EnumParameter(
             "prepopulate_passes",
-            [True, False] if config.tune_prepopulate_passes else [False],
+            (
+                [True, False]
+                if config.tune_prepopulate_passes
+                else [config.default_prepopulate_passes]
+            ),
         )
     )
 
