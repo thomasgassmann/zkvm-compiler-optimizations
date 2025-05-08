@@ -101,7 +101,7 @@ class DepthMode(Mode):
         rust_knobs = ""
         c_knobs = ""
         for knob, min_int, max_int in ALL_KNOBS:
-            if cfg["enable_" + knob] or True:
+            if cfg["enable_" + knob]:
                 value = cfg[knob]
                 rust_knobs += f" -Cllvm-args=-{knob}={value}"
                 c_knobs += f" -mllvm -{knob}={value}"
