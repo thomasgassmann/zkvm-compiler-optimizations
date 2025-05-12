@@ -225,7 +225,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&42u32);
         }
         ProgramId::Fibonacci => {
-            stdin.write_generic(&1000u32);
+            stdin.write_generic(&30000u32);
         }
         ProgramId::Sha2Bench => {
             stdin.write_generic(&vec![5u8; 64]);
