@@ -1,15 +1,14 @@
 import json
 import os
-import uuid
 import click
 
 from zkbench.config import get_profiles_ids
 from zkbench.plot.common import get_program_selection
-from zkbench.tune.common import BIN_OUT_EXHAUSTIVE, BIN_OUT_GENETIC, TuneConfig
+from zkbench.tune.common import TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
 from zkbench.tune.genetic import run_tune_genetic
 
-TUNE_METRICS = ["cycle-count", "prove-time", "gas"]
+TUNE_METRICS = ["cycle-count", "prove-time", "gas", "exec-time"]
 
 
 @click.command(name="exhaustive")

@@ -75,6 +75,8 @@ pub struct TuneArgs {
     filename: String,
     #[arg(long)]
     metric: TuneMetric,
+    #[arg(long)]
+    samples: Option<u32>,
 }
 
 struct Cpuprofiler;
