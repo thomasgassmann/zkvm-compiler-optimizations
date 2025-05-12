@@ -9,6 +9,7 @@ from zkbench.common import run_command
 from zkbench.config import Profile
 from zkbench.tune.common import (
     METRIC_TIMEOUT,
+    SAMPLED_METRICS,
     EvalResult,
     MetricValue,
     ProfileConfig,
@@ -19,6 +20,7 @@ from dacite import from_dict
 
 
 CLEAN_CYCLE = 10
+N_SAMPLES = 3
 
 
 class TuneRunner:
@@ -224,6 +226,9 @@ class TuneRunner:
         filename = os.path.basename(elf)
         stats_file = os.path.join(self._out, f"{filename}.json")
         logging.info(f"Running {metric} for {program} on {zkvm}")
+        timeout = METRIC_TIMEOUT[metric] * (
+            N_SAMPLES if metric in SAMPLED_METRICS else 1
+        )
         try:
             res = await run_command(
                 f"""
@@ -233,6 +238,7 @@ class TuneRunner:
                     --elf {elf}
                     --filename {stats_file}
                     --metric {metric}
+                    --samples {N_SAMPLES}
             """.strip().replace(
                     "\n", " "
                 ),
@@ -241,7 +247,7 @@ class TuneRunner:
                     **os.environ,
                 },
                 filename,
-                timeout=METRIC_TIMEOUT[metric],
+                timeout=timeout,
             )
 
             if res != 0:

@@ -93,6 +93,7 @@ pub enum ProgramId {
 pub enum TuneMetric {
     CycleCount,
     ProveTime,
+    ExecTime,
     Gas,
 }
 
