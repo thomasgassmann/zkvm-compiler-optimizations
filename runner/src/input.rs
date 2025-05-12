@@ -228,10 +228,10 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&30000u32);
         }
         ProgramId::Sha2Bench => {
-            stdin.write_generic(&vec![5u8; 64]);
+            stdin.write_generic(&vec![5u8; 8192]);
         }
         ProgramId::Sha3Bench => {
-            stdin.write_generic(&vec![5u8; 64]);
+            stdin.write_generic(&vec![5u8; 8192]);
         }
         ProgramId::Sha2Chain => {
             stdin.write_generic(&vec![5u8; 32]);
