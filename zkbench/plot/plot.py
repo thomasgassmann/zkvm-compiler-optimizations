@@ -11,6 +11,7 @@ from zkbench.config import (
 from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.average_khz import plot_khz
+from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
@@ -184,3 +185,15 @@ def paging_by_profile_cli(zkvm: str, program: str | None):
     dir = click.get_current_context().parent.params["dir"]
 
     plot_paging_by_profile(dir, zkvm, program)
+
+
+@click.command(
+    name="bin-size-duration",
+    help="Plot duration as function of binary size",
+)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+def binsize_duration_cli(measurement: str, program: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_binsize_duration(dir, program, measurement)
