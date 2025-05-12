@@ -207,7 +207,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&arr);
         }
         ProgramId::Factorial => {
-            stdin.write_generic(&10u32);
+            stdin.write_generic(&1000u32);
         }
         ProgramId::Keccak256 => {
             stdin.write_generic(&vec![0u8; 64]);
