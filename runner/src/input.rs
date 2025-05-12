@@ -198,6 +198,14 @@ fn write_program_inputs<W: ProgramInputWriter>(
     input_override: &Option<String>,
 ) {
     match program {
+        ProgramId::LoopSum => {
+            let mut arr = Vec::new();
+            for i in 0..1500 {
+                arr.push(i);
+            }
+
+            stdin.write_generic(&arr);
+        }
         ProgramId::Factorial => {
             stdin.write_generic(&10u32);
         }
