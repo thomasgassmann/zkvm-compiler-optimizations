@@ -3,6 +3,7 @@ import dataclasses
 import json
 import logging
 import os
+import uuid
 from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter, IntegerParameter
 from opentuner import MeasurementInterface
@@ -15,7 +16,6 @@ from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
     ALL_KNOBS,
     LTO_OPTIONS,
-    OPT_LEVEL_OPTIONS,
     BIN_OUT_GENETIC,
     MetricValue,
     ProfileConfig,
@@ -309,6 +309,7 @@ def run_tune_genetic(
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
+    uuid_str = str(uuid.uuid4())[:10]
     create_tuner(programs, zkvms, metric, out, config, mode, baselines or []).main(
-        arg_parser.parse_args([])
+        arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"])
     )
