@@ -88,8 +88,9 @@ async def build_program(
     target: str,
     verbose: bool = False,
     timeout=None,
+    target_dir=None,
 ):
-    source = get_source_binary_path(program, zkvm)
+    source = get_source_binary_path(program, zkvm, target_dir)
     profile_name = profile.profile_name
     name = f"{program}-{zkvm}-{profile_name}"
     logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
@@ -101,6 +102,8 @@ async def build_program(
         "ZK_CFLAGS": profile.cflags,
         "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
     }
+    if target_dir is not None:
+        env["CARGO_TARGET_DIR"] = target_dir
 
     verbosity = "--verbose" if verbose else ""
 
