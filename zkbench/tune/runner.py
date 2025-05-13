@@ -43,6 +43,18 @@ class TuneRunner:
         )
         self._build_timeout = build_timeout
 
+    def get_build_path(
+        self, profile_config: ProfileConfig | Profile, zkvm: str, program: str
+    ):
+        return os.path.join(
+            os.path.abspath(self._cache_dir), "build", f"{program}-{zkvm}"
+        )
+
+    def get_result_path(self, profile_config: ProfileConfig | Profile):
+        return os.path.join(
+            os.path.abspath(self._cache_dir), profile_config.get_hash()[:10]
+        )
+
     def filename(
         self,
         profile_config: ProfileConfig | Profile,
@@ -50,10 +62,10 @@ class TuneRunner:
         zkvm: str,
         metric: str,
     ):
-        h = profile_config.get_hash()[:10]
+        h = self.get_result_path(profile_config)
         return os.path.join(
-            self._cache_dir,
-            f"{h}/{profile_config.name}-{program}-{zkvm}-{metric}.json",
+            h,
+            f"{profile_config.name}-{program}-{zkvm}-{metric}.json",
         )
 
     def get_out_path(
@@ -95,6 +107,7 @@ class TuneRunner:
             out,
             verbose=False,
             timeout=self._build_timeout,
+            target_dir=self.get_build_path(profile_config, zkvm, program),
         )
         self._clean_cycles[program] += 1
         logging.info(f"Built {program} for {zkvm}")
