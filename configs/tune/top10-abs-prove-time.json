@@ -19,7 +19,13 @@
     ],
     "loop_passes": [],
     "default_prepopulate_passes": false,
+    "default_single_codegen_unit": false,
     "allowed_opt_levels": [
         "0"
+    ],
+    "allowed_lto": [
+        "off",
+        "thin",
+        "fat"
     ]
 }

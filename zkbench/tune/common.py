@@ -39,6 +39,8 @@ class TuneConfig:
     loop_passes: list[str]
     allowed_opt_levels: list[str]
     default_prepopulate_passes: bool
+    default_single_codegen_unit: bool
+    allowed_lto: list[str]
 
 
 MODULE_PASSES = [
