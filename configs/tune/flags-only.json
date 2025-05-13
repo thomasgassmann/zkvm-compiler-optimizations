@@ -1,0 +1,17 @@
+{
+    "tune_lto": true,
+    "tune_codegen_units": false,
+    "tune_opt_level": true,
+    "tune_prepopulate_passes": false,
+    "module_passes": [],
+    "function_passes": [],
+    "loop_passes": [],
+    "default_prepopulate_passes": true,
+    "default_single_codegen_unit": true, 
+    "allowed_opt_levels": [
+        "3"
+    ],
+    "allowed_lto": [
+        "fat"
+    ]
+}

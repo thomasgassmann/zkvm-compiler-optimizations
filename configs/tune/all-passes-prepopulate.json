@@ -96,6 +96,7 @@
         "loop-versioning-licm"
     ],
     "default_prepopulate_passes": true,
+    "default_single_codegen_unit": false,
     "allowed_opt_levels": [
         "0",
         "1",
@@ -103,5 +104,10 @@
         "3",
         "s",
         "z"
+    ],
+    "allowed_lto": [
+        "off",
+        "thin",
+        "fat"
     ]
 }
