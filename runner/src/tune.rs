@@ -50,6 +50,12 @@ pub fn run_tune(args: TuneArgs) {
         (ProverId::SP1, TuneMetric::CycleCount) => {
             get_sp1_stats(&elf, &args.program, &None).cycle_count as u128
         }
+        (ProverId::Risc0, TuneMetric::PagingCycleCount) => {
+            get_risc0_stats(&elf, &args.program, &None).paging_cycles.unwrap() as u128
+        }
+        (ProverId::SP1, TuneMetric::PagingCycleCount) => {
+            panic!("Gas metric is not supported for Risc0");
+        }
         (ProverId::Risc0, TuneMetric::ProveTime) => tune_time_operation(
             || prove_core_risc0_prepare(&elf, &args.program, &None),
             |(prover, context, session)| {
