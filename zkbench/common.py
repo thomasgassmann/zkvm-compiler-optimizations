@@ -28,7 +28,7 @@ def get_run_config(programs: list[str], zkvms: list[str], profiles: list[str]):
 
 
 async def run_command(cmd, cwd, env, task_name, timeout=None):
-    logging.debug(f"[{task_name}] Running command: {cmd}")
+    logging.debug(f"[{task_name}] Running command: {cmd}, cwd: {cwd}")
     process = await asyncio.create_subprocess_shell(
         cmd,
         stdout=asyncio.subprocess.PIPE,

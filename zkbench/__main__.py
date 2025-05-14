@@ -75,8 +75,9 @@ async def build_cli(
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
 )
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
-def clean_cli(program: list[str], zkvm: list[str]):
-    run_clean(program, zkvm)
+@coro
+async def clean_cli(program: list[str], zkvm: list[str]):
+    await run_clean(program, zkvm)
 
 
 @click.command(name="bench")
