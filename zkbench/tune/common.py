@@ -37,10 +37,16 @@ class TuneConfig:
     module_passes: list[str]
     function_passes: list[str]
     loop_passes: list[str]
-    allowed_opt_levels: list[str]
-    default_prepopulate_passes: bool
-    default_single_codegen_unit: bool
-    allowed_lto: list[str]
+    allowed_opt_levels: list[str] = None
+    default_prepopulate_passes: bool = False
+    default_single_codegen_unit: bool = False
+    allowed_lto: list[str] = None
+
+    def __post_init__(self):
+        if self.allowed_opt_levels is None:
+            self.allowed_opt_levels = OPT_LEVEL_OPTIONS
+        if self.allowed_lto is None:
+            self.allowed_lto = LTO_OPTIONS
 
 
 MODULE_PASSES = [
