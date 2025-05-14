@@ -19,7 +19,7 @@ from zkbench.tune.common import (
 from dacite import from_dict
 
 
-CLEAN_CYCLE = 10
+CLEAN_CYCLE = 15
 N_SAMPLES = 3
 
 
@@ -43,9 +43,7 @@ class TuneRunner:
         )
         self._build_timeout = build_timeout
 
-    def get_build_path(
-        self, profile_config: ProfileConfig | Profile, zkvm: str, program: str
-    ):
+    def get_build_path(self, zkvm: str, program: str):
         return os.path.join(
             os.path.abspath(self._cache_dir), "build", f"{program}-{zkvm}"
         )
@@ -98,7 +96,9 @@ class TuneRunner:
         if self._clean_cycles[program] >= CLEAN_CYCLE and not self._no_clean:
             self._clean_cycles[program] = 0
             logging.info(f"Cleaning {program} for {zkvm}")
-            run_clean([program], [zkvm])
+            await run_clean(
+                [program], [zkvm], get_path=lambda p, z: self.get_build_path(z, p)
+            )
         await build_program(
             program,
             zkvm,
@@ -107,7 +107,7 @@ class TuneRunner:
             out,
             verbose=False,
             timeout=self._build_timeout,
-            target_dir=self.get_build_path(profile_config, zkvm, program),
+            target_dir=self.get_build_path(zkvm, program),
         )
         self._clean_cycles[program] += 1
         logging.info(f"Built {program} for {zkvm}")
@@ -119,8 +119,10 @@ class TuneRunner:
             out = self.get_out_path(profile_config, zkvm, program)
             await self._build(program, zkvm, profile_config, out)
 
-    def clean(self, programs: list[str], zkvms: list[str]):
-        run_clean(programs, zkvms)
+    async def clean(self, programs: list[str], zkvms: list[str]):
+        await run_clean(
+            programs, zkvms, get_path=lambda p, z: self.get_build_path(z, p)
+        )
         for program in programs:
             self._clean_cycles[program] = 0
 
@@ -152,7 +154,7 @@ class TuneRunner:
                 return False
 
             try:
-                self.clean(programs, zkvms)
+                await self.clean(programs, zkvms)
                 await self.try_build(programs, zkvms, profile_config)
                 return True
             except Exception as e:
