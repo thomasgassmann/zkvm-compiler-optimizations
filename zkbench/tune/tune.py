@@ -8,7 +8,7 @@ from zkbench.tune.common import TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
 from zkbench.tune.genetic import run_tune_genetic
 
-TUNE_METRICS = ["cycle-count", "prove-time", "gas", "exec-time"]
+TUNE_METRICS = ["cycle-count", "prove-time", "gas", "exec-time", "paging-cycle-count"]
 
 
 @click.command(name="exhaustive")
