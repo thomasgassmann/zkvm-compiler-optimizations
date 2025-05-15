@@ -15,6 +15,7 @@ from zkbench.config import (
 
 async def run_build(
     programs: list[str],
+    program_groups: list[str],
     zkvms: list[str],
     profile_names: list[str],
     force: bool,
@@ -22,7 +23,7 @@ async def run_build(
     llvm: bool,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
-        programs, zkvms, profile_names
+        programs, zkvms, profile_names, program_groups
     )
 
     logging.info(f"Programs to build: {', '.join(programs_to_build)}")
