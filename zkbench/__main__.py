@@ -93,6 +93,12 @@ async def clean_cli(program: list[str], zkvm: list[str]):
 @click.option(
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
 )
+@click.option(
+    "--program-group",
+    type=click.Choice(get_program_groups()),
+    required=False,
+    multiple=True,
+)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
 @click.option(
     "--measurement",
@@ -109,6 +115,7 @@ async def clean_cli(program: list[str], zkvm: list[str]):
 @click.option("--input-override", required=False, type=str)
 def bench_cli(
     program: list[str],
+    program_group: list[str],
     zkvm: list[str],
     measurement: list[str],
     profile: list[str],
@@ -119,6 +126,7 @@ def bench_cli(
 ):
     run_bench(
         program,
+        program_group,
         zkvm,
         measurement,
         profile,

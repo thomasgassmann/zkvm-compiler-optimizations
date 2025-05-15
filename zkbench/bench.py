@@ -1,11 +1,12 @@
 import logging
 import os
 
-from zkbench.config import get_default_profiles_ids
+from zkbench.config import get_default_profiles_ids, get_programs_by_group
 
 
 def run_bench(
     program: list[str],
+    program_group: list[str],
     zkvm: list[str],
     measurement: list[str],
     profile: list[str],
@@ -15,8 +16,13 @@ def run_bench(
     input_override: str = None,
 ):
     args = []
-    if program:
-        for p in program:
+    if program or program_group:
+        programs = [] if not program else program
+        if program_group:
+            for group in program_group:
+                programs.extend(get_programs_by_group(group))
+
+        for p in set(programs):
             args.append(f"--program {p}")
     if zkvm:
         for z in zkvm:
