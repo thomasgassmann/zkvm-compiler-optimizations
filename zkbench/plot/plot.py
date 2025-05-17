@@ -19,6 +19,7 @@ from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_duration,
     plot_cycle_count_stats,
 )
+from zkbench.plot.duration_by_program import plot_duration_by_program
 from zkbench.plot.export import export_report
 from zkbench.plot.improvement_by_program import plot_improvement_by_program
 from zkbench.plot.no_effect import plot_no_effect
@@ -218,3 +219,18 @@ def improvement_by_program_cli(profile: str, baseline_profile: str, speedup: boo
     dir = click.get_current_context().parent.params["dir"]
 
     plot_improvement_by_program(dir, profile, baseline_profile, speedup)
+
+
+@click.command(
+    name="duration-by-program",
+    help="Show duration for some profiles by program",
+)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+def duration_by_program_cli(profile: str, baseline_profile: str, measurement: str):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_duration_by_program(dir, profile, baseline_profile, measurement)
