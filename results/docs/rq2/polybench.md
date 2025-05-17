@@ -1,6 +1,6 @@
 # Polybench
 
-Run is documented at [here](./report/all-polybench-cycle-count/README.md).
+Run is documented [here](./report/all-polybench-cycle-count/README.md).
 
 ## Improvement by program
 
