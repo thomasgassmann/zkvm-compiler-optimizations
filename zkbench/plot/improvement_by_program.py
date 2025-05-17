@@ -4,7 +4,7 @@ from zkbench.plot.common import get_point_estimate_mean_ms, get_title, plot_grou
 
 
 def plot_improvement_by_program(dir: str, profile: str, baseline_profile: str, speedup: bool):
-    
+
     def f(dir, program, zkvm, measurement):
         baseline = get_point_estimate_mean_ms(dir, program, zkvm, baseline_profile, measurement)
         compared = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
@@ -42,7 +42,6 @@ def plot_improvement_by_program(dir: str, profile: str, baseline_profile: str, s
         relative_improvements_prove.append(current_improvements_prove)
         relative_improvements_exec.append(current_improvements_exec)
 
-
     y_axis = "speedup" if speedup else "% faster"
     plot_grouped_boxplot(
         [relative_improvements_prove, relative_improvements_exec],
@@ -51,4 +50,3 @@ def plot_improvement_by_program(dir: str, profile: str, baseline_profile: str, s
         y_axis,
         ["prove", "exec"],
     )
-
