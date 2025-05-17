@@ -75,7 +75,7 @@
 - Best profile: Profile(profile_name='genetic', rustflags='-C opt-level=3 -C lto=thin -C embed-bitcode -C codegen-units=1 -Cllvm-args=-inline-threshold=19539 -Cllvm-args=-jump-threading-implication-search-threshold=4 -Cllvm-args=-jump-threading-threshold=1 -Cllvm-args=-licm-versioning-max-depth-threshold=3 -Cllvm-args=-loop-distribute-scev-check-threshold=76 -Cllvm-args=-loop-load-elimination-scev-check-threshold=23 -Cllvm-args=-max-dependences=130 -Cllvm-args=-max-num-inline-blocks=7 -Cllvm-args=-max-speculation-depth=15 -Cllvm-args=-memdep-block-scan-limit=263', cflags='-O3 -mllvm -inline-threshold=19539 -mllvm -jump-threading-implication-search-threshold=4 -mllvm -jump-threading-threshold=1 -mllvm -licm-versioning-max-depth-threshold=3 -mllvm -loop-distribute-scev-check-threshold=76 -mllvm -loop-load-elimination-scev-check-threshold=23 -mllvm -max-dependences=130 -mllvm -max-num-inline-blocks=7 -mllvm -max-speculation-depth=15 -mllvm -memdep-block-scan-limit=263', passes=['module(strip-gc-relocates),function(sroa,separate-const-offset-from-gep,simplifycfg,loop-fusion,callsite-splitting,loop-fusion),module(add-discriminators,inline),function(loop(loop-unroll-and-jam),separate-const-offset-from-gep,simplifycfg,mem2reg,loop(loop-rotate),indvars)'], prepopulate_passes=True, lower_atomic_before=False)
 - Metric: 1059829438
 - Mode: depth-15
-- Tune config: Profile(profile_name='genetic', rustflags='-C opt-level=3 -C lto=thin -C embed-bitcode -C codegen-units=1 -Cllvm-args=-inline-threshold=19539 -Cllvm-args=-jump-threading-implication-search-threshold=4 -Cllvm-args=-jump-threading-threshold=1 -Cllvm-args=-licm-versioning-max-depth-threshold=3 -Cllvm-args=-loop-distribute-scev-check-threshold=76 -Cllvm-args=-loop-load-elimination-scev-check-threshold=23 -Cllvm-args=-max-dependences=130 -Cllvm-args=-max-num-inline-blocks=7 -Cllvm-args=-max-speculation-depth=15 -Cllvm-args=-memdep-block-scan-limit=263', cflags='-O3 -mllvm -inline-threshold=19539 -mllvm -jump-threading-implication-search-threshold=4 -mllvm -jump-threading-threshold=1 -mllvm -licm-versioning-max-depth-threshold=3 -mllvm -loop-distribute-scev-check-threshold=76 -mllvm -loop-load-elimination-scev-check-threshold=23 -mllvm -max-dependences=130 -mllvm -max-num-inline-blocks=7 -mllvm -max-speculation-depth=15 -mllvm -memdep-block-scan-limit=263', passes=['module(strip-gc-relocates),function(sroa,separate-const-offset-from-gep,simplifycfg,loop-fusion,callsite-splitting,loop-fusion),module(add-discriminators,inline),function(loop(loop-unroll-and-jam),separate-const-offset-from-gep,simplifycfg,mem2reg,loop(loop-rotate),indvars)'], prepopulate_passes=True, lower_atomic_before=False)
+- Tune config: TuneConfig(tune_lto=True, tune_codegen_units=True, tune_opt_level=True, tune_prepopulate_passes=False, module_passes=['always-inline', 'inline', 'partial-inliner', 'attributor', 'add-discriminators', 'globalsplit', 'globaldce', 'globalopt', 'wholeprogramdevirt', 'lower-global-dtors', 'strip', 'strip-dead-debug-info', 'strip-dead-prototypes', 'bounds-checking', 'loop-extract', 'mergefunc', 'extract-blocks', 'constmerge', 'deadargelim', 'function-attrs', 'strip-gc-relocates', 'hotcoldsplit', 'argpromotion', 'ipsccp', 'synthetic-counts-propagation', 'rel-lookup-table-converter', 'aggressive-instcombine'], function_passes=['loop-mssa(licm)', 'instcombine', 'bdce', 'correlated-propagation', 'loop-sink', 'loop-data-prefetch', 'loop-fusion', 'mergeicmps', 'mldst-motion', 'newgvn', 'partially-inline-libcalls', 'sroa', 'sink', 'speculative-execution', 'slsr', 'sccp', 'gvn', 'tailcallelim', 'adce', 'dse', 'indvars', 'jump-threading', 'lcssa', 'loop-unroll', 'memcpyopt', 'loop-simplify', 'simplifycfg', 'reassociate', 'mem2reg', 'reg2mem', 'simple-loop-unswitch', 'mergereturn', 'break-crit-edges', 'dce', 'lower-invoke', 'lower-switch', 'callsite-splitting', 'consthoist', 'div-rem-pairs', 'early-cse', 'float2int', 'gvn-hoist', 'gvn-sink', 'guard-widening', 'irce', 'instsimplify', 'libcalls-shrinkwrap', 'nary-reassociate', 'separate-const-offset-from-gep'], loop_passes=['loop-idiom', 'loop-reduce', 'loop-rotate', 'loop-unroll-and-jam', 'loop-unroll-full', 'loop-deletion', 'loop-instsimplify', 'loop-interchange', 'loop-predication', 'loop-versioning-licm'], allowed_opt_levels=['2', '3'], default_prepopulate_passes=True, default_single_codegen_unit=True, allowed_lto=['off', 'thin', 'fat'])
 
 ## Overview
   
@@ -258,21 +258,21 @@
 ![genetic-plot-spec-631](./genetic-plot-spec-631.png)
 ## Overview by program group
 
-### Group loop-intensive
+### Group crypto
   
-![genetic-plot-loop-intensive](./genetic-plot-loop-intensive.png)
+![genetic-plot-crypto](./genetic-plot-crypto.png)
 ### Group recursive
   
 ![genetic-plot-recursive](./genetic-plot-recursive.png)
 ### Group rust
   
 ![genetic-plot-rust](./genetic-plot-rust.png)
-### Group crypto
-  
-![genetic-plot-crypto](./genetic-plot-crypto.png)
 ### Group memory-intensive
   
 ![genetic-plot-memory-intensive](./genetic-plot-memory-intensive.png)
+### Group loop-intensive
+  
+![genetic-plot-loop-intensive](./genetic-plot-loop-intensive.png)
 ### Group c
   
 ![genetic-plot-c](./genetic-plot-c.png)
