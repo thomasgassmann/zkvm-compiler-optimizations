@@ -10,12 +10,16 @@ from zkbench.plot.common import (
 
 
 def plot_average_duration(
-    dir: str, zkvm: str | None, measurement: str, program: str | None
+    dir: str,
+    zkvm: str | None,
+    measurement: str,
+    program: str | None,
+    profiles: list[str] | None = None,
 ):
     title = get_title(
         "Duration by profile, sorted by median", [zkvm, measurement, program]
     )
-    profiles = get_profiles_ids()
+    profiles = get_profiles_ids() if profiles is None else profiles
     values = get_values_by_profile(
         dir,
         zkvm,

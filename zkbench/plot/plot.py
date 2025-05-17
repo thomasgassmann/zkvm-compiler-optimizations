@@ -20,6 +20,7 @@ from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_stats,
 )
 from zkbench.plot.export import export_report
+from zkbench.plot.improvement_by_program import plot_improvement_by_program
 from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
@@ -53,9 +54,14 @@ def average_improvement_cli(
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
-def average_duration_cli(zkvm: str | None, measurement: str, program: str | None):
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
+)
+def average_duration_cli(
+    zkvm: str | None, measurement: str, program: str | None, profile: list[str] | None
+):
     dir = click.get_current_context().parent.params["dir"]
-    plot_average_duration(dir, zkvm, measurement, program)
+    plot_average_duration(dir, zkvm, measurement, program, profile)
 
 
 @click.command(name="cycle-count")
@@ -197,3 +203,18 @@ def binsize_duration_cli(measurement: str, program: str | None):
     dir = click.get_current_context().parent.params["dir"]
 
     plot_binsize_duration(dir, program, measurement)
+
+
+@click.command(
+    name="improvement-by-program",
+    help="Show (average) improvement for some profile compared to some other baseline profile by program",
+)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+def improvement_by_program_cli(profile: str, baseline_profile: str, speedup: bool):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_by_program(dir, profile, baseline_profile, speedup)
