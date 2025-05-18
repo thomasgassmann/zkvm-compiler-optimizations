@@ -231,10 +231,13 @@ def improvement_by_program_cli(profile: str, baseline_profile: str, speedup: boo
     "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
 )
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
-def duration_by_program_cli(profile: str, baseline_profile: str, measurement: str):
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def duration_by_program_cli(
+    profile: str, baseline_profile: str, measurement: str, zkvm: str | None
+):
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_duration_by_program(dir, profile, baseline_profile, measurement)
+    plot_duration_by_program(dir, profile, baseline_profile, measurement, zkvm)
 
 
 @click.command(

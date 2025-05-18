@@ -45,7 +45,6 @@ def plot_average_improvement(
     y_axis = "speedup" if speedup else "% faster"
     if global_average or len(relative_improvements_exec[0]) == 1:
         # if we only have one value, no need to plot boxplot
-        # TODO: in this case, consider all values that criterion recorded
         if not global_average:
             prove_values = np.squeeze(relative_improvements_prove, axis=1)
             exec_values = np.squeeze(relative_improvements_exec, axis=1)
