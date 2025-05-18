@@ -14,6 +14,7 @@ from zkbench.plot.plot import (
     average_improvement_cli,
     binsize_duration_cli,
     cycle_count_abs_cli,
+    cycle_count_by_program_cli,
     cycle_count_cli,
     cycle_count_stats_cli,
     cycle_count_duration_cli,
@@ -235,6 +236,7 @@ plot_cli.add_command(paging_by_profile_cli)
 plot_cli.add_command(binsize_duration_cli)
 plot_cli.add_command(improvement_by_program_cli)
 plot_cli.add_command(duration_by_program_cli)
+plot_cli.add_command(cycle_count_by_program_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)

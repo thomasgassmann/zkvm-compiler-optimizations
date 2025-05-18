@@ -21,3 +21,7 @@ Run is documented [here](./report/all-polybench-cycle-count/README.md).
 ### exec
 
 ![exec-duration](./imgs/polybench-exec.png)
+
+## Cycle counts
+
+![cycle-counts](./imgs/polybench-cycle-count.png)
