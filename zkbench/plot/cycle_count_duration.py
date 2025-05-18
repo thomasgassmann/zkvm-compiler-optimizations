@@ -1,7 +1,11 @@
 import logging
 
 from matplotlib import pyplot as plt
-from zkbench.config import get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import (
+    get_default_profiles_ids,
+    get_programs,
+    get_zkvms,
+)
 from zkbench.plot.common import (
     BASELINE,
     get_cycle_count,
@@ -55,7 +59,7 @@ def _get_values(
 def plot_cycle_count_stats(
     dir: str, measurement: str, relative: bool
 ):
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     if relative:
         profiles.remove(BASELINE)
 
@@ -86,7 +90,7 @@ def plot_cycle_count_stats(
 def plot_cycle_count_duration(
     dir: str, measurement: str, program: str | None, relative: bool
 ):
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     if relative:
         profiles.remove(BASELINE)
     programs = get_programs() if program is None else [program]

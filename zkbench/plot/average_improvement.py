@@ -1,5 +1,5 @@
 import numpy as np
-from zkbench.config import get_profiles_ids
+from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
     BASELINE,
     get_point_estimate_mean_ms,
@@ -30,7 +30,7 @@ def plot_average_improvement(
         [zkvm, program, program_group],
     )
 
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     profiles.remove(BASELINE)
     relative_improvements_prove = get_values_by_profile(
         dir, zkvm, "prove", program, program_group, profiles, f

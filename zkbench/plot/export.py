@@ -2,8 +2,8 @@ import logging
 import os
 
 from zkbench.config import (
+    get_default_profiles_ids,
     get_measurements,
-    get_profiles_ids,
     get_program_by_name,
     get_program_groups,
     get_programs,
@@ -374,7 +374,7 @@ def export_profile_overview(dir: str, out: str):
     md_file.new_header(level=2, title="All profiles")
     profile_links = [
         md_file.new_inline_link(f"./profiles/{profile_id}.md", profile_id)
-        for profile_id in get_profiles_ids()
+        for profile_id in get_default_profiles_ids()
     ]
     md_file.new_list(profile_links)
 
@@ -431,7 +431,7 @@ def export_report(dir: str, out: str):
         except Exception as e:
             logging.error(f"Group export failed for {group_name}: {e}")
 
-    for profile in get_profiles_ids():
+    for profile in get_default_profiles_ids():
         try:
             export_profile(dir, out, profile)
         except Exception as e:

@@ -6,7 +6,6 @@ import click
 
 from zkbench.config import (
     get_default_profiles_ids,
-    get_profiles_ids,
     get_programs,
     get_programs_by_group,
     get_zkvms,
