@@ -15,6 +15,7 @@ from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
+from zkbench.plot.cycle_count_by_program import plot_cycle_count_by_program
 from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_duration,
     plot_cycle_count_stats,
@@ -234,3 +235,17 @@ def duration_by_program_cli(profile: str, baseline_profile: str, measurement: st
     dir = click.get_current_context().parent.params["dir"]
 
     plot_duration_by_program(dir, profile, baseline_profile, measurement)
+
+
+@click.command(
+    name="cycle-count-by-program",
+    help="Show cycle count for some profiles by program",
+)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+def cycle_count_by_program_cli(profile: str, baseline_profile: str):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_cycle_count_by_program(dir, profile, baseline_profile)
