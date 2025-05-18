@@ -1,16 +1,22 @@
 import logging
 from zkbench.config import get_programs, get_zkvms
 from zkbench.plot.common import (
-    get_point_estimate_mean_ms,
+    get_sample_times_ms,
     get_title,
     plot_grouped_boxplot,
 )
 
 
-def plot_duration_by_program(dir: str, profile: str, baseline_profile: str, measurement: str):
+def plot_duration_by_program(
+    dir: str,
+    profile: str,
+    baseline_profile: str,
+    measurement: str,
+    zkvm: str | None = None,
+):
     title = get_title(
         f"Duration for {profile} compared to {baseline_profile}",
-        [],
+        [measurement, zkvm],
     )
 
     durations_profile = []
@@ -20,18 +26,18 @@ def plot_duration_by_program(dir: str, profile: str, baseline_profile: str, meas
         err = False
         current_profile = []
         current_baseline = []
-        for zkvm in get_zkvms():
+        for current_zkvm in get_zkvms() if zkvm is None else [zkvm]:
             try:
-                p = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
-                p_baseline = get_point_estimate_mean_ms(
-                    dir, program, zkvm, baseline_profile, measurement
+                p = get_sample_times_ms(
+                    dir, program, current_zkvm, profile, measurement
                 )
-                current_profile.append(p)
-                current_baseline.append(p_baseline)
+                p_baseline = get_sample_times_ms(
+                    dir, program, current_zkvm, baseline_profile, measurement
+                )
+                current_profile.extend(p)
+                current_baseline.extend(p_baseline)
             except FileNotFoundError:
-                logging.warning(
-                    f"File not found for {program} {zkvm} {profile} {baseline_profile}. Skipping."
-                )
+                logging.warning(f"Skipping {program}")
                 err = True
                 break
         if err:
