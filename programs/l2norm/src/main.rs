@@ -19,19 +19,15 @@ pub const JEND: usize = NY - 1;
 pub const IST: usize = 1;
 pub const IEND: usize = NX - 1;
 
-fn main() {
-    let mut v = [[[[0.0; 5]; ISIZ1 + 1]; ISIZ2 + 1]; ISIZ3 + 1];
-    for k in 0..ISIZ3 + 1 {
-        for j in 0..ISIZ2 + 1 {
-            for i in 0..ISIZ1 + 1 {
-                for m in 0..5 {
-                    v[k][j][i][m] = (k + j + i + m) as f64;
-                }
-            }
-        }
+fn l2norm(v: &mut [[[[f64; 5]; ISIZ1 + 1]; ISIZ2 + 1]], sum: &mut [f64]) {
+    /*
+    	* ---------------------------------------------------------------------
+    	* local variables
+    	* ---------------------------------------------------------------------
+    	*/
+    for m in 0..5 {
+        sum[m] = 0.0;
     }
-
-    let mut sum = [0.0; 5];
     for k in 1..NZ0 - 1 {
         for j in JST..JEND {
             for i in IST..IEND {
@@ -44,6 +40,24 @@ fn main() {
     sum.iter_mut().for_each(|sum| {
         *sum = f64::sqrt(*sum / ((NX0 - 2) * (NY0 - 2) * (NZ0 - 2)) as f64);
     });
+}
+
+fn main() {
+    // sample initialization
+    let mut v = [[[[0.0; 5]; ISIZ1 + 1]; ISIZ2 + 1]; ISIZ3 + 1];
+    for k in 0..ISIZ3 + 1 {
+        for j in 0..ISIZ2 + 1 {
+            for i in 0..ISIZ1 + 1 {
+                for m in 0..5 {
+                    v[k][j][i][m] = (k + j + i + m) as f64;
+                }
+            }
+        }
+    }
+
+    // L2 norm calculation
+    let mut sum = [0.0; 5];
+    l2norm(&mut v, &mut sum);
 
     println!("L2 Norms: {:?}", sum);
 }
