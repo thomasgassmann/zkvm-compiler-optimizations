@@ -114,9 +114,10 @@ def prove_exec_cli(program: str | None, program_group: str | None):
 @click.command(name="opt-by-program")
 @click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-def opt_by_program_cli(profile: str, zkvm: str | None):
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+def opt_by_program_cli(profile: str, zkvm: str | None, speedup: bool):
     dir = click.get_current_context().parent.params["dir"]
-    plot_opt_by_program(dir, profile, zkvm)
+    plot_opt_by_program(dir, profile, zkvm, speedup)
 
 
 @click.command(name="khz")

@@ -345,22 +345,33 @@ def export_profile(dir: str, out: str, profile_id: str):
     md_file.new_header(level=1, title=f"{profile_id} report")
 
     md_file.new_header(level=2, title="Optimization by program")
-    export_plot(
-        out,
-        "profiles",
-        md_file,
-        f"{profile_id}-by-program",
-        lambda: plot_opt_by_program(dir, profile=profile_id, zkvm=None),
-    )
-    for zkvm in get_zkvms():
-        md_file.new_header(level=3, title=f"Optimization by program ({zkvm})")
+
+    for speedup in [False, True]:
+        title = "% faster" if not speedup else "Speedup"
+        md_file.new_header(level=3, title=title)
+        speedup_file_name = "speedup" if speedup else ""
         export_plot(
             out,
             "profiles",
             md_file,
-            f"{profile_id}-{zkvm}-by-program",
-            lambda: plot_opt_by_program(dir, profile=profile_id, zkvm=zkvm),
+            f"{profile_id}-by-program-{speedup_file_name}",
+            lambda: plot_opt_by_program(
+                dir, profile=profile_id, zkvm=None, speedup=speedup
+            ),
         )
+        for zkvm in get_zkvms():
+            md_file.new_header(
+                level=4, title=f"Optimization by program ({zkvm}, {title})"
+            )
+            export_plot(
+                out,
+                "profiles",
+                md_file,
+                f"{profile_id}-{zkvm}-by-program-{speedup_file_name}",
+                lambda: plot_opt_by_program(
+                    dir, profile=profile_id, zkvm=zkvm, speedup=speedup
+                ),
+            )
 
     md_file.create_md_file()
 
