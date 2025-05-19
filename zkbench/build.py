@@ -15,6 +15,7 @@ from zkbench.config import (
 
 async def run_build(
     programs: list[str],
+    program_groups: list[str],
     zkvms: list[str],
     profile_names: list[str],
     force: bool,
@@ -22,7 +23,7 @@ async def run_build(
     llvm: bool,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
-        programs, zkvms, profile_names
+        programs, zkvms, profile_names, program_groups
     )
 
     logging.info(f"Programs to build: {', '.join(programs_to_build)}")
@@ -88,8 +89,9 @@ async def build_program(
     target: str,
     verbose: bool = False,
     timeout=None,
+    target_dir=None,
 ):
-    source = get_source_binary_path(program, zkvm)
+    source = get_source_binary_path(program, zkvm, target_dir)
     profile_name = profile.profile_name
     name = f"{program}-{zkvm}-{profile_name}"
     logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
@@ -101,6 +103,8 @@ async def build_program(
         "ZK_CFLAGS": profile.cflags,
         "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
     }
+    if target_dir is not None:
+        env["CARGO_TARGET_DIR"] = target_dir
 
     verbosity = "--verbose" if verbose else ""
 

@@ -1,4 +1,8 @@
-from zkbench.config import get_measurements, get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import (
+    get_default_profiles_ids,
+    get_measurements,
+    get_zkvms,
+)
 from zkbench.plot.common import (
     BASELINE,
     get_cycle_count,
@@ -19,7 +23,7 @@ def f(dir, program, zkvm, profile):
 
 def plot_cycle_count(dir: str, program: str | None, profiles: list[str] | None = None):
     title = get_title("Relative cycle count compared to baseline", [program])
-    profiles = get_profiles_ids() if profiles is None else profiles
+    profiles = get_default_profiles_ids() if profiles is None else profiles
     if BASELINE in profiles:
         profiles.remove(BASELINE)
     values = []

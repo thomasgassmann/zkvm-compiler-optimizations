@@ -1,5 +1,5 @@
 import numpy as np
-from zkbench.config import get_profiles_ids
+from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
     get_cycle_count,
     get_point_estimate_mean_ms,
@@ -25,7 +25,7 @@ def plot_khz(
 
         return cycle_count / prove_time
 
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     values = get_values_by_profile(
         dir,
         zkvm,

@@ -2,6 +2,7 @@ import dataclasses
 import hashlib
 import json
 from dataclasses import dataclass
+import os
 from typing import List
 
 
@@ -48,6 +49,14 @@ def get_profile_by_name(profile_name: str) -> Profile:
         CONFIG["profiles"][profile_name]["prepopulate_passes"],
         CONFIG["profiles"][profile_name].get("lower_atomic_before", False),
     )
+
+
+def get_default_profiles_ids() -> List[str]:
+    return [
+        profile_name
+        for profile_name in get_profiles_ids()
+        if not CONFIG["profiles"][profile_name].get("no_default", False)
+    ]
 
 
 def get_profiles() -> List[Profile]:
@@ -129,14 +138,15 @@ def get_program_path(program_id: str, zkvm: str) -> str:
     return f"./programs/{get_program_dir_name(program_id, zkvm)}"
 
 
-def get_source_binary_path(program_id: str, zkvm: str) -> str:
+def get_source_binary_path(
+    program_id: str, zkvm: str, target_dir: str | None = None
+) -> str:
     dir_name = get_program_dir_name(program_id, zkvm)
+    base = f"./programs/{dir_name}/target" if not target_dir else target_dir
     if zkvm == "sp1":
-        path = f"./programs/{dir_name}/target/riscv32im-succinct-zkvm-elf/release/{dir_name}"
+        path = os.path.join(base, "riscv32im-succinct-zkvm-elf/release", dir_name)
     elif zkvm == "risc0":
-        path = (
-            f"./programs/{dir_name}/target/riscv32im-risc0-zkvm-elf/release/{dir_name}"
-        )
+        path = os.path.join(base, "riscv32im-risc0-zkvm-elf/release", dir_name)
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
     return path

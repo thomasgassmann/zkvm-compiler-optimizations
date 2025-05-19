@@ -9,6 +9,7 @@ from zkbench.common import run_command
 from zkbench.config import Profile
 from zkbench.tune.common import (
     METRIC_TIMEOUT,
+    SAMPLED_METRICS,
     EvalResult,
     MetricValue,
     ProfileConfig,
@@ -18,7 +19,8 @@ from zkbench.tune.common import (
 from dacite import from_dict
 
 
-CLEAN_CYCLE = 10
+CLEAN_CYCLE = 15
+N_SAMPLES = 3
 
 
 class TuneRunner:
@@ -41,6 +43,16 @@ class TuneRunner:
         )
         self._build_timeout = build_timeout
 
+    def get_build_path(self, zkvm: str, program: str):
+        return os.path.join(
+            os.path.abspath(self._cache_dir), "build", f"{program}-{zkvm}"
+        )
+
+    def get_result_path(self, profile_config: ProfileConfig | Profile):
+        return os.path.join(
+            os.path.abspath(self._cache_dir), profile_config.get_hash()[:10]
+        )
+
     def filename(
         self,
         profile_config: ProfileConfig | Profile,
@@ -48,10 +60,10 @@ class TuneRunner:
         zkvm: str,
         metric: str,
     ):
-        h = profile_config.get_hash()[:10]
+        h = self.get_result_path(profile_config)
         return os.path.join(
-            self._cache_dir,
-            f"{h}/{profile_config.name}-{program}-{zkvm}-{metric}.json",
+            h,
+            f"{profile_config.name}-{program}-{zkvm}-{metric}.json",
         )
 
     def get_out_path(
@@ -84,7 +96,9 @@ class TuneRunner:
         if self._clean_cycles[program] >= CLEAN_CYCLE and not self._no_clean:
             self._clean_cycles[program] = 0
             logging.info(f"Cleaning {program} for {zkvm}")
-            run_clean([program], [zkvm])
+            await run_clean(
+                [program], [zkvm], get_path=lambda p, z: self.get_build_path(z, p)
+            )
         await build_program(
             program,
             zkvm,
@@ -93,6 +107,7 @@ class TuneRunner:
             out,
             verbose=False,
             timeout=self._build_timeout,
+            target_dir=self.get_build_path(zkvm, program),
         )
         self._clean_cycles[program] += 1
         logging.info(f"Built {program} for {zkvm}")
@@ -104,8 +119,10 @@ class TuneRunner:
             out = self.get_out_path(profile_config, zkvm, program)
             await self._build(program, zkvm, profile_config, out)
 
-    def clean(self, programs: list[str], zkvms: list[str]):
-        run_clean(programs, zkvms)
+    async def clean(self, programs: list[str], zkvms: list[str]):
+        await run_clean(
+            programs, zkvms, get_path=lambda p, z: self.get_build_path(z, p)
+        )
         for program in programs:
             self._clean_cycles[program] = 0
 
@@ -137,7 +154,7 @@ class TuneRunner:
                 return False
 
             try:
-                self.clean(programs, zkvms)
+                await self.clean(programs, zkvms)
                 await self.try_build(programs, zkvms, profile_config)
                 return True
             except Exception as e:
@@ -224,6 +241,9 @@ class TuneRunner:
         filename = os.path.basename(elf)
         stats_file = os.path.join(self._out, f"{filename}.json")
         logging.info(f"Running {metric} for {program} on {zkvm}")
+        timeout = METRIC_TIMEOUT[metric] * (
+            N_SAMPLES if metric in SAMPLED_METRICS else 1
+        )
         try:
             res = await run_command(
                 f"""
@@ -233,6 +253,7 @@ class TuneRunner:
                     --elf {elf}
                     --filename {stats_file}
                     --metric {metric}
+                    --samples {N_SAMPLES}
             """.strip().replace(
                     "\n", " "
                 ),
@@ -241,7 +262,7 @@ class TuneRunner:
                     **os.environ,
                 },
                 filename,
-                timeout=METRIC_TIMEOUT[metric],
+                timeout=timeout,
             )
 
             if res != 0:

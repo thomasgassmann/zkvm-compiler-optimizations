@@ -95,7 +95,9 @@ pub enum ProgramId {
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
 pub enum TuneMetric {
     CycleCount,
+    PagingCycleCount,
     ProveTime,
+    ExecTime,
     Gas,
 }
 
@@ -132,6 +134,8 @@ pub struct Profile {
     pub prepopulate_passes: bool,
     #[serde(default)]
     pub lower_atomic_before: bool,
+    #[serde(default)]
+    pub no_default: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

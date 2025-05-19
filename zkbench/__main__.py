@@ -12,15 +12,20 @@ from zkbench.config import (
 from zkbench.plot.plot import (
     average_duration_cli,
     average_improvement_cli,
+    binsize_duration_cli,
     cycle_count_abs_cli,
+    cycle_count_by_program_cli,
     cycle_count_cli,
     cycle_count_stats_cli,
     cycle_count_duration_cli,
+    duration_by_program_cli,
     export_report_cli,
+    improvement_by_program_cli,
     khz_cli,
     no_effect_cli,
     opt_by_program_cli,
     opt_no_effect_cli,
+    paging_by_profile_cli,
     plot_missing_cli,
     prove_exec_cli,
     total_time_by_profile_cli,
@@ -49,6 +54,12 @@ def zkbench_cli(log_level: str, log_file: str):
 @click.option(
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
 )
+@click.option(
+    "--program-group",
+    type=click.Choice(get_program_groups()),
+    required=False,
+    multiple=True,
+)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
 @click.option(
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
@@ -59,13 +70,16 @@ def zkbench_cli(log_level: str, log_file: str):
 @coro
 async def build_cli(
     program: list[str],
+    program_group: list[str],
     zkvm: list[str],
     profile: list[str],
     force: bool,
     j: int | None,
     llvm: bool,
 ):
-    await run_build(program, zkvm, profile, force, j or 1, llvm)
+    await run_build(
+        list(program), list(program_group), zkvm, profile, force, j or 1, llvm
+    )
 
 
 @click.command(name="clean")
@@ -73,13 +87,20 @@ async def build_cli(
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
 )
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
-def clean_cli(program: list[str], zkvm: list[str]):
-    run_clean(program, zkvm)
+@coro
+async def clean_cli(program: list[str], zkvm: list[str]):
+    await run_clean(program, zkvm)
 
 
 @click.command(name="bench")
 @click.option(
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
+)
+@click.option(
+    "--program-group",
+    type=click.Choice(get_program_groups()),
+    required=False,
+    multiple=True,
 )
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
 @click.option(
@@ -97,6 +118,7 @@ def clean_cli(program: list[str], zkvm: list[str]):
 @click.option("--input-override", required=False, type=str)
 def bench_cli(
     program: list[str],
+    program_group: list[str],
     zkvm: list[str],
     measurement: list[str],
     profile: list[str],
@@ -107,6 +129,7 @@ def bench_cli(
 ):
     run_bench(
         program,
+        program_group,
         zkvm,
         measurement,
         profile,
@@ -209,6 +232,11 @@ plot_cli.add_command(no_effect_cli)
 plot_cli.add_command(khz_cli)
 plot_cli.add_command(total_time_by_profile_cli)
 plot_cli.add_command(export_report_cli)
+plot_cli.add_command(paging_by_profile_cli)
+plot_cli.add_command(binsize_duration_cli)
+plot_cli.add_command(improvement_by_program_cli)
+plot_cli.add_command(duration_by_program_cli)
+plot_cli.add_command(cycle_count_by_program_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)

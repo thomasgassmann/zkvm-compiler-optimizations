@@ -75,6 +75,8 @@ pub struct TuneArgs {
     filename: String,
     #[arg(long)]
     metric: TuneMetric,
+    #[arg(long)]
+    samples: Option<u32>,
 }
 
 struct Cpuprofiler;
@@ -143,7 +145,9 @@ fn run_criterion(args: CriterionArgs) {
             for prover in zkvms.iter() {
                 let group_name = format!("{}-{}-{}", program, prover, measurement);
                 let mut group = c.benchmark_group(&group_name);
-                group.sample_size(10);
+                if measurement == &MeasurementType::Prove {
+                    group.sample_size(10);
+                }
 
                 for profile in profiles.iter() {
                     if program_config.skip.contains(profile) {

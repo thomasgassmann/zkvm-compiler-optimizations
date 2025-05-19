@@ -198,8 +198,20 @@ fn write_program_inputs<W: ProgramInputWriter>(
     input_override: &Option<String>,
 ) {
     match program {
+        ProgramId::LoopSum => {
+            let mut arr = Vec::new();
+            for i in 0..1500 {
+                arr.push(i);
+            }
+
+            stdin.write_generic(&arr);
+        }
         ProgramId::Factorial => {
-            stdin.write_generic(&10u32);
+            stdin.write_generic(&1000u32);
+        }
+        ProgramId::Tailcall => {
+            stdin.write_generic(&25u128);
+            stdin.write_generic(&300u128);
         }
         ProgramId::Keccak256 => {
             stdin.write_generic(&vec![0u8; 64]);
@@ -213,13 +225,13 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&42u32);
         }
         ProgramId::Fibonacci => {
-            stdin.write_generic(&1000u32);
+            stdin.write_generic(&30000u32);
         }
         ProgramId::Sha2Bench => {
-            stdin.write_generic(&vec![5u8; 64]);
+            stdin.write_generic(&vec![5u8; 8192]);
         }
         ProgramId::Sha3Bench => {
-            stdin.write_generic(&vec![5u8; 64]);
+            stdin.write_generic(&vec![5u8; 8192]);
         }
         ProgramId::Sha2Chain => {
             stdin.write_generic(&vec![5u8; 32]);

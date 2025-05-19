@@ -4,7 +4,12 @@ import logging
 
 import click
 
-from zkbench.config import get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import (
+    get_default_profiles_ids,
+    get_programs,
+    get_programs_by_group,
+    get_zkvms,
+)
 
 
 def coro(f):
@@ -15,15 +20,24 @@ def coro(f):
     return wrapper
 
 
-def get_run_config(programs: list[str], zkvms: list[str], profiles: list[str]):
+def get_run_config(
+    programs: list[str],
+    zkvms: list[str],
+    profiles: list[str],
+    program_groups: list[str] | None = None,
+):
+    if program_groups:
+        for program_group in program_groups:
+            programs.extend(get_programs_by_group(program_group))
+
     programs = programs if len(programs) > 0 else get_programs()
     zkvms = zkvms if len(zkvms) > 0 else get_zkvms()
-    profiles = profiles if len(profiles) > 0 else get_profiles_ids()
+    profiles = profiles if len(profiles) > 0 else get_default_profiles_ids()
     return programs, zkvms, profiles
 
 
 async def run_command(cmd, cwd, env, task_name, timeout=None):
-    logging.debug(f"[{task_name}] Running command: {cmd}")
+    logging.debug(f"[{task_name}] Running command: {cmd}, cwd: {cwd}")
     process = await asyncio.create_subprocess_shell(
         cmd,
         stdout=asyncio.subprocess.PIPE,

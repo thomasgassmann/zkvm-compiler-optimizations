@@ -134,6 +134,13 @@ def get_point_estimate_mean_ms(
     return data["mean"]["point_estimate"] / 1_000_000
 
 
+def get_sample_times_ms(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str
+):
+    data = read_sample_data(dir, program, zkvm, profile, measurement)
+    return [item / 1_000_000 for item in data["times"]]
+
+
 def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_width=0.35):
     num_profiles = len(labels)
     num_series = len(values)
@@ -286,12 +293,18 @@ def get_values_by_profile(
                     try:
                         r = fn(dir, prog, zk, profile, meas)
                         if r is not None:
-                            values_list.append(r)
+                            if isinstance(r, list):
+                                values_list.extend(r)
+                            else:
+                                values_list.append(r)
                         elif skipped_value is not None:
                             values_list.append(skipped_value)
                     except FileNotFoundError:
                         logging.warning(
                             f"Data for {prog}-{zk}-{meas}-{profile} not found"
                         )
+                    except Exception as e:
+                        logging.error(f"Error for {prog}-{zk}-{meas}-{profile}: {e}")
+                        raise e
         res.append(values_list)
     return res

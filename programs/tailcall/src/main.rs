@@ -6,11 +6,11 @@ risc0_zkvm::guest::entry!(main);
 #[cfg(feature = "sp1")]
 sp1_zkvm::entrypoint!(main);
 
-fn factorial(n: u64) -> u64 {
+fn factorial(n: u128) -> u128 {
     factorial_tail(n, 1)
 }
 
-fn factorial_tail(n: u64, acc: u64) -> u64 {
+fn factorial_tail(n: u128, acc: u128) -> u128 {
     if n == 0 {
         acc
     } else {
@@ -18,8 +18,8 @@ fn factorial_tail(n: u64, acc: u64) -> u64 {
     }
 }
 
-pub fn sum_to(n: i32) -> i32 {
-    fn sum(n: i32, acc: i32) -> i32 {
+pub fn sum_to(n: u128) -> u128 {
+    fn sum(n: u128, acc: u128) -> u128 {
         if n == 0 {
             acc
         } else {
@@ -30,9 +30,22 @@ pub fn sum_to(n: i32) -> i32 {
 }
 
 fn main() {
-    let result = factorial(8);
-    println!("Factorial of 5 is: {}", result);
+    #[cfg(feature = "risc0")]
+    let n: u128 = risc0_zkvm::guest::env::read();
+    #[cfg(feature = "sp1")]
+    let n: u128 = sp1_zkvm::io::read();
 
-    let result = sum_to(20);
-    println!("Sum of 1..20 is: {}", result);
+    #[cfg(feature = "risc0")]
+    let r: u128 = risc0_zkvm::guest::env::read();
+    #[cfg(feature = "sp1")]
+    let r: u128 = sp1_zkvm::io::read();
+
+    for i in 0..r {
+        let fac = factorial(n);
+        let sum = sum_to(n);
+        if i == r - 1 {
+            println!("Factorial of {n} is: {fac}");
+            println!("Sum of 1..{n} is: {sum}");
+        }
+    }
 }

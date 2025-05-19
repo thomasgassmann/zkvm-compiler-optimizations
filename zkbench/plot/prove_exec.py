@@ -1,5 +1,5 @@
 import logging
-from zkbench.config import get_profiles_ids, get_programs
+from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
     get_point_estimate_mean_ms,
     get_program_selection,
@@ -9,7 +9,7 @@ from zkbench.plot.common import (
 
 
 def _get_values(dir: str, zkvm: str, programs: list[str]):
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     x, y = [], []
     for profile in profiles:
         for program in programs:

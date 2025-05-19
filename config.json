@@ -726,7 +726,8 @@
             "cflags": "-O3 -flto",
             "rustflags": "-C opt-level=3 -C lto=fat -C embed-bitcode",
             "passes": [],
-            "prepopulate_passes": true
+            "prepopulate_passes": true,
+            "no_default": true
         },
         "rsp-best": {
             "cflags": "-O3 -flto",
@@ -734,7 +735,17 @@
             "passes": [
                 "module(wholeprogramdevirt,always-inline),function(lower-switch,loop(loop-reduce,loop-rotate),irce),module(inline),function(loop-simplify),module(extract-blocks),function(loop(loop-rotate)),module(bounds-checking),function(loop(loop-reduce),nary-reassociate,simple-loop-unswitch),module(rel-lookup-table-converter,loop-extract),function(loop-mssa(licm)),module(wholeprogramdevirt),function(correlated-propagation,loop-sink)"
             ],
-            "prepopulate_passes": true
+            "prepopulate_passes": true,
+            "no_default": true
+        },
+        "polybench-best": {
+            "cflags": "-O3 -mllvm -available-load-scan-limit=13 -mllvm -inline-threshold=26595 -mllvm -jump-threading-threshold=14 -mllvm -licm-versioning-max-depth-threshold=0 -mllvm -loop-interchange-threshold=-1 -mllvm -loop-load-elimination-scev-check-threshold=15 -mllvm -max-dependences=254 -mllvm -max-speculation-depth=26 -mllvm -memdep-block-number-limit=2021",
+            "rustflags": "-C opt-level=3 -Cllvm-args=-available-load-scan-limit=13 -Cllvm-args=-inline-threshold=26595 -Cllvm-args=-jump-threading-threshold=14 -Cllvm-args=-licm-versioning-max-depth-threshold=0 -Cllvm-args=-loop-interchange-threshold=-1 -Cllvm-args=-loop-load-elimination-scev-check-threshold=15 -Cllvm-args=-max-dependences=254 -Cllvm-args=-max-speculation-depth=26 -Cllvm-args=-memdep-block-number-limit=2021",
+            "passes": [
+                "function(gvn,float2int,gvn-sink,speculative-execution),module(attributor),function(guard-widening,correlated-propagation,separate-const-offset-from-gep,loop(loop-rotate),lower-invoke,lower-switch),module(inline),function(sink,loop-mssa(licm),loop-fusion,partially-inline-libcalls,loop-sink,slsr),module(globaldce),function(mergereturn),module(ipsccp,rel-lookup-table-converter),function(loop(loop-predication)),module(strip-dead-debug-info),function(break-crit-edges,mldst-motion,sccp),module(extract-blocks),function(loop(loop-idiom)),module(strip-dead-prototypes,strip-gc-relocates),function(loop-data-prefetch),module(lower-global-dtors),function(tailcallelim,reassociate),module(aggressive-instcombine),function(loop-unroll,gvn-hoist),module(synthetic-counts-propagation,partial-inliner),function(loop(loop-unroll-and-jam,loop-versioning-licm)),module(globalopt),function(mem2reg,libcalls-shrinkwrap),module(loop-extract)"
+            ],
+            "prepopulate_passes": true,
+            "no_default": true
         }
     },
     "zkvms": [

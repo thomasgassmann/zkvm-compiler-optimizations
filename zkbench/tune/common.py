@@ -7,10 +7,17 @@ from typing import Literal
 from zkbench.config import Profile
 
 
-METRIC_TIMEOUT = {"cycle-count": 600, "prove": 2**31, "gas": 1200}
+METRIC_TIMEOUT = {
+    "cycle-count": 600,
+    "prove": 2**31,
+    "gas": 1200,
+    "exec-time": 1500,
+    "paging-cycle-count": 600,
+}
+SAMPLED_METRICS = ["cycle-count", "exec-time"]
 
 def is_metric_parallelizable(metric: str) -> bool:
-    return metric in ["cycle-count"]
+    return metric in ["cycle-count", "gas"]
 
 
 @dataclass(frozen=True)
@@ -36,6 +43,16 @@ class TuneConfig:
     module_passes: list[str]
     function_passes: list[str]
     loop_passes: list[str]
+    allowed_opt_levels: list[str] = None
+    default_prepopulate_passes: bool = False
+    default_single_codegen_unit: bool = False
+    allowed_lto: list[str] = None
+
+    def __post_init__(self):
+        if self.allowed_opt_levels is None:
+            self.allowed_opt_levels = OPT_LEVEL_OPTIONS
+        if self.allowed_lto is None:
+            self.allowed_lto = LTO_OPTIONS
 
 
 MODULE_PASSES = [

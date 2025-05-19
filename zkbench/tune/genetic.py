@@ -3,6 +3,7 @@ import dataclasses
 import json
 import logging
 import os
+import uuid
 from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter, IntegerParameter
 from opentuner import MeasurementInterface
@@ -14,8 +15,6 @@ from zkbench.config import Profile, get_profile_by_name
 from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
     ALL_KNOBS,
-    LTO_OPTIONS,
-    OPT_LEVEL_OPTIONS,
     BIN_OUT_GENETIC,
     MetricValue,
     ProfileConfig,
@@ -42,26 +41,51 @@ class Genetic:
 
 def add_common_params(manipulator: ConfigurationManipulator, config: TuneConfig):
     manipulator.add_parameter(
-        EnumParameter("lto", LTO_OPTIONS if config.tune_lto else ["off"])
+        EnumParameter("lto", config.allowed_lto if config.tune_lto else ["off"])
     )
     manipulator.add_parameter(
         EnumParameter(
             "single_codegen_unit",
-            [True, False] if config.tune_codegen_units else [False],
+            (
+                [True, False]
+                if config.tune_codegen_units
+                else [config.default_single_codegen_unit]
+            ),
         )
     )
     manipulator.add_parameter(
         EnumParameter(
             "opt_level",
-            OPT_LEVEL_OPTIONS if config.tune_opt_level else ["0"],
+            config.allowed_opt_levels if config.tune_opt_level else ["0"],
         )
     )
     manipulator.add_parameter(
         EnumParameter(
             "prepopulate_passes",
-            [True, False] if config.tune_prepopulate_passes else [False],
+            (
+                [True, False]
+                if config.tune_prepopulate_passes
+                else [config.default_prepopulate_passes]
+            ),
         )
     )
+
+
+def add_flags(manipulator: ConfigurationManipulator):
+    for knob, min_int, max_int in ALL_KNOBS:
+        manipulator.add_parameter(IntegerParameter(knob, min_int, max_int))
+        manipulator.add_parameter(EnumParameter("enable_" + knob, [True, False]))
+
+
+def get_rust_c_knobs(cfg):
+    rust_knobs = ""
+    c_knobs = ""
+    for knob, min_int, max_int in ALL_KNOBS:
+        if cfg["enable_" + knob]:
+            value = cfg[knob]
+            rust_knobs += f" -Cllvm-args=-{knob}={value}"
+            c_knobs += f" -mllvm -{knob}={value}"
+    return rust_knobs, c_knobs
 
 
 class Mode:
@@ -98,14 +122,7 @@ class DepthMode(Mode):
             )
         )
 
-        rust_knobs = ""
-        c_knobs = ""
-        for knob, min_int, max_int in ALL_KNOBS:
-            if cfg["enable_" + knob] or True:
-                value = cfg[knob]
-                rust_knobs += f" -Cllvm-args=-{knob}={value}"
-                c_knobs += f" -mllvm -{knob}={value}"
-
+        rust_knobs, c_knobs = get_rust_c_knobs(cfg)
         return Profile(
             profile.profile_name,
             profile.rustflags + rust_knobs,
@@ -126,10 +143,7 @@ class DepthMode(Mode):
         for i in range(self.depth):
             manipulator.add_parameter(EnumParameter(f"depth-{i}", all_passes))
         add_common_params(manipulator, config)
-
-        for knob, min_int, max_int in ALL_KNOBS:
-            manipulator.add_parameter(IntegerParameter(knob, min_int, max_int))
-            manipulator.add_parameter(EnumParameter("enable_" + knob, [True, False]))
+        add_flags(manipulator)
 
         return manipulator
 
@@ -149,14 +163,25 @@ class DefaultMode(Mode):
                 used_passes.append(current_pass)
 
         # pass is only applied once, we can apply pass multiple times
-        pass_list = [build_pass_list(used_passes)]
-        return ProfileConfig(
-            name="genetic",
-            lto=cfg["lto"],
-            single_codegen_unit=cfg["single_codegen_unit"],
-            opt_level=cfg["opt_level"],
-            prepopulate_passes=cfg["prepopulate_passes"],
-            passes=pass_list,
+        pass_list = [build_pass_list(used_passes)] if used_passes else []
+        profile = build_profile(
+            ProfileConfig(
+                name="genetic",
+                lto=cfg["lto"],
+                single_codegen_unit=cfg["single_codegen_unit"],
+                opt_level=cfg["opt_level"],
+                prepopulate_passes=cfg["prepopulate_passes"],
+                passes=pass_list,
+            )
+        )
+        rust_knobs, c_knobs = get_rust_c_knobs(cfg)
+        return Profile(
+            profile.profile_name,
+            profile.rustflags + rust_knobs,
+            profile.cflags + c_knobs,
+            profile.passes,
+            profile.prepopulate_passes,
+            profile.lower_atomic_before,
         )
 
     def get_manipulator(self, config: TuneConfig):
@@ -166,6 +191,7 @@ class DefaultMode(Mode):
         for current in all_passes:
             manipulator.add_parameter(EnumParameter(current, ["on", "off"]))
         add_common_params(manipulator, config)
+        add_flags(manipulator)
         return manipulator
 
 
@@ -305,6 +331,7 @@ def run_tune_genetic(
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
+    uuid_str = str(uuid.uuid4())[:10]
     create_tuner(programs, zkvms, metric, out, config, mode, baselines or []).main(
-        arg_parser.parse_args([])
+        arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"])
     )
