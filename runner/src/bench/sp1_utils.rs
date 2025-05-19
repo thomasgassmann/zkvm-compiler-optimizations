@@ -18,7 +18,9 @@ use sp1_stark::SP1CoreOpts;
 use super::utils::ElfStats;
 
 static ENV_PROVER_CLIENT: Lazy<EnvProver> = Lazy::new(|| {
-    env::set_var("SP1_PROVER", if is_gpu_proving() { "cuda" } else { "cpu" });
+    if !env::var("SP1_PROVER").is_ok() {
+        env::set_var("SP1_PROVER", if is_gpu_proving() { "cuda" } else { "cpu" });
+    }
     let prover = ProverClient::from_env();
     prover
 });
