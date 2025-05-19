@@ -1,3 +1,4 @@
+import logging
 import click
 
 from zkbench.config import get_default_profiles_ids, get_measurements
@@ -14,6 +15,10 @@ def f(dir, program, zkvm, profile):
     baseline = read_program_meta(dir, program, zkvm, BASELINE)
     compared = read_program_meta(dir, program, zkvm, profile)
     if compared is None:
+        return None
+
+    if "paging_cycles" not in baseline or "paging_cycles" not in compared:
+        logging.warning(f"Paging cycles not found in {program}-{zkvm}-{profile}")
         return None
 
     baseline = baseline["paging_cycles"]
