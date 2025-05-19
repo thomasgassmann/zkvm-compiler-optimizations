@@ -1,7 +1,4 @@
-use std::{
-    env,
-    sync::{Arc, Mutex},
-};
+use std::{env, sync::Arc};
 
 use crate::utils::is_gpu_proving;
 
@@ -20,10 +17,10 @@ use sp1_stark::SP1CoreOpts;
 
 use super::utils::ElfStats;
 
-static ENV_PROVER_CLIENT: Lazy<Arc<Mutex<EnvProver>>> = Lazy::new(|| {
+static ENV_PROVER_CLIENT: Lazy<Arc<EnvProver>> = Lazy::new(|| {
     env::set_var("SP1_PROVER", if is_gpu_proving() { "cuda" } else { "cpu" });
     let prover = ProverClient::from_env();
-    Arc::new(Mutex::new(prover))
+    Arc::new(prover)
 });
 
 pub fn exec_sp1_prepare(
@@ -87,14 +84,13 @@ pub fn prove_core_sp1_prepare(
     input_override: &Option<String>,
 ) -> (SP1ProvingKey, SP1VerifyingKey, SP1Stdin) {
     let stdin = get_sp1_stdin(program, input_override);
-    let (pk, vk) = ENV_PROVER_CLIENT.lock().unwrap().setup(elf);
+    let (pk, vk) = ENV_PROVER_CLIENT.as_ref().setup(elf);
     (pk, vk, stdin)
 }
 
 pub fn prove_core_sp1(stdin: &SP1Stdin, pk: &SP1ProvingKey) {
     ENV_PROVER_CLIENT
-        .lock()
-        .unwrap()
+        .as_ref()
         .prove(pk, stdin)
         .core()
         .run()
