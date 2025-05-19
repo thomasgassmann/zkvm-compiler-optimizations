@@ -303,5 +303,8 @@ def get_values_by_profile(
                         logging.warning(
                             f"Data for {prog}-{zk}-{meas}-{profile} not found"
                         )
+                    except Exception as e:
+                        logging.error(f"Error for {prog}-{zk}-{meas}-{profile}: {e}")
+                        raise e
         res.append(values_list)
     return res
