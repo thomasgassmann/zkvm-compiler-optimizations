@@ -746,6 +746,15 @@
             ],
             "prepopulate_passes": true,
             "no_default": true
+        },
+        "npb-best": {
+            "cflags": "-O3 -mllvm -inline-threshold=4328 -mllvm -jump-threading-implication-search-threshold=5 -mllvm -licm-max-num-uses-traversed=1 -mllvm -licm-versioning-max-depth-threshold=0 -mllvm -max-dependences=23 -mllvm -max-nested-scalar-reduction-interleave=2 -mllvm -max-speculation-depth=1 -mllvm -memdep-block-scan-limit=276",
+            "rustflags": "-C opt-level=3 -C lto=fat -C embed-bitcode -C codegen-units=1 -Cllvm-args=-inline-threshold=4328 -Cllvm-args=-jump-threading-implication-search-threshold=5 -Cllvm-args=-licm-max-num-uses-traversed=1 -Cllvm-args=-licm-versioning-max-depth-threshold=0 -Cllvm-args=-max-dependences=23 -Cllvm-args=-max-nested-scalar-reduction-interleave=2 -Cllvm-args=-max-speculation-depth=1 -Cllvm-args=-memdep-block-scan-limit=276",
+            "passes": [
+                "function(lower-switch,partially-inline-libcalls,reassociate,sccp,dse,reassociate,lower-invoke,separate-const-offset-from-gep,loop-data-prefetch,speculative-execution),module(inline),function(gvn),module(attributor,attributor),function(newgvn,loop-mssa(licm),irce,newgvn,loop(loop-reduce),early-cse)"
+            ],
+            "prepopulate_passes": true,
+            "no_default": true
         }
     },
     "zkvms": [
