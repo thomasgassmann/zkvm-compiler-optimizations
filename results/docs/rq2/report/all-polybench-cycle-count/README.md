@@ -146,12 +146,12 @@
 ![genetic-plot-polybench-trmm](./genetic-plot-polybench-trmm.png)
 ## Overview by program group
 
-### Group rust
-  
-![genetic-plot-rust](./genetic-plot-rust.png)
 ### Group polybench
   
 ![genetic-plot-polybench](./genetic-plot-polybench.png)
+### Group rust
+  
+![genetic-plot-rust](./genetic-plot-rust.png)
 ## Overview by zkVM
 
 ### zkVM risc0
