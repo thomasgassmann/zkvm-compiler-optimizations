@@ -14,6 +14,7 @@ def run_bench(
     force: bool,
     meta_only: bool,
     input_override: str = None,
+    sample_size: int | None = None,
 ):
     args = []
     if program or program_group:
@@ -44,6 +45,8 @@ def run_bench(
         args.append("--meta-only")
     if input_override:
         args.append(f"--input-override {input_override}")
+    if sample_size is not None:
+        args.append(f"--sample-size {sample_size}")
 
     arg_string = " ".join(args)
     logging.info(f"Running bench with args: {arg_string}")
