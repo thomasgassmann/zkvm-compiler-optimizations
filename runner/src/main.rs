@@ -51,6 +51,8 @@ pub struct CriterionArgs {
     meta_only: bool,
     #[arg(long = "input-override")]
     input_override: Option<String>,
+    #[arg(long = "sample-size")]
+    sample_size: Option<usize>,
 }
 
 #[derive(Parser, Clone)]
@@ -139,6 +141,10 @@ fn run_criterion(args: CriterionArgs) {
         }
     }
 
+    if args.sample_size.is_some() {
+        println!("Proving with sample size: {}", args.sample_size.unwrap());
+    }
+
     for program in programs.iter() {
         let program_config = config.programs.get(program).unwrap();
         for measurement in measurements.iter().rev() {
@@ -146,7 +152,7 @@ fn run_criterion(args: CriterionArgs) {
                 let group_name = format!("{}-{}-{}", program, prover, measurement);
                 let mut group = c.benchmark_group(&group_name);
                 if measurement == &MeasurementType::Prove {
-                    group.sample_size(10);
+                    group.sample_size(args.sample_size.unwrap_or(10));
                 }
 
                 for profile in profiles.iter() {
