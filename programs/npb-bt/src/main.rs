@@ -241,6 +241,11 @@ pub const C2DTTZ1: f64 = 2.0 * DTTZ1;
 
 /* bt */
 fn main() {
+    #[cfg(feature = "risc0")]
+    let n_iter: i32 = risc0_zkvm::guest::env::read();
+    #[cfg(feature = "sp1")]
+    let n_iter: i32 = sp1_zkvm::io::read();
+
     let mut us: Vec<[[f64; IMAXP + 1]; JMAXP + 1]> = vec![[[0.0; IMAXP + 1]; JMAXP + 1]; KMAX];
     let mut vs: Vec<[[f64; IMAXP + 1]; JMAXP + 1]> = vec![[[0.0; IMAXP + 1]; JMAXP + 1]; KMAX];
     let mut ws: Vec<[[f64; IMAXP + 1]; JMAXP + 1]> = vec![[[0.0; IMAXP + 1]; JMAXP + 1]; KMAX];
@@ -274,7 +279,7 @@ fn main() {
         " Size: {} {} {}",
         GRID_POINTS[0], GRID_POINTS[1], GRID_POINTS[2]
     );
-    println!(" Iterations: {}    dt: {}", NITER_DEFAULT, DT_DEFAULT);
+    println!(" Iterations: {}    dt: {}", n_iter, DT_DEFAULT);
     println!("");
 
     /* - - - - - - - - - - SET CONSTANTS - - - - - - - - - - */
@@ -385,7 +390,7 @@ fn main() {
         timers.clear(i);
     }
     timers.start(1);
-    for step in 1..NITER_DEFAULT + 1 {
+    for step in 1..n_iter + 1 {
         if step % 20 == 0 || step == 1 {
             println!(" Time step {}", step);
         }
@@ -426,7 +431,7 @@ fn main() {
     let mops;
     if tmax != 0.0 {
         mops = 1.0e-6
-            * NITER_DEFAULT as f64
+            * n_iter as f64
             * (3478.8 * n3 - 17655.7 * (navg * navg) + 28023.7 * navg)
             / tmax;
     } else {
@@ -437,7 +442,7 @@ fn main() {
         name: String::from("BT"),
         class: CLASS.to_string(),
         size: (GRID_POINTS[0], GRID_POINTS[1], GRID_POINTS[2]),
-        num_iter: NITER_DEFAULT,
+        num_iter: n_iter,
         time: tmax,
         mops,
         operation: String::from("Floating point"),
@@ -516,6 +521,11 @@ fn main() {
             }
         }
     }
+
+    #[cfg(feature = "sp1")]
+    sp1_zkvm::io::commit(&verified);
+    #[cfg(feature = "risc0")]
+    risc0_zkvm::guest::env::commit(&verified);
 }
 
 fn add(

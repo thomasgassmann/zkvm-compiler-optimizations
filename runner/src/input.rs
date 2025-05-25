@@ -290,6 +290,10 @@ fn write_program_inputs<W: ProgramInputWriter>(
             let str = include_str!("../../inputs/spec-631/in.txt");
             stdin.write_string(str);
         }
+        ProgramId::NpbBt => {
+            let n_iter: i32 = 1;
+            stdin.write_generic(&n_iter);
+        }
         _ => {}
     }
 }
