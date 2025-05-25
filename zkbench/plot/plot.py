@@ -12,6 +12,7 @@ from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
+from zkbench.plot.stddev import list_by_stddev
 from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
@@ -253,3 +254,15 @@ def cycle_count_by_program_cli(profile: str, baseline_profile: str):
     dir = click.get_current_context().parent.params["dir"]
 
     plot_cycle_count_by_program(dir, profile, baseline_profile)
+
+
+@click.command(
+    name="stddev",
+    help="Show cases where standard deviation is too high",
+)
+@click.option("--threshold", type=int, required=True)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
+def stddev_cli(threshold: int, measurement: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+
+    list_by_stddev(dir, threshold, measurement)
