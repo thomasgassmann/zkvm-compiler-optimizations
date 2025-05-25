@@ -2,24 +2,42 @@
 
 Run is documented [here](./report/all-npb-cycle-count/README.md).
 
-No data on proving yet.
+## Improvement by program
 
-## Speedup by program (exec)
+### percentage
+
+![npb-improvement](./imgs/npb-improvement.png)
+
+### speedup
 
 ![npb-speedup](./imgs/npb-speedup.png)
 
+## Duration by program
+
+### prove
+
+![prove-duration](./imgs/npb-prove.png)
+
+#### prove duration sp1
+
+![prove-duration-sp1](./imgs/npb-prove-sp1.png)
+
+#### prove duration risc0
+
+![prove-duration-risc0](./imgs/npb-prove-risc0.png)
+
+### exec
+
+![exec-duration](./imgs/npb-exec.png)
+
+#### exec duration sp1
+
+![exec-duration-sp1](./imgs/npb-exec-sp1.png)
+
+#### exec duration risc0
+
+![exec-duration-risc0](./imgs/npb-exec-risc0.png)
+
 ## Cycle counts
 
-![npb-cycle-count](./imgs/npb-cycle-count.png)
-
-## Absolute duration (exec)
-
-![npb-duration](./imgs/npb-duration.png)
-
-### Absolute duration (exec, sp1)
-
-![npb-duration-sp1](./imgs/npb-duration-sp1.png)
-
-### Absolute duration (exec, risc0)
-
-![npb-duration-risc0](./imgs/npb-duration-risc0.png)
+![cycle-counts](./imgs/npb-cycle-count.png)
