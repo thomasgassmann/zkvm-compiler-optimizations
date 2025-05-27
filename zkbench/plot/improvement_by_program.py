@@ -1,13 +1,21 @@
 import logging
 from zkbench.config import get_programs, get_zkvms
-from zkbench.plot.common import get_point_estimate_mean_ms, get_title, plot_grouped_boxplot
+from zkbench.plot.common import (
+    get_point_estimate_median_ms,
+    get_title,
+    plot_grouped_boxplot,
+)
 
 
 def plot_improvement_by_program(dir: str, profile: str, baseline_profile: str, speedup: bool):
 
     def f(dir, program, zkvm, measurement):
-        baseline = get_point_estimate_mean_ms(dir, program, zkvm, baseline_profile, measurement)
-        compared = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
+        baseline = get_point_estimate_median_ms(
+            dir, program, zkvm, baseline_profile, measurement
+        )
+        compared = get_point_estimate_median_ms(
+            dir, program, zkvm, profile, measurement
+        )
         if speedup:
             return baseline / compared
         return (-(compared - baseline) / baseline) * 100

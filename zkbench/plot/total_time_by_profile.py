@@ -1,6 +1,11 @@
 import numpy as np
 from zkbench.config import get_default_profiles_ids
-from zkbench.plot.common import get_point_estimate_mean_ms, get_title, get_values_by_profile, plot_sorted
+from zkbench.plot.common import (
+    get_point_estimate_median_ms,
+    get_title,
+    get_values_by_profile,
+    plot_sorted,
+)
 
 
 def plot_total_time_by_profile(dir: str, zkvm: str | None, program: str | None, measurement: str):
@@ -14,7 +19,7 @@ def plot_total_time_by_profile(dir: str, zkvm: str | None, program: str | None, 
         program,
         None,
         profiles,
-        lambda dir, program, zkvm, profile, measurement: get_point_estimate_mean_ms(
+        lambda dir, program, zkvm, profile, measurement: get_point_estimate_median_ms(
             dir, program, zkvm, profile, measurement
         ),
         skipped_value=0,

@@ -4,7 +4,7 @@ import numpy as np
 from zkbench.config import get_programs, get_zkvms
 from zkbench.plot.common import (
     BASELINE,
-    get_point_estimate_mean_ms,
+    get_point_estimate_median_ms,
     get_title,
     plot_grouped_boxplot,
     plot_sorted,
@@ -25,16 +25,16 @@ def plot_opt_by_program(
             exec_values = []
             prove_values = []
             for current_zkvm in get_zkvms() if not zkvm else [zkvm]:
-                prove = get_point_estimate_mean_ms(
+                prove = get_point_estimate_median_ms(
                     dir, program, current_zkvm, profile, "prove"
                 )
-                exec = get_point_estimate_mean_ms(
+                exec = get_point_estimate_median_ms(
                     dir, program, current_zkvm, profile, "exec"
                 )
-                prove_baseline = get_point_estimate_mean_ms(
+                prove_baseline = get_point_estimate_median_ms(
                     dir, program, current_zkvm, BASELINE, "prove"
                 )
-                exec_baseline = get_point_estimate_mean_ms(
+                exec_baseline = get_point_estimate_median_ms(
                     dir, program, current_zkvm, BASELINE, "exec"
                 )
 

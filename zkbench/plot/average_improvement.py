@@ -2,7 +2,7 @@ import numpy as np
 from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
     BASELINE,
-    get_point_estimate_mean_ms,
+    get_point_estimate_median_ms,
     get_title,
     get_values_by_profile,
     plot_grouped_boxplot,
@@ -19,8 +19,12 @@ def plot_average_improvement(
     global_average: bool,
 ):
     def f(dir, program, zkvm, profile, measurement):
-        baseline = get_point_estimate_mean_ms(dir, program, zkvm, BASELINE, measurement)
-        compared = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
+        baseline = get_point_estimate_median_ms(
+            dir, program, zkvm, BASELINE, measurement
+        )
+        compared = get_point_estimate_median_ms(
+            dir, program, zkvm, profile, measurement
+        )
         if speedup:
             return baseline / compared
         return (-(compared - baseline) / baseline) * 100

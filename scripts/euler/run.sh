@@ -2,7 +2,7 @@
 OUT="${OUT:-out.txt}"
 TIMED="${TIMED:-5}"
 GPUMEM="${GPUMEM:-1}"
-# models currently working with sp1  : rtx_3090, a100-pci-40gb, a100_80gb
+# models currently working with sp1  : rtx_3090, rtx_4090, a100-pcie-40gb, a100_80gb
 # models currently working with risc0: all tested so far
 GPUS="${GPUS:-a100}"
 

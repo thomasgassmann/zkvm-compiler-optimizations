@@ -2,7 +2,7 @@ import numpy as np
 from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
     get_cycle_count,
-    get_point_estimate_mean_ms,
+    get_point_estimate_median_ms,
     get_title,
     get_values_by_profile,
     plot_grouped_boxplot,
@@ -18,7 +18,7 @@ def plot_khz(
     )
 
     def get_khz(program: str, zkvm: str, profile: str):
-        prove_time = get_point_estimate_mean_ms(dir, program, zkvm, profile, 'prove')
+        prove_time = get_point_estimate_median_ms(dir, program, zkvm, profile, "prove")
         cycle_count = get_cycle_count(dir, program, zkvm, profile)
         if cycle_count is None:
             return 0

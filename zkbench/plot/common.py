@@ -138,6 +138,13 @@ def get_point_estimate_mean_ms(
     return data["mean"]["point_estimate"] / 1_000_000
 
 
+def get_point_estimate_median_ms(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str
+):
+    data = read_estimates_data(dir, program, zkvm, profile, measurement)
+    return data["median"]["point_estimate"] / 1_000_000
+
+
 def get_sample_times_ms(
     dir: str, program: str, zkvm: str, profile: str, measurement: str
 ):
