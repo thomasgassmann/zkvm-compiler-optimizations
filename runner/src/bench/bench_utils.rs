@@ -61,7 +61,6 @@ fn add_sp1_exec_and_prove(
         return;
     }
 
-    let (pk, _, stdin) = prove_core_sp1_prepare(&elf, program, input_override);
     match measurement {
         MeasurementType::Exec => {
             group.bench_function(profile, |b| {
@@ -74,8 +73,8 @@ fn add_sp1_exec_and_prove(
         MeasurementType::Prove => {
             group.bench_function(profile, |b| {
                 b.iter_with_setup(
-                    || pk.clone(),
-                    |cloned_pk| prove_core_sp1(&stdin, &cloned_pk),
+                    || prove_core_sp1_prepare(&elf, program, input_override),
+                    |(cloned_pk, _, stdin, client)| prove_core_sp1(&stdin, &cloned_pk, &client),
                 );
             });
         }

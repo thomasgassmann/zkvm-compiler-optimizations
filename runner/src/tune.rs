@@ -67,7 +67,7 @@ pub fn run_tune(args: TuneArgs) {
         ),
         (ProverId::SP1, TuneMetric::ProveTime) => tune_time_operation(
             || prove_core_sp1_prepare(&elf, &args.program, &None),
-            |(pk, _, stdin)| prove_core_sp1(&stdin, &pk),
+            |(pk, _, stdin, client)| prove_core_sp1(&stdin, &pk, &client),
             num_samples,
         ),
         (ProverId::Risc0, TuneMetric::Gas) => {
