@@ -25,6 +25,34 @@ config = {
         "sp1": "GPUS=rtx_3090:1 GPUMEM=24g",
         "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
     },
+    "polybench-trmm": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
+    "polybench-adi": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
+    "npb-is": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
+    "polybench-2mm": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
+    "polybench-fdtd": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
+    "polybench-atax": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
+    "polybench-3mm": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
     "default_sp1": "GPUS=rtx_3090:1 GPUMEM=24g",
     "default_risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
 }
