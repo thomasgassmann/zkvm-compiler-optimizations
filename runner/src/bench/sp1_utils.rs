@@ -6,7 +6,6 @@ use super::{
     super::{input::get_sp1_stdin, types::ProgramId},
     utils::get_elf_hash,
 };
-use once_cell::sync::Lazy;
 use sp1_core_executor::{IoWriter, Program};
 use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{
@@ -17,13 +16,12 @@ use sp1_stark::SP1CoreOpts;
 
 use super::utils::ElfStats;
 
-static ENV_PROVER_CLIENT: Lazy<EnvProver> = Lazy::new(|| {
-    if !env::var("SP1_PROVER").is_ok() {
+fn get_env_prover_client() -> EnvProver {
+    if env::var("SP1_PROVER").is_err() {
         env::set_var("SP1_PROVER", if is_gpu_proving() { "cuda" } else { "cpu" });
     }
-    let prover = ProverClient::from_env();
-    prover
-});
+    ProverClient::from_env()
+}
 
 pub fn exec_sp1_prepare(
     elf: &[u8],
@@ -84,14 +82,15 @@ pub fn prove_core_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
     input_override: &Option<String>,
-) -> (SP1ProvingKey, SP1VerifyingKey, SP1Stdin) {
+) -> (SP1ProvingKey, SP1VerifyingKey, SP1Stdin, EnvProver) {
     let stdin = get_sp1_stdin(program, input_override);
-    let (pk, vk) = ENV_PROVER_CLIENT.setup(elf);
-    (pk, vk, stdin)
+    let client = get_env_prover_client();
+    let (pk, vk) = client.setup(elf);
+    (pk, vk, stdin, client)
 }
 
-pub fn prove_core_sp1(stdin: &SP1Stdin, pk: &SP1ProvingKey) {
-    ENV_PROVER_CLIENT.prove(pk, stdin).core().run().unwrap();
+pub fn prove_core_sp1(stdin: &SP1Stdin, pk: &SP1ProvingKey, client: &EnvProver) {
+    client.prove(pk, stdin).core().run().unwrap();
 }
 
 // #[allow(dead_code)]
