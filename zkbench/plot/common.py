@@ -74,9 +74,8 @@ def read_data_file(
     dir: str, program: str, zkvm: str, profile: str, measurement: str, name: str
 ):
     opt_path = os.path.join(dir, f"{program}-{zkvm}-{measurement}", profile)
+    baseline_meta = read_program_meta(dir, program, zkvm, BASELINE)
     if not os.path.exists(opt_path):
-        baseline_meta = read_program_meta(dir, program, zkvm, BASELINE)
-
         program_config = get_program_by_name(program)
         if profile in program_config.skip:
             logging.warning(
@@ -93,6 +92,11 @@ def read_data_file(
 
         # as the binaries are the same, we use the baseline estimates
         opt_path = os.path.join(dir, f"{program}-{zkvm}-{measurement}", BASELINE)
+    elif profile != BASELINE:
+        meta = read_program_meta(dir, program, zkvm, profile)
+        assert (
+            meta["hash"] != baseline_meta["hash"]
+        ), "this should not have been benchmarked"
 
     json_file = os.path.join(opt_path, f"new/{name}.json")
     return json.load(open(json_file, "r"))
