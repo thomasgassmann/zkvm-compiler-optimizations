@@ -28,6 +28,7 @@ from zkbench.plot.plot import (
     paging_by_profile_cli,
     plot_missing_cli,
     prove_exec_cli,
+    rca_classify_cli,
     stddev_cli,
     total_time_by_profile_cli,
 )
@@ -242,6 +243,7 @@ plot_cli.add_command(improvement_by_program_cli)
 plot_cli.add_command(duration_by_program_cli)
 plot_cli.add_command(cycle_count_by_program_cli)
 plot_cli.add_command(stddev_cli)
+plot_cli.add_command(rca_classify_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
