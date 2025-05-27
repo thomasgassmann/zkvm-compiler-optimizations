@@ -12,6 +12,7 @@ from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
+from zkbench.plot.rca_classify import classify_rca
 from zkbench.plot.stddev import list_by_stddev
 from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
@@ -266,3 +267,35 @@ def stddev_cli(threshold: int, measurement: str | None):
     dir = click.get_current_context().parent.params["dir"]
 
     list_by_stddev(dir, threshold, measurement)
+
+
+@click.command(
+    name="rca-classify",
+    help="Find cases for root cause analysis",
+)
+@click.option("--threshold", type=float, required=True)
+@click.option(
+    "--strategy",
+    type=click.Choice(["improve", "degrade", "exec_prove"]),
+    required=True,
+)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
+@click.option("--avg-programs", type=bool, required=False, default=False)
+def rca_classify_cli(
+    threshold: float,
+    avg_programs: bool,
+    strategy: str,
+    measurement: str | None,
+    zkvm: str | None,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    if strategy in ["improve", "degrade"] and not measurement:
+        raise click.UsageError(
+            "Measurement is required for 'improve' and 'degrade' strategies."
+        )
+    if strategy == "exec_prove" and measurement:
+        raise click.UsageError("Measurement is not allowed for 'exec_prove' strategy.")
+
+    classify_rca(dir, threshold, avg_programs, strategy, measurement, zkvm)
