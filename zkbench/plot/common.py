@@ -74,9 +74,8 @@ def read_data_file(
     dir: str, program: str, zkvm: str, profile: str, measurement: str, name: str
 ):
     opt_path = os.path.join(dir, f"{program}-{zkvm}-{measurement}", profile)
+    baseline_meta = read_program_meta(dir, program, zkvm, BASELINE)
     if not os.path.exists(opt_path):
-        baseline_meta = read_program_meta(dir, program, zkvm, BASELINE)
-
         program_config = get_program_by_name(program)
         if profile in program_config.skip:
             logging.warning(
@@ -93,6 +92,11 @@ def read_data_file(
 
         # as the binaries are the same, we use the baseline estimates
         opt_path = os.path.join(dir, f"{program}-{zkvm}-{measurement}", BASELINE)
+    elif profile != BASELINE:
+        meta = read_program_meta(dir, program, zkvm, profile)
+        assert (
+            meta["hash"] != baseline_meta["hash"]
+        ), "this should not have been benchmarked"
 
     json_file = os.path.join(opt_path, f"new/{name}.json")
     return json.load(open(json_file, "r"))
@@ -132,6 +136,20 @@ def get_point_estimate_mean_ms(
 ):
     data = read_estimates_data(dir, program, zkvm, profile, measurement)
     return data["mean"]["point_estimate"] / 1_000_000
+
+
+def get_point_estimate_median_ms(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str
+):
+    data = read_estimates_data(dir, program, zkvm, profile, measurement)
+    return data["median"]["point_estimate"] / 1_000_000
+
+
+def get_sample_times_ms(
+    dir: str, program: str, zkvm: str, profile: str, measurement: str
+):
+    data = read_sample_data(dir, program, zkvm, profile, measurement)
+    return [item / 1_000_000 for item in data["times"]]
 
 
 def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_width=0.35):
@@ -286,12 +304,18 @@ def get_values_by_profile(
                     try:
                         r = fn(dir, prog, zk, profile, meas)
                         if r is not None:
-                            values_list.append(r)
+                            if isinstance(r, list):
+                                values_list.extend(r)
+                            else:
+                                values_list.append(r)
                         elif skipped_value is not None:
                             values_list.append(skipped_value)
                     except FileNotFoundError:
                         logging.warning(
                             f"Data for {prog}-{zk}-{meas}-{profile} not found"
                         )
+                    except Exception as e:
+                        logging.error(f"Error for {prog}-{zk}-{meas}-{profile}: {e}")
+                        raise e
         res.append(values_list)
     return res

@@ -1,12 +1,16 @@
 import logging
 
 from matplotlib import pyplot as plt
-from zkbench.config import get_profiles_ids, get_programs, get_zkvms
+from zkbench.config import (
+    get_default_profiles_ids,
+    get_programs,
+    get_zkvms,
+)
 from zkbench.plot.common import (
     BASELINE,
     get_cycle_count,
     get_pearson,
-    get_point_estimate_mean_ms,
+    get_point_estimate_median_ms,
     get_spearman,
     get_title,
     plot_scatter_by_zkvm,
@@ -26,7 +30,7 @@ def _get_values(
     for program in programs:
         try:
             baseline_cycle_count = get_cycle_count(dir, program, zkvm, BASELINE)
-            baseline_duration = get_point_estimate_mean_ms(
+            baseline_duration = get_point_estimate_median_ms(
                 dir, program, zkvm, BASELINE, measurement
             )
             for profile in profiles:
@@ -36,7 +40,7 @@ def _get_values(
                         f"Cycle count for {program}-{zkvm}-{profile} not found"
                     )
                     continue
-                duration = get_point_estimate_mean_ms(
+                duration = get_point_estimate_median_ms(
                     dir, program, zkvm, profile, measurement
                 )
                 if relative:
@@ -55,7 +59,7 @@ def _get_values(
 def plot_cycle_count_stats(
     dir: str, measurement: str, relative: bool
 ):
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     if relative:
         profiles.remove(BASELINE)
 
@@ -86,7 +90,7 @@ def plot_cycle_count_stats(
 def plot_cycle_count_duration(
     dir: str, measurement: str, program: str | None, relative: bool
 ):
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     if relative:
         profiles.remove(BASELINE)
     programs = get_programs() if program is None else [program]

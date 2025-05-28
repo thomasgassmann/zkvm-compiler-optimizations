@@ -1,5 +1,5 @@
 import numpy as np
-from zkbench.config import get_profiles_ids
+from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
     get_cycle_count,
     get_title,
@@ -11,7 +11,7 @@ from zkbench.plot.common import (
 def plot_cycle_count_abs(dir: str, program: str | None, zkvm: str | None):
     title = get_title("Cycle count by profile", [zkvm, program])
 
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     cycle_counts = get_values_by_profile(
         dir,
         zkvm,
