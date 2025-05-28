@@ -92,6 +92,7 @@ pub enum ProgramId {
 #[derive(clap::ValueEnum, Clone, PartialEq, Debug, Serialize, Deserialize, Hash)]
 pub enum TuneMetric {
     CycleCount,
+    PagingCycleCount,
     ProveTime,
     ExecTime,
     Gas,

@@ -1,5 +1,5 @@
 from zkbench.config import (
-    get_profiles_ids,
+    get_default_profiles_ids,
     get_program_by_name,
     get_programs,
     get_zkvms,
@@ -17,7 +17,7 @@ def plot_opt_no_effect(dir: str, zkvm: str | None = None):
             len(
                 [
                     x
-                    for x in get_profiles_ids()
+                    for x in get_default_profiles_ids()
                     for zkvm in zkvms
                     if x != BASELINE
                     and (
@@ -27,7 +27,7 @@ def plot_opt_no_effect(dir: str, zkvm: str | None = None):
                     )
                 ]
             )
-            / (len(get_profiles_ids()) * len(zkvms))
+            / (len(get_default_profiles_ids()) * len(zkvms))
             * 100
         )
 

@@ -12,14 +12,19 @@ from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
+from zkbench.plot.rca_classify import classify_rca
+from zkbench.plot.stddev import list_by_stddev
 from zkbench.plot.common import has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
+from zkbench.plot.cycle_count_by_program import plot_cycle_count_by_program
 from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_duration,
     plot_cycle_count_stats,
 )
+from zkbench.plot.duration_by_program import plot_duration_by_program
 from zkbench.plot.export import export_report
+from zkbench.plot.improvement_by_program import plot_improvement_by_program
 from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
@@ -53,9 +58,14 @@ def average_improvement_cli(
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
-def average_duration_cli(zkvm: str | None, measurement: str, program: str | None):
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
+)
+def average_duration_cli(
+    zkvm: str | None, measurement: str, program: str | None, profile: list[str] | None
+):
     dir = click.get_current_context().parent.params["dir"]
-    plot_average_duration(dir, zkvm, measurement, program)
+    plot_average_duration(dir, zkvm, measurement, program, profile)
 
 
 @click.command(name="cycle-count")
@@ -106,9 +116,10 @@ def prove_exec_cli(program: str | None, program_group: str | None):
 @click.command(name="opt-by-program")
 @click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-def opt_by_program_cli(profile: str, zkvm: str | None):
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+def opt_by_program_cli(profile: str, zkvm: str | None, speedup: bool):
     dir = click.get_current_context().parent.params["dir"]
-    plot_opt_by_program(dir, profile, zkvm)
+    plot_opt_by_program(dir, profile, zkvm, speedup)
 
 
 @click.command(name="khz")
@@ -197,3 +208,94 @@ def binsize_duration_cli(measurement: str, program: str | None):
     dir = click.get_current_context().parent.params["dir"]
 
     plot_binsize_duration(dir, program, measurement)
+
+
+@click.command(
+    name="improvement-by-program",
+    help="Show (average) improvement for some profile compared to some other baseline profile by program",
+)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+def improvement_by_program_cli(profile: str, baseline_profile: str, speedup: bool):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_by_program(dir, profile, baseline_profile, speedup)
+
+
+@click.command(
+    name="duration-by-program",
+    help="Show duration for some profiles by program",
+)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def duration_by_program_cli(
+    profile: str, baseline_profile: str, measurement: str, zkvm: str | None
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_duration_by_program(dir, profile, baseline_profile, measurement, zkvm)
+
+
+@click.command(
+    name="cycle-count-by-program",
+    help="Show cycle count for some profiles by program",
+)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+def cycle_count_by_program_cli(profile: str, baseline_profile: str):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_cycle_count_by_program(dir, profile, baseline_profile)
+
+
+@click.command(
+    name="stddev",
+    help="Show cases where standard deviation is too high",
+)
+@click.option("--threshold", type=int, required=True)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
+def stddev_cli(threshold: int, measurement: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+
+    list_by_stddev(dir, threshold, measurement)
+
+
+@click.command(
+    name="rca-classify",
+    help="Find cases for root cause analysis",
+)
+@click.option("--threshold", type=float, required=True)
+@click.option(
+    "--strategy",
+    type=click.Choice(["improve", "degrade", "exec_prove"]),
+    required=True,
+)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
+@click.option("--avg-programs", type=bool, required=False, default=False)
+def rca_classify_cli(
+    threshold: float,
+    avg_programs: bool,
+    strategy: str,
+    measurement: str | None,
+    zkvm: str | None,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    if strategy in ["improve", "degrade"] and not measurement:
+        raise click.UsageError(
+            "Measurement is required for 'improve' and 'degrade' strategies."
+        )
+    if strategy == "exec_prove" and measurement:
+        raise click.UsageError("Measurement is not allowed for 'exec_prove' strategy.")
+
+    classify_rca(dir, threshold, avg_programs, strategy, measurement, zkvm)

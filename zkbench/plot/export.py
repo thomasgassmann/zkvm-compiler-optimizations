@@ -2,8 +2,8 @@ import logging
 import os
 
 from zkbench.config import (
+    get_default_profiles_ids,
     get_measurements,
-    get_profiles_ids,
     get_program_by_name,
     get_program_groups,
     get_programs,
@@ -345,22 +345,33 @@ def export_profile(dir: str, out: str, profile_id: str):
     md_file.new_header(level=1, title=f"{profile_id} report")
 
     md_file.new_header(level=2, title="Optimization by program")
-    export_plot(
-        out,
-        "profiles",
-        md_file,
-        f"{profile_id}-by-program",
-        lambda: plot_opt_by_program(dir, profile=profile_id, zkvm=None),
-    )
-    for zkvm in get_zkvms():
-        md_file.new_header(level=3, title=f"Optimization by program ({zkvm})")
+
+    for speedup in [False, True]:
+        title = "% faster" if not speedup else "Speedup"
+        md_file.new_header(level=3, title=title)
+        speedup_file_name = "speedup" if speedup else ""
         export_plot(
             out,
             "profiles",
             md_file,
-            f"{profile_id}-{zkvm}-by-program",
-            lambda: plot_opt_by_program(dir, profile=profile_id, zkvm=zkvm),
+            f"{profile_id}-by-program-{speedup_file_name}",
+            lambda: plot_opt_by_program(
+                dir, profile=profile_id, zkvm=None, speedup=speedup
+            ),
         )
+        for zkvm in get_zkvms():
+            md_file.new_header(
+                level=4, title=f"Optimization by program ({zkvm}, {title})"
+            )
+            export_plot(
+                out,
+                "profiles",
+                md_file,
+                f"{profile_id}-{zkvm}-by-program-{speedup_file_name}",
+                lambda: plot_opt_by_program(
+                    dir, profile=profile_id, zkvm=zkvm, speedup=speedup
+                ),
+            )
 
     md_file.create_md_file()
 
@@ -374,7 +385,7 @@ def export_profile_overview(dir: str, out: str):
     md_file.new_header(level=2, title="All profiles")
     profile_links = [
         md_file.new_inline_link(f"./profiles/{profile_id}.md", profile_id)
-        for profile_id in get_profiles_ids()
+        for profile_id in get_default_profiles_ids()
     ]
     md_file.new_list(profile_links)
 
@@ -431,7 +442,7 @@ def export_report(dir: str, out: str):
         except Exception as e:
             logging.error(f"Group export failed for {group_name}: {e}")
 
-    for profile in get_profiles_ids():
+    for profile in get_default_profiles_ids():
         try:
             export_profile(dir, out, profile)
         except Exception as e:

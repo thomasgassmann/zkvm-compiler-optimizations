@@ -1,7 +1,7 @@
 import logging
-from zkbench.config import get_profiles_ids, get_programs
+from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
-    get_point_estimate_mean_ms,
+    get_point_estimate_median_ms,
     get_program_selection,
     get_title,
     plot_scatter_by_zkvm,
@@ -9,13 +9,15 @@ from zkbench.plot.common import (
 
 
 def _get_values(dir: str, zkvm: str, programs: list[str]):
-    profiles = get_profiles_ids()
+    profiles = get_default_profiles_ids()
     x, y = [], []
     for profile in profiles:
         for program in programs:
             try:
-                exec = get_point_estimate_mean_ms(dir, program, zkvm, profile, "exec")
-                prove = get_point_estimate_mean_ms(dir, program, zkvm, profile, "prove")
+                exec = get_point_estimate_median_ms(dir, program, zkvm, profile, "exec")
+                prove = get_point_estimate_median_ms(
+                    dir, program, zkvm, profile, "prove"
+                )
                 x.append(exec)
                 y.append(prove)
             except FileNotFoundError:

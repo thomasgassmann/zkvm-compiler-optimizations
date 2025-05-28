@@ -1,7 +1,7 @@
 import logging
 from zkbench.config import get_default_profiles_ids, get_programs
 from zkbench.plot.common import (
-    get_point_estimate_mean_ms,
+    get_point_estimate_median_ms,
     get_title,
     plot_scatter_by_zkvm,
     read_program_meta,
@@ -17,12 +17,14 @@ def _get_values(dir: str, zkvm: str, programs: list[str], measurement: str):
                 if meta is None:
                     continue
                 current_x = meta["size"]
-                current_y = get_point_estimate_mean_ms(dir, program, zkvm, profile, measurement)
+                current_y = get_point_estimate_median_ms(
+                    dir, program, zkvm, profile, measurement
+                )
                 x.append(current_x)
                 y.append(current_y)
             except FileNotFoundError as e:
                 logging.warning(f"Data for {program}-{zkvm}-{measurement}-{profile} not found {e}")
-            
+
     return x, y
 
 

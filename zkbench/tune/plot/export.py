@@ -27,7 +27,7 @@ def export_genetic(stats_path: str, out: str):
             f"Best profile: {stats.best_profile}",
             "Metric: " + str(stats.best_metric),
             "Mode: " + str(stats.mode_name),
-            f"Tune config: {stats.best_profile}",
+            f"Tune config: {stats.config}",
         ]
     )
 

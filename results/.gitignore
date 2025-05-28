@@ -1,6 +1,7 @@
 bench/
 genetic/
 exhaustive/
+root-cause-analysis-data/
 
 # docs/
 

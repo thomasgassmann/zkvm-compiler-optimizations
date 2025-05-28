@@ -1,7 +1,6 @@
 include ../c-build/Makefile
 
-CC=clang++
-CFLAGS+=-DSPEC -DSMALL_MEMORY
+CFLAGS+=-DSPEC -DSMALL_MEMORY -x c++
 
 $(OUTDIR)/$(LIBNAME): $(SRC)
 	$(call add,$(PROGRAM),guest/sjeng.cpp)

@@ -1,6 +1,6 @@
 # Plots
 
-- [RQ1](./rq1/README.md)
+- [RQ1](./rq1/report/README.md)
 - [RQ2](./rq2/README.md)
 
 ## Main takeaways
