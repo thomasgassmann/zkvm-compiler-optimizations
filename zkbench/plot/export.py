@@ -354,7 +354,7 @@ def export_profile(dir: str, out: str, profile_id: str):
             out,
             "profiles",
             md_file,
-            f"{profile_id}-by-program-{speedup_file_name}",
+            f"{profile_id}-by-program{speedup_file_name}",
             lambda: plot_opt_by_program(
                 dir, profile=profile_id, zkvm=None, speedup=speedup
             ),
@@ -367,7 +367,7 @@ def export_profile(dir: str, out: str, profile_id: str):
                 out,
                 "profiles",
                 md_file,
-                f"{profile_id}-{zkvm}-by-program-{speedup_file_name}",
+                f"{profile_id}-{zkvm}-by-program{speedup_file_name}",
                 lambda: plot_opt_by_program(
                     dir, profile=profile_id, zkvm=zkvm, speedup=speedup
                 ),
