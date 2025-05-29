@@ -196,6 +196,9 @@ fn run_runner(run_args: RunArgs) {
     let res = match run_args.zkvm {
         ProverId::Risc0 => report_risc0::Risc0Evaluator::eval(&elf, &run_args.program),
         ProverId::SP1 => report_sp1::SP1Evaluator::eval(&elf, &run_args.program),
+        ProverId::X86 => {
+            panic!("X86 evaluation is not implemented yet.");
+        }
     };
     println!("{:?}", res);
 }

@@ -678,14 +678,6 @@
             ],
             "prepopulate_passes": false
         },
-        "synthetic-counts-propagation": {
-            "cflags": "-O0",
-            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
-            "passes": [
-                "synthetic-counts-propagation"
-            ],
-            "prepopulate_passes": false
-        },
         "o0": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0",

@@ -4,7 +4,7 @@
     Adapted from https://github.com/a16z/zkvm-benchmarks
 */
 
-use core::hint::black_box;
+use bigmem::bigmem_bench;
 
 #[cfg(feature = "risc0")]
 risc0_zkvm::guest::entry!(main);
@@ -18,9 +18,7 @@ fn main() {
     #[cfg(feature = "risc0")]
     let value = risc0_zkvm::guest::env::read::<u32>();
 
-    let array = [value; 128000];
-    black_box(array);
-    let result = array[16000];
+    let result = bigmem_bench!(value);
 
     #[cfg(feature = "sp1")]
     sp1_zkvm::io::commit(&result);

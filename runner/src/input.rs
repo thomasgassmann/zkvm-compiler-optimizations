@@ -191,6 +191,10 @@ pub fn set_risc0_input(
     write_program_inputs(program, builder, ProverId::Risc0, input_override);
 }
 
+pub fn get_bigmem_input() -> u32 {
+    42
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -222,7 +226,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&test);
         }
         ProgramId::Bigmem => {
-            stdin.write_generic(&42u32);
+            stdin.write_generic(&get_bigmem_input());
         }
         ProgramId::Fibonacci => {
             stdin.write_generic(&30000u32);

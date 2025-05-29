@@ -105,6 +105,8 @@ pub enum ProverId {
     Risc0,
     #[serde(rename = "sp1")]
     SP1,
+    #[serde(rename = "x86")]
+    X86,
 }
 
 #[derive(clap::ValueEnum, Clone, Debug, Serialize, Deserialize, Hash, PartialEq)]
@@ -214,6 +216,7 @@ impl Display for ProverId {
         match self {
             ProverId::Risc0 => write!(f, "risc0"),
             ProverId::SP1 => write!(f, "sp1"),
+            ProverId::X86 => write!(f, "x86"),
         }
     }
 }

@@ -150,6 +150,17 @@ async def build_program(
             name,
             timeout=timeout,
         )
+    elif zkvm == "x86":
+        ret = await run_command(
+            f"""
+            RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {profile.rustflags} {llvm_flag}" \
+                cargo +nightly build --release --locked --features x86 --lib {verbosity}
+        """.strip(),
+            program_dir,
+            env,
+            name,
+            timeout=timeout,
+        )
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
     if ret != 0:
