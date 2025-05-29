@@ -87,7 +87,20 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     (train, test)
 }
 
-pub fn load_rsp_input(file: &str) -> Vec<u8> {
+pub fn get_rsp_client_input(input_override: &Option<String>) -> ClientExecutorInput {
+    let file = if input_override.is_some() {
+        input_override.as_ref().unwrap()
+    } else {
+        "20526624"
+    };
+
+    let cache_path = PathBuf::from(format!("./inputs/rsp/{file}.bin"));
+    let mut cache_file = std::fs::File::open(cache_path).unwrap();
+    let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
+    client_input
+}
+
+pub fn load_rsp_input(input_override: &Option<String>) -> Vec<u8> {
     /*
        Cycle counts for rsp in o3 with respective inputs:
        input        - updated  - current
@@ -104,10 +117,7 @@ pub fn load_rsp_input(file: &str) -> Vec<u8> {
        however, this breaks risc0, hence we still use the prev.
        version which is the current column
     */
-    println!("Loading rsp input from file: {file}");
-    let cache_path = PathBuf::from(format!("./inputs/rsp/{file}.bin"));
-    let mut cache_file = std::fs::File::open(cache_path).unwrap();
-    let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
+    let client_input = get_rsp_client_input(input_override);
     bincode::serialize(&client_input).unwrap()
 }
 
@@ -294,11 +304,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_string(&text);
         }
         ProgramId::Rsp => {
-            if input_override.is_some() {
-                stdin.write_vec(load_rsp_input(input_override.as_ref().unwrap()));
-            } else {
-                stdin.write_vec(load_rsp_input("20526624"));
-            }
+            stdin.write_vec(load_rsp_input(input_override));
         }
         ProgramId::Merkle => {
             let (strings, range) = get_merkle_input();

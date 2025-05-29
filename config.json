@@ -22,14 +22,6 @@
             ],
             "prepopulate_passes": false
         },
-        "attributor": {
-            "cflags": "-O0",
-            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
-            "passes": [
-                "attributor"
-            ],
-            "prepopulate_passes": false
-        },
         "bdce": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",

@@ -1,0 +1,20 @@
+[workspace]
+[package]
+name = "rsp-x86"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "rspx86"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+rsp-client-executor = { git = "https://github.com/succinctlabs/rsp/", rev = "249b34ee0c5307b59dc48f1f45a474b04669c6c4" }
+bincode = "=1.3.3"
+rayon = "1.10.0"
+
+[features]
+risc0 = []
+sp1 = []
+x86 = []
