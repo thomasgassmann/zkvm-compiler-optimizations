@@ -5,8 +5,8 @@ use libloading::{Library, Symbol};
 use crate::{
     input::{
         get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, get_loop_sum_input, get_merkle_input, rand_ecdsa_signature,
-        rand_eddsa_signature,
+        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
+        rand_ecdsa_signature, rand_eddsa_signature,
     },
     types::{ProgramId, ProverId},
     utils::get_elf,
@@ -38,6 +38,8 @@ type MainCoreMerkle =
     unsafe extern "C" fn(strings: Vec<String>, range: std::ops::Range<usize>) -> ();
 type MainCoreNpb = unsafe extern "C" fn() -> ();
 type MainCorePolybench = unsafe extern "C" fn() -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreRegexMatch = unsafe extern "C" fn(regex: String, text: String) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -176,6 +178,14 @@ pub fn exec_x86_prepare(
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn();
+            })
+        }
+        ProgramId::RegexMatch => {
+            let main_core_fn: MainCoreRegexMatch = load_main_core_fn!(MainCoreRegexMatch);
+            let (regex, text) = get_regex_match_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(regex, text);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),
