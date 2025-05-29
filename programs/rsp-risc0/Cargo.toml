@@ -16,6 +16,7 @@ bytemuck_derive = "=1.8.0"
 [features]
 risc0 = []
 sp1 = []
+x86 = []
 
 [patch.crates-io]
 kzg-rs = { git = "https://github.com/succinctlabs/kzg-rs.git", branch = "john/target-vendor" }
