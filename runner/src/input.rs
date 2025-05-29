@@ -207,6 +207,10 @@ pub fn get_fibonacci_input() -> u32 {
     30000
 }
 
+pub fn get_keccak256_input() -> Vec<u8> {
+    vec![0u8; 64]
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -230,7 +234,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&300u128);
         }
         ProgramId::Keccak256 => {
-            stdin.write_generic(&vec![0u8; 64]);
+            stdin.write_generic(&get_keccak256_input());
         }
         ProgramId::ZkvmMnist => {
             let (train, test) = load_mnist();
