@@ -4,8 +4,7 @@ use libloading::{Library, Symbol};
 
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, rand_ecdsa_signature, rand_eddsa_signature,
+        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_keccak256_input, get_loop_sum_input, rand_ecdsa_signature, rand_eddsa_signature
     },
     types::{ProgramId, ProverId},
     utils::get_elf,
@@ -30,6 +29,8 @@ type MainCoreFactorial = unsafe extern "C" fn(n: u32) -> ();
 type MainCoreFibonacci = unsafe extern "C" fn(n: u32) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreKeccak256 = unsafe extern "C" fn(data: Vec<u8>) -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreLoopSum = unsafe extern "C" fn(data: Vec<i32>) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -99,6 +100,14 @@ pub fn exec_x86_prepare(
         ProgramId::Keccak256 => {
             let main_core_fn: MainCoreKeccak256 = load_main_core_fn!(MainCoreKeccak256);
             let inp = get_keccak256_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(inp);
+            })
+        }
+        ProgramId::LoopSum => {
+            let main_core_fn: MainCoreLoopSum = load_main_core_fn!(MainCoreLoopSum);
+            let inp = get_loop_sum_input();
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(inp);
