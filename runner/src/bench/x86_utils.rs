@@ -4,7 +4,7 @@ use libloading::{Library, Symbol};
 
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_keccak256_input, get_loop_sum_input, rand_ecdsa_signature, rand_eddsa_signature
+        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_keccak256_input, get_loop_sum_input, get_merkle_input, rand_ecdsa_signature, rand_eddsa_signature
     },
     types::{ProgramId, ProverId},
     utils::get_elf,
@@ -31,6 +31,11 @@ type MainCoreFibonacci = unsafe extern "C" fn(n: u32) -> ();
 type MainCoreKeccak256 = unsafe extern "C" fn(data: Vec<u8>) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreLoopSum = unsafe extern "C" fn(data: Vec<i32>) -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreMerkle = unsafe extern "C" fn(
+    strings: Vec<String>,
+    range: std::ops::Range<usize>,
+) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -111,6 +116,14 @@ pub fn exec_x86_prepare(
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(inp);
+            })
+        }
+        ProgramId::Merkle => {
+            let main_core_fn: MainCoreMerkle = load_main_core_fn!(MainCoreMerkle);
+            let (strings, range) = get_merkle_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(strings, range);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),

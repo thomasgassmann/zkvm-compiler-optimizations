@@ -220,6 +220,21 @@ pub fn get_loop_sum_input() -> Vec<i32> {
     arr
 }
 
+pub fn get_merkle_input() -> (Vec<String>, std::ops::Range<usize>) {
+    let mut rng = rand::thread_rng();
+    const MAX_STRINGS: u32 = 25;
+    let strings: Vec<String> = (0..MAX_STRINGS)
+        .map(|_| {
+            (0..10) // Generate strings of length 10
+                .map(|_| rng.sample(Alphanumeric) as char)
+                .collect()
+        })
+        .collect();
+
+    let range: std::ops::Range<usize> = 10..13 as usize;
+    (strings, range)
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -280,18 +295,8 @@ fn write_program_inputs<W: ProgramInputWriter>(
             }
         }
         ProgramId::Merkle => {
-            let mut rng = rand::thread_rng();
-            const MAX_STRINGS: u32 = 25;
-            let strings: Vec<String> = (0..MAX_STRINGS)
-                .map(|_| {
-                    (0..10) // Generate strings of length 10
-                        .map(|_| rng.sample(Alphanumeric) as char)
-                        .collect()
-                })
-                .collect();
-
+            let (strings, range) = get_merkle_input();
             stdin.write_generic(&strings);
-            let range: std::ops::Range<usize> = 10..13 as usize;
             stdin.write_generic(&range);
         }
         ProgramId::EcdsaVerify => {
