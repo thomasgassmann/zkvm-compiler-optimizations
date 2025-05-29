@@ -3,7 +3,7 @@ use core::panic;
 use libloading::{Library, Symbol};
 
 use crate::{
-    input::{get_bigmem_input, get_eddsa_times, rand_ecdsa_signature, rand_eddsa_signature},
+    input::{get_bigmem_input, get_eddsa_times, get_factorial_input, rand_ecdsa_signature, rand_eddsa_signature},
     types::{ProgramId, ProverId},
     utils::get_elf,
 };
@@ -19,6 +19,7 @@ type MainCoreEcdsaVerify = unsafe extern "C" fn(
 type MainCoreEddsaVerify = unsafe extern "C" fn(
     items: Vec<(ed25519_dalek::VerifyingKey, Vec<u8>, ed25519_dalek::Signature)>,
 );
+type MainCoreFactorial = unsafe extern "C" fn(n: u32) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -67,6 +68,14 @@ pub fn exec_x86_prepare(
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(input);
+            })
+        }
+        ProgramId::Factorial => {
+            let main_core_fn: MainCoreFactorial = load_main_core_fn!(MainCoreFactorial);
+            let inp = get_factorial_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(inp);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),

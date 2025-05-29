@@ -199,6 +199,10 @@ pub fn get_eddsa_times() -> u8 {
     10
 }
 
+pub fn get_factorial_input() -> u32 {
+    1000
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -215,7 +219,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&arr);
         }
         ProgramId::Factorial => {
-            stdin.write_generic(&1000u32);
+            stdin.write_generic(&get_factorial_input());
         }
         ProgramId::Tailcall => {
             stdin.write_generic(&25u128);
