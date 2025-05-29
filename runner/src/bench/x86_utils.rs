@@ -37,6 +37,7 @@ type MainCoreLoopSum = unsafe extern "C" fn(data: Vec<i32>) -> ();
 type MainCoreMerkle =
     unsafe extern "C" fn(strings: Vec<String>, range: std::ops::Range<usize>) -> ();
 type MainCoreNpb = unsafe extern "C" fn() -> ();
+type MainCorePolybench = unsafe extern "C" fn() -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -136,6 +137,42 @@ pub fn exec_x86_prepare(
         | ProgramId::NpbMg
         | ProgramId::NpbSp => {
             let main_core_fn: MainCoreNpb = load_main_core_fn!(MainCoreNpb);
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn();
+            })
+        }
+        ProgramId::Polybench2mm
+        | ProgramId::Polybench3mm
+        | ProgramId::PolybenchAdi
+        | ProgramId::PolybenchAtax
+        | ProgramId::PolybenchBicg
+        | ProgramId::PolybenchCholesky
+        | ProgramId::PolybenchCorrelation
+        | ProgramId::PolybenchCovariance
+        | ProgramId::PolybenchDeriche
+        | ProgramId::PolybenchDoitgen
+        | ProgramId::PolybenchDurbin
+        | ProgramId::PolybenchFdtd2d
+        | ProgramId::PolybenchFloydWarshall
+        | ProgramId::PolybenchGemm
+        | ProgramId::PolybenchGemver
+        | ProgramId::PolybenchGesummv
+        | ProgramId::PolybenchGramschmidt
+        | ProgramId::PolybenchHeat3d
+        | ProgramId::PolybenchJacobi1d
+        | ProgramId::PolybenchJacobi2d
+        | ProgramId::PolybenchLu
+        | ProgramId::PolybenchLudcmp
+        | ProgramId::PolybenchMvt
+        | ProgramId::PolybenchNussinov
+        | ProgramId::PolybenchSeidel2d
+        | ProgramId::PolybenchSymm
+        | ProgramId::PolybenchSyr2k
+        | ProgramId::PolybenchSyrk
+        | ProgramId::PolybenchTrisolv
+        | ProgramId::PolybenchTrmm => {
+            let main_core_fn: MainCorePolybench = load_main_core_fn!(MainCorePolybench);
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn();
