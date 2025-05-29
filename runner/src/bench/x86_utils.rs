@@ -3,7 +3,7 @@ use core::panic;
 use libloading::{Library, Symbol};
 
 use crate::{
-    input::{get_bigmem_input, rand_ecdsa_signature},
+    input::{get_bigmem_input, get_eddsa_times, rand_ecdsa_signature, rand_eddsa_signature},
     types::{ProgramId, ProverId},
     utils::get_elf,
 };
@@ -14,6 +14,10 @@ type MainCoreEcdsaVerify = unsafe extern "C" fn(
     encoded_verifying_key: k256::EncodedPoint,
     message: Vec<u8>,
     signature: k256::ecdsa::Signature,
+);
+#[allow(improper_ctypes_definitions)]
+type MainCoreEddsaVerify = unsafe extern "C" fn(
+    items: Vec<(ed25519_dalek::VerifyingKey, Vec<u8>, ed25519_dalek::Signature)>,
 );
 
 pub fn exec_x86_prepare(
@@ -52,6 +56,17 @@ pub fn exec_x86_prepare(
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(encoded_verifying_key, message, signature);
+            })
+        }
+        ProgramId::EddsaVerify => {
+            let main_core_fn: MainCoreEddsaVerify = load_main_core_fn!(MainCoreEddsaVerify);
+            let mut input = Vec::new();
+            for _ in 0..get_eddsa_times() {
+                input.push(rand_eddsa_signature());
+            }
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(input);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),

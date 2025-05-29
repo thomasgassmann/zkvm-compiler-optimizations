@@ -195,6 +195,10 @@ pub fn get_bigmem_input() -> u32 {
     42
 }
 
+pub fn get_eddsa_times() -> u8 {
+    10
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -278,7 +282,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&rand_ecdsa_signature());
         }
         ProgramId::EddsaVerify => {
-            let times: u8 = 10;
+            let times: u8 = get_eddsa_times();
             stdin.write_generic(&times);
 
             for _ in 0..times {

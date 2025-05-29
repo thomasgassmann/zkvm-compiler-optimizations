@@ -14,7 +14,9 @@ fn main() {
 fn verify_inner() {
     let (signer, message, signature): (VerifyingKey, Vec<u8>, Signature) = env::read();
 
-    signer.verify(&message, &signature).expect("Ed25519 signature verification failed");
+    signer
+        .verify(&message, &signature)
+        .expect("Ed25519 signature verification failed");
 
     env::commit(&(signer, message));
 }

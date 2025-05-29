@@ -19,7 +19,11 @@ use k256::{
 
 #[no_mangle]
 #[allow(improper_ctypes_definitions)]
-pub extern "C" fn main_core(encoded_verifying_key: EncodedPoint, message: Vec<u8>, signature: Signature) {
+pub extern "C" fn main_core(
+    encoded_verifying_key: EncodedPoint,
+    message: Vec<u8>,
+    signature: Signature,
+) {
     let verifying_key = VerifyingKey::from_encoded_point(&encoded_verifying_key).unwrap();
 
     // Verify the signature, panicking if verification fails.

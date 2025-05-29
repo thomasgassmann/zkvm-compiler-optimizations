@@ -14,3 +14,4 @@ ecdsa-core = { git = "https://github.com/sp1-patches/signatures", package = "ecd
 [features]
 risc0 = []
 sp1 = []
+x86 = []
