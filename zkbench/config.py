@@ -152,7 +152,7 @@ def get_source_binary_path(
     elif zkvm == "risc0":
         path = os.path.join(base, "riscv32im-risc0-zkvm-elf/release", dir_name)
     elif zkvm == "x86":
-        path = os.path.join(base, "release", "lib" + dir_name + ".so")
+        path = os.path.join(base, "release", "lib" + dir_name.replace("-", "") + ".so")
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
     return path
