@@ -203,6 +203,10 @@ pub fn get_factorial_input() -> u32 {
     1000
 }
 
+pub fn get_fibonacci_input() -> u32 {
+    30000
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -237,7 +241,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&get_bigmem_input());
         }
         ProgramId::Fibonacci => {
-            stdin.write_generic(&30000u32);
+            stdin.write_generic(&get_fibonacci_input());
         }
         ProgramId::Sha2Bench => {
             stdin.write_generic(&vec![5u8; 8192]);

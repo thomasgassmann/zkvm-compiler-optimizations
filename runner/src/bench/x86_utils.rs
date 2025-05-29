@@ -3,7 +3,7 @@ use core::panic;
 use libloading::{Library, Symbol};
 
 use crate::{
-    input::{get_bigmem_input, get_eddsa_times, get_factorial_input, rand_ecdsa_signature, rand_eddsa_signature},
+    input::{get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, rand_ecdsa_signature, rand_eddsa_signature},
     types::{ProgramId, ProverId},
     utils::get_elf,
 };
@@ -20,6 +20,7 @@ type MainCoreEddsaVerify = unsafe extern "C" fn(
     items: Vec<(ed25519_dalek::VerifyingKey, Vec<u8>, ed25519_dalek::Signature)>,
 );
 type MainCoreFactorial = unsafe extern "C" fn(n: u32) -> ();
+type MainCoreFibonacci = unsafe extern "C" fn(n: u32) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -73,6 +74,14 @@ pub fn exec_x86_prepare(
         ProgramId::Factorial => {
             let main_core_fn: MainCoreFactorial = load_main_core_fn!(MainCoreFactorial);
             let inp = get_factorial_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(inp);
+            })
+        }
+        ProgramId::Fibonacci => {
+            let main_core_fn: MainCoreFibonacci = load_main_core_fn!(MainCoreFibonacci);
+            let inp = get_fibonacci_input();
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(inp);
