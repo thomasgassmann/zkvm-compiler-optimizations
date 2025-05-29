@@ -8,6 +8,7 @@ from zkbench.config import (
     get_program_groups,
     get_programs,
     get_zkvms,
+    get_zkvms_with_x86,
 )
 from zkbench.plot.plot import (
     average_duration_cli,
@@ -62,7 +63,9 @@ def zkbench_cli(log_level: str, log_file: str):
     required=False,
     multiple=True,
 )
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
+@click.option(
+    "--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False, multiple=True
+)
 @click.option(
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
 )
@@ -88,7 +91,9 @@ async def build_cli(
 @click.option(
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
 )
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
+@click.option(
+    "--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False, multiple=True
+)
 @coro
 async def clean_cli(program: list[str], zkvm: list[str]):
     await run_clean(program, zkvm)
@@ -104,7 +109,9 @@ async def clean_cli(program: list[str], zkvm: list[str]):
     required=False,
     multiple=True,
 )
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
+@click.option(
+    "--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False, multiple=True
+)
 @click.option(
     "--measurement",
     type=click.Choice(get_measurements()),

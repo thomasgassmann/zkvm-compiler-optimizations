@@ -55,9 +55,6 @@ pub fn run_tune(args: TuneArgs) {
                 .paging_cycles
                 .unwrap() as u128
         }
-        (ProverId::SP1, TuneMetric::PagingCycleCount) => {
-            panic!("Gas metric is not supported for Risc0");
-        }
         (ProverId::Risc0, TuneMetric::ProveTime) => tune_time_operation(
             || prove_core_risc0_prepare(&elf, &args.program, &None),
             |(prover, context, session)| {
@@ -70,9 +67,6 @@ pub fn run_tune(args: TuneArgs) {
             |(pk, _, stdin)| prove_core_sp1(&stdin, &pk),
             num_samples,
         ),
-        (ProverId::Risc0, TuneMetric::Gas) => {
-            panic!("Gas metric is not supported for Risc0");
-        }
         (ProverId::SP1, TuneMetric::Gas) => {
             let (stdin, prover) = exec_sp1_prepare(&elf, &args.program, &None);
             let (_, report) = exec_sp1(&stdin, &prover, &elf);
@@ -90,6 +84,7 @@ pub fn run_tune(args: TuneArgs) {
             },
             num_samples,
         ),
+        _ => panic!("Unsupported combination of prover and metric"),
     };
     let metric_value = Metric {
         metric: metric_value,
