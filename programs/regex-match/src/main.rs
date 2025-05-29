@@ -18,12 +18,5 @@ fn main() {
     #[cfg(feature = "sp1")]
     let t: String = sp1_zkvm::io::read();
 
-    let re = Regex::new(&r.as_str()).unwrap();
-    for str in re.find_iter(&t.as_str()).map(|m| m.as_str()).collect::<Vec<&str>>() {
-        println!("{}", str);
-        #[cfg(feature = "sp1")]
-        sp1_zkvm::io::commit(&str);
-        #[cfg(feature = "risc0")]
-        risc0_zkvm::guest::env::commit(&str);
-    }
+    regexmatch::regex_match_and_commit!(t, r);
 }

@@ -220,6 +220,14 @@ pub fn get_loop_sum_input() -> Vec<i32> {
     arr
 }
 
+pub fn get_regex_match_input() -> (String, String) {
+    // sample from https://docs.rs/regex/latest/regex/
+    (
+        "[0-9]{4}-[0-9]{2}-[0-9]{2}".to_string(),
+        "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?".to_string(),
+    )
+}
+
 pub fn get_merkle_input() -> (Vec<String>, std::ops::Range<usize>) {
     let mut rng = rand::thread_rng();
     const MAX_STRINGS: u32 = 25;
@@ -281,11 +289,9 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&32u32);
         }
         ProgramId::RegexMatch => {
-            // sample from https://docs.rs/regex/latest/regex/
-            stdin.write_string("[0-9]{4}-[0-9]{2}-[0-9]{2}");
-            stdin.write_string(
-                "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
-            );
+            let (regex, text) = get_regex_match_input();
+            stdin.write_string(&regex);
+            stdin.write_string(&text);
         }
         ProgramId::Rsp => {
             if input_override.is_some() {
