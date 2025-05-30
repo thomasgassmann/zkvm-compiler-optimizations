@@ -4,7 +4,10 @@ use libloading::{Library, Symbol};
 
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input, get_sha2_bench_input, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature
+        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
+        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
+        get_sha_bench_input, get_sha_chain_input, load_rsp_input, rand_ecdsa_signature,
+        rand_eddsa_signature,
     },
     types::{ProgramId, ProverId},
     utils::get_elf,
@@ -41,7 +44,8 @@ type MainCoreRegexMatch = unsafe extern "C" fn(regex: String, text: String) -> (
 #[allow(improper_ctypes_definitions)]
 type MainCoreRsp = unsafe extern "C" fn(input: &Vec<u8>) -> ();
 #[allow(improper_ctypes_definitions)]
-type MainCoreSha2Bench = unsafe extern "C" fn(input: Vec<u8>) -> ();
+type MainCoreShaBench = unsafe extern "C" fn(input: Vec<u8>) -> ();
+type MainCoreShaChain = unsafe extern "C" fn(input: [u8; 32], num_iters: u32) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -198,12 +202,20 @@ pub fn exec_x86_prepare(
                 main_core_fn(&input);
             })
         }
-        ProgramId::Sha2Bench => {
-            let main_core_fn: MainCoreSha2Bench = load_main_core_fn!(MainCoreSha2Bench);
-            let input = get_sha2_bench_input();
+        ProgramId::Sha2Bench | ProgramId::Sha3Bench => {
+            let main_core_fn: MainCoreShaBench = load_main_core_fn!(MainCoreShaBench);
+            let input = get_sha_bench_input();
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(input);
+            })
+        }
+        ProgramId::Sha2Chain | ProgramId::Sha3Chain => {
+            let main_core_fn: MainCoreShaChain = load_main_core_fn!(MainCoreShaChain);
+            let (input, num_iters) = get_sha_chain_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(input, num_iters);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),

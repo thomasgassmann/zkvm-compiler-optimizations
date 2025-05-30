@@ -253,8 +253,12 @@ pub fn get_merkle_input() -> (Vec<String>, std::ops::Range<usize>) {
     (strings, range)
 }
 
-pub fn get_sha2_bench_input() -> Vec<u8> {
+pub fn get_sha_bench_input() -> Vec<u8> {
     vec![5u8; 8192]
+}
+
+pub fn get_sha_chain_input() -> ([u8; 32], u32) {
+    (vec![5u8; 32].try_into().unwrap(), 32)
 }
 
 fn write_program_inputs<W: ProgramInputWriter>(
@@ -288,19 +292,13 @@ fn write_program_inputs<W: ProgramInputWriter>(
         ProgramId::Fibonacci => {
             stdin.write_generic(&get_fibonacci_input());
         }
-        ProgramId::Sha2Bench => {
-            stdin.write_generic(&get_sha2_bench_input());
+        ProgramId::Sha2Bench | ProgramId::Sha3Bench => {
+            stdin.write_generic(&get_sha_bench_input());
         }
-        ProgramId::Sha3Bench => {
-            stdin.write_generic(&vec![5u8; 8192]);
-        }
-        ProgramId::Sha2Chain => {
-            stdin.write_generic(&vec![5u8; 32]);
-            stdin.write_generic(&32u32);
-        }
-        ProgramId::Sha3Chain => {
-            stdin.write_generic(&vec![5u8; 32]);
-            stdin.write_generic(&32u32);
+        ProgramId::Sha2Chain | ProgramId::Sha3Chain => {
+            let (input, num_iters) = get_sha_chain_input();
+            stdin.write_generic(&input);
+            stdin.write_generic(&num_iters);
         }
         ProgramId::RegexMatch => {
             let (regex, text) = get_regex_match_input();
