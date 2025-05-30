@@ -265,6 +265,10 @@ pub fn get_spec619_input() -> (i32, i32, i32) {
     (1, 0, 0)
 }
 
+pub fn get_tailcall_input() -> (u128, u128) {
+    (25, 300)
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -279,8 +283,9 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&get_factorial_input());
         }
         ProgramId::Tailcall => {
-            stdin.write_generic(&25u128);
-            stdin.write_generic(&300u128);
+            let (n, r) = get_tailcall_input();
+            stdin.write_generic(&n);
+            stdin.write_generic(&r);
         }
         ProgramId::Keccak256 => {
             stdin.write_generic(&get_keccak256_input());
