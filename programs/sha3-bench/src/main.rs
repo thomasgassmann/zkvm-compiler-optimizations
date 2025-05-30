@@ -15,9 +15,7 @@ pub fn main() {
     #[cfg(feature = "risc0")]
     let input: Vec<u8> = risc0_zkvm::guest::env::read();
 
-    let mut hasher = Keccak256::new();
-    hasher.update(input);
-    let result = hasher.finalize();
+    let result = sha3bench::sha3_hash!(input);
 
     #[cfg(feature = "sp1")]
     sp1_zkvm::io::commit::<[u8; 32]>(&result.into());

@@ -1,6 +1,7 @@
 #![no_main]
 
 use sha2::{Digest, Sha256};
+use sha2chain::sha256_hash;
 
 #[cfg(feature = "risc0")]
 risc0_zkvm::guest::entry!(main);
@@ -19,13 +20,7 @@ pub fn main() {
     #[cfg(feature = "risc0")]
     let num_iters: u32 = risc0_zkvm::guest::env::read();
 
-    let mut hash = input;
-    for _ in 0..num_iters {
-        let mut hasher = Sha256::new();
-        hasher.update(input);
-        let res = &hasher.finalize();
-        hash = Into::<[u8; 32]>::into (*res);
-    }
+    let hash = sha256_hash!(input, num_iters);
 
     #[cfg(feature = "sp1")]
     sp1_zkvm::io::commit::<[u8; 32]>(&hash.into());
