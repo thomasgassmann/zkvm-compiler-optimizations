@@ -6,8 +6,8 @@ use crate::{
     input::{
         get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
         get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
-        get_sha_bench_input, get_sha_chain_input, load_rsp_input, rand_ecdsa_signature,
-        rand_eddsa_signature,
+        get_sha_bench_input, get_sha_chain_input, get_spec619_input, load_rsp_input,
+        rand_ecdsa_signature, rand_eddsa_signature,
     },
     types::{ProgramId, ProverId},
     utils::get_elf,
@@ -37,8 +37,7 @@ type MainCoreLoopSum = unsafe extern "C" fn(data: Vec<i32>) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreMerkle =
     unsafe extern "C" fn(strings: Vec<String>, range: std::ops::Range<usize>) -> ();
-type MainCoreNpb = unsafe extern "C" fn() -> ();
-type MainCorePolybench = unsafe extern "C" fn() -> ();
+type MainCore = unsafe extern "C" fn() -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreRegexMatch = unsafe extern "C" fn(regex: String, text: String) -> ();
 #[allow(improper_ctypes_definitions)]
@@ -46,6 +45,9 @@ type MainCoreRsp = unsafe extern "C" fn(input: &Vec<u8>) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreShaBench = unsafe extern "C" fn(input: Vec<u8>) -> ();
 type MainCoreShaChain = unsafe extern "C" fn(input: [u8; 32], num_iters: u32) -> ();
+type MainCoreSpec619 = unsafe extern "C" fn(it: i32, action: i32, sim_type: i32) -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreSpec631 = unsafe extern "C" fn(input: String) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -136,20 +138,6 @@ pub fn exec_x86_prepare(
                 main_core_fn(strings, range);
             })
         }
-        ProgramId::NpbBt
-        | ProgramId::NpbCg
-        | ProgramId::NpbEp
-        | ProgramId::NpbFt
-        | ProgramId::NpbIs
-        | ProgramId::NpbLu
-        | ProgramId::NpbMg
-        | ProgramId::NpbSp => {
-            let main_core_fn: MainCoreNpb = load_main_core_fn!(MainCoreNpb);
-            Box::new(move || unsafe {
-                let _keep_lib_alive = &lib;
-                main_core_fn();
-            })
-        }
         ProgramId::Polybench2mm
         | ProgramId::Polybench3mm
         | ProgramId::PolybenchAdi
@@ -179,8 +167,18 @@ pub fn exec_x86_prepare(
         | ProgramId::PolybenchSyr2k
         | ProgramId::PolybenchSyrk
         | ProgramId::PolybenchTrisolv
-        | ProgramId::PolybenchTrmm => {
-            let main_core_fn: MainCorePolybench = load_main_core_fn!(MainCorePolybench);
+        | ProgramId::PolybenchTrmm
+        | ProgramId::NpbBt
+        | ProgramId::NpbCg
+        | ProgramId::NpbEp
+        | ProgramId::NpbFt
+        | ProgramId::NpbIs
+        | ProgramId::NpbLu
+        | ProgramId::NpbMg
+        | ProgramId::NpbSp
+        | ProgramId::Sha256
+        | ProgramId::Spec605 => {
+            let main_core_fn: MainCore = load_main_core_fn!(MainCore);
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn();
@@ -216,6 +214,23 @@ pub fn exec_x86_prepare(
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(input, num_iters);
+            })
+        }
+        ProgramId::Spec619 => {
+            let main_core_fn: MainCoreSpec619 = load_main_core_fn!(MainCoreSpec619);
+            let (it, action, sim_type) = get_spec619_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(it, action, sim_type);
+            })
+        }
+        ProgramId::Spec631 => {
+            let main_core_fn: MainCoreSpec631 = load_main_core_fn!(MainCoreSpec631);
+            let str = include_str!("../../../inputs/spec-631/in.txt");
+            let input = str.to_string();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(input);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),

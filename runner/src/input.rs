@@ -261,6 +261,10 @@ pub fn get_sha_chain_input() -> ([u8; 32], u32) {
     (vec![5u8; 32].try_into().unwrap(), 32)
 }
 
+pub fn get_spec619_input() -> (i32, i32, i32) {
+    (1, 0, 0)
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -325,9 +329,10 @@ fn write_program_inputs<W: ProgramInputWriter>(
             }
         }
         ProgramId::Spec619 => {
-            stdin.write_generic(&1); // timesteps
-            stdin.write_generic(&0); // action: NOTHING = 0, COMPARE, STORE
-            stdin.write_generic(&0); // simType: LDC = 0, CHANNEL
+            let (a, b, c) = get_spec619_input();
+            stdin.write_generic(&a); // timesteps
+            stdin.write_generic(&b); // action: NOTHING = 0, COMPARE, STORE
+            stdin.write_generic(&c); // simType: LDC = 0, CHANNEL
         }
         ProgramId::Spec631 => {
             let str = include_str!("../../inputs/spec-631/in.txt");
