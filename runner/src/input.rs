@@ -33,7 +33,7 @@ fn downsample_image(image: &Array1<f32>) -> Vec<f64> {
     downsampled
 }
 
-fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
+pub fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     let train_size: usize = 150;
     let test_size: usize = 10;
     let mnist = MnistBuilder::new()
