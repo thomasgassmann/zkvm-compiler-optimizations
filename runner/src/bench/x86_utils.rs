@@ -4,10 +4,7 @@ use libloading::{Library, Symbol};
 
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
-        get_sha_bench_input, get_sha_chain_input, get_spec619_input, load_rsp_input,
-        rand_ecdsa_signature, rand_eddsa_signature,
+        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input, get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature
     },
     types::{ProgramId, ProverId},
     utils::get_elf,
@@ -48,6 +45,8 @@ type MainCoreShaChain = unsafe extern "C" fn(input: [u8; 32], num_iters: u32) ->
 type MainCoreSpec619 = unsafe extern "C" fn(it: i32, action: i32, sim_type: i32) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreSpec631 = unsafe extern "C" fn(input: String) -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreTailcall = unsafe extern "C" fn(n: u128, r: u128) -> ();
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
@@ -231,6 +230,14 @@ pub fn exec_x86_prepare(
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(input);
+            })
+        }
+        ProgramId::Tailcall => {
+            let main_core_fn: MainCoreTailcall = load_main_core_fn!(MainCoreTailcall);
+            let (n, r) = get_tailcall_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(n, r);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),
