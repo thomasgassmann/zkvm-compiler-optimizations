@@ -253,6 +253,10 @@ pub fn get_merkle_input() -> (Vec<String>, std::ops::Range<usize>) {
     (strings, range)
 }
 
+pub fn get_sha2_bench_input() -> Vec<u8> {
+    vec![5u8; 8192]
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -285,7 +289,7 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&get_fibonacci_input());
         }
         ProgramId::Sha2Bench => {
-            stdin.write_generic(&vec![5u8; 8192]);
+            stdin.write_generic(&get_sha2_bench_input());
         }
         ProgramId::Sha3Bench => {
             stdin.write_generic(&vec![5u8; 8192]);
