@@ -110,6 +110,10 @@ def get_zkvms():
     return CONFIG["zkvms"]
 
 
+def get_zkvms_with_x86():
+    return get_zkvms() + ["x86"]
+
+
 def get_zkvm_specific_programs():
     return [
         program
@@ -147,6 +151,8 @@ def get_source_binary_path(
         path = os.path.join(base, "riscv32im-succinct-zkvm-elf/release", dir_name)
     elif zkvm == "risc0":
         path = os.path.join(base, "riscv32im-risc0-zkvm-elf/release", dir_name)
+    elif zkvm == "x86":
+        path = os.path.join(base, "release", "lib" + dir_name.replace("-", "") + ".so")
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
     return path

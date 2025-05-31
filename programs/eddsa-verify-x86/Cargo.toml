@@ -1,0 +1,18 @@
+[workspace]
+[package]
+name = "eddsa-verify-x86"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "eddsaverifyx86"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ed25519-dalek = { version = "2.1.1", features = ["serde", "signature"] }
+
+[features]
+risc0 = []
+sp1 = []
+x86 = []

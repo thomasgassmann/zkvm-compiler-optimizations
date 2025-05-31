@@ -8,7 +8,8 @@ use k256::{
 sp1_zkvm::entrypoint!(main);
 
 fn main() {
-    let (encoded_verifying_key, message, signature): (EncodedPoint, Vec<u8>, Signature) = sp1_zkvm::io::read();
+    let (encoded_verifying_key, message, signature): (EncodedPoint, Vec<u8>, Signature) =
+        sp1_zkvm::io::read();
 
     let verifying_key = VerifyingKey::from_encoded_point(&encoded_verifying_key).unwrap();
 

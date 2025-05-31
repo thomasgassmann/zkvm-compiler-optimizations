@@ -30,6 +30,16 @@ pub fn setup_build(program: &str) {
         panic!("Make clean failed with status: {:?}", status);
     }
 
+    #[cfg(feature = "x86")]
+    let target = "-fPIC";
+    #[cfg(not(feature = "x86"))]
+    let target = "--target=riscv32-unknown-none -march=rv32im -mabi=ilp32";
+
+    #[cfg(feature = "x86")]
+    let llc_flags = "-relocation-model=pic";
+    #[cfg(not(feature = "x86"))]
+    let llc_flags = "";
+
     let cflags = env::var("ZK_CFLAGS").unwrap_or("".to_string());
     println!("cargo::warning=Done cleaning");
     let mut binding = Command::new("make");
@@ -37,6 +47,8 @@ pub fn setup_build(program: &str) {
         .current_dir("..")
         .arg(passes_string)
         .arg(format!("ZK_CFLAGS={}", cflags))
+        .arg(format!("ZK_TARGET_CFLAGS={}", target))
+        .arg(format!("LLC_FLAGS={}", llc_flags))
         .arg(format!("PROGRAM={}", program))
         .arg("-B")
         .arg("all");

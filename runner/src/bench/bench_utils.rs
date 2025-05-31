@@ -1,7 +1,10 @@
+use core::panic;
+
 use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
 use super::utils::is_same_as_baseline;
+use super::x86_utils::{exec_x86, exec_x86_prepare};
 use super::{
     super::{
         types::{MeasurementType, ProgramId, ProverId},
@@ -39,6 +42,41 @@ pub fn add_benchmarks_for(
             meta_only,
             input_override,
         ),
+        ProverId::X86 => add_x86_exec_and_prove(
+            group,
+            program,
+            measurement,
+            profile,
+            meta_only,
+            input_override,
+        ),
+    }
+}
+
+fn add_x86_exec_and_prove(
+    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    program: &ProgramId,
+    measurement: &MeasurementType,
+    profile: &String,
+    meta_only: bool,
+    input_override: &Option<String>,
+) {
+    if meta_only || is_same_as_baseline(program, &ProverId::X86, profile) {
+        return;
+    }
+
+    match measurement {
+        MeasurementType::Exec => {
+            group.bench_function(profile, |b| {
+                b.iter_with_setup(
+                    || exec_x86_prepare(program, &ProverId::X86, profile, input_override),
+                    |f| exec_x86(f),
+                );
+            });
+        }
+        MeasurementType::Prove => {
+            panic!("Proving for x86 not possible.");
+        }
     }
 }
 

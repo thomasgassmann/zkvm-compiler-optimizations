@@ -1,6 +1,7 @@
 #![no_main]
 
 use sha2::{Digest, Sha256};
+use sha2bench::sha256_hash;
 extern crate alloc;
 
 #[cfg(feature = "risc0")]
@@ -15,9 +16,7 @@ pub fn main() {
     #[cfg(feature = "risc0")]
     let input: Vec<u8> = risc0_zkvm::guest::env::read();
 
-    let mut hasher = Sha256::new();
-    hasher.update(input);
-    let result = hasher.finalize();
+    let result = sha256_hash!(input);
 
     #[cfg(feature = "sp1")]
     sp1_zkvm::io::commit::<[u8; 32]>(&result.into());

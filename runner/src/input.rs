@@ -33,7 +33,7 @@ fn downsample_image(image: &Array1<f32>) -> Vec<f64> {
     downsampled
 }
 
-fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
+pub fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     let train_size: usize = 150;
     let test_size: usize = 10;
     let mnist = MnistBuilder::new()
@@ -87,7 +87,20 @@ fn load_mnist() -> (Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>) {
     (train, test)
 }
 
-pub fn load_rsp_input(file: &str) -> Vec<u8> {
+pub fn get_rsp_client_input(input_override: &Option<String>) -> ClientExecutorInput {
+    let file = if input_override.is_some() {
+        input_override.as_ref().unwrap()
+    } else {
+        "20526624"
+    };
+
+    let cache_path = PathBuf::from(format!("./inputs/rsp/{file}.bin"));
+    let mut cache_file = std::fs::File::open(cache_path).unwrap();
+    let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
+    client_input
+}
+
+pub fn load_rsp_input(input_override: &Option<String>) -> Vec<u8> {
     /*
        Cycle counts for rsp in o3 with respective inputs:
        input        - updated  - current
@@ -104,10 +117,7 @@ pub fn load_rsp_input(file: &str) -> Vec<u8> {
        however, this breaks risc0, hence we still use the prev.
        version which is the current column
     */
-    println!("Loading rsp input from file: {file}");
-    let cache_path = PathBuf::from(format!("./inputs/rsp/{file}.bin"));
-    let mut cache_file = std::fs::File::open(cache_path).unwrap();
-    let client_input: ClientExecutorInput = bincode::deserialize_from(&mut cache_file).unwrap();
+    let client_input = get_rsp_client_input(input_override);
     bincode::serialize(&client_input).unwrap()
 }
 
@@ -191,6 +201,74 @@ pub fn set_risc0_input(
     write_program_inputs(program, builder, ProverId::Risc0, input_override);
 }
 
+pub fn get_bigmem_input() -> u32 {
+    42
+}
+
+pub fn get_eddsa_times() -> u8 {
+    10
+}
+
+pub fn get_factorial_input() -> u32 {
+    1000
+}
+
+pub fn get_fibonacci_input() -> u32 {
+    30000
+}
+
+pub fn get_keccak256_input() -> Vec<u8> {
+    vec![0u8; 64]
+}
+
+pub fn get_loop_sum_input() -> Vec<i32> {
+    let mut arr = Vec::new();
+    for i in 0..1500 {
+        arr.push(i);
+    }
+
+    arr
+}
+
+pub fn get_regex_match_input() -> (String, String) {
+    // sample from https://docs.rs/regex/latest/regex/
+    (
+        "[0-9]{4}-[0-9]{2}-[0-9]{2}".to_string(),
+        "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?".to_string(),
+    )
+}
+
+pub fn get_merkle_input() -> (Vec<String>, std::ops::Range<usize>) {
+    let mut rng = rand::thread_rng();
+    const MAX_STRINGS: u32 = 25;
+    let strings: Vec<String> = (0..MAX_STRINGS)
+        .map(|_| {
+            (0..10) // Generate strings of length 10
+                .map(|_| rng.sample(Alphanumeric) as char)
+                .collect()
+        })
+        .collect();
+
+    let range: std::ops::Range<usize> = 10..13 as usize;
+    (strings, range)
+}
+
+pub fn get_sha_bench_input() -> Vec<u8> {
+    vec![5u8; 8192]
+}
+
+pub fn get_sha_chain_input() -> ([u8; 32], u32) {
+    (vec![5u8; 32].try_into().unwrap(), 32)
+}
+
+pub fn get_spec619_input() -> (i32, i32, i32) {
+    (1, 0, 0)
+}
+
+pub fn get_tailcall_input() -> (u128, u128) {
+    (25, 300)
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -199,22 +277,18 @@ fn write_program_inputs<W: ProgramInputWriter>(
 ) {
     match program {
         ProgramId::LoopSum => {
-            let mut arr = Vec::new();
-            for i in 0..1500 {
-                arr.push(i);
-            }
-
-            stdin.write_generic(&arr);
+            stdin.write_generic(&get_loop_sum_input());
         }
         ProgramId::Factorial => {
-            stdin.write_generic(&1000u32);
+            stdin.write_generic(&get_factorial_input());
         }
         ProgramId::Tailcall => {
-            stdin.write_generic(&25u128);
-            stdin.write_generic(&300u128);
+            let (n, r) = get_tailcall_input();
+            stdin.write_generic(&n);
+            stdin.write_generic(&r);
         }
         ProgramId::Keccak256 => {
-            stdin.write_generic(&vec![0u8; 64]);
+            stdin.write_generic(&get_keccak256_input());
         }
         ProgramId::ZkvmMnist => {
             let (train, test) = load_mnist();
@@ -222,59 +296,37 @@ fn write_program_inputs<W: ProgramInputWriter>(
             stdin.write_generic(&test);
         }
         ProgramId::Bigmem => {
-            stdin.write_generic(&42u32);
+            stdin.write_generic(&get_bigmem_input());
         }
         ProgramId::Fibonacci => {
-            stdin.write_generic(&30000u32);
+            stdin.write_generic(&get_fibonacci_input());
         }
-        ProgramId::Sha2Bench => {
-            stdin.write_generic(&vec![5u8; 8192]);
+        ProgramId::Sha2Bench | ProgramId::Sha3Bench => {
+            stdin.write_generic(&get_sha_bench_input());
         }
-        ProgramId::Sha3Bench => {
-            stdin.write_generic(&vec![5u8; 8192]);
-        }
-        ProgramId::Sha2Chain => {
-            stdin.write_generic(&vec![5u8; 32]);
-            stdin.write_generic(&32u32);
-        }
-        ProgramId::Sha3Chain => {
-            stdin.write_generic(&vec![5u8; 32]);
-            stdin.write_generic(&32u32);
+        ProgramId::Sha2Chain | ProgramId::Sha3Chain => {
+            let (input, num_iters) = get_sha_chain_input();
+            stdin.write_generic(&input);
+            stdin.write_generic(&num_iters);
         }
         ProgramId::RegexMatch => {
-            // sample from https://docs.rs/regex/latest/regex/
-            stdin.write_string("[0-9]{4}-[0-9]{2}-[0-9]{2}");
-            stdin.write_string(
-                "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?",
-            );
+            let (regex, text) = get_regex_match_input();
+            stdin.write_string(&regex);
+            stdin.write_string(&text);
         }
         ProgramId::Rsp => {
-            if input_override.is_some() {
-                stdin.write_vec(load_rsp_input(input_override.as_ref().unwrap()));
-            } else {
-                stdin.write_vec(load_rsp_input("20526624"));
-            }
+            stdin.write_vec(load_rsp_input(input_override));
         }
         ProgramId::Merkle => {
-            let mut rng = rand::thread_rng();
-            const MAX_STRINGS: u32 = 25;
-            let strings: Vec<String> = (0..MAX_STRINGS)
-                .map(|_| {
-                    (0..10) // Generate strings of length 10
-                        .map(|_| rng.sample(Alphanumeric) as char)
-                        .collect()
-                })
-                .collect();
-
+            let (strings, range) = get_merkle_input();
             stdin.write_generic(&strings);
-            let range: std::ops::Range<usize> = 10..13 as usize;
             stdin.write_generic(&range);
         }
         ProgramId::EcdsaVerify => {
             stdin.write_generic(&rand_ecdsa_signature());
         }
         ProgramId::EddsaVerify => {
-            let times: u8 = 10;
+            let times: u8 = get_eddsa_times();
             stdin.write_generic(&times);
 
             for _ in 0..times {
@@ -282,9 +334,10 @@ fn write_program_inputs<W: ProgramInputWriter>(
             }
         }
         ProgramId::Spec619 => {
-            stdin.write_generic(&1); // timesteps
-            stdin.write_generic(&0); // action: NOTHING = 0, COMPARE, STORE
-            stdin.write_generic(&0); // simType: LDC = 0, CHANNEL
+            let (a, b, c) = get_spec619_input();
+            stdin.write_generic(&a); // timesteps
+            stdin.write_generic(&b); // action: NOTHING = 0, COMPARE, STORE
+            stdin.write_generic(&c); // simType: LDC = 0, CHANNEL
         }
         ProgramId::Spec631 => {
             let str = include_str!("../../inputs/spec-631/in.txt");

@@ -1,6 +1,7 @@
 #![no_main]
 
 use sha3::{Digest, Keccak256};
+use sha3chain::sha3_hash;
 
 #[cfg(feature = "risc0")]
 risc0_zkvm::guest::entry!(main);
@@ -19,14 +20,7 @@ pub fn main() {
     #[cfg(feature = "risc0")]
     let num_iters: u32 = risc0_zkvm::guest::env::read();
 
-
-    let mut hash = input;
-    for _ in 0..num_iters {
-        let mut hasher = Keccak256::new();
-        hasher.update(input);
-        let res = &hasher.finalize();
-        hash = Into::<[u8; 32]>::into (*res);
-    }
+    let hash = sha3_hash!(input, num_iters);
 
     #[cfg(feature = "sp1")]
     sp1_zkvm::io::commit::<[u8; 32]>(&hash.into());
