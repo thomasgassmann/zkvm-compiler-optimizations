@@ -13,6 +13,8 @@ from zkbench.config import (
 from zkbench.plot.plot import (
     average_duration_cli,
     average_improvement_cli,
+    average_improvement_compare_cli,
+    average_improvement_difference_cli,
     binsize_duration_cli,
     cycle_count_abs_cli,
     cycle_count_by_program_cli,
@@ -32,6 +34,7 @@ from zkbench.plot.plot import (
     rca_classify_cli,
     stddev_cli,
     total_time_by_profile_cli,
+    x86_exec_cli,
 )
 from zkbench.bench import run_bench
 from zkbench.build import run_build
@@ -251,6 +254,9 @@ plot_cli.add_command(duration_by_program_cli)
 plot_cli.add_command(cycle_count_by_program_cli)
 plot_cli.add_command(stddev_cli)
 plot_cli.add_command(rca_classify_cli)
+plot_cli.add_command(x86_exec_cli)
+plot_cli.add_command(average_improvement_compare_cli)
+plot_cli.add_command(average_improvement_difference_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)

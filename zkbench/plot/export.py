@@ -9,6 +9,7 @@ from zkbench.config import (
     get_programs,
     get_programs_by_group,
     get_zkvms,
+    get_zkvms_with_x86,
 )
 from mdutils.mdutils import MdUtils
 
@@ -147,7 +148,7 @@ def export_program(dir: str, out: str, program_name: str):
             ),
         )
 
-        for zkvm in get_zkvms():
+        for zkvm in get_zkvms_with_x86() if measurement == "exec" else get_zkvms():
             md_file.new_header(level=4, title=f"{zkvm} {measurement} duration")
             export_plot(
                 out,
@@ -410,7 +411,7 @@ def export_profile_overview(dir: str, out: str):
         "opt-no-effect-by-program",
         lambda: plot_opt_no_effect(dir),
     )
-    for zkvm in get_zkvms():
+    for zkvm in get_zkvms_with_x86():
         md_file.new_header(
             level=3,
             title=f"Percentage of optimizations that had no effect by program {zkvm}",

@@ -2,13 +2,13 @@ from zkbench.config import (
     get_default_profiles_ids,
     get_program_by_name,
     get_programs,
-    get_zkvms,
+    get_zkvms_with_x86,
 )
 from zkbench.plot.common import BASELINE, get_title, plot_sorted, read_program_meta
 
 
 def plot_no_effect(dir: str):
-    zkvms = get_zkvms()
+    zkvms = get_zkvms_with_x86()
     title = get_title("Percentage of programs where optimization had no effect", [", ".join(zkvms)])
     profiles = get_default_profiles_ids()
     profiles.remove(BASELINE)
