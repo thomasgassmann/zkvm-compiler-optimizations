@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![polybench-trisolv-sp1-exec-duration](./polybench-trisolv-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![polybench-trisolv-x86-exec-duration](./polybench-trisolv-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![polybench-trisolv-prove-vs-exec](./polybench-trisolv-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![polybench-trisolv-improvement-x86-exec-vs-risc0-prove](./polybench-trisolv-improvement-x86-exec-vs-risc0-prove.png)  
+![polybench-trisolv-improvement-x86-exec-vs-risc0-prove-speedup](./polybench-trisolv-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![polybench-trisolv-improvement-x86-exec-vs-risc0-exec](./polybench-trisolv-improvement-x86-exec-vs-risc0-exec.png)  
+![polybench-trisolv-improvement-x86-exec-vs-risc0-exec-speedup](./polybench-trisolv-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![polybench-trisolv-improvement-x86-exec-vs-sp1-prove](./polybench-trisolv-improvement-x86-exec-vs-sp1-prove.png)  
+![polybench-trisolv-improvement-x86-exec-vs-sp1-prove-speedup](./polybench-trisolv-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![polybench-trisolv-improvement-x86-exec-vs-sp1-exec](./polybench-trisolv-improvement-x86-exec-vs-sp1-exec.png)  
+![polybench-trisolv-improvement-x86-exec-vs-sp1-exec-speedup](./polybench-trisolv-improvement-x86-exec-vs-sp1-exec-speedup.png)

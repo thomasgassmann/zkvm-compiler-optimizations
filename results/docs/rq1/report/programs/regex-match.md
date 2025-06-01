@@ -56,6 +56,27 @@
 #### sp1 exec duration
   
 ![regex-match-sp1-exec-duration](./regex-match-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![regex-match-x86-exec-duration](./regex-match-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![regex-match-prove-vs-exec](./regex-match-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![regex-match-improvement-x86-exec-vs-risc0-prove](./regex-match-improvement-x86-exec-vs-risc0-prove.png)  
+![regex-match-improvement-x86-exec-vs-risc0-prove-speedup](./regex-match-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![regex-match-improvement-x86-exec-vs-risc0-exec](./regex-match-improvement-x86-exec-vs-risc0-exec.png)  
+![regex-match-improvement-x86-exec-vs-risc0-exec-speedup](./regex-match-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![regex-match-improvement-x86-exec-vs-sp1-prove](./regex-match-improvement-x86-exec-vs-sp1-prove.png)  
+![regex-match-improvement-x86-exec-vs-sp1-prove-speedup](./regex-match-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![regex-match-improvement-x86-exec-vs-sp1-exec](./regex-match-improvement-x86-exec-vs-sp1-exec.png)  
+![regex-match-improvement-x86-exec-vs-sp1-exec-speedup](./regex-match-improvement-x86-exec-vs-sp1-exec-speedup.png)

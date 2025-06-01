@@ -5,11 +5,22 @@
 # os report
 
 ## Optimization by program
+
+### % faster
   
 ![os-by-program](./os-by-program.png)
-### Optimization by program (risc0)
+#### Optimization by program (risc0, % faster)
   
 ![os-risc0-by-program](./os-risc0-by-program.png)
-### Optimization by program (sp1)
+#### Optimization by program (sp1, % faster)
   
 ![os-sp1-by-program](./os-sp1-by-program.png)
+### Speedup
+  
+![os-by-programspeedup](./os-by-programspeedup.png)
+#### Optimization by program (risc0, Speedup)
+  
+![os-risc0-by-programspeedup](./os-risc0-by-programspeedup.png)
+#### Optimization by program (sp1, Speedup)
+  
+![os-sp1-by-programspeedup](./os-sp1-by-programspeedup.png)

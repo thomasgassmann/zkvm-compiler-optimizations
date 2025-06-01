@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![bigmem-sp1-exec-duration](./bigmem-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![bigmem-x86-exec-duration](./bigmem-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![bigmem-prove-vs-exec](./bigmem-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![bigmem-improvement-x86-exec-vs-risc0-prove](./bigmem-improvement-x86-exec-vs-risc0-prove.png)  
+![bigmem-improvement-x86-exec-vs-risc0-prove-speedup](./bigmem-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![bigmem-improvement-x86-exec-vs-risc0-exec](./bigmem-improvement-x86-exec-vs-risc0-exec.png)  
+![bigmem-improvement-x86-exec-vs-risc0-exec-speedup](./bigmem-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![bigmem-improvement-x86-exec-vs-sp1-prove](./bigmem-improvement-x86-exec-vs-sp1-prove.png)  
+![bigmem-improvement-x86-exec-vs-sp1-prove-speedup](./bigmem-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![bigmem-improvement-x86-exec-vs-sp1-exec](./bigmem-improvement-x86-exec-vs-sp1-exec.png)  
+![bigmem-improvement-x86-exec-vs-sp1-exec-speedup](./bigmem-improvement-x86-exec-vs-sp1-exec-speedup.png)

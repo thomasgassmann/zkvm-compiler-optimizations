@@ -25,3 +25,21 @@
 ## Prove vs. exec duration
   
 ![c-prove-vs-exec](./c-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![c-improvement-x86-exec-vs-risc0-prove](./c-improvement-x86-exec-vs-risc0-prove.png)  
+![c-improvement-x86-exec-vs-risc0-prove-speedup](./c-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![c-improvement-x86-exec-vs-risc0-exec](./c-improvement-x86-exec-vs-risc0-exec.png)  
+![c-improvement-x86-exec-vs-risc0-exec-speedup](./c-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![c-improvement-x86-exec-vs-sp1-prove](./c-improvement-x86-exec-vs-sp1-prove.png)  
+![c-improvement-x86-exec-vs-sp1-prove-speedup](./c-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![c-improvement-x86-exec-vs-sp1-exec](./c-improvement-x86-exec-vs-sp1-exec.png)  
+![c-improvement-x86-exec-vs-sp1-exec-speedup](./c-improvement-x86-exec-vs-sp1-exec-speedup.png)

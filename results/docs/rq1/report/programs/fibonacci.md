@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![fibonacci-sp1-exec-duration](./fibonacci-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![fibonacci-x86-exec-duration](./fibonacci-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![fibonacci-prove-vs-exec](./fibonacci-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![fibonacci-improvement-x86-exec-vs-risc0-prove](./fibonacci-improvement-x86-exec-vs-risc0-prove.png)  
+![fibonacci-improvement-x86-exec-vs-risc0-prove-speedup](./fibonacci-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![fibonacci-improvement-x86-exec-vs-risc0-exec](./fibonacci-improvement-x86-exec-vs-risc0-exec.png)  
+![fibonacci-improvement-x86-exec-vs-risc0-exec-speedup](./fibonacci-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![fibonacci-improvement-x86-exec-vs-sp1-prove](./fibonacci-improvement-x86-exec-vs-sp1-prove.png)  
+![fibonacci-improvement-x86-exec-vs-sp1-prove-speedup](./fibonacci-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![fibonacci-improvement-x86-exec-vs-sp1-exec](./fibonacci-improvement-x86-exec-vs-sp1-exec.png)  
+![fibonacci-improvement-x86-exec-vs-sp1-exec-speedup](./fibonacci-improvement-x86-exec-vs-sp1-exec-speedup.png)

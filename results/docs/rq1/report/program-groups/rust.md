@@ -77,3 +77,21 @@
 ## Prove vs. exec duration
   
 ![rust-prove-vs-exec](./rust-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![rust-improvement-x86-exec-vs-risc0-prove](./rust-improvement-x86-exec-vs-risc0-prove.png)  
+![rust-improvement-x86-exec-vs-risc0-prove-speedup](./rust-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![rust-improvement-x86-exec-vs-risc0-exec](./rust-improvement-x86-exec-vs-risc0-exec.png)  
+![rust-improvement-x86-exec-vs-risc0-exec-speedup](./rust-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![rust-improvement-x86-exec-vs-sp1-prove](./rust-improvement-x86-exec-vs-sp1-prove.png)  
+![rust-improvement-x86-exec-vs-sp1-prove-speedup](./rust-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![rust-improvement-x86-exec-vs-sp1-exec](./rust-improvement-x86-exec-vs-sp1-exec.png)  
+![rust-improvement-x86-exec-vs-sp1-exec-speedup](./rust-improvement-x86-exec-vs-sp1-exec-speedup.png)

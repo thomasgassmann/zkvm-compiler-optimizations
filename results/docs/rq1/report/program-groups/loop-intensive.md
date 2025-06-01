@@ -27,3 +27,21 @@
 ## Prove vs. exec duration
   
 ![loop-intensive-prove-vs-exec](./loop-intensive-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![loop-intensive-improvement-x86-exec-vs-risc0-prove](./loop-intensive-improvement-x86-exec-vs-risc0-prove.png)  
+![loop-intensive-improvement-x86-exec-vs-risc0-prove-speedup](./loop-intensive-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![loop-intensive-improvement-x86-exec-vs-risc0-exec](./loop-intensive-improvement-x86-exec-vs-risc0-exec.png)  
+![loop-intensive-improvement-x86-exec-vs-risc0-exec-speedup](./loop-intensive-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![loop-intensive-improvement-x86-exec-vs-sp1-prove](./loop-intensive-improvement-x86-exec-vs-sp1-prove.png)  
+![loop-intensive-improvement-x86-exec-vs-sp1-prove-speedup](./loop-intensive-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![loop-intensive-improvement-x86-exec-vs-sp1-exec](./loop-intensive-improvement-x86-exec-vs-sp1-exec.png)  
+![loop-intensive-improvement-x86-exec-vs-sp1-exec-speedup](./loop-intensive-improvement-x86-exec-vs-sp1-exec-speedup.png)
