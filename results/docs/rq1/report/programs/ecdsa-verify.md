@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![ecdsa-verify-sp1-exec-duration](./ecdsa-verify-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![ecdsa-verify-x86-exec-duration](./ecdsa-verify-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![ecdsa-verify-prove-vs-exec](./ecdsa-verify-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![ecdsa-verify-improvement-x86-exec-vs-risc0-prove](./ecdsa-verify-improvement-x86-exec-vs-risc0-prove.png)  
+![ecdsa-verify-improvement-x86-exec-vs-risc0-prove-speedup](./ecdsa-verify-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![ecdsa-verify-improvement-x86-exec-vs-risc0-exec](./ecdsa-verify-improvement-x86-exec-vs-risc0-exec.png)  
+![ecdsa-verify-improvement-x86-exec-vs-risc0-exec-speedup](./ecdsa-verify-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![ecdsa-verify-improvement-x86-exec-vs-sp1-prove](./ecdsa-verify-improvement-x86-exec-vs-sp1-prove.png)  
+![ecdsa-verify-improvement-x86-exec-vs-sp1-prove-speedup](./ecdsa-verify-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![ecdsa-verify-improvement-x86-exec-vs-sp1-exec](./ecdsa-verify-improvement-x86-exec-vs-sp1-exec.png)  
+![ecdsa-verify-improvement-x86-exec-vs-sp1-exec-speedup](./ecdsa-verify-improvement-x86-exec-vs-sp1-exec-speedup.png)

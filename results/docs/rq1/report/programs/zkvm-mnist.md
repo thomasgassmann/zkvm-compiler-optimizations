@@ -56,6 +56,27 @@
 #### sp1 exec duration
   
 ![zkvm-mnist-sp1-exec-duration](./zkvm-mnist-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![zkvm-mnist-x86-exec-duration](./zkvm-mnist-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![zkvm-mnist-prove-vs-exec](./zkvm-mnist-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![zkvm-mnist-improvement-x86-exec-vs-risc0-prove](./zkvm-mnist-improvement-x86-exec-vs-risc0-prove.png)  
+![zkvm-mnist-improvement-x86-exec-vs-risc0-prove-speedup](./zkvm-mnist-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![zkvm-mnist-improvement-x86-exec-vs-risc0-exec](./zkvm-mnist-improvement-x86-exec-vs-risc0-exec.png)  
+![zkvm-mnist-improvement-x86-exec-vs-risc0-exec-speedup](./zkvm-mnist-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![zkvm-mnist-improvement-x86-exec-vs-sp1-prove](./zkvm-mnist-improvement-x86-exec-vs-sp1-prove.png)  
+![zkvm-mnist-improvement-x86-exec-vs-sp1-prove-speedup](./zkvm-mnist-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![zkvm-mnist-improvement-x86-exec-vs-sp1-exec](./zkvm-mnist-improvement-x86-exec-vs-sp1-exec.png)  
+![zkvm-mnist-improvement-x86-exec-vs-sp1-exec-speedup](./zkvm-mnist-improvement-x86-exec-vs-sp1-exec-speedup.png)

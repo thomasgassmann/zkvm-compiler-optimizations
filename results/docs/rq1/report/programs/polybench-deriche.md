@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![polybench-deriche-sp1-exec-duration](./polybench-deriche-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![polybench-deriche-x86-exec-duration](./polybench-deriche-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![polybench-deriche-prove-vs-exec](./polybench-deriche-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![polybench-deriche-improvement-x86-exec-vs-risc0-prove](./polybench-deriche-improvement-x86-exec-vs-risc0-prove.png)  
+![polybench-deriche-improvement-x86-exec-vs-risc0-prove-speedup](./polybench-deriche-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![polybench-deriche-improvement-x86-exec-vs-risc0-exec](./polybench-deriche-improvement-x86-exec-vs-risc0-exec.png)  
+![polybench-deriche-improvement-x86-exec-vs-risc0-exec-speedup](./polybench-deriche-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![polybench-deriche-improvement-x86-exec-vs-sp1-prove](./polybench-deriche-improvement-x86-exec-vs-sp1-prove.png)  
+![polybench-deriche-improvement-x86-exec-vs-sp1-prove-speedup](./polybench-deriche-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![polybench-deriche-improvement-x86-exec-vs-sp1-exec](./polybench-deriche-improvement-x86-exec-vs-sp1-exec.png)  
+![polybench-deriche-improvement-x86-exec-vs-sp1-exec-speedup](./polybench-deriche-improvement-x86-exec-vs-sp1-exec-speedup.png)

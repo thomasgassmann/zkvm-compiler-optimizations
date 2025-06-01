@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![npb-ft-sp1-exec-duration](./npb-ft-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![npb-ft-x86-exec-duration](./npb-ft-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![npb-ft-prove-vs-exec](./npb-ft-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![npb-ft-improvement-x86-exec-vs-risc0-prove](./npb-ft-improvement-x86-exec-vs-risc0-prove.png)  
+![npb-ft-improvement-x86-exec-vs-risc0-prove-speedup](./npb-ft-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![npb-ft-improvement-x86-exec-vs-risc0-exec](./npb-ft-improvement-x86-exec-vs-risc0-exec.png)  
+![npb-ft-improvement-x86-exec-vs-risc0-exec-speedup](./npb-ft-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![npb-ft-improvement-x86-exec-vs-sp1-prove](./npb-ft-improvement-x86-exec-vs-sp1-prove.png)  
+![npb-ft-improvement-x86-exec-vs-sp1-prove-speedup](./npb-ft-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![npb-ft-improvement-x86-exec-vs-sp1-exec](./npb-ft-improvement-x86-exec-vs-sp1-exec.png)  
+![npb-ft-improvement-x86-exec-vs-sp1-exec-speedup](./npb-ft-improvement-x86-exec-vs-sp1-exec-speedup.png)

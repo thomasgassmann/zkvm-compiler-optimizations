@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![tailcall-sp1-exec-duration](./tailcall-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![tailcall-x86-exec-duration](./tailcall-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![tailcall-prove-vs-exec](./tailcall-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![tailcall-improvement-x86-exec-vs-risc0-prove](./tailcall-improvement-x86-exec-vs-risc0-prove.png)  
+![tailcall-improvement-x86-exec-vs-risc0-prove-speedup](./tailcall-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![tailcall-improvement-x86-exec-vs-risc0-exec](./tailcall-improvement-x86-exec-vs-risc0-exec.png)  
+![tailcall-improvement-x86-exec-vs-risc0-exec-speedup](./tailcall-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![tailcall-improvement-x86-exec-vs-sp1-prove](./tailcall-improvement-x86-exec-vs-sp1-prove.png)  
+![tailcall-improvement-x86-exec-vs-sp1-prove-speedup](./tailcall-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![tailcall-improvement-x86-exec-vs-sp1-exec](./tailcall-improvement-x86-exec-vs-sp1-exec.png)  
+![tailcall-improvement-x86-exec-vs-sp1-exec-speedup](./tailcall-improvement-x86-exec-vs-sp1-exec-speedup.png)

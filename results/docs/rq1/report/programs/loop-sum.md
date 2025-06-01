@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![loop-sum-sp1-exec-duration](./loop-sum-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![loop-sum-x86-exec-duration](./loop-sum-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![loop-sum-prove-vs-exec](./loop-sum-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![loop-sum-improvement-x86-exec-vs-risc0-prove](./loop-sum-improvement-x86-exec-vs-risc0-prove.png)  
+![loop-sum-improvement-x86-exec-vs-risc0-prove-speedup](./loop-sum-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![loop-sum-improvement-x86-exec-vs-risc0-exec](./loop-sum-improvement-x86-exec-vs-risc0-exec.png)  
+![loop-sum-improvement-x86-exec-vs-risc0-exec-speedup](./loop-sum-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![loop-sum-improvement-x86-exec-vs-sp1-prove](./loop-sum-improvement-x86-exec-vs-sp1-prove.png)  
+![loop-sum-improvement-x86-exec-vs-sp1-prove-speedup](./loop-sum-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![loop-sum-improvement-x86-exec-vs-sp1-exec](./loop-sum-improvement-x86-exec-vs-sp1-exec.png)  
+![loop-sum-improvement-x86-exec-vs-sp1-exec-speedup](./loop-sum-improvement-x86-exec-vs-sp1-exec-speedup.png)

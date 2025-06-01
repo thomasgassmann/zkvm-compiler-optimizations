@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![sha3-bench-sp1-exec-duration](./sha3-bench-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![sha3-bench-x86-exec-duration](./sha3-bench-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![sha3-bench-prove-vs-exec](./sha3-bench-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![sha3-bench-improvement-x86-exec-vs-risc0-prove](./sha3-bench-improvement-x86-exec-vs-risc0-prove.png)  
+![sha3-bench-improvement-x86-exec-vs-risc0-prove-speedup](./sha3-bench-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![sha3-bench-improvement-x86-exec-vs-risc0-exec](./sha3-bench-improvement-x86-exec-vs-risc0-exec.png)  
+![sha3-bench-improvement-x86-exec-vs-risc0-exec-speedup](./sha3-bench-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![sha3-bench-improvement-x86-exec-vs-sp1-prove](./sha3-bench-improvement-x86-exec-vs-sp1-prove.png)  
+![sha3-bench-improvement-x86-exec-vs-sp1-prove-speedup](./sha3-bench-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![sha3-bench-improvement-x86-exec-vs-sp1-exec](./sha3-bench-improvement-x86-exec-vs-sp1-exec.png)  
+![sha3-bench-improvement-x86-exec-vs-sp1-exec-speedup](./sha3-bench-improvement-x86-exec-vs-sp1-exec-speedup.png)

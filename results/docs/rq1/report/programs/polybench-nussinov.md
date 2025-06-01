@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![polybench-nussinov-sp1-exec-duration](./polybench-nussinov-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![polybench-nussinov-x86-exec-duration](./polybench-nussinov-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![polybench-nussinov-prove-vs-exec](./polybench-nussinov-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![polybench-nussinov-improvement-x86-exec-vs-risc0-prove](./polybench-nussinov-improvement-x86-exec-vs-risc0-prove.png)  
+![polybench-nussinov-improvement-x86-exec-vs-risc0-prove-speedup](./polybench-nussinov-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![polybench-nussinov-improvement-x86-exec-vs-risc0-exec](./polybench-nussinov-improvement-x86-exec-vs-risc0-exec.png)  
+![polybench-nussinov-improvement-x86-exec-vs-risc0-exec-speedup](./polybench-nussinov-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![polybench-nussinov-improvement-x86-exec-vs-sp1-prove](./polybench-nussinov-improvement-x86-exec-vs-sp1-prove.png)  
+![polybench-nussinov-improvement-x86-exec-vs-sp1-prove-speedup](./polybench-nussinov-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![polybench-nussinov-improvement-x86-exec-vs-sp1-exec](./polybench-nussinov-improvement-x86-exec-vs-sp1-exec.png)  
+![polybench-nussinov-improvement-x86-exec-vs-sp1-exec-speedup](./polybench-nussinov-improvement-x86-exec-vs-sp1-exec-speedup.png)

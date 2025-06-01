@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![polybench-atax-sp1-exec-duration](./polybench-atax-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![polybench-atax-x86-exec-duration](./polybench-atax-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![polybench-atax-prove-vs-exec](./polybench-atax-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![polybench-atax-improvement-x86-exec-vs-risc0-prove](./polybench-atax-improvement-x86-exec-vs-risc0-prove.png)  
+![polybench-atax-improvement-x86-exec-vs-risc0-prove-speedup](./polybench-atax-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![polybench-atax-improvement-x86-exec-vs-risc0-exec](./polybench-atax-improvement-x86-exec-vs-risc0-exec.png)  
+![polybench-atax-improvement-x86-exec-vs-risc0-exec-speedup](./polybench-atax-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![polybench-atax-improvement-x86-exec-vs-sp1-prove](./polybench-atax-improvement-x86-exec-vs-sp1-prove.png)  
+![polybench-atax-improvement-x86-exec-vs-sp1-prove-speedup](./polybench-atax-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![polybench-atax-improvement-x86-exec-vs-sp1-exec](./polybench-atax-improvement-x86-exec-vs-sp1-exec.png)  
+![polybench-atax-improvement-x86-exec-vs-sp1-exec-speedup](./polybench-atax-improvement-x86-exec-vs-sp1-exec-speedup.png)

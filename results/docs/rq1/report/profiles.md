@@ -110,3 +110,6 @@
 ### Percentage of optimizations that had no effect by program sp1
   
 ![opt-no-effect-by-program-sp1](./opt-no-effect-by-program-sp1.png)
+### Percentage of optimizations that had no effect by program x86
+  
+![opt-no-effect-by-program-x86](./opt-no-effect-by-program-x86.png)

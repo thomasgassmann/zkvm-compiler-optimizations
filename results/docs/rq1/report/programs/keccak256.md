@@ -57,6 +57,27 @@
 #### sp1 exec duration
   
 ![keccak256-sp1-exec-duration](./keccak256-sp1-exec-duration.png)
+#### x86 exec duration
+  
+![keccak256-x86-exec-duration](./keccak256-x86-exec-duration.png)
 ## Prove vs. exec duration
   
 ![keccak256-prove-vs-exec](./keccak256-prove-vs-exec.png)
+## Comparisons of average improvement
+
+### Average improvement x86 exec vs. risc0-prove
+  
+![keccak256-improvement-x86-exec-vs-risc0-prove](./keccak256-improvement-x86-exec-vs-risc0-prove.png)  
+![keccak256-improvement-x86-exec-vs-risc0-prove-speedup](./keccak256-improvement-x86-exec-vs-risc0-prove-speedup.png)
+### Average improvement x86 exec vs. risc0-exec
+  
+![keccak256-improvement-x86-exec-vs-risc0-exec](./keccak256-improvement-x86-exec-vs-risc0-exec.png)  
+![keccak256-improvement-x86-exec-vs-risc0-exec-speedup](./keccak256-improvement-x86-exec-vs-risc0-exec-speedup.png)
+### Average improvement x86 exec vs. sp1-prove
+  
+![keccak256-improvement-x86-exec-vs-sp1-prove](./keccak256-improvement-x86-exec-vs-sp1-prove.png)  
+![keccak256-improvement-x86-exec-vs-sp1-prove-speedup](./keccak256-improvement-x86-exec-vs-sp1-prove-speedup.png)
+### Average improvement x86 exec vs. sp1-exec
+  
+![keccak256-improvement-x86-exec-vs-sp1-exec](./keccak256-improvement-x86-exec-vs-sp1-exec.png)  
+![keccak256-improvement-x86-exec-vs-sp1-exec-speedup](./keccak256-improvement-x86-exec-vs-sp1-exec-speedup.png)
