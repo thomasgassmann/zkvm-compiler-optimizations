@@ -29,8 +29,9 @@ def plot_average_improvement_compare(
             return baseline / compared
         return (-(compared - baseline) / baseline) * 100
 
+    y_axis = "speedup" if speedup else "% faster"
     title = get_title(
-        f"Average improvement by profile compared to baseline ({zkvm_a} vs {zkvm_b})",
+        f"Average {y_axis} by profile compared to baseline ({zkvm_a} vs {zkvm_b})",
         [zkvm_a, zkvm_b, program, program_group],
     )
 
@@ -43,7 +44,6 @@ def plot_average_improvement_compare(
         dir, zkvm_b, measurement_b, program, program_group, profiles, f
     )
 
-    y_axis = "speedup" if speedup else "% faster"
     plot_grouped_boxplot(
         [relative_improvements_a, relative_improvements_b],
         profiles,

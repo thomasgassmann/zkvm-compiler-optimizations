@@ -15,6 +15,10 @@ from mdutils.mdutils import MdUtils
 
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.average_improvement import plot_average_improvement
+from zkbench.plot.average_improvement_compare import plot_average_improvement_compare
+from zkbench.plot.average_improvement_difference import (
+    plot_average_improvement_difference,
+)
 from zkbench.plot.common import save_path
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
@@ -26,6 +30,7 @@ from zkbench.plot.no_effect import plot_no_effect
 from zkbench.plot.opt_by_program import plot_opt_by_program
 from zkbench.plot.opt_no_effect import plot_opt_no_effect
 from zkbench.plot.prove_exec import plot_prove_exec
+from zkbench.plot.x86_exec import plot_x86_exec
 
 
 def export_plot(out, subdir, md_file, name, fn):
@@ -172,6 +177,8 @@ def export_program(dir: str, out: str, program_name: str):
         lambda: plot_prove_exec(dir, program=program_name, program_group=None),
     )
 
+    add_average_improvement_comparison(md_file, dir, out, program_name, None)
+
     md_file.create_md_file()
 
 
@@ -246,7 +253,38 @@ def export_program_group(dir: str, out: str, group_name: str):
         lambda: plot_prove_exec(dir, program_group=group_name, program=None),
     )
 
+    add_average_improvement_comparison(md_file, dir, out, None, group_name)
+
     md_file.create_md_file()
+
+
+def add_average_improvement_comparison(
+    md_file: MdUtils, dir: str, out: str, program, program_group
+):
+    md_file.new_header(level=2, title="Comparisons of average improvement")
+    for zkvm in get_zkvms():
+        for measurement in get_measurements():
+            md_file.new_header(
+                level=3,
+                title=f"Average improvement x86 exec vs. {zkvm}-{measurement}",
+            )
+            for speedup in [False, True]:
+                export_plot(
+                    out,
+                    None,
+                    md_file,
+                    f"improvement-x86-exec-vs-{zkvm}-{measurement}{'-speedup' if speedup else ''}",
+                    lambda: plot_average_improvement_compare(
+                        dir,
+                        zkvm_a="x86",
+                        zkvm_b=zkvm,
+                        measurement_a="exec",
+                        measurement_b=measurement,
+                        program=program,
+                        program_group=program_group,
+                        speedup=speedup,
+                    ),
+                )
 
 
 def export_program_overview(dir: str, out: str):
@@ -284,6 +322,24 @@ def export_program_overview(dir: str, out: str):
             global_average=True,
         ),
     )
+
+    md_file.new_header(level=2, title="Average improvement including x86 execution")
+    for speedup in [False, True]:
+        title = "% faster" if not speedup else "Speedup"
+        md_file.new_header(level=3, title=title)
+        export_plot(
+            out,
+            None,
+            md_file,
+            f"improvement-average-difference-by-profile{'-speedup' if speedup else ''}",
+            lambda: plot_average_improvement_difference(
+                dir,
+                zkvm=None,
+                speedup=speedup,
+            ),
+        )
+
+    add_average_improvement_comparison(md_file, dir, out, None, None)
 
     md_file.new_header(level=2, title="Cycle count")
     export_plot(
@@ -336,7 +392,15 @@ def export_program_overview(dir: str, out: str):
         ),
     )
 
-    md_file.create_md_file()
+    for measurement in get_measurements():
+        md_file.new_header(level=2, title=f"x86 exec vs. zkVM {measurement}")
+        export_plot(
+            out,
+            None,
+            md_file,
+            f"x86-exec-vs-{measurement}",
+            lambda: plot_x86_exec(dir, measurement=measurement),
+        )
 
 
 def export_profile(dir: str, out: str, profile_id: str):
