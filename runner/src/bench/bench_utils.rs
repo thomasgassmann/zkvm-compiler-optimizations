@@ -4,7 +4,7 @@ use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
 use super::utils::is_same_as_baseline;
-use super::x86_utils::{exec_x86, exec_x86_prepare};
+use super::x86_utils::{exec_x86, exec_x86_prepare, get_x86_stats};
 use super::{
     super::{
         types::{MeasurementType, ProgramId, ProverId},
@@ -61,6 +61,13 @@ fn add_x86_exec_and_prove(
     meta_only: bool,
     input_override: &Option<String>,
 ) {
+    let elf = read_elf(program, &ProverId::X86, profile);
+    write_elf_stats(
+        program,
+        &ProverId::X86,
+        profile,
+        &get_x86_stats(&elf, program, input_override),
+    );
     if meta_only || is_same_as_baseline(program, &ProverId::X86, profile) {
         return;
     }

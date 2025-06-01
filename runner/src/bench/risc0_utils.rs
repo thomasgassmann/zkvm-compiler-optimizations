@@ -31,7 +31,7 @@ pub fn get_risc0_stats<'a>(
     let mut exec = exec_risc0_setup(elf, program, input_override);
     let session = exec.run().unwrap();
     ElfStats {
-        cycle_count: session.user_cycles,
+        cycle_count: Some(session.user_cycles),
         paging_cycles: Some(session.paging_cycles),
         size: elf.len(),
         hash: get_elf_hash(elf),

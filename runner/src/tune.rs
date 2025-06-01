@@ -44,12 +44,12 @@ pub fn run_tune(args: TuneArgs) {
     let elf: Vec<u8> = fs::read(args.elf).unwrap();
     let num_samples = args.samples.unwrap_or(1);
     let metric_value: u128 = match (args.zkvm, args.metric) {
-        (ProverId::Risc0, TuneMetric::CycleCount) => {
-            get_risc0_stats(&elf, &args.program, &None).cycle_count as u128
-        }
-        (ProverId::SP1, TuneMetric::CycleCount) => {
-            get_sp1_stats(&elf, &args.program, &None).cycle_count as u128
-        }
+        (ProverId::Risc0, TuneMetric::CycleCount) => get_risc0_stats(&elf, &args.program, &None)
+            .cycle_count
+            .unwrap() as u128,
+        (ProverId::SP1, TuneMetric::CycleCount) => get_sp1_stats(&elf, &args.program, &None)
+            .cycle_count
+            .unwrap() as u128,
         (ProverId::Risc0, TuneMetric::PagingCycleCount) => {
             get_risc0_stats(&elf, &args.program, &None)
                 .paging_cycles

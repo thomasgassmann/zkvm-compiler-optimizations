@@ -1,5 +1,4 @@
 bench/
-bench-x86/
 genetic/
 exhaustive/
 root-cause-analysis-data/

@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
 pub struct ElfStats {
-    pub cycle_count: u64,
+    pub cycle_count: Option<u64>,
     pub paging_cycles: Option<u64>,
     pub size: usize,
     pub hash: String,

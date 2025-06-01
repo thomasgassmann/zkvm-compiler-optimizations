@@ -13,6 +13,8 @@ use crate::{
     utils::get_elf,
 };
 
+use super::utils::{get_elf_hash, ElfStats};
+
 type MainCoreBigMem = unsafe extern "C" fn(value: u32) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreEcdsaVerify = unsafe extern "C" fn(
@@ -55,6 +57,15 @@ type MainCoreZkvmMnist = unsafe extern "C" fn(
     training_data: Vec<(Vec<f64>, Vec<f64>)>,
     test_data: Vec<(Vec<f64>, Vec<f64>)>,
 ) -> ();
+
+pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats {
+    ElfStats {
+        cycle_count: None,
+        paging_cycles: None,
+        size: elf.len(),
+        hash: get_elf_hash(elf),
+    }
+}
 
 pub fn exec_x86_prepare(
     program: &ProgramId,
