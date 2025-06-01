@@ -177,7 +177,9 @@ def export_program(dir: str, out: str, program_name: str):
         lambda: plot_prove_exec(dir, program=program_name, program_group=None),
     )
 
-    add_average_improvement_comparison(md_file, dir, out, program_name, None)
+    add_average_improvement_comparison(
+        md_file, dir, out, "programs", program_name, None
+    )
 
     md_file.create_md_file()
 
@@ -253,13 +255,15 @@ def export_program_group(dir: str, out: str, group_name: str):
         lambda: plot_prove_exec(dir, program_group=group_name, program=None),
     )
 
-    add_average_improvement_comparison(md_file, dir, out, None, group_name)
+    add_average_improvement_comparison(
+        md_file, dir, out, "program-groups", None, group_name
+    )
 
     md_file.create_md_file()
 
 
 def add_average_improvement_comparison(
-    md_file: MdUtils, dir: str, out: str, program, program_group
+    md_file: MdUtils, dir: str, out: str, subdir: str, program, program_group
 ):
     md_file.new_header(level=2, title="Comparisons of average improvement")
     for zkvm in get_zkvms():
@@ -269,11 +273,16 @@ def add_average_improvement_comparison(
                 title=f"Average improvement x86 exec vs. {zkvm}-{measurement}",
             )
             for speedup in [False, True]:
+                prefix_name = ""
+                if program:
+                    prefix_name += f"{program}-"
+                elif program_group:
+                    prefix_name += f"{program_group}-"
                 export_plot(
                     out,
-                    None,
+                    subdir,
                     md_file,
-                    f"improvement-x86-exec-vs-{zkvm}-{measurement}{'-speedup' if speedup else ''}",
+                    f"{prefix_name}improvement-x86-exec-vs-{zkvm}-{measurement}{'-speedup' if speedup else ''}",
                     lambda: plot_average_improvement_compare(
                         dir,
                         zkvm_a="x86",
@@ -339,7 +348,7 @@ def export_program_overview(dir: str, out: str):
             ),
         )
 
-    add_average_improvement_comparison(md_file, dir, out, None, None)
+    add_average_improvement_comparison(md_file, dir, out, None, None, None)
 
     md_file.new_header(level=2, title="Cycle count")
     export_plot(
