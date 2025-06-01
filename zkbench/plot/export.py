@@ -411,6 +411,8 @@ def export_program_overview(dir: str, out: str):
             lambda: plot_x86_exec(dir, measurement=measurement),
         )
 
+    md_file.create_md_file()
+
 
 def export_profile(dir: str, out: str, profile_id: str):
     path = os.path.join(out, "profiles", profile_id + ".md")
