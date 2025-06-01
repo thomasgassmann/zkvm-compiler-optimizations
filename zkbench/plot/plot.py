@@ -7,9 +7,14 @@ from zkbench.config import (
     get_program_groups,
     get_programs,
     get_zkvms,
+    get_zkvms_with_x86,
 )
 from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
+from zkbench.plot.average_improvement_compare import plot_average_improvement_compare
+from zkbench.plot.average_improvement_difference import (
+    plot_average_improvement_difference,
+)
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.rca_classify import classify_rca
@@ -31,6 +36,7 @@ from zkbench.plot.opt_no_effect import plot_opt_no_effect
 from zkbench.plot.prove_exec import plot_prove_exec
 from zkbench.plot.total_time_by_profile import plot_total_time_by_profile
 from zkbench.plot.paging_by_profile import plot_paging_by_profile
+from zkbench.plot.x86_exec import plot_x86_exec
 
 
 @click.command(name="average-improvement")
@@ -55,7 +61,7 @@ def average_improvement_cli(
 
 
 @click.command(name="average-duration")
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option(
@@ -149,7 +155,7 @@ def plot_missing_cli(measurement: str | None, zkvm: str | None):
     name="opt-no-effect",
     help="Show percentage of optimizations that had no effect (by program)",
 )
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 def opt_no_effect_cli(zkvm: str | None):
     dir = click.get_current_context().parent.params["dir"]
     plot_opt_no_effect(dir, zkvm)
@@ -234,7 +240,7 @@ def improvement_by_program_cli(profile: str, baseline_profile: str, speedup: boo
     "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
 )
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 def duration_by_program_cli(
     profile: str, baseline_profile: str, measurement: str, zkvm: str | None
 ):
@@ -299,3 +305,71 @@ def rca_classify_cli(
         raise click.UsageError("Measurement is not allowed for 'exec_prove' strategy.")
 
     classify_rca(dir, threshold, avg_programs, strategy, measurement, zkvm)
+
+
+@click.command(
+    name="x86-exec",
+    help="Compare x86 execution time with zkVM execution",
+)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+def x86_exec_cli(
+    measurement: str,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_x86_exec(dir, measurement)
+
+
+@click.command(
+    name="average-improvement-compare",
+    help="Compare average improvement between two zkVMs",
+)
+@click.option("--zkvm-a", type=click.Choice(get_zkvms_with_x86()), required=True)
+@click.option("--zkvm-b", type=click.Choice(get_zkvms_with_x86()), required=True)
+@click.option("--measurement-a", type=click.Choice(get_measurements()), required=True)
+@click.option("--measurement-b", type=click.Choice(get_measurements()), required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option(
+    "--program-group", type=click.Choice(get_program_groups()), required=False
+)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+def average_improvement_compare_cli(
+    zkvm_a: str,
+    zkvm_b: str,
+    measurement_a: str,
+    measurement_b: str,
+    program: str | None,
+    program_group: str | None,
+    speedup: bool,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_average_improvement_compare(
+        dir,
+        zkvm_a,
+        zkvm_b,
+        measurement_a,
+        measurement_b,
+        program,
+        program_group,
+        speedup,
+    )
+
+
+@click.command(
+    name="average-improvement-difference",
+    help="Measure average improvement between zkVM and x86",
+)
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+def average_improvement_difference_cli(
+    zkvm: str | None,
+    speedup: bool,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_average_improvement_difference(
+        dir,
+        speedup,
+        zkvm,
+    )
