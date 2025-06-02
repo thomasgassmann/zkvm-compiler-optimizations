@@ -3,6 +3,7 @@ import dataclasses
 import json
 import logging
 import os
+import time
 import uuid
 from opentuner import ConfigurationManipulator
 from opentuner import ScheduleParameter, EnumParameter, IntegerParameter
@@ -348,7 +349,7 @@ def run_tune_genetic(
             baselines or [],
         ).main(arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"]))
     else:
-        processes = []
+        processes = {}
         for program in programs:
             for zkvm in zkvms:
                 uuid_str = f"{program}-{zkvm}-{str(uuid.uuid4())[:10]}"
@@ -371,6 +372,21 @@ def run_tune_genetic(
 
                 p = multiprocessing.Process(target=run_tuner)
                 p.start()
-                processes.append(p)
-        for p in processes:
-            p.join()
+                processes[f"{program}-{zkvm}"] = p
+
+        try:
+            while True:
+                time.sleep(1)
+                for key, p in processes.items():
+                    if not p.is_alive():
+                        for _, other in processes.items():
+                            if other.is_alive():
+                                other.terminate()
+                        raise RuntimeError(
+                            f"Process {key} failed with exit code {p.exitcode}"
+                        )
+        except Exception as e:
+            for key, p in processes.items():
+                if p.is_alive():
+                    p.terminate()
+            raise e
