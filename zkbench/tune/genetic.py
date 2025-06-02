@@ -202,6 +202,7 @@ def create_tuner(
     zkvms: list[str],
     metric: str,
     out: str,
+    stats_file: str,
     config: TuneConfig,
     mode: Mode,
     baselines: list[str],
@@ -282,7 +283,7 @@ def create_tuner(
                     f"Configuration {self._best_config} remains best with metric {self._best}"
                 )
 
-            with open(os.path.join(out, "stats.json"), "w") as f:
+            with open(stats_file, "w") as f:
                 json.dump(
                     dataclasses.asdict(
                         Genetic(
@@ -336,9 +337,16 @@ def run_tune_genetic(
 
     if not individual:
         uuid_str = str(uuid.uuid4())[:10]
-        create_tuner(programs, zkvms, metric, out, config, mode, baselines or []).main(
-            arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"])
-        )
+        create_tuner(
+            programs,
+            zkvms,
+            metric,
+            out,
+            os.path.join(out, "stats.json"),
+            config,
+            mode,
+            baselines or [],
+        ).main(arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"]))
     else:
         processes = []
         for program in programs:
@@ -351,6 +359,7 @@ def run_tune_genetic(
                         [zkvm],
                         metric,
                         os.path.join(out, program, zkvm),
+                        os.path.join(out, f"{program}-{zkvm}-stats.json"),
                         config,
                         mode,
                         baselines or [],
