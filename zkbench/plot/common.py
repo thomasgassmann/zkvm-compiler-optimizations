@@ -164,15 +164,16 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
     sorted_labels = [labels[i] for i in sorted_indices]
     sorted_values = [[series[i] for i in sorted_indices] for series in values]
 
-    group_width = bar_width + 0.05
-    offsets = (
-        np.linspace(-group_width / 2, group_width / 2, num_series)
-        if num_series > 1
-        else [0]
-    )
-
-    fig, ax = plt.subplots(figsize=(10, 6))
+    _, ax = plt.subplots(figsize=(10, 6))
     box_artists = []
+    if num_series > 1:
+        offsets = np.linspace(
+            -((num_series - 1) * bar_width) / 2,
+            ((num_series - 1) * bar_width) / 2,
+            num_series,
+        )
+    else:
+        offsets = [0]
     for series_idx in range(num_series):
         positions = np.arange(num_profiles) + offsets[series_idx]
         bp = ax.boxplot(
