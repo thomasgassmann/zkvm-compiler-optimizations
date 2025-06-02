@@ -188,6 +188,23 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
             box.set(facecolor=color)
         box_artists.append(bp["boxes"][0])
 
+        for i, arr in enumerate(sorted_values[series_idx]):
+            if arr is None or len(arr) == 0:
+                continue
+            # if the data array has exactly one element, the box collapses to a line
+            # add a small scatter marker to make it more visible
+            if len(set(arr)) == 1:
+                x = positions[i]
+                y = arr[0]
+                ax.scatter(
+                    [x],
+                    [y],
+                    color="black",
+                    marker="o",
+                    s=50,  # size of the dot
+                    zorder=3,
+                )
+
     ax.set_xticks(np.arange(num_profiles))
     ax.set_xticklabels(sorted_labels, rotation=45, ha="right")
     ax.set_title(title)
