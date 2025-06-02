@@ -145,4 +145,6 @@ This observation also aligns with our results in the `npb-lu` program as most fu
   - compare llvm ir between baseline and licm for both risc0 and sp1
   - why does it not occur for polybench-lu?
 - look at spec-605 sp1 (40% improvement licm)
-- check whether combination with other optimizations is better -->
+- check whether combination with other optimizations is better 
+
+-->

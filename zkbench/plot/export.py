@@ -435,7 +435,7 @@ def export_profile(dir: str, out: str, profile_id: str):
                 dir, profile=profile_id, zkvm=None, speedup=speedup
             ),
         )
-        for zkvm in get_zkvms():
+        for zkvm in get_zkvms_with_x86():
             md_file.new_header(
                 level=4, title=f"Optimization by program ({zkvm}, {title})"
             )

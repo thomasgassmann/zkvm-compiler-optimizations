@@ -25,18 +25,37 @@ def plot_opt_by_program(
             exec_values = []
             prove_values = []
             for current_zkvm in get_zkvms() if not zkvm else [zkvm]:
-                prove = get_point_estimate_median_ms(
-                    dir, program, current_zkvm, profile, "prove"
-                )
                 exec = get_point_estimate_median_ms(
                     dir, program, current_zkvm, profile, "exec"
-                )
-                prove_baseline = get_point_estimate_median_ms(
-                    dir, program, current_zkvm, BASELINE, "prove"
                 )
                 exec_baseline = get_point_estimate_median_ms(
                     dir, program, current_zkvm, BASELINE, "exec"
                 )
+                if zkvm == "x86":
+                    # x86 has no prove, use average of zkVM exec
+                    prove = np.mean(
+                        [
+                            get_point_estimate_median_ms(
+                                dir, program, z, profile, "exec"
+                            )
+                            for z in get_zkvms()
+                        ]
+                    )
+                    prove_baseline = np.mean(
+                        [
+                            get_point_estimate_median_ms(
+                                dir, program, z, BASELINE, "exec"
+                            )
+                            for z in get_zkvms()
+                        ]
+                    )
+                else:
+                    prove_baseline = get_point_estimate_median_ms(
+                        dir, program, current_zkvm, BASELINE, "prove"
+                    )
+                    prove = get_point_estimate_median_ms(
+                        dir, program, current_zkvm, profile, "prove"
+                    )
 
                 if speedup:
                     exec_values.append(exec_baseline / exec)
@@ -52,6 +71,7 @@ def plot_opt_by_program(
             logging.warning(f"Data for {program}-{current_zkvm}-{profile} not found")
 
     y_axis = "speedup" if speedup else "% faster"
+    labels = ["prove", "exec"] if zkvm != "x86" else ["exec-x86", "exec-zkvm (avg)"]
     if len(relative_improvements_exec[0]) == 1:
         # if we only have one value, no need to plot boxplot
         prove_values = np.squeeze(relative_improvements_prove, axis=1)
@@ -64,7 +84,7 @@ def plot_opt_by_program(
             plotted_programs,
             title,
             y_axis,
-            ["prove", "exec"],
+            labels,
         )
     else:
         plot_grouped_boxplot(
@@ -72,5 +92,5 @@ def plot_opt_by_program(
             plotted_programs,
             title,
             y_axis,
-            ["prove", "exec"],
+            labels,
         )
