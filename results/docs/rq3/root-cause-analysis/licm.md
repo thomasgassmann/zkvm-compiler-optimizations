@@ -2,11 +2,11 @@
 
 All programs in the `licm` profile are compiled with `opt-level=0` (`-O0` for C programs respectively, for rust programs we also set the `mir-opt-level` to `0`) with a single LLVM pass `loop-mssa(licm)`. As indicated in the figure below for all programs except `spec-605` `licm` either has negligible or negative effects.
 
-![licm-average-improvement](./imgs/licm-average-improvement.png)
+![licm-average-improvement](./imgs/licm/average-improvement.png)
 
 Averaged across all programs `licm` performs more than 10% worse on proving and only slightly better in execution as seen in the figure below.
 
-![licm-all-profiles](./imgs/licm-all-profiles.png)
+![licm-all-profiles](./imgs/licm/all-profiles.png)
 
 On average proving speed degraded the most for the `npb-lu` benchmark. For both zkVMs respectively we get the following estimates of the mean proving time across 10 samples for `npb-lu`:
 
@@ -22,7 +22,7 @@ For risc0 in particular we also detect a significant increase of paging cycles w
 
 The below figure also shows the relative change in paging cylces (on risc0 only) across all benchmarked profiles:
 
-![licm-paging-cycles](./imgs/licm-paging-cycles-risc0.png)
+![licm-paging-cycles](./imgs/licm/paging-cycles-risc0.png)
 
 Of all profiles we benchmarked, `licm` affects paging cycles by far the most, in almost all cases negatively.
 
