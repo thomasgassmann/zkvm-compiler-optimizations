@@ -38,14 +38,17 @@ def tune_exhaustive_cli(depth: int):
     type=click.Choice(get_profiles_ids()),
     required=False,
 )
-def tune_genetic_cli(mode: str, depth: int | None, baseline: list[str] | None):
+@click.option("--individual", type=bool, default=False, is_flag=True)
+def tune_genetic_cli(
+    mode: str, depth: int | None, baseline: list[str] | None, individual: bool
+):
     if mode == "depth" and depth is None:
         raise click.UsageError("Depth must be provided when mode is 'depth'.")
 
     (selected_programs, zkvms, metric, config, out) = get_config()
     os.makedirs(out, exist_ok=True)
     run_tune_genetic(
-        selected_programs, zkvms, metric, config, mode, out, depth, baseline
+        selected_programs, zkvms, metric, config, mode, out, depth, baseline, individual
     )
 
 

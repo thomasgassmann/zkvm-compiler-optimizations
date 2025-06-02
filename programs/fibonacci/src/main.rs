@@ -1,7 +1,5 @@
 #![no_main]
 
-use std::hint::black_box;
-
 #[cfg(feature = "risc0")]
 risc0_zkvm::guest::entry!(main);
 

@@ -1,5 +1,7 @@
 #![no_main]
 
+use loopsum::sum_array;
+
 #[cfg(feature = "risc0")]
 risc0_zkvm::guest::entry!(main);
 

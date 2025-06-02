@@ -11,8 +11,10 @@ from opentuner import Result
 from opentuner.tuningrunmain import the_logging_config
 import opentuner
 
+from zkbench.common import setup_logger
 from zkbench.config import Profile, get_profile_by_name
 from zkbench.tune.runner import TuneRunner
+import multiprocessing
 from zkbench.tune.common import (
     ALL_KNOBS,
     BIN_OUT_GENETIC,
@@ -314,6 +316,7 @@ def run_tune_genetic(
     out: str,
     depth: int | None,
     baselines: list[str] | None = None,
+    individual: bool = False,
 ):
     arg_parser = opentuner.default_argparser()
 
@@ -331,7 +334,34 @@ def run_tune_genetic(
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
-    uuid_str = str(uuid.uuid4())[:10]
-    create_tuner(programs, zkvms, metric, out, config, mode, baselines or []).main(
-        arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"])
-    )
+    if not individual:
+        uuid_str = str(uuid.uuid4())[:10]
+        create_tuner(programs, zkvms, metric, out, config, mode, baselines or []).main(
+            arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"])
+        )
+    else:
+        processes = []
+        for program in programs:
+            for zkvm in zkvms:
+                uuid_str = f"{program}-{zkvm}-{str(uuid.uuid4())[:10]}"
+
+                def run_tuner():
+                    create_tuner(
+                        [program],
+                        [zkvm],
+                        metric,
+                        os.path.join(out, program, zkvm),
+                        config,
+                        mode,
+                        baselines or [],
+                    ).main(
+                        arg_parser.parse_args(
+                            [f"--database=opentuner.db/{uuid_str}.db"]
+                        )
+                    )
+
+                p = multiprocessing.Process(target=run_tuner)
+                p.start()
+                processes.append(p)
+        for p in processes:
+            p.join()
