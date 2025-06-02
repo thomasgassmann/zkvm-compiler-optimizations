@@ -3,6 +3,7 @@ import dataclasses
 import json
 import logging
 import os
+import random
 import time
 import uuid
 from opentuner import ConfigurationManipulator
@@ -12,7 +13,6 @@ from opentuner import Result
 from opentuner.tuningrunmain import the_logging_config
 import opentuner
 
-from zkbench.common import setup_logger
 from zkbench.config import Profile, get_profile_by_name
 from zkbench.tune.runner import TuneRunner
 import multiprocessing
@@ -207,7 +207,11 @@ def create_tuner(
     config: TuneConfig,
     mode: Mode,
     baselines: list[str],
+    seed: int | None,
 ):
+    if seed is not None:
+        logging.info(f"Using seed: {seed}")
+        random.seed(seed)
     runner = TuneRunner(
         out=BIN_OUT_GENETIC, metric=metric, cache_dir=out, build_timeout=60 * 20
     )
@@ -319,6 +323,7 @@ def run_tune_genetic(
     depth: int | None,
     baselines: list[str] | None = None,
     individual: bool = False,
+    seed: int | None = None,
 ):
     arg_parser = opentuner.default_argparser()
 
@@ -347,12 +352,17 @@ def run_tune_genetic(
             config,
             mode,
             baselines or [],
+            seed,
         ).main(arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"]))
     else:
+        if seed is not None:
+            logging.info(f"Using main seed: {seed}")
+            random.seed(seed)
         processes = {}
-        for program in programs:
-            for zkvm in zkvms:
+        for program in sorted(programs):
+            for zkvm in sorted(zkvms):
                 uuid_str = f"{program}-{zkvm}-{str(uuid.uuid4())[:10]}"
+                current_seed = random.randint(0, 1000000) if seed is not None else seed
 
                 def run_tuner():
                     create_tuner(
@@ -364,6 +374,7 @@ def run_tune_genetic(
                         config,
                         mode,
                         baselines or [],
+                        current_seed,
                     ).main(
                         arg_parser.parse_args(
                             [f"--database=opentuner.db/{uuid_str}.db"]
