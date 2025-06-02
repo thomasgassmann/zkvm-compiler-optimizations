@@ -1,10 +1,11 @@
 import os
 import click
 
-from zkbench.config import get_programs, get_zkvms
+from zkbench.config import get_profiles_ids, get_program_groups, get_programs, get_zkvms
 from zkbench.tune.plot.exhaustive import plot_exhaustive_depth2
 from zkbench.tune.plot.export import export_exhaustive_depth2, export_genetic
 from zkbench.tune.plot.genetic import plot_genetic
+from zkbench.tune.plot.genetic_individual import plot_genetic_individual
 
 
 @click.command(name="genetic")
@@ -15,6 +16,32 @@ def plot_genetic_cli(stats: str, program: str | None, zkvm: str | None):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
     plot_genetic(stats, program, zkvm)
+
+
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.command(name="genetic-individual")
+@click.option("--stats-dir", required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option(
+    "--program-group", type=click.Choice(get_program_groups()), required=False
+)
+@click.option("--average-programs", is_flag=True, default=False)
+def plot_genetic_individual_cli(
+    stats_dir: str,
+    baseline_profile: str,
+    program: str | None,
+    zkvm: str | None,
+    program_group: str | None = None,
+    average_programs: bool = False,
+):
+    if not os.path.exists(stats_dir):
+        raise click.ClickException(f"{stats_dir} does not exist.")
+    plot_genetic_individual(
+        stats_dir, baseline_profile, average_programs, program, zkvm, program_group
+    )
 
 
 @click.command(name="exhaustive-depth2")
