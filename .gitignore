@@ -3,7 +3,6 @@ out.json
 results-old/
 reports/
 data/
-factorial/
 criterion*/
 __pycache__/
 ctarget/
