@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![guard-widening-sp1-by-program](./guard-widening-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![guard-widening-x86-by-program](./guard-widening-x86-by-program.png)
 ### Speedup
   
 ![guard-widening-by-programspeedup](./guard-widening-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![guard-widening-sp1-by-programspeedup](./guard-widening-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![guard-widening-x86-by-programspeedup](./guard-widening-x86-by-programspeedup.png)

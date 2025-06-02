@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![globaldce-sp1-by-program](./globaldce-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![globaldce-x86-by-program](./globaldce-x86-by-program.png)
 ### Speedup
   
 ![globaldce-by-programspeedup](./globaldce-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![globaldce-sp1-by-programspeedup](./globaldce-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![globaldce-x86-by-programspeedup](./globaldce-x86-by-programspeedup.png)

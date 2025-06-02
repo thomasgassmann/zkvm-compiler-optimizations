@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![strip-gc-relocates-sp1-by-program](./strip-gc-relocates-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![strip-gc-relocates-x86-by-program](./strip-gc-relocates-x86-by-program.png)
 ### Speedup
   
 ![strip-gc-relocates-by-programspeedup](./strip-gc-relocates-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![strip-gc-relocates-sp1-by-programspeedup](./strip-gc-relocates-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![strip-gc-relocates-x86-by-programspeedup](./strip-gc-relocates-x86-by-programspeedup.png)

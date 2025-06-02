@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![loop-sink-sp1-by-program](./loop-sink-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![loop-sink-x86-by-program](./loop-sink-x86-by-program.png)
 ### Speedup
   
 ![loop-sink-by-programspeedup](./loop-sink-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![loop-sink-sp1-by-programspeedup](./loop-sink-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![loop-sink-x86-by-programspeedup](./loop-sink-x86-by-programspeedup.png)

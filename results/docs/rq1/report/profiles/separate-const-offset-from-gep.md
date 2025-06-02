@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![separate-const-offset-from-gep-sp1-by-program](./separate-const-offset-from-gep-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![separate-const-offset-from-gep-x86-by-program](./separate-const-offset-from-gep-x86-by-program.png)
 ### Speedup
   
 ![separate-const-offset-from-gep-by-programspeedup](./separate-const-offset-from-gep-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![separate-const-offset-from-gep-sp1-by-programspeedup](./separate-const-offset-from-gep-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![separate-const-offset-from-gep-x86-by-programspeedup](./separate-const-offset-from-gep-x86-by-programspeedup.png)

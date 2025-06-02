@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![slsr-sp1-by-program](./slsr-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![slsr-x86-by-program](./slsr-x86-by-program.png)
 ### Speedup
   
 ![slsr-by-programspeedup](./slsr-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![slsr-sp1-by-programspeedup](./slsr-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![slsr-x86-by-programspeedup](./slsr-x86-by-programspeedup.png)

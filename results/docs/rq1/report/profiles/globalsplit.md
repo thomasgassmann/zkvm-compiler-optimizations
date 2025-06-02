@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![globalsplit-sp1-by-program](./globalsplit-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![globalsplit-x86-by-program](./globalsplit-x86-by-program.png)
 ### Speedup
   
 ![globalsplit-by-programspeedup](./globalsplit-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![globalsplit-sp1-by-programspeedup](./globalsplit-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![globalsplit-x86-by-programspeedup](./globalsplit-x86-by-programspeedup.png)

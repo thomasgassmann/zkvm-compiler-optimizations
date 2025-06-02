@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![correlated-propagation-sp1-by-program](./correlated-propagation-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![correlated-propagation-x86-by-program](./correlated-propagation-x86-by-program.png)
 ### Speedup
   
 ![correlated-propagation-by-programspeedup](./correlated-propagation-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![correlated-propagation-sp1-by-programspeedup](./correlated-propagation-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![correlated-propagation-x86-by-programspeedup](./correlated-propagation-x86-by-programspeedup.png)

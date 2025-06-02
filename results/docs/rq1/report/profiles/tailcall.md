@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![tailcall-sp1-by-program](./tailcall-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![tailcall-x86-by-program](./tailcall-x86-by-program.png)
 ### Speedup
   
 ![tailcall-by-programspeedup](./tailcall-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![tailcall-sp1-by-programspeedup](./tailcall-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![tailcall-x86-by-programspeedup](./tailcall-x86-by-programspeedup.png)

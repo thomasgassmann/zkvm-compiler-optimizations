@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![extract-blocks-sp1-by-program](./extract-blocks-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![extract-blocks-x86-by-program](./extract-blocks-x86-by-program.png)
 ### Speedup
   
 ![extract-blocks-by-programspeedup](./extract-blocks-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![extract-blocks-sp1-by-programspeedup](./extract-blocks-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![extract-blocks-x86-by-programspeedup](./extract-blocks-x86-by-programspeedup.png)

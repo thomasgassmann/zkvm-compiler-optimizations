@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![os-sp1-by-program](./os-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![os-x86-by-program](./os-x86-by-program.png)
 ### Speedup
   
 ![os-by-programspeedup](./os-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![os-sp1-by-programspeedup](./os-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![os-x86-by-programspeedup](./os-x86-by-programspeedup.png)

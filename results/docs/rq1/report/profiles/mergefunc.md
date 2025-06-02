@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![mergefunc-sp1-by-program](./mergefunc-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![mergefunc-x86-by-program](./mergefunc-x86-by-program.png)
 ### Speedup
   
 ![mergefunc-by-programspeedup](./mergefunc-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![mergefunc-sp1-by-programspeedup](./mergefunc-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![mergefunc-x86-by-programspeedup](./mergefunc-x86-by-programspeedup.png)

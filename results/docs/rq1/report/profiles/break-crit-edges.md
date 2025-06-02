@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![break-crit-edges-sp1-by-program](./break-crit-edges-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![break-crit-edges-x86-by-program](./break-crit-edges-x86-by-program.png)
 ### Speedup
   
 ![break-crit-edges-by-programspeedup](./break-crit-edges-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![break-crit-edges-sp1-by-programspeedup](./break-crit-edges-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![break-crit-edges-x86-by-programspeedup](./break-crit-edges-x86-by-programspeedup.png)

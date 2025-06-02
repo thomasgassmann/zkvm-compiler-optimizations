@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![loop-instsimplify-sp1-by-program](./loop-instsimplify-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![loop-instsimplify-x86-by-program](./loop-instsimplify-x86-by-program.png)
 ### Speedup
   
 ![loop-instsimplify-by-programspeedup](./loop-instsimplify-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![loop-instsimplify-sp1-by-programspeedup](./loop-instsimplify-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![loop-instsimplify-x86-by-programspeedup](./loop-instsimplify-x86-by-programspeedup.png)

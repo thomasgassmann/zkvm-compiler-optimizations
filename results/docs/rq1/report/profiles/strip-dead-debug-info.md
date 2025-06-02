@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![strip-dead-debug-info-sp1-by-program](./strip-dead-debug-info-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![strip-dead-debug-info-x86-by-program](./strip-dead-debug-info-x86-by-program.png)
 ### Speedup
   
 ![strip-dead-debug-info-by-programspeedup](./strip-dead-debug-info-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![strip-dead-debug-info-sp1-by-programspeedup](./strip-dead-debug-info-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![strip-dead-debug-info-x86-by-programspeedup](./strip-dead-debug-info-x86-by-programspeedup.png)

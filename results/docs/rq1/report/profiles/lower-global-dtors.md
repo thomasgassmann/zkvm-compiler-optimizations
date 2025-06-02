@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![lower-global-dtors-sp1-by-program](./lower-global-dtors-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![lower-global-dtors-x86-by-program](./lower-global-dtors-x86-by-program.png)
 ### Speedup
   
 ![lower-global-dtors-by-programspeedup](./lower-global-dtors-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![lower-global-dtors-sp1-by-programspeedup](./lower-global-dtors-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![lower-global-dtors-x86-by-programspeedup](./lower-global-dtors-x86-by-programspeedup.png)

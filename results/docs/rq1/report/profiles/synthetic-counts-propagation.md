@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![synthetic-counts-propagation-sp1-by-program](./synthetic-counts-propagation-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![synthetic-counts-propagation-x86-by-program](./synthetic-counts-propagation-x86-by-program.png)
 ### Speedup
   
 ![synthetic-counts-propagation-by-programspeedup](./synthetic-counts-propagation-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![synthetic-counts-propagation-sp1-by-programspeedup](./synthetic-counts-propagation-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![synthetic-counts-propagation-x86-by-programspeedup](./synthetic-counts-propagation-x86-by-programspeedup.png)

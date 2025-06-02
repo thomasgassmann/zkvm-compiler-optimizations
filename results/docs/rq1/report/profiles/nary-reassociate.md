@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![nary-reassociate-sp1-by-program](./nary-reassociate-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![nary-reassociate-x86-by-program](./nary-reassociate-x86-by-program.png)
 ### Speedup
   
 ![nary-reassociate-by-programspeedup](./nary-reassociate-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![nary-reassociate-sp1-by-programspeedup](./nary-reassociate-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![nary-reassociate-x86-by-programspeedup](./nary-reassociate-x86-by-programspeedup.png)

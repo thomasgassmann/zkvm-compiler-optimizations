@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![adce-sp1-by-program](./adce-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![adce-x86-by-program](./adce-x86-by-program.png)
 ### Speedup
   
 ![adce-by-programspeedup](./adce-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![adce-sp1-by-programspeedup](./adce-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![adce-x86-by-programspeedup](./adce-x86-by-programspeedup.png)

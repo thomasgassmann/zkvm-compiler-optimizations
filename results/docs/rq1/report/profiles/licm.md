@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![licm-sp1-by-program](./licm-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![licm-x86-by-program](./licm-x86-by-program.png)
 ### Speedup
   
 ![licm-by-programspeedup](./licm-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![licm-sp1-by-programspeedup](./licm-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![licm-x86-by-programspeedup](./licm-x86-by-programspeedup.png)

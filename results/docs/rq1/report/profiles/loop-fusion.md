@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![loop-fusion-sp1-by-program](./loop-fusion-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![loop-fusion-x86-by-program](./loop-fusion-x86-by-program.png)
 ### Speedup
   
 ![loop-fusion-by-programspeedup](./loop-fusion-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![loop-fusion-sp1-by-programspeedup](./loop-fusion-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![loop-fusion-x86-by-programspeedup](./loop-fusion-x86-by-programspeedup.png)

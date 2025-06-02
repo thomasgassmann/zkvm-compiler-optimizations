@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![jump-threading-sp1-by-program](./jump-threading-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![jump-threading-x86-by-program](./jump-threading-x86-by-program.png)
 ### Speedup
   
 ![jump-threading-by-programspeedup](./jump-threading-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![jump-threading-sp1-by-programspeedup](./jump-threading-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![jump-threading-x86-by-programspeedup](./jump-threading-x86-by-programspeedup.png)

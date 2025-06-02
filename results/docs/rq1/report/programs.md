@@ -67,15 +67,15 @@
 
 ## Program groups
 
-- [rust](./program-groups/rust.md)
-- [polybench](./program-groups/polybench.md)
 - [loop-intensive](./program-groups/loop-intensive.md)
-- [recursive](./program-groups/recursive.md)
+- [spec](./program-groups/spec.md)
+- [polybench](./program-groups/polybench.md)
+- [rust](./program-groups/rust.md)
+- [memory-intensive](./program-groups/memory-intensive.md)
 - [npb](./program-groups/npb.md)
 - [crypto](./program-groups/crypto.md)
 - [c](./program-groups/c.md)
-- [memory-intensive](./program-groups/memory-intensive.md)
-- [spec](./program-groups/spec.md)
+- [recursive](./program-groups/recursive.md)
 
 ## % faster by profile
   

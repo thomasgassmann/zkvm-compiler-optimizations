@@ -15,6 +15,9 @@
 #### Optimization by program (sp1, % faster)
   
 ![ipsccp-sp1-by-program](./ipsccp-sp1-by-program.png)
+#### Optimization by program (x86, % faster)
+  
+![ipsccp-x86-by-program](./ipsccp-x86-by-program.png)
 ### Speedup
   
 ![ipsccp-by-programspeedup](./ipsccp-by-programspeedup.png)
@@ -24,3 +27,6 @@
 #### Optimization by program (sp1, Speedup)
   
 ![ipsccp-sp1-by-programspeedup](./ipsccp-sp1-by-programspeedup.png)
+#### Optimization by program (x86, Speedup)
+  
+![ipsccp-x86-by-programspeedup](./ipsccp-x86-by-programspeedup.png)
