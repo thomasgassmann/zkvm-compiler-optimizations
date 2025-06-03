@@ -24,6 +24,7 @@ impl Risc0Evaluator {
         let session = exec.run().unwrap();
         let cycles = session.user_cycles;
         println!("cycles: {}", cycles);
+        println!("cycles (paging): {}", session.paging_cycles);
 
         // Setup the prover.
         let mut builder = ExecutorEnv::builder();
