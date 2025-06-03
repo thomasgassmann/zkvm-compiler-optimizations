@@ -312,7 +312,9 @@ def create_tuner(
                     f,
                 )
 
-            return Result(time=metric_sum, state="OK")
+            return Result(
+                time=metric_sum, state="OK" if metric_sum < float("inf") else "TIMEOUT"
+            )
 
     return PassTuner
 
