@@ -1,12 +1,100 @@
 import os
 import mdutils
-from zkbench.config import get_program_groups_from_programs
+from zkbench.config import get_program_groups_from_programs, get_programs, get_zkvms
 from zkbench.plot.export import export_plot
 from zkbench.tune.exhaustive import Exhaustive
 from zkbench.tune.genetic import Genetic
 from zkbench.tune.plot.common import read_exhaustive_stats, read_genetic_stats
 from zkbench.tune.plot.exhaustive import plot_exhaustive_depth2
 from zkbench.tune.plot.genetic import plot_genetic
+from zkbench.tune.plot.genetic_individual import plot_genetic_individual
+
+
+def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str):
+    path = os.path.join(out, "README.md")
+    md_file = mdutils.MdUtils(file_name=path)
+    md_file.new_header(level=1, title=f"Individual genetic run")
+    md_file.new_paragraph(
+        f"Baseline profile: {baseline_profile}. "
+        "This profile is used to calculate relative metric values."
+    )
+
+    md_file.new_header(level=2, title=f"Overview")
+    md_file.new_header(level=3, title=f"Metric over Iterations")
+    export_plot(
+        out,
+        None,
+        md_file,
+        "main",
+        lambda: plot_genetic_individual(
+            stats_dir, baseline_profile, average_programs=False
+        ),
+    )
+    md_file.new_header(
+        level=3, title=f"Metric over Iterations (averaged across programs)"
+    )
+    export_plot(
+        out,
+        None,
+        md_file,
+        "main-average",
+        lambda: plot_genetic_individual(
+            stats_dir, baseline_profile, average_programs=True
+        ),
+    )
+
+    md_file.new_header(level=2, title=f"By program overview")
+    for program in get_programs():
+        try:
+            md_file.new_header(level=3, title=f"Program {program}")
+            export_plot(
+                out,
+                None,
+                md_file,
+                f"genetic-individual-plot-{program}",
+                lambda: plot_genetic_individual(
+                    stats_dir, baseline_profile, average_programs=False, program=program
+                ),
+            )
+        except:
+            md_file.new_paragraph(f"No data for program {program}.")
+
+    md_file.new_header(level=2, title=f"By program overview (separate individual)")
+    for program in get_programs():
+        for zkvm in get_zkvms():
+            try:
+                md_file.new_header(level=3, title=f"Program {program} on zkVM {zkvm}")
+                export_plot(
+                    out,
+                    None,
+                    md_file,
+                    f"genetic-plot-{program}-{zkvm}",
+                    lambda: plot_genetic(
+                        os.path.join(stats_dir, f"{program}-{zkvm}-stats.json"),
+                        program,
+                        zkvm,
+                    ),
+                )
+            except:
+                md_file.new_paragraph(f"No data for program {program} on zkVM {zkvm}.")
+
+    md_file.new_header(level=2, title=f"By zkVM overview")
+    for zkvm in get_zkvms():
+        try:
+            md_file.new_header(level=3, title=f"zkVM {zkvm}")
+            export_plot(
+                out,
+                None,
+                md_file,
+                f"genetic-individual-plot-{zkvm}",
+                lambda: plot_genetic_individual(
+                    stats_dir, baseline_profile, average_programs=False, zkvm=zkvm
+                ),
+            )
+        except:
+            md_file.new_paragraph(f"No data for zkVM {zkvm}.")
+
+    md_file.create_md_file()
 
 
 def export_genetic(stats_path: str, out: str):

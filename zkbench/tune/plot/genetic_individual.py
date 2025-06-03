@@ -24,6 +24,11 @@ def plot_genetic_individual(
     if program is None and program_group is None:
         programs = get_programs()
 
+    if len(programs) == 0:
+        raise ValueError(
+            "No programs selected. Please specify a program or program group."
+        )
+
     zkvms = get_zkvms() if zkvm is None else [zkvm]
     for zkvm in zkvms:
         program_values = []

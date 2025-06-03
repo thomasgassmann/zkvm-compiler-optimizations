@@ -3,7 +3,11 @@ import click
 
 from zkbench.config import get_profiles_ids, get_program_groups, get_programs, get_zkvms
 from zkbench.tune.plot.exhaustive import plot_exhaustive_depth2
-from zkbench.tune.plot.export import export_exhaustive_depth2, export_genetic
+from zkbench.tune.plot.export import (
+    export_exhaustive_depth2,
+    export_genetic,
+    export_genetic_individual,
+)
 from zkbench.tune.plot.genetic import plot_genetic
 from zkbench.tune.plot.genetic_individual import plot_genetic_individual
 
@@ -70,3 +74,15 @@ def export_genetic_cli(stats: str, out: str):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
     export_genetic(stats, out)
+
+
+@click.command(name="export-genetic-individual")
+@click.option("--stats-dir", required=True)
+@click.option("--out", nargs=1, required=True, help="Output directory")
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+def export_genetic_individual_cli(stats_dir: str, out: str, baseline_profile: str):
+    if not os.path.exists(stats_dir):
+        raise click.ClickException(f"Directory {stats_dir} does not exist.")
+    export_genetic_individual(stats_dir, out, baseline_profile)
