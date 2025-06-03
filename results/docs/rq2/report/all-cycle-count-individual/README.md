@@ -5,7 +5,7 @@
 # Individual genetic run
 
 
-Baseline profile: o3. This profile is used to calculate relative metric values.
+Baseline profile: o3-lto. This profile is used to calculate relative metric values.
 ## Overview
 
 ### Metric over Iterations
@@ -190,7 +190,7 @@ Baseline profile: o3. This profile is used to calculate relative metric values.
 ### Program spec-631
   
 ![genetic-individual-plot-spec-631](./genetic-individual-plot-spec-631.png)
-## By program overview (separate individual)
+## By program overview (absolute values)
 
 ### Program loop-sum on zkVM risc0
   

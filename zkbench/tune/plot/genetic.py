@@ -36,6 +36,7 @@ def plot_genetic(
         programs = None
 
     stats_values = [get_metric_sum(v, programs, zkvm) for v in stats.metrics]
+    stats_values = [v for v in stats_values if v > 0]
 
     plt.plot(stats_values, marker="o", linestyle="-")
 

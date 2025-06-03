@@ -59,7 +59,7 @@ def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str):
         except:
             md_file.new_paragraph(f"No data for program {program}.")
 
-    md_file.new_header(level=2, title=f"By program overview (separate individual)")
+    md_file.new_header(level=2, title=f"By program overview (absolute values)")
     for program in get_programs():
         for zkvm in get_zkvms():
             try:
