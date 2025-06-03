@@ -203,7 +203,7 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
                 ax.scatter(
                     [x],
                     [y],
-                    color="black",
+                    color=color,
                     marker="o",
                     s=50,  # size of the dot
                     zorder=3,
