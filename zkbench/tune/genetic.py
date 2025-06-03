@@ -30,7 +30,7 @@ from zkbench.tune.common import (
 @dataclasses.dataclass(frozen=True)
 class Genetic:
     profile_configs: list[ProfileConfig | Profile]
-    values: list[int]
+    values: list[float]
     metrics: list[list[MetricValue]]
     best_metric: int
     best_profile: ProfileConfig | Profile

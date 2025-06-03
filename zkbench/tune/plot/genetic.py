@@ -16,6 +16,7 @@ def get_metric_sum(
             for v in l
             if (program_list is None or v.program in program_list)
             and (v.zkvm == zkvm or zkvm is None)
+            and not v.timeout
         ]
     )
 

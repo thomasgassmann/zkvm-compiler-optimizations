@@ -33,9 +33,9 @@ def plot_genetic_individual(
             )
             stats_values = [get_metric_sum(v, [program], zkvm) for v in stats.metrics]
             baseline = get_metric_sum(stats.baselines[baseline_profile], [program], zkvm)
-            relative_values = [v / baseline for v in stats_values]
+            relative_values = [v / baseline for v in stats_values if v > 0]
             program_values.append(relative_values)
-        
+
         if average_programs:
             least_number_of_iterations = min([len(values) for values in program_values])
             program_values = [
