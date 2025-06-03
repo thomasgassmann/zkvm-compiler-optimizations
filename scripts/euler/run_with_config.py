@@ -69,6 +69,10 @@ config = {
         "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
         "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
     },
+    "polybench-jacobi-2d": {
+        "sp1": "GPUS=a100_80gb:1 GPUMEM=24g",
+        "risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
+    },
     "default_sp1": "GPUS=rtx_3090:1 GPUMEM=24g",
     "default_risc0": "GPUS=quadro_rtx_6000:1 GPUMEM=24g",
 }

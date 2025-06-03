@@ -272,7 +272,11 @@ def create_tuner(
             values = eval_result.values
             self._metrics.append(values)
 
-            metric_sum = sum([v.metric for v in values])
+            metric_sum = (
+                sum([v.metric for v in values])
+                if all([not v.timeout for v in values])
+                else float("inf")
+            )
             self._values.append(metric_sum)
             self._profile_configs.append(profile_config)
 
