@@ -159,6 +159,19 @@ class TuneRunner:
                 return True
             except Exception as e:
                 logging.error(f"Error during build: {e}")
+
+                for program in programs:
+                    for zkvm in zkvms:
+                        # treat this as a timeout
+                        self.write_cache(
+                            program,
+                            zkvm,
+                            profile_config,
+                            MetricValue(
+                                zkvm=zkvm, program=program, metric=-1, timeout=True
+                            ),
+                        )
+
                 return False
 
     def eval_all(
