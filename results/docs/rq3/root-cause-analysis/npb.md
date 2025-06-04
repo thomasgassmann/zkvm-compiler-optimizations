@@ -1,5 +1,7 @@
 # npb genetic run
 
+See also [npb report here](../../rq2/npb.md).
+
 For the `npb` benchmark suite, applying the following passes:
 
 ```text
