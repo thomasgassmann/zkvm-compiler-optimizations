@@ -1,4 +1,6 @@
 import logging
+
+import numpy as np
 from zkbench.config import get_programs
 from zkbench.plot.common import (
     get_point_estimate_median_ms,
@@ -52,6 +54,11 @@ def plot_improvement_by_program_exec(
         relative_improvements_exec_risc0.append(current_improvements_exec_risc0)
         relative_improvements_exec_sp1.append(current_improvements_exec_sp1)
         relative_improvements_exec_x86.append(current_improvements_exec_x86)
+
+    logging.info("Average improvements for exec:")
+    logging.info(f"risc0: {np.mean(relative_improvements_exec_risc0)}")
+    logging.info(f"sp1: {np.mean(relative_improvements_exec_sp1)}")
+    logging.info(f"x86: {np.mean(relative_improvements_exec_x86)}")
 
     y_axis = "speedup" if speedup else "% faster"
     plot_grouped_boxplot(
