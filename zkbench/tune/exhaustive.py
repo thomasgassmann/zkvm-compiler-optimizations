@@ -15,7 +15,6 @@ from zkbench.tune.common import (
     build_pass_list,
 )
 from itertools import product
-from dacite import from_dict
 
 
 @dataclass(frozen=True)
@@ -48,7 +47,7 @@ def run_tune_exhaustive(
     single_codegen_unit = [False] if not config.tune_codegen_units else [False, True]
     opt_level = OPT_LEVEL_OPTIONS if config.tune_opt_level else ["0"]
     prepopulate_passes = [True, False] if config.tune_prepopulate_passes else [False]
-    builder_runner = TuneRunner(BIN_OUT_EXHAUSTIVE, metric, out)
+    builder_runner = TuneRunner(BIN_OUT_EXHAUSTIVE, metric, out, build_timeout=60 * 30)
 
     results = []
 
