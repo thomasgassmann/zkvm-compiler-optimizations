@@ -4,7 +4,7 @@ import numpy as np
 from zkbench.config import get_default_profiles_ids, get_programs, get_zkvms
 from zkbench.plot.common import (
     BASELINE,
-    get_point_estimate_median_ms,
+    get_average_improvement_over_baseline,
     get_title,
     plot_sorted,
 )
@@ -16,15 +16,9 @@ def plot_average_improvement_difference(
     zkvm: str | None = None,
 ):
     def f(dir, program, zkvm, profile, measurement):
-        baseline = get_point_estimate_median_ms(
-            dir, program, zkvm, BASELINE, measurement
+        return get_average_improvement_over_baseline(
+            dir, zkvm, program, profile, measurement, speedup=speedup
         )
-        compared = get_point_estimate_median_ms(
-            dir, program, zkvm, profile, measurement
-        )
-        if speedup:
-            return baseline / compared
-        return (-(compared - baseline) / baseline) * 100
 
     title = get_title(
         f"Average difference in improvement by profile compared to baseline",
