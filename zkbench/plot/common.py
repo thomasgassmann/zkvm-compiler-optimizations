@@ -156,6 +156,22 @@ def get_sample_times_ms(
     return [item / 1_000_000 for item in data["times"]]
 
 
+def get_average_improvement_over_baseline(
+    dir: str,
+    zkvm: str,
+    program: str,
+    profile: str,
+    measurement: str,
+    speedup: bool = False,
+    baseline: str = BASELINE,
+):
+    baseline = get_point_estimate_median_ms(dir, program, zkvm, baseline, measurement)
+    compared = get_point_estimate_median_ms(dir, program, zkvm, profile, measurement)
+    if speedup:
+        return baseline / compared
+    return (-(compared - baseline) / baseline) * 100
+
+
 def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_width=0.35):
     num_profiles = len(labels)
     num_series = len(values)

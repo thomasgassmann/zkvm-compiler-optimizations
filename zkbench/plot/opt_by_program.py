@@ -3,8 +3,7 @@ import logging
 import numpy as np
 from zkbench.config import get_programs, get_zkvms
 from zkbench.plot.common import (
-    BASELINE,
-    get_point_estimate_median_ms,
+    get_average_improvement_over_baseline,
     get_title,
     plot_grouped_boxplot,
     plot_sorted,
@@ -25,44 +24,27 @@ def plot_opt_by_program(
             exec_values = []
             prove_values = []
             for current_zkvm in get_zkvms() if not zkvm else [zkvm]:
-                exec = get_point_estimate_median_ms(
-                    dir, program, current_zkvm, profile, "exec"
-                )
-                exec_baseline = get_point_estimate_median_ms(
-                    dir, program, current_zkvm, BASELINE, "exec"
+                exec_improvement = get_average_improvement_over_baseline(
+                    dir, current_zkvm, program, profile, "exec", speedup=speedup
                 )
                 if zkvm == "x86":
                     # x86 has no prove, use average of zkVM exec
-                    prove = np.mean(
+                    other_zkvm_improvement_average = np.mean(
                         [
-                            get_point_estimate_median_ms(
-                                dir, program, z, profile, "exec"
+                            get_average_improvement_over_baseline(
+                                dir, z, program, profile, "exec", speedup=speedup
                             )
                             for z in get_zkvms()
                         ]
                     )
-                    prove_baseline = np.mean(
-                        [
-                            get_point_estimate_median_ms(
-                                dir, program, z, BASELINE, "exec"
-                            )
-                            for z in get_zkvms()
-                        ]
-                    )
+                    exec_values.append(exec_improvement)
+                    prove_values.append(other_zkvm_improvement_average)
                 else:
-                    prove_baseline = get_point_estimate_median_ms(
-                        dir, program, current_zkvm, BASELINE, "prove"
+                    prove_improvement = get_average_improvement_over_baseline(
+                        dir, current_zkvm, program, profile, "prove", speedup=speedup
                     )
-                    prove = get_point_estimate_median_ms(
-                        dir, program, current_zkvm, profile, "prove"
-                    )
-
-                if speedup:
-                    exec_values.append(exec_baseline / exec)
-                    prove_values.append(prove_baseline / prove)
-                else:
-                    exec_values.append((exec_baseline - exec) / exec_baseline)
-                    prove_values.append((prove_baseline - prove) / prove_baseline)
+                    exec_values.append(exec_improvement)
+                    prove_values.append(prove_improvement)
 
             relative_improvements_exec.append(exec_values)
             relative_improvements_prove.append(prove_values)
