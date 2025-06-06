@@ -137,9 +137,12 @@ def prove_exec_cli(program: str | None, program_group: str | None):
 @click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
 @click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
-def opt_by_program_cli(profile: str, zkvm: str | None, speedup: bool):
+@click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
+def opt_by_program_cli(
+    profile: str, zkvm: str | None, speedup: bool, show_x86: bool = False
+):
     dir = click.get_current_context().parent.params["dir"]
-    plot_opt_by_program(dir, profile, zkvm, speedup)
+    plot_opt_by_program(dir, profile, zkvm, speedup, show_x86)
 
 
 @click.command(name="khz", help="Plot kHz by profile")
