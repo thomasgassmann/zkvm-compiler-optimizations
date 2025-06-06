@@ -61,17 +61,22 @@ def plot_exhaustive_depth2(
     matrix = np.array(matrix)
     matrix_normalized = np.where(matrix < 0, np.nan, matrix / largest)
 
-    plt.figure(figsize=(10, 8))
+    plt.figure(figsize=(12, 10))
+
     sns.heatmap(
         matrix_normalized,
-        annot=True,
-        fmt=".4f",
+        annot=True if len(passes) <= 20 else False,
+        fmt=".3f",
         xticklabels=passes,
         yticklabels=passes,
         vmin=smallest / largest,
         vmax=1,
         mask=np.isnan(matrix_normalized),
     )
+
+    plt.xticks(rotation=90, ha="center", fontsize=7)
+    plt.yticks(rotation=0, fontsize=7)
+
     title = get_title(
         f"Normalized cumulative {stats.metric}", [program, zkvm, program_group]
     )
