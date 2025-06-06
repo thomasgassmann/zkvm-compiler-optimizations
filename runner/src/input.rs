@@ -222,7 +222,7 @@ pub fn get_keccak256_input() -> Vec<u8> {
 }
 
 pub fn get_loop_unroll_input() -> usize {
-    100000
+    1000
 }
 
 pub fn get_loop_sum_input() -> Vec<i32> {
