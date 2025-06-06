@@ -1073,9 +1073,6 @@
                 "npb",
                 "rust",
                 "memory-intensive"
-            ],
-            "skip": [
-                "attributor"
             ]
         },
         "npb-ep": {
@@ -1095,9 +1092,6 @@
                 "npb",
                 "rust",
                 "memory-intensive"
-            ],
-            "skip": [
-                "attributor"
             ]
         },
         "npb-lu": {
