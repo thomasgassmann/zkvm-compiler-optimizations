@@ -153,6 +153,8 @@ fn run_criterion(args: CriterionArgs) {
                 let mut group = c.benchmark_group(&group_name);
                 if measurement == &MeasurementType::Prove {
                     group.sample_size(args.sample_size.unwrap_or(10));
+                } else if args.sample_size.is_some() {
+                    group.sample_size(args.sample_size.unwrap());
                 }
 
                 for profile in profiles.iter() {
