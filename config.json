@@ -1120,6 +1120,12 @@
                 "spec",
                 "c"
             ]
+        },
+        "loop-unroll": {
+            "groups": [
+                "loop-intensive",
+                "rust"
+            ]
         }
     }
 }

@@ -221,6 +221,10 @@ pub fn get_keccak256_input() -> Vec<u8> {
     vec![0u8; 64]
 }
 
+pub fn get_loop_unroll_input() -> usize {
+    100000
+}
+
 pub fn get_loop_sum_input() -> Vec<i32> {
     let mut arr = Vec::new();
     for i in 0..1500 {
@@ -342,6 +346,10 @@ fn write_program_inputs<W: ProgramInputWriter>(
         ProgramId::Spec631 => {
             let str = include_str!("../../inputs/spec-631/in.txt");
             stdin.write_string(str);
+        }
+        ProgramId::LoopUnroll => {
+            let reps = get_loop_unroll_input();
+            stdin.write_generic(&reps);
         }
         _ => {}
     }

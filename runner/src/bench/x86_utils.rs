@@ -4,10 +4,7 @@ use libloading::{Library, Symbol};
 
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
-        get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input,
-        load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature,
+        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_keccak256_input, get_loop_sum_input, get_loop_unroll_input, get_merkle_input, get_regex_match_input, get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input, load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature
     },
     types::{ProgramId, ProverId},
     utils::get_elf,
@@ -57,6 +54,7 @@ type MainCoreZkvmMnist = unsafe extern "C" fn(
     training_data: Vec<(Vec<f64>, Vec<f64>)>,
     test_data: Vec<(Vec<f64>, Vec<f64>)>,
 ) -> ();
+type MainCoreLoopUnroll = unsafe extern "C" fn(reps: usize) -> ();
 
 pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats {
     ElfStats {
@@ -265,6 +263,14 @@ pub fn exec_x86_prepare(
             Box::new(move || unsafe {
                 let _keep_lib_alive = &lib;
                 main_core_fn(training_data, test_data);
+            })
+        }
+        ProgramId::LoopUnroll => {
+            let main_core_fn: MainCoreLoopUnroll = load_main_core_fn!(MainCoreLoopUnroll);
+            let reps = get_loop_unroll_input();
+            Box::new(move || unsafe {
+                let _keep_lib_alive = &lib;
+                main_core_fn(reps);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),
