@@ -33,6 +33,12 @@ pub struct EvalArgs {
     command: EvalSubcommand,
 }
 
+#[derive(clap::ValueEnum, Clone, Debug, Copy)]
+pub enum CliSamplingMode {
+    Flat,
+    Linear,
+}
+
 #[derive(Parser, Clone)]
 pub struct CriterionArgs {
     #[arg(long)]
@@ -53,6 +59,8 @@ pub struct CriterionArgs {
     input_override: Option<String>,
     #[arg(long = "sample-size")]
     sample_size: Option<usize>,
+    #[arg(long = "sampling-mode")]
+    sampling_mode: Option<CliSamplingMode>,
 }
 
 #[derive(Parser, Clone)]
@@ -155,6 +163,14 @@ fn run_criterion(args: CriterionArgs) {
                     group.sample_size(args.sample_size.unwrap_or(10));
                 } else if args.sample_size.is_some() {
                     group.sample_size(args.sample_size.unwrap());
+                }
+
+                if args.sampling_mode.is_some() {
+                    let sampling_mode = match args.sampling_mode.unwrap() {
+                        CliSamplingMode::Flat => criterion::SamplingMode::Flat,
+                        CliSamplingMode::Linear => criterion::SamplingMode::Linear,
+                    };
+                    group.sampling_mode(sampling_mode);
                 }
 
                 for profile in profiles.iter() {

@@ -132,6 +132,7 @@ async def clean_cli(program: list[str], zkvm: list[str]):
 @click.option("--meta-only", required=False, is_flag=True, default=False)
 @click.option("--input-override", required=False, type=str)
 @click.option("--sample-size", required=False, type=int)
+@click.option("--sampling-mode", type=click.Choice(["flat", "linear"]), required=False)
 def bench_cli(
     program: list[str],
     program_group: list[str],
@@ -143,6 +144,7 @@ def bench_cli(
     meta_only: bool,
     input_override: str | None,
     sample_size: int | None,
+    sampling_mode: str | None,
 ):
     run_bench(
         program,
@@ -155,6 +157,7 @@ def bench_cli(
         meta_only,
         input_override,
         sample_size,
+        sampling_mode,
     )
 
 
