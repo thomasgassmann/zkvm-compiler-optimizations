@@ -40,7 +40,9 @@ from zkbench.plot.paging_by_profile import plot_paging_by_profile
 from zkbench.plot.x86_exec import plot_x86_exec
 
 
-@click.command(name="average-improvement")
+@click.command(
+    name="average-improvement", help="Plot average improvement compared to baseline"
+)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option(
@@ -61,7 +63,7 @@ def average_improvement_cli(
     plot_average_improvement(dir, zkvm, program, program_group, speedup, global_average)
 
 
-@click.command(name="average-duration")
+@click.command(name="average-duration", help="Plot raw duration of measurements")
 @click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
@@ -75,7 +77,9 @@ def average_duration_cli(
     plot_average_duration(dir, zkvm, measurement, program, profile)
 
 
-@click.command(name="cycle-count")
+@click.command(
+    name="cycle-count", help="Plot relative cycle count compared to baseline"
+)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option(
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
@@ -85,7 +89,7 @@ def cycle_count_cli(program: str | None, profile: list[str] | None):
     plot_cycle_count(dir, program, list(profile) if profile else None)
 
 
-@click.command(name="cycle-count-abs")
+@click.command(name="cycle-count-abs", help="Plot absolute cycle count")
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 def cycle_count_abs_cli(program: str | None, zkvm: str | None):
@@ -93,7 +97,10 @@ def cycle_count_abs_cli(program: str | None, zkvm: str | None):
     plot_cycle_count_abs(dir, program, zkvm)
 
 
-@click.command(name="cycle-count-duration")
+@click.command(
+    name="cycle-count-duration",
+    help="Plot cycle count vs. duration (for some given measurement)",
+)
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option("--relative", is_flag=True, default=False)
@@ -102,7 +109,10 @@ def cycle_count_duration_cli(measurement: str, program: str | None, relative: bo
     plot_cycle_count_duration(dir, measurement, program, relative)
 
 
-@click.command(name="cycle-count-stats")
+@click.command(
+    name="cycle-count-stats",
+    help="Plot cycle count pearson vs. spearman coefficients for given measurement",
+)
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--relative", is_flag=True, default=False)
 def cycle_count_stats_cli(measurement: str, relative: bool):
@@ -120,7 +130,10 @@ def prove_exec_cli(program: str | None, program_group: str | None):
     plot_prove_exec(dir, program, program_group)
 
 
-@click.command(name="opt-by-program")
+@click.command(
+    name="opt-by-program",
+    help="For specific profile, plot improvement/degradation by program",
+)
 @click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
 @click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
@@ -129,7 +142,7 @@ def opt_by_program_cli(profile: str, zkvm: str | None, speedup: bool):
     plot_opt_by_program(dir, profile, zkvm, speedup)
 
 
-@click.command(name="khz")
+@click.command(name="khz", help="Plot kHz by profile")
 @click.option("--program", type=click.Choice(get_programs()))
 @click.option("--zkvm", type=click.Choice(get_zkvms()))
 def khz_cli(program: str | None, zkvm: str | None):
@@ -137,7 +150,7 @@ def khz_cli(program: str | None, zkvm: str | None):
     plot_khz(dir, zkvm, program)
 
 
-@click.command(name="missing")
+@click.command(name="missing", help="List all missing measurements")
 @click.option("--measurement", type=click.Choice(get_measurements()), required=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 def plot_missing_cli(measurement: str | None, zkvm: str | None):

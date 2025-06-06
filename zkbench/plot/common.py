@@ -162,7 +162,7 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
 
     sorted_indices = sorted(
         range(num_profiles),
-        key=lambda i: np.median(values[0][i]) if any(values[0][i]) else float("-inf"),
+        key=lambda i: np.median(values[0][i]) if any(values[0][i]) else 0,
         reverse=True,
     )
     sorted_labels = [labels[i] for i in sorted_indices]
