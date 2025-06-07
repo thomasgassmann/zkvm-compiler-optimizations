@@ -21,6 +21,7 @@ async def run_build(
     force: bool,
     j: int,
     llvm: bool,
+    features: list[str] | None = None,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
         programs, zkvms, profile_names, program_groups
@@ -67,18 +68,18 @@ async def run_build(
         )
         await asyncio.gather(
             *[
-                _build(program, profile_name, zkvm, llvm)
+                _build(program, profile_name, zkvm, llvm, features=features)
                 for program, profile_name, zkvm in jobs_to_run
             ]
         )
 
 
-async def _build(program: str, profile_name: str, zkvm: str, llvm: bool):
+async def _build(program: str, profile_name: str, zkvm: str, llvm: bool, features=None):
     target = get_target_binary_path(program, zkvm, profile_name)
     os.makedirs(os.path.dirname(target), exist_ok=True)
 
     profile = get_profile_by_name(profile_name)
-    await build_program(program, zkvm, profile, llvm, target)
+    await build_program(program, zkvm, profile, llvm, target, features=features)
 
 
 async def build_program(
@@ -90,6 +91,7 @@ async def build_program(
     verbose: bool = False,
     timeout=None,
     target_dir=None,
+    features=None,
 ):
     source = get_source_binary_path(program, zkvm, target_dir)
     profile_name = profile.profile_name
@@ -107,6 +109,9 @@ async def build_program(
         env["CARGO_TARGET_DIR"] = target_dir
 
     verbosity = "--verbose" if verbose else ""
+    additional_features = (
+        "" if features is None else " ".join([f"--features {f}" for f in features])
+    )
 
     lower_atomic_pass = ["lower-atomic"]
     passes_string = ",".join(
@@ -129,7 +134,7 @@ async def build_program(
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RUSTUP_TOOLCHAIN=succinct \
                 CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
-                cargo +succinct build --release --locked --features sp1 {verbosity}
+                cargo +succinct build --release --locked --features sp1 {verbosity} {additional_features}
         """.strip(),
             program_dir,
             env,
@@ -143,7 +148,7 @@ async def build_program(
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RISC0_FEATURE_bigint2=1 \
                 cargo +risc0 build --release --locked --features risc0 \
-                    --target riscv32im-risc0-zkvm-elf {verbosity}
+                    --target riscv32im-risc0-zkvm-elf {verbosity} {additional_features}
         """.strip(),
             program_dir,
             env,
@@ -154,7 +159,7 @@ async def build_program(
         ret = await run_command(
             f"""
             RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {profile.rustflags} {llvm_flag}" \
-                cargo +nightly build --release --locked --features x86 --lib {verbosity}
+                cargo +nightly build --release --locked --features x86 --lib {verbosity} {additional_features}
         """.strip(),
             program_dir,
             env,

@@ -79,6 +79,7 @@ def zkbench_cli(log_level: str, log_file: str):
 @click.option("--force", required=False, is_flag=True, default=False)
 @click.option("-j", required=False, type=int)
 @click.option("--llvm", required=False, is_flag=True, default=False)
+@click.option("--feature", required=False, type=str, multiple=True)
 @coro
 async def build_cli(
     program: list[str],
@@ -88,9 +89,17 @@ async def build_cli(
     force: bool,
     j: int | None,
     llvm: bool,
+    feature: list[str] | None,
 ):
     await run_build(
-        list(program), list(program_group), zkvm, profile, force, j or 1, llvm
+        list(program),
+        list(program_group),
+        zkvm,
+        profile,
+        force,
+        j or 1,
+        llvm,
+        features=feature,
     )
 
 
