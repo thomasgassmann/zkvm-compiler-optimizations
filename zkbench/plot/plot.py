@@ -295,10 +295,11 @@ def duration_by_program_cli(
 @click.option(
     "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
 )
-def cycle_count_by_program_cli(profile: str, baseline_profile: str):
+@click.option("--relative", is_flag=True, default=False)
+def cycle_count_by_program_cli(profile: str, baseline_profile: str, relative: bool):
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_cycle_count_by_program(dir, profile, baseline_profile)
+    plot_cycle_count_by_program(dir, profile, baseline_profile, relative)
 
 
 @click.command(

@@ -133,6 +133,12 @@ async def clean_cli(program: list[str], zkvm: list[str]):
 @click.option("--input-override", required=False, type=str)
 @click.option("--sample-size", required=False, type=int)
 @click.option("--sampling-mode", type=click.Choice(["flat", "linear"]), required=False)
+@click.option(
+    "--runner-path",
+    type=click.Path(exists=True, file_okay=True, dir_okay=False),
+    required=False,
+    default="./target/release/runner",
+)
 def bench_cli(
     program: list[str],
     program_group: list[str],
@@ -145,6 +151,7 @@ def bench_cli(
     input_override: str | None,
     sample_size: int | None,
     sampling_mode: str | None,
+    runner_path: str | None,
 ):
     run_bench(
         program,
@@ -158,6 +165,7 @@ def bench_cli(
         input_override,
         sample_size,
         sampling_mode,
+        runner_path,
     )
 
 

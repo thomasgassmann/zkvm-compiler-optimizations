@@ -16,6 +16,7 @@ def run_bench(
     input_override: str = None,
     sample_size: int | None = None,
     sampling_mode: str | None = None,
+    runner_path: str | None = None,
 ):
     args = []
     if program or program_group:
@@ -52,10 +53,11 @@ def run_bench(
         args.append(f"--sampling-mode {sampling_mode}")
 
     arg_string = " ".join(args)
+    runner_path = runner_path or "./target/release/runner"
     logging.info(f"Running bench with args: {arg_string}")
     res = os.system(
         f"""
-        ./target/release/runner criterion {arg_string}
+        {runner_path} criterion {arg_string}
     """.strip()
     )
     if res != 0:
