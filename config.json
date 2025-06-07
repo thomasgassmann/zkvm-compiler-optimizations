@@ -4,13 +4,15 @@
             "cflags": "-O0",
             "rustflags": "-C llvm-args=-unroll-threshold=0",
             "passes": [],
-            "prepopulate_passes": true
+            "prepopulate_passes": true,
+            "no_default": true
         },
         "loop-unrolled": {
             "cflags": "-O0",
             "rustflags": "-C llvm-args=-unroll-threshold=3000",
             "passes": [],
-            "prepopulate_passes": true
+            "prepopulate_passes": true,
+            "no_default": true
         },
         "baseline": {
             "cflags": "-O0",
