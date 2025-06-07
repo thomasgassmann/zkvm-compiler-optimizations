@@ -18,6 +18,7 @@ from zkbench.plot.average_improvement_difference import (
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
+from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
 from zkbench.plot.stddev import list_by_stddev
 from zkbench.plot.common import has_data_on
@@ -249,6 +250,31 @@ def improvement_by_program_cli(
     dir = click.get_current_context().parent.params["dir"]
 
     plot_improvement_by_program(dir, profile, baseline_profile, speedup, show_x86)
+
+
+@click.command(
+    name="improvement-single-program",
+    help="Show (average) improvement for some profile compared to some other baseline profile for a single program",
+)
+@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+@click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
+def improvement_single_program_cli(
+    program: str,
+    profile: str,
+    baseline_profile: str,
+    speedup: bool,
+    show_x86: bool,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_for_single_program(
+        dir, program, profile, baseline_profile, speedup, show_x86
+    )
 
 
 @click.command(

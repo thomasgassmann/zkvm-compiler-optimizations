@@ -25,6 +25,7 @@ from zkbench.plot.plot import (
     export_report_cli,
     improvement_by_program_cli,
     improvement_by_program_exec_cli,
+    improvement_single_program_cli,
     khz_cli,
     no_effect_cli,
     opt_by_program_cli,
@@ -272,6 +273,7 @@ plot_cli.add_command(x86_exec_cli)
 plot_cli.add_command(average_improvement_compare_cli)
 plot_cli.add_command(average_improvement_difference_cli)
 plot_cli.add_command(improvement_by_program_exec_cli)
+plot_cli.add_command(improvement_single_program_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
