@@ -257,7 +257,9 @@ def improvement_by_program_cli(
     help="Show (average) improvement for some profile compared to some other baseline profile for a single program",
 )
 @click.option("--program", type=click.Choice(get_programs()), required=True)
-@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=True
+)
 @click.option(
     "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
 )
@@ -265,7 +267,7 @@ def improvement_by_program_cli(
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 def improvement_single_program_cli(
     program: str,
-    profile: str,
+    profile: list[str],
     baseline_profile: str,
     speedup: bool,
     show_x86: bool,
