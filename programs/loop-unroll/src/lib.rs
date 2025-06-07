@@ -1,30 +1,27 @@
-pub fn unroll(a: &[u64; 32], reps: usize) -> u64 {
-    let mut sum = 0u64;
-    for _ in 0..reps {
-        sum = 0;
-        for i in 0..32 {
-            sum += a[i];
+pub fn matmul(mat: &[[f64; 5]; 5], vec: &[f64; 5]) -> [f64; 5] {
+    let mut res = [0.0; 5];
+    for col in 0..5 {
+        for row in 0..5 {
+            res[row] += mat[col][row] * vec[col];
         }
-
-        std::hint::black_box(sum);
     }
 
-    sum
+    res
 }
 
 #[no_mangle]
 #[cfg(feature = "x86")]
 pub extern "C" fn main_core(reps: usize) -> () {
-    let data: [u64; 32] = [
-        10, 20, 30, 40,
-        50, 60, 70, 80,
-        90, 100, 110, 120,
-        130, 140, 150, 160,
-        170, 180, 190, 200,
-        210, 220, 230, 240,
-        250, 260, 270, 280,
-        290, 300, 310, 320,
+    let matrix = [
+        [1.0, 2.0, 3.0, 4.0, 5.0],
+        [2.0, 3.0, 4.0, 5.0, 6.0],
+        [3.0, 4.0, 5.0, 6.0, 7.0],
+        [4.0, 5.0, 6.0, 7.0, 8.0],
+        [5.0, 6.0, 7.0, 8.0, 9.0],
     ];
-    let res = unroll(&data, reps);
-    core::hint::black_box(res);
+    let vector = [1.0, 2.0, 4.0, 8.0, 16.0];
+    for _ in 0..reps {
+        let res = matmul(&matrix, &vector);
+        std::hint::black_box(res);
+    }
 }
