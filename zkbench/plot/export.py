@@ -19,9 +19,10 @@ from zkbench.plot.average_improvement_compare import plot_average_improvement_co
 from zkbench.plot.average_improvement_difference import (
     plot_average_improvement_difference,
 )
-from zkbench.plot.common import save_path
+from zkbench.plot.common import BASELINE, save_path
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
+from zkbench.plot.cycle_count_by_program import plot_cycle_count_by_program
 from zkbench.plot.cycle_count_duration import (
     plot_cycle_count_duration,
     plot_cycle_count_stats,
@@ -448,6 +449,20 @@ def export_profile(dir: str, out: str, profile_id: str):
                     dir, profile=profile_id, zkvm=zkvm, speedup=speedup
                 ),
             )
+
+    md_file.new_header(level=2, title="Cycle count by program")
+    export_plot(
+        out,
+        "profiles",
+        md_file,
+        f"{profile_id}-by-program-cycle-count",
+        lambda: plot_cycle_count_by_program(
+            dir,
+            profile=profile_id,
+            baseline_profile=BASELINE,
+            relative=True,
+        ),
+    )
 
     md_file.create_md_file()
 
