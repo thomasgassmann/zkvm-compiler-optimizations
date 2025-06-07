@@ -7,7 +7,9 @@ from zkbench.plot.common import (
 )
 
 
-def plot_cycle_count_by_program(dir: str, profile: str, baseline_profile: str):
+def plot_cycle_count_by_program(
+    dir: str, profile: str, baseline_profile: str, relative: bool = False
+):
     title = get_title(
         f"Cycle Count for {profile} compared to {baseline_profile}",
         [],
@@ -26,8 +28,11 @@ def plot_cycle_count_by_program(dir: str, profile: str, baseline_profile: str):
                 cycle_count_baseline = get_cycle_count(
                     dir, program, zkvm, baseline_profile
                 )
-                current_profile.append(cycle_count)
-                current_baseline.append(cycle_count_baseline)
+                if relative:
+                    current_profile.append(cycle_count / cycle_count_baseline)
+                else:
+                    current_profile.append(cycle_count)
+                    current_baseline.append(cycle_count_baseline)
             except FileNotFoundError:
                 logging.warning(
                     f"File not found for {program} {zkvm} {profile} {baseline_profile}. Skipping."
@@ -41,15 +46,23 @@ def plot_cycle_count_by_program(dir: str, profile: str, baseline_profile: str):
         cycle_counts_baseline.append(current_baseline)
 
     plot_grouped_boxplot(
-        [
-            cycle_counts_profile,
-            cycle_counts_baseline,
-        ],
+        (
+            [
+                cycle_counts_profile,
+                cycle_counts_baseline,
+            ]
+            if not relative
+            else [cycle_counts_profile]
+        ),
         programs,
         title,
         "Cycle Count",
-        [
-            profile,
-            baseline_profile,
-        ],
+        (
+            [
+                profile,
+                baseline_profile,
+            ]
+            if not relative
+            else [profile]
+        ),
     )
