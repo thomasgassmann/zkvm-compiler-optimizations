@@ -1,5 +1,17 @@
 {
     "profiles": {
+        "loop-baseline": {
+            "cflags": "-O0",
+            "rustflags": "-C llvm-args=-unroll-threshold=0",
+            "passes": [],
+            "prepopulate_passes": true
+        },
+        "loop-unrolled": {
+            "cflags": "-O0",
+            "rustflags": "-C llvm-args=-unroll-threshold=3000",
+            "passes": [],
+            "prepopulate_passes": true
+        },
         "baseline": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
