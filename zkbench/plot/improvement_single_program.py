@@ -7,10 +7,15 @@ from zkbench.plot.common import (
 
 
 def plot_improvement_for_single_program(
-    dir: str, program: str, profile: str, baseline_profile: str, speedup: bool, show_x86: bool = True
+    dir: str,
+    program: str,
+    profiles: list[str],
+    baseline_profile: str,
+    speedup: bool,
+    show_x86: bool = True,
 ):
 
-    def f(dir, program, zkvm, measurement):
+    def f(dir, program, zkvm, measurement, profile):
         return get_average_improvement_over_baseline(
             dir,
             zkvm,
@@ -22,29 +27,28 @@ def plot_improvement_for_single_program(
         )
 
     title = get_title(
-        f"Average improvement for {program} ({profile} compared to {baseline_profile})",
+        f"Average improvement for {program} ({', '.join(profiles)} compared to {baseline_profile})",
         [],
     )
 
-    improvements = []
+    improvements = [[] for _ in profiles]
     labels = []
     for zkvm in get_zkvms_with_x86():
         if not show_x86 and zkvm == "x86":
             continue
 
         for measurement in get_measurements():
-            try:
-                improvement = f(dir, program, zkvm, measurement)
-                improvements.append(improvement)
-                labels.append(f"{zkvm}-{measurement}")
-            except FileNotFoundError:
+            if measurement == "prove" and zkvm == "x86":
                 continue
 
+            for i, profile in enumerate(profiles):
+                try:
+                    improvement = f(dir, program, zkvm, measurement, profile)
+                    improvements[i].append(improvement)
+                except FileNotFoundError:
+                    continue
+            else:
+                labels.append(f"{zkvm} ({measurement})")
+
     y_axis = "speedup" if speedup else "% faster"
-    plot_sorted(
-        [improvements],
-        labels,
-        title,
-        y_axis,
-        [None]
-    )
+    plot_sorted(improvements, labels, title, y_axis, profiles)
