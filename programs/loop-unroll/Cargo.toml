@@ -21,4 +21,3 @@ risc0-zkvm = { version = "1.2.3", default-features = false, features = ["std"], 
 risc0 = ["dep:risc0-zkvm"]
 sp1 = ["dep:sp1-zkvm"]
 x86 = []
-loop-unroll = []
