@@ -47,3 +47,11 @@ The more aggressive inlining yields the following speedups compared to standard 
 - sp1: 1.0088543710976539
 
 For some programs it may thus be beneficial to tune the inlining threshold to achieve speedups in execution/proving.
+
+## Increasing inline threshold
+
+We also see this in terms of cycle count: below we applied an inline-threshold of 32766 to all programs and compared the number of reduced cycles compared to o3-lto:
+
+![sp1-cycle-count-aggressive-inline](./imgs/npb/cycle-count-aggressive-inline-sp1.png)
+
+![risc0-cycle-count-aggressive-inline](./imgs/npb/cycle-count-aggressive-inline-risc0.png)
