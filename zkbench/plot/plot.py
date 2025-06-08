@@ -348,10 +348,13 @@ def duration_by_program_cli(
     "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
 )
 @click.option("--relative", is_flag=True, default=False)
-def cycle_count_by_program_cli(profile: str, baseline_profile: str, relative: bool):
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
+def cycle_count_by_program_cli(
+    profile: str, baseline_profile: str, relative: bool, zkvm: str | None
+):
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_cycle_count_by_program(dir, profile, baseline_profile, relative)
+    plot_cycle_count_by_program(dir, profile, baseline_profile, relative, zkvm)
 
 
 @click.command(
