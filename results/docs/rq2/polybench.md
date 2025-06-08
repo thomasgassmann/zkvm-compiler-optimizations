@@ -41,3 +41,7 @@ Run is documented [here](./report/all-polybench-cycle-count/README.md).
 ## Cycle counts
 
 ![cycle-counts](./imgs/polybench-cycle-count.png)
+
+## Cause
+
+Incorrect blackbox implementation in polybench-rs, see [comment in source](https://docs.rs/bencher/0.1.5/src/bencher/lib.rs.html#590-596).
