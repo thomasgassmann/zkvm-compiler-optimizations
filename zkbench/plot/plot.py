@@ -17,6 +17,7 @@ from zkbench.plot.average_improvement_difference import (
 )
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
+from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_program
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
@@ -277,6 +278,29 @@ def improvement_single_program_cli(
     plot_improvement_for_single_program(
         dir, program, profile, baseline_profile, speedup, show_x86
     )
+
+
+@click.command(
+    name="cycle-count-single-program",
+    help="Show cycle count for some profiles compared to some other baseline profile for a single program",
+)
+@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=True
+)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.option("--abs", type=bool, is_flag=True, required=False, default=False)
+def cycle_count_single_program_cli(
+    program: str,
+    profile: list[str],
+    baseline_profile: str,
+    abs: bool,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_cycle_count_for_single_program(dir, program, profile, baseline_profile, abs)
 
 
 @click.command(
