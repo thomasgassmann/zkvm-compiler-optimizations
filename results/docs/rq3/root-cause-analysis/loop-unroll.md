@@ -126,7 +126,7 @@ std::arch::asm!(
 
 And similar for x86. See the respective [branch](https://github.com/thomasgassmann/thesis/tree/loop-unroll) for the detailed snippets. For all programs we now apply standard `o3` optimizations, still ensuring that the inline assembly is not optimized.
 
-We evaluate both 4x (`loop-unrolled4`) and 16x (``loop-unrolled16`) loop unrolling.
+We evaluate both 4x (`loop-unrolled4`) and 16x (`loop-unrolled16`) loop unrolling.
 
 ![loop-unroll-asm-speedup](./imgs/loop-unroll/loop-unroll-asm-speedup.png)
 
