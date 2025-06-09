@@ -167,11 +167,14 @@ pub fn generate_string(i: u64) -> String {
     s
 }
 
+#[cfg(feature = "x86")]
+use std::io::Write as IoWrite;
+
 #[no_mangle]
 pub extern "C" fn main_core() {
     for i in 0..10 {
         let mut sha256 = Sha256::default();
         sha256.update(generate_string(i).as_bytes());
-        println!("{}", to_hex(&sha256.finish()).as_str());
+        std::io::sink().write_fmt(format_args!("{}\n", to_hex(&sha256.finish()))).unwrap();
     }
 }
