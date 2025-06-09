@@ -179,5 +179,6 @@ async def build_program(
         )
         raise ValueError(f"Error: Build failed with code {ret}")
 
-    shutil.copyfile(source, target)
-    logging.info(f"Copied binary to {target}")
+    if not llvm:
+        shutil.copyfile(source, target)
+        logging.info(f"Copied binary to {target}")
