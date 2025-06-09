@@ -22,6 +22,7 @@ async def run_build(
     j: int,
     llvm: bool,
     features: list[str] | None = None,
+    name: str | None = None,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
         programs, zkvms, profile_names, program_groups
@@ -68,14 +69,18 @@ async def run_build(
         )
         await asyncio.gather(
             *[
-                _build(program, profile_name, zkvm, llvm, features=features)
+                _build(program, profile_name, zkvm, llvm, features=features, name=name)
                 for program, profile_name, zkvm in jobs_to_run
             ]
         )
 
 
-async def _build(program: str, profile_name: str, zkvm: str, llvm: bool, features=None):
-    target = get_target_binary_path(program, zkvm, profile_name)
+async def _build(
+    program: str, profile_name: str, zkvm: str, llvm: bool, features=None, name=None
+):
+    target = get_target_binary_path(
+        program, zkvm, profile_name if name is None else name
+    )
     os.makedirs(os.path.dirname(target), exist_ok=True)
 
     profile = get_profile_by_name(profile_name)
