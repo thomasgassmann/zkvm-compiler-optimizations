@@ -13,8 +13,9 @@ pub fn main() {
     let n: u32 = sp1_zkvm::io::read();
     for i in 0..n {
         #[cfg(feature = "inline")]
-        let _ = inline::work_inlined(i as u64);
+        let res = inline::work_inlined(i as u64);
         #[cfg(not(feature = "inline"))]
-        let _ = inline::work_non_inlined(i as u64);
+        let res = inline::work_non_inlined(i as u64);
+        core::hint::black_box(res);
     }
 }
