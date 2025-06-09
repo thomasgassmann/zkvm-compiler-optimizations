@@ -5,10 +5,7 @@ use libloading::{Library, Symbol};
 use super::utils::{get_elf_hash, ElfStats};
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
-        get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input,
-        load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature,
+        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_inline_input, get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input, get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input, load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature
     },
     types::ProgramId,
 };
@@ -55,6 +52,7 @@ type MainCoreZkvmMnist = unsafe extern "C" fn(
     training_data: Vec<(Vec<f64>, Vec<f64>)>,
     test_data: Vec<(Vec<f64>, Vec<f64>)>,
 ) -> ();
+type MainCoreInline = unsafe extern "C" fn(n: u32) -> ();
 
 pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats {
     ElfStats {
@@ -240,6 +238,13 @@ pub fn exec_x86_prepare<'a>(
             let (training_data, test_data) = load_mnist();
             Box::new(move || unsafe {
                 main_core_fn(training_data, test_data);
+            })
+        }
+        ProgramId::Inline => {
+            let main_core_fn: MainCoreInline = load_main_core_fn!(MainCoreInline);
+            let n = get_inline_input();
+            Box::new(move || unsafe {
+                main_core_fn(n);
             })
         }
         _ => panic!("Unsupported program for x86 execution: {:?}", program),

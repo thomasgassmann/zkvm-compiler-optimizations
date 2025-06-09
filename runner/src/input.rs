@@ -230,6 +230,10 @@ pub fn get_loop_sum_input() -> Vec<i32> {
     arr
 }
 
+pub fn get_inline_input() -> u32 {
+    1000
+}
+
 pub fn get_regex_match_input() -> (String, String) {
     // sample from https://docs.rs/regex/latest/regex/
     (
@@ -342,6 +346,10 @@ fn write_program_inputs<W: ProgramInputWriter>(
         ProgramId::Spec631 => {
             let str = include_str!("../../inputs/spec-631/in.txt");
             stdin.write_string(str);
+        }
+        ProgramId::Inline => {
+            let n: u32 = get_inline_input();
+            stdin.write_generic(&n);
         }
         _ => {}
     }
