@@ -28,9 +28,7 @@ pub extern "C" fn main_core(n: u128, r: u128) {
     for i in 0..r {
         let fac = factorial(n);
         let sum = sum_to(n);
-        if i == r - 1 {
-            println!("Factorial of {n} is: {fac}");
-            println!("Sum of 1..{n} is: {sum}");
-        }
+        core::hint::black_box(fac);
+        core::hint::black_box(sum);
     }
 }
