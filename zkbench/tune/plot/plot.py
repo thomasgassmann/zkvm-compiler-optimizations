@@ -24,7 +24,7 @@ def plot_genetic_cli(stats: str, program: str | None, zkvm: str | None):
 
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option(
-    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=False
 )
 @click.command(name="genetic-individual")
 @click.option("--stats-dir", required=True)
@@ -35,7 +35,7 @@ def plot_genetic_cli(stats: str, program: str | None, zkvm: str | None):
 @click.option("--average-programs", is_flag=True, default=False)
 def plot_genetic_individual_cli(
     stats_dir: str,
-    baseline_profile: str,
+    baseline_profile: str | None,
     program: str | None,
     zkvm: str | None,
     program_group: str | None = None,
