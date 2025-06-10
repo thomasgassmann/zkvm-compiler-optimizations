@@ -1,6 +1,7 @@
 import logging
 import click
 
+from zkbench.asm import show_asm
 from zkbench.common import coro, setup_logger
 from zkbench.config import (
     get_measurements,
@@ -105,6 +106,35 @@ async def build_cli(
         features=feature,
         name=name,
     )
+
+
+@click.command(name="asm")
+@click.option(
+    "--program", type=click.Choice(get_programs()), required=True, multiple=False
+)
+@click.option(
+    "--zkvm", type=click.Choice(get_zkvms_with_x86()), required=True, multiple=False
+)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=False
+)
+@click.option("--llvm", required=False, is_flag=True, default=False)
+@click.option("--rust", required=False, is_flag=True, default=False)
+@click.option("--open", required=False, is_flag=True, default=False)
+@click.option("--feature", required=False, type=str, multiple=True)
+@click.argument("rest", required=False, default="")
+@coro
+async def asm_cli(
+    program: str,
+    zkvm: str,
+    profile: str,
+    llvm: bool,
+    rust: bool,
+    feature: list[str],
+    rest: str,
+    open: bool,
+):
+    show_asm(program, zkvm, profile, feature, llvm, rust, rest, open)
 
 
 @click.command(name="clean")
@@ -260,6 +290,7 @@ zkbench_cli.add_command(run_single_cli)
 zkbench_cli.add_command(plot_cli)
 zkbench_cli.add_command(tune_cli)
 zkbench_cli.add_command(plot_tune_cli)
+zkbench_cli.add_command(asm_cli)
 
 plot_cli.add_command(average_improvement_cli)
 plot_cli.add_command(average_duration_cli)
