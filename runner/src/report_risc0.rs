@@ -1,15 +1,95 @@
+use std::{
+    collections::HashMap,
+    sync::{Arc, Mutex},
+};
+
 use risc0_zkvm::{
     compute_image_id, get_prover_server, ExecutorEnv, ExecutorImpl, ProverOpts, VerifierContext,
 };
 
 use crate::{
     input::set_risc0_input,
+    risc0_rv32im::{disasm, get_insn_kind, DecodedInstruction, InsnKind},
     types::{PerformanceReport, ProgramId, ProverId},
     utils::time_operation,
 };
 
 // adapted from https://github.com/succinctlabs/zkvm-perf
 pub struct Risc0Evaluator;
+
+struct Report {
+    address_writes: HashMap<u32, usize>,
+    total_writes: usize,
+    instructions: HashMap<InsnKind, usize>,
+    cycles_by_pc: HashMap<u32, u64>,
+    last_cycle: u64,
+    instructions_at_pc: HashMap<u32, u32>,
+}
+
+impl Report {
+    fn new() -> Self {
+        Report {
+            address_writes: HashMap::new(),
+            total_writes: 0,
+            instructions: HashMap::new(),
+            cycles_by_pc: HashMap::new(),
+            last_cycle: 0,
+            instructions_at_pc: HashMap::new(),
+        }
+    }
+
+    fn add_write(&mut self, addr: u32) {
+        *self.address_writes.entry(addr).or_insert(0) += 1;
+        self.total_writes += 1;
+    }
+
+    fn add_instruction(&mut self, word: u32, pc: u32, cycle: u64) {
+        self.instructions_at_pc.entry(pc).or_insert(word);
+
+        let insn = get_insn_kind(word);
+        *self.instructions.entry(insn).or_insert(0) += 1;
+
+        let new_cycles = cycle - self.last_cycle;
+
+        *self.cycles_by_pc.entry(pc).or_insert(0) += new_cycles;
+        self.last_cycle = cycle;
+    }
+
+    fn print_instructions(&self) {
+        let mut sorted_instructions: Vec<_> = self.instructions.iter().collect();
+        sorted_instructions.sort_by_key(|(insn, _count)| *insn);
+        for (insn, count) in sorted_instructions {
+            println!("{:?} executed {} times", insn, count);
+        }
+
+        let mut sorted_pcs: Vec<_> = self.cycles_by_pc.iter().collect();
+        sorted_pcs.sort_by(|a: &(&u32, &u64), b| a.0.cmp(b.0));
+        let mut total = 0;
+        for (pc, count) in sorted_pcs {
+            let ins_at_pc = self.instructions_at_pc.get(pc).unwrap();
+            let insn = get_insn_kind(*ins_at_pc);
+            let decoded = DecodedInstruction::new(*ins_at_pc);
+            let disassembled = disasm(insn, &decoded);
+            println!("{:#010x}: {}: {} cycles", pc, disassembled, count);
+
+            total += count;
+        }
+
+        println!("Total cycles: {}", total);
+    }
+
+    fn print_memory(&self) {
+        println!("total memory writes: {}", self.total_writes);
+
+        let mut sorted_writes: Vec<_> = self.address_writes.iter().collect();
+        sorted_writes.sort_by(|a: &(&u32, &usize), b| b.1.cmp(a.1));
+
+        println!("Top 50 memory write locations:");
+        for (addr, count) in sorted_writes.iter().take(50) {
+            println!("address {:#010x} written {} times", addr, count);
+        }
+    }
+}
 
 impl Risc0Evaluator {
     pub fn eval(elf: &Vec<u8>, program: &ProgramId) -> PerformanceReport {
@@ -28,12 +108,32 @@ impl Risc0Evaluator {
 
         // Setup the prover.
         let mut builder = ExecutorEnv::builder();
+        let rep = Arc::new(Mutex::new(Report::new()));
+        builder.trace_callback({
+            let c = Arc::clone(&rep);
+            move |trace: risc0_zkvm::TraceEvent| {
+                match trace {
+                    risc0_zkvm::TraceEvent::RegisterSet { idx: _, value: _ } => {}
+                    risc0_zkvm::TraceEvent::InstructionStart { cycle, pc, insn } => {
+                        c.lock().unwrap().add_instruction(insn, pc, cycle);
+                    }
+                    risc0_zkvm::TraceEvent::MemorySet { addr, region: _ } => {
+                        c.lock().unwrap().add_write(addr);
+                    }
+                };
+                Ok(())
+            }
+        });
         set_risc0_input(&program, &mut builder, &None);
         let env = builder.build().unwrap();
 
         // Generate the session.
         let mut exec = ExecutorImpl::from_elf(env, &elf).unwrap();
         let (session, execution_duration) = time_operation(|| exec.run().unwrap());
+
+        let report = rep.lock().unwrap();
+        report.print_memory();
+        report.print_instructions();
 
         // Generate the proof.
         let opts = ProverOpts::default();
