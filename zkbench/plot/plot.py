@@ -54,15 +54,19 @@ from zkbench.plot.x86_exec import plot_x86_exec
 @click.option(
     "--global-average", type=bool, is_flag=True, required=False, default=False
 )
+@click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 def average_improvement_cli(
     zkvm: str | None,
     program: str | None,
     program_group: str | None,
     speedup: bool,
     global_average: bool,
+    show_x86: bool,
 ):
     dir = click.get_current_context().parent.params["dir"]
-    plot_average_improvement(dir, zkvm, program, program_group, speedup, global_average)
+    plot_average_improvement(
+        dir, zkvm, program, program_group, speedup, global_average, show_x86
+    )
 
 
 @click.command(name="average-duration", help="Plot raw duration of measurements")
