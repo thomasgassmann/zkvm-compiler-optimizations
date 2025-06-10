@@ -12,7 +12,7 @@ from zkbench.tune.plot.genetic import get_metric_sum
 
 def plot_genetic_individual(
     stats_dir: str,
-    baseline_profile: str,
+    baseline_profile: str | None,
     average_programs: bool = False,
     program: str | None = None,
     zkvm: str | None = None,
@@ -37,7 +37,12 @@ def plot_genetic_individual(
                 os.path.join(stats_dir, f"{program}-{zkvm}-stats.json")
             )
             stats_values = [get_metric_sum(v, [program], zkvm) for v in stats.metrics]
-            baseline = get_metric_sum(stats.baselines[baseline_profile], [program], zkvm)
+            if baseline_profile is not None:
+                baseline = get_metric_sum(
+                    stats.baselines[baseline_profile], [program], zkvm
+                )
+            else:
+                baseline = max(stats_values)
             relative_values = [v / baseline for v in stats_values if v > 0]
             program_values.append(relative_values)
 
