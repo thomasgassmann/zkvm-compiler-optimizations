@@ -87,22 +87,15 @@ async def _build(
     await build_program(program, zkvm, profile, llvm, target, features=features)
 
 
-async def build_program(
-    program: str,
+def get_build_command(
     zkvm: str,
     profile: Profile,
     llvm: bool,
-    target: str,
-    verbose: bool = False,
-    timeout=None,
-    target_dir=None,
-    features=None,
+    verbose: bool,
+    target_dir: str | None,
+    features: list[str] | None,
+    cmd: str,
 ):
-    source = get_source_binary_path(program, zkvm, target_dir)
-    profile_name = profile.profile_name
-    name = f"{program}-{zkvm}-{profile_name}"
-    logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
-
     passes = ",".join(profile.passes)
     env = {
         **os.environ,
@@ -129,50 +122,74 @@ async def build_program(
         "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
     )
     llvm_flag = "--emit=llvm-ir" if llvm else ""
-    program_dir = get_program_path(program, zkvm)
     # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
     if zkvm == "sp1":
-        ret = await run_command(
+        return (
             f"""
             CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RUSTUP_TOOLCHAIN=succinct \
                 CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
-                cargo +succinct build --release --locked --features sp1 {verbosity} {additional_features}
+                cargo +succinct {cmd} --release --locked --features sp1 {verbosity} {additional_features}
         """.strip(),
-            program_dir,
             env,
-            name,
-            timeout=timeout,
         )
     elif zkvm == "risc0":
-        ret = await run_command(
+        return (
             f"""
             CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
                 RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
                 RISC0_FEATURE_bigint2=1 \
-                cargo +risc0 build --release --locked --features risc0 \
+                cargo +risc0 {cmd} --release --locked --features risc0 \
                     --target riscv32im-risc0-zkvm-elf {verbosity} {additional_features}
         """.strip(),
-            program_dir,
             env,
-            name,
-            timeout=timeout,
         )
     elif zkvm == "x86":
-        ret = await run_command(
+        return (
             f"""
             RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {profile.rustflags} {llvm_flag}" \
-                cargo +nightly build --release --locked --features x86 --lib {verbosity} {additional_features}
+                cargo +nightly {cmd} --release --locked --features x86 --lib {verbosity} {additional_features}
         """.strip(),
-            program_dir,
             env,
-            name,
-            timeout=timeout,
         )
     else:
         raise ValueError(f"Unknown zkvm: {zkvm}")
+
+
+async def build_program(
+    program: str,
+    zkvm: str,
+    profile: Profile,
+    llvm: bool,
+    target: str,
+    verbose: bool = False,
+    timeout=None,
+    target_dir=None,
+    features=None,
+):
+    source = get_source_binary_path(program, zkvm, target_dir)
+    profile_name = profile.profile_name
+    name = f"{program}-{zkvm}-{profile_name}"
+    logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
+
+    profile_name = profile.profile_name
+    logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
+
+    program_dir = get_program_path(program, zkvm)
+    # setting CC below uses gcc for dependencies with c code, ideally we should use clang
+    # to apply the same optimization passes, this currently only seems to affect rsp-risc0
+    cmd, env = get_build_command(
+        zkvm, profile, llvm, verbose, target_dir, features, "build"
+    )
+    ret = await run_command(
+        cmd,
+        program_dir,
+        env,
+        name,
+        timeout=timeout,
+    )
     if ret != 0:
         logging.error(
             f"{program}-{zkvm}-{profile_name}: Build failed with code {ret}, passes: {passes}"
