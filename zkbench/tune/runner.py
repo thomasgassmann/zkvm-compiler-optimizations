@@ -31,6 +31,7 @@ class TuneRunner:
         metric: str,
         cache_dir: str | None = None,
         build_timeout: int | None = None,
+        rebuild_failed: bool = False,
     ):
         self._clean_cycles = {}
         self._out = out
@@ -42,6 +43,7 @@ class TuneRunner:
             "yes",
         )
         self._build_timeout = build_timeout
+        self._rebuild_failed = rebuild_failed
 
     def get_build_path(self, zkvm: str, program: str):
         return os.path.join(
@@ -77,11 +79,17 @@ class TuneRunner:
         if self._cache_dir is not None and os.path.exists(
             self.filename(profile_config, program, zkvm, self._metric)
         ):
-            logging.info(
-                f"Not building, already done: "
-                + self.filename(profile_config, program, zkvm, self._metric)
-            )
-            return
+            f = self.filename(profile_config, program, zkvm, self._metric)
+            logging.info(f"Not building, already done: " + f)
+            existing = from_dict(MetricValue, json.loads(open(f, "r").read()))
+            if not existing.timeout and existing.metric != -1:
+                logging.info(
+                    f"Not building, already evaluated: {program} on {zkvm} with metric {existing.metric}"
+                )
+                self.write_cache(program, zkvm, profile_config, existing)
+                return
+            if not self._rebuild_failed:
+                return
 
         if os.path.exists(out):
             logging.info(f"Not building, out already exists: {out}")
@@ -249,7 +257,11 @@ class TuneRunner:
             f = self.filename(profile_config, program, zkvm, self._metric)
             if os.path.exists(f):
                 logging.info(f"Not evaluating, already done: " + f)
-                return from_dict(MetricValue, json.loads(open(f, "r").read()))
+                existing = from_dict(MetricValue, json.loads(open(f, "r").read()))
+                if not self._rebuild_failed:
+                    return existing
+                if not existing.timeout and existing.metric != -1:
+                    return existing
 
         filename = os.path.basename(elf)
         stats_file = os.path.join(self._out, f"{filename}.json")
