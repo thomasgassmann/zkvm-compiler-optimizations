@@ -11,6 +11,7 @@ from zkbench.config import (
     get_program_path,
     get_target_binary_path,
 )
+from zkbench.tune.common import build_pass_list
 
 
 async def run_build(
@@ -112,7 +113,7 @@ def get_build_command(
     )
 
     lower_atomic_pass = ["lower-atomic"]
-    passes_string = ",".join(
+    passes_string = build_pass_list(
         (profile.passes + lower_atomic_pass)
         if not profile.lower_atomic_before
         else (lower_atomic_pass + profile.passes)

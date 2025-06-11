@@ -5,6 +5,7 @@ We analyze selected optimizations on different programs that show large effects 
 - [licm](./licm.md)
 - [loop-unroll](./loop-unroll.md)
 - [inline](./inline.md)
+- [simplifycfg](./simplifycfg.md)
 
 ## Tuning
 
