@@ -85,6 +85,7 @@ MODULE_PASSES = [
     "aggressive-instcombine",
     "lower-atomic",
     "codegenprepare",
+    "instcombine<max-iterations=1000>",
 ]
 FUNCTION_PASSES = [
     "instcombine",
