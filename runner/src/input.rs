@@ -223,7 +223,7 @@ pub fn get_keccak256_input() -> Vec<u8> {
 
 pub fn get_loop_sum_input() -> Vec<i32> {
     let mut arr = Vec::new();
-    for i in 0..1500 {
+    for i in -50..50 {
         arr.push(i);
     }
 
@@ -236,6 +236,16 @@ pub fn get_regex_match_input() -> (String, String) {
         "[0-9]{4}-[0-9]{2}-[0-9]{2}".to_string(),
         "What do 1865-04-14, 1881-07-02, 1901-09-06 and 1963-11-22 have in common?".to_string(),
     )
+}
+
+pub fn get_simplifycfg_input() -> Vec<i32> {
+    let mut arr = Vec::new();
+    let mut rng = rand::thread_rng();
+    for _ in -2000..2000 {
+        arr.push(rng.gen_range(-5000..5000));
+    }
+
+    arr
 }
 
 pub fn get_merkle_input() -> (Vec<String>, std::ops::Range<usize>) {
@@ -342,6 +352,9 @@ fn write_program_inputs<W: ProgramInputWriter>(
         ProgramId::Spec631 => {
             let str = include_str!("../../inputs/spec-631/in.txt");
             stdin.write_string(str);
+        }
+        ProgramId::Simplifycfg => {
+            stdin.write_generic(&get_simplifycfg_input());
         }
         _ => {}
     }

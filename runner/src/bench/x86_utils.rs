@@ -5,10 +5,7 @@ use libloading::{Library, Symbol};
 use super::utils::{get_elf_hash, ElfStats};
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
-        get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input,
-        load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature,
+        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input, get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input, get_sha_bench_input, get_sha_chain_input, get_simplifycfg_input, get_spec619_input, get_tailcall_input, load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature
     },
     types::ProgramId,
 };
@@ -34,6 +31,8 @@ type MainCoreFibonacci = unsafe extern "C" fn(n: u32) -> ();
 type MainCoreKeccak256 = unsafe extern "C" fn(data: Vec<u8>) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreLoopSum = unsafe extern "C" fn(data: Vec<i32>) -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreSimplifycfg = unsafe extern "C" fn(data: Vec<i32>) -> ();
 #[allow(improper_ctypes_definitions)]
 type MainCoreMerkle =
     unsafe extern "C" fn(strings: Vec<String>, range: std::ops::Range<usize>) -> ();
@@ -129,6 +128,13 @@ pub fn exec_x86_prepare<'a>(
         ProgramId::LoopSum => {
             let main_core_fn: MainCoreLoopSum = load_main_core_fn!(MainCoreLoopSum);
             let inp = get_loop_sum_input();
+            Box::new(move || unsafe {
+                main_core_fn(inp);
+            })
+        }
+        ProgramId::Simplifycfg => {
+            let main_core_fn: MainCoreSimplifycfg = load_main_core_fn!(MainCoreSimplifycfg);
+            let inp = get_simplifycfg_input();
             Box::new(move || unsafe {
                 main_core_fn(inp);
             })

@@ -303,6 +303,27 @@
             ],
             "prepopulate_passes": false
         },
+        "simplifycfg-baseline": {
+            "cflags": "-O0",
+            "rustflags": "-C opt-level=3 -C llvm-args=-disable-cgp-branch-opts",
+            "passes": [
+                "sroa",
+                "mem2reg"
+            ],
+            "prepopulate_passes": false,
+            "lower_atomic_before": true
+        },
+        "simplifycfg-opt": {
+            "cflags": "-O0",
+            "rustflags": "-C opt-level=3 -C llvm-args=-disable-cgp-branch-opts",
+            "passes": [
+                "sroa",
+                "mem2reg",
+                "simplifycfg"
+            ],
+            "prepopulate_passes": false,
+            "lower_atomic_before": true
+        },
         "jump-threading": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
@@ -766,6 +787,11 @@
         "exec"
     ],
     "programs": {
+        "simplifycfg": {
+            "groups": [
+                "rust"
+            ]
+        },
         "loop-sum": {
             "groups": [
                 "loop-intensive",
