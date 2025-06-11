@@ -107,7 +107,7 @@ def get_measurements():
 
 
 def get_zkvms():
-    return CONFIG["zkvms"]
+    return list(sorted(CONFIG["zkvms"]))
 
 
 def get_zkvms_with_x86():

@@ -98,7 +98,7 @@ def read_data_file(
             baseline_meta = read_program_meta(dir, program, zkvm, BASELINE)
             assert (
                 meta["hash"] != baseline_meta["hash"]
-            ), "this should not have been benchmarked"
+            ), f"{program}-{zkvm}-{profile} should not have been benchmarked"
         except FileNotFoundError:
             logging.warning(f"No baseline data for {program}-{zkvm}-{measurement}")
 

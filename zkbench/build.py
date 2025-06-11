@@ -11,6 +11,7 @@ from zkbench.config import (
     get_program_path,
     get_target_binary_path,
 )
+from zkbench.tune.common import build_pass_list
 
 
 async def run_build(
@@ -22,6 +23,7 @@ async def run_build(
     j: int,
     llvm: bool,
     features: list[str] | None = None,
+    name: str | None = None,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
         programs, zkvms, profile_names, program_groups
@@ -68,18 +70,93 @@ async def run_build(
         )
         await asyncio.gather(
             *[
-                _build(program, profile_name, zkvm, llvm, features=features)
+                _build(program, profile_name, zkvm, llvm, features=features, name=name)
                 for program, profile_name, zkvm in jobs_to_run
             ]
         )
 
 
-async def _build(program: str, profile_name: str, zkvm: str, llvm: bool, features=None):
-    target = get_target_binary_path(program, zkvm, profile_name)
+async def _build(
+    program: str, profile_name: str, zkvm: str, llvm: bool, features=None, name=None
+):
+    target = get_target_binary_path(
+        program, zkvm, profile_name if name is None else name
+    )
     os.makedirs(os.path.dirname(target), exist_ok=True)
 
     profile = get_profile_by_name(profile_name)
     await build_program(program, zkvm, profile, llvm, target, features=features)
+
+
+def get_build_command(
+    zkvm: str,
+    profile: Profile,
+    llvm: bool,
+    verbose: bool,
+    target_dir: str | None,
+    features: list[str] | None,
+    cmd: str,
+):
+    passes = ",".join(profile.passes)
+    env = {
+        **os.environ,
+        "PASSES": passes,
+        "ZK_CFLAGS": profile.cflags,
+        "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
+    }
+    if target_dir is not None:
+        env["CARGO_TARGET_DIR"] = target_dir
+
+    verbosity = "--verbose" if verbose else ""
+    additional_features = (
+        "" if features is None else " ".join([f"--features {f}" for f in features])
+    )
+
+    lower_atomic_pass = ["lower-atomic"]
+    passes_string = build_pass_list(
+        (profile.passes + lower_atomic_pass)
+        if not profile.lower_atomic_before
+        else (lower_atomic_pass + profile.passes)
+    )
+    pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
+    prepopulate_passes = (
+        "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
+    )
+    llvm_flag = "--emit=llvm-ir" if llvm else ""
+    # setting CC below uses gcc for dependencies with c code, ideally we should use clang
+    # to apply the same optimization passes, this currently only seems to affect rsp-risc0
+    if zkvm == "sp1":
+        return (
+            f"""
+            CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
+                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
+                RUSTUP_TOOLCHAIN=succinct \
+                CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
+                cargo +succinct {cmd} --release --locked --features sp1 {verbosity} {additional_features}
+        """.strip(),
+            env,
+        )
+    elif zkvm == "risc0":
+        return (
+            f"""
+            CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
+                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
+                RISC0_FEATURE_bigint2=1 \
+                cargo +risc0 {cmd} --release --locked --features risc0 \
+                    --target riscv32im-risc0-zkvm-elf {verbosity} {additional_features}
+        """.strip(),
+            env,
+        )
+    elif zkvm == "x86":
+        return (
+            f"""
+            RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {profile.rustflags} {llvm_flag}" \
+                cargo +nightly {cmd} --release --locked --features x86 --lib {verbosity} {additional_features}
+        """.strip(),
+            env,
+        )
+    else:
+        raise ValueError(f"Unknown zkvm: {zkvm}")
 
 
 async def build_program(
@@ -98,81 +175,28 @@ async def build_program(
     name = f"{program}-{zkvm}-{profile_name}"
     logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
 
-    passes = ",".join(profile.passes)
-    env = {
-        **os.environ,
-        "PASSES": passes,
-        "ZK_CFLAGS": profile.cflags,
-        "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
-    }
-    if target_dir is not None:
-        env["CARGO_TARGET_DIR"] = target_dir
+    profile_name = profile.profile_name
+    logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
 
-    verbosity = "--verbose" if verbose else ""
-    additional_features = (
-        "" if features is None else " ".join([f"--features {f}" for f in features])
-    )
-
-    lower_atomic_pass = ["lower-atomic"]
-    passes_string = ",".join(
-        (profile.passes + lower_atomic_pass)
-        if not profile.lower_atomic_before
-        else (lower_atomic_pass + profile.passes)
-    )
-    pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
-    prepopulate_passes = (
-        "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
-    )
-    llvm_flag = "--emit=llvm-ir" if llvm else ""
     program_dir = get_program_path(program, zkvm)
     # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
-    if zkvm == "sp1":
-        ret = await run_command(
-            f"""
-            CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
-                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
-                RUSTUP_TOOLCHAIN=succinct \
-                CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
-                cargo +succinct build --release --locked --features sp1 {verbosity} {additional_features}
-        """.strip(),
-            program_dir,
-            env,
-            name,
-            timeout=timeout,
-        )
-    elif zkvm == "risc0":
-        ret = await run_command(
-            f"""
-            CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
-                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
-                RISC0_FEATURE_bigint2=1 \
-                cargo +risc0 build --release --locked --features risc0 \
-                    --target riscv32im-risc0-zkvm-elf {verbosity} {additional_features}
-        """.strip(),
-            program_dir,
-            env,
-            name,
-            timeout=timeout,
-        )
-    elif zkvm == "x86":
-        ret = await run_command(
-            f"""
-            RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {profile.rustflags} {llvm_flag}" \
-                cargo +nightly build --release --locked --features x86 --lib {verbosity} {additional_features}
-        """.strip(),
-            program_dir,
-            env,
-            name,
-            timeout=timeout,
-        )
-    else:
-        raise ValueError(f"Unknown zkvm: {zkvm}")
+    cmd, env = get_build_command(
+        zkvm, profile, llvm, verbose, target_dir, features, "build"
+    )
+    ret = await run_command(
+        cmd,
+        program_dir,
+        env,
+        name,
+        timeout=timeout,
+    )
     if ret != 0:
         logging.error(
             f"{program}-{zkvm}-{profile_name}: Build failed with code {ret}, passes: {passes}"
         )
         raise ValueError(f"Error: Build failed with code {ret}")
 
-    shutil.copyfile(source, target)
-    logging.info(f"Copied binary to {target}")
+    if not llvm:
+        shutil.copyfile(source, target)
+        logging.info(f"Copied binary to {target}")

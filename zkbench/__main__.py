@@ -1,6 +1,7 @@
 import logging
 import click
 
+from zkbench.asm import show_asm
 from zkbench.common import coro, setup_logger
 from zkbench.config import (
     get_measurements,
@@ -19,6 +20,7 @@ from zkbench.plot.plot import (
     cycle_count_abs_cli,
     cycle_count_by_program_cli,
     cycle_count_cli,
+    cycle_count_single_program_cli,
     cycle_count_stats_cli,
     cycle_count_duration_cli,
     duration_by_program_cli,
@@ -46,6 +48,7 @@ from zkbench.tune.plot.plot import (
     export_exhaustive_depth2_cli,
     export_genetic_cli,
     export_genetic_individual_cli,
+    extract_genetic_individual_cli,
     plot_exhaustive_depth2_cli,
     plot_genetic_cli,
     plot_genetic_individual_cli,
@@ -80,6 +83,7 @@ def zkbench_cli(log_level: str, log_file: str):
 @click.option("-j", required=False, type=int)
 @click.option("--llvm", required=False, is_flag=True, default=False)
 @click.option("--feature", required=False, type=str, multiple=True)
+@click.option("--name", required=False, type=str, default=None)
 @coro
 async def build_cli(
     program: list[str],
@@ -90,6 +94,7 @@ async def build_cli(
     j: int | None,
     llvm: bool,
     feature: list[str] | None,
+    name: str | None,
 ):
     await run_build(
         list(program),
@@ -100,7 +105,37 @@ async def build_cli(
         j or 1,
         llvm,
         features=feature,
+        name=name,
     )
+
+
+@click.command(name="asm")
+@click.option(
+    "--program", type=click.Choice(get_programs()), required=True, multiple=False
+)
+@click.option(
+    "--zkvm", type=click.Choice(get_zkvms_with_x86()), required=True, multiple=False
+)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=False
+)
+@click.option("--llvm", required=False, is_flag=True, default=False)
+@click.option("--rust", required=False, is_flag=True, default=False)
+@click.option("--open", required=False, is_flag=True, default=False)
+@click.option("--feature", required=False, type=str, multiple=True)
+@click.argument("rest", required=False, default="")
+@coro
+async def asm_cli(
+    program: str,
+    zkvm: str,
+    profile: str,
+    llvm: bool,
+    rust: bool,
+    feature: list[str],
+    rest: str,
+    open: bool,
+):
+    show_asm(program, zkvm, profile, feature, llvm, rust, rest, open)
 
 
 @click.command(name="clean")
@@ -256,6 +291,7 @@ zkbench_cli.add_command(run_single_cli)
 zkbench_cli.add_command(plot_cli)
 zkbench_cli.add_command(tune_cli)
 zkbench_cli.add_command(plot_tune_cli)
+zkbench_cli.add_command(asm_cli)
 
 plot_cli.add_command(average_improvement_cli)
 plot_cli.add_command(average_duration_cli)
@@ -283,6 +319,7 @@ plot_cli.add_command(average_improvement_compare_cli)
 plot_cli.add_command(average_improvement_difference_cli)
 plot_cli.add_command(improvement_by_program_exec_cli)
 plot_cli.add_command(improvement_single_program_cli)
+plot_cli.add_command(cycle_count_single_program_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
@@ -290,6 +327,7 @@ plot_tune_cli.add_command(export_exhaustive_depth2_cli)
 plot_tune_cli.add_command(export_genetic_cli)
 plot_tune_cli.add_command(export_genetic_individual_cli)
 plot_tune_cli.add_command(plot_genetic_individual_cli)
+plot_tune_cli.add_command(extract_genetic_individual_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)

@@ -17,6 +17,7 @@ from zkbench.plot.average_improvement_difference import (
 )
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
+from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_program
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
@@ -53,15 +54,21 @@ from zkbench.plot.x86_exec import plot_x86_exec
 @click.option(
     "--global-average", type=bool, is_flag=True, required=False, default=False
 )
+@click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
+@click.option("--remove-ox", type=bool, is_flag=True, required=False, default=False)
 def average_improvement_cli(
     zkvm: str | None,
     program: str | None,
     program_group: str | None,
     speedup: bool,
     global_average: bool,
+    show_x86: bool,
+    remove_ox: bool = False,
 ):
     dir = click.get_current_context().parent.params["dir"]
-    plot_average_improvement(dir, zkvm, program, program_group, speedup, global_average)
+    plot_average_improvement(
+        dir, zkvm, program, program_group, speedup, global_average, show_x86, remove_ox
+    )
 
 
 @click.command(name="average-duration", help="Plot raw duration of measurements")
@@ -280,6 +287,29 @@ def improvement_single_program_cli(
 
 
 @click.command(
+    name="cycle-count-single-program",
+    help="Show cycle count for some profiles compared to some other baseline profile for a single program",
+)
+@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=True
+)
+@click.option(
+    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+)
+@click.option("--abs", type=bool, is_flag=True, required=False, default=False)
+def cycle_count_single_program_cli(
+    program: str,
+    profile: list[str],
+    baseline_profile: str,
+    abs: bool,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_cycle_count_for_single_program(dir, program, profile, baseline_profile, abs)
+
+
+@click.command(
     name="improvement-by-program-exec",
     help="Show (average) improvement for some profile compared to some other baseline profile by program for exec",
 )
@@ -324,10 +354,13 @@ def duration_by_program_cli(
     "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
 )
 @click.option("--relative", is_flag=True, default=False)
-def cycle_count_by_program_cli(profile: str, baseline_profile: str, relative: bool):
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
+def cycle_count_by_program_cli(
+    profile: str, baseline_profile: str, relative: bool, zkvm: str | None
+):
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_cycle_count_by_program(dir, profile, baseline_profile, relative)
+    plot_cycle_count_by_program(dir, profile, baseline_profile, relative, zkvm)
 
 
 @click.command(

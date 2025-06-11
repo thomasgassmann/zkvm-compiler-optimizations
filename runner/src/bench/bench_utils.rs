@@ -4,7 +4,7 @@ use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
 use super::utils::is_same_as_baseline;
-use super::x86_utils::{exec_x86, exec_x86_prepare, get_x86_stats};
+use super::x86_utils::{exec_x86_prepare, get_x86_stats};
 use super::{
     super::{
         types::{MeasurementType, ProgramId, ProverId},
@@ -14,7 +14,9 @@ use super::{
 };
 use crate::bench::sp1_utils::{exec_sp1, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare};
 use crate::bench::utils::write_elf_stats;
+use crate::utils::get_elf;
 use criterion::measurement::WallTime;
+use libloading::Library;
 
 pub fn add_benchmarks_for(
     program: &ProgramId,
@@ -72,13 +74,14 @@ fn add_x86_exec_and_prove(
         return;
     }
 
+    let elf_path = get_elf(program, &ProverId::X86, profile);
+    let lib =
+        unsafe { Library::new(&elf_path) }.expect("couldn't dlopen the binary as a shared object");
+
     match measurement {
         MeasurementType::Exec => {
             group.bench_function(profile, |b| {
-                b.iter_with_setup(
-                    || exec_x86_prepare(program, &ProverId::X86, profile, input_override),
-                    |f| exec_x86(f),
-                );
+                b.iter_with_setup(|| exec_x86_prepare(&lib, program, input_override), |f| f());
             });
         }
         MeasurementType::Prove => {

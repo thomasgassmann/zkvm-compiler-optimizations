@@ -83,6 +83,8 @@ MODULE_PASSES = [
     "synthetic-counts-propagation",
     "rel-lookup-table-converter",
     "aggressive-instcombine",
+    "lower-atomic",
+    "codegenprepare",
 ]
 FUNCTION_PASSES = [
     "instcombine",

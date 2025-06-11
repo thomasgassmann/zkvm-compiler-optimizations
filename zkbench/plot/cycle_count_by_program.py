@@ -1,18 +1,25 @@
 import logging
+
+import numpy as np
 from zkbench.config import get_programs, get_zkvms
 from zkbench.plot.common import (
     get_cycle_count,
     get_title,
     plot_grouped_boxplot,
+    plot_sorted,
 )
 
 
 def plot_cycle_count_by_program(
-    dir: str, profile: str, baseline_profile: str, relative: bool = False
+    dir: str,
+    profile: str,
+    baseline_profile: str,
+    relative: bool = False,
+    plotted_zkvm: str | None = None,
 ):
     title = get_title(
         f"Cycle Count for {profile} compared to {baseline_profile}",
-        [],
+        [plotted_zkvm],
     )
 
     cycle_counts_profile = []
@@ -22,7 +29,7 @@ def plot_cycle_count_by_program(
         err = False
         current_profile = []
         current_baseline = []
-        for zkvm in get_zkvms():
+        for zkvm in get_zkvms() if plotted_zkvm is None else [plotted_zkvm]:
             try:
                 cycle_count = get_cycle_count(dir, program, zkvm, profile)
                 cycle_count_baseline = get_cycle_count(
@@ -45,24 +52,41 @@ def plot_cycle_count_by_program(
         cycle_counts_profile.append(current_profile)
         cycle_counts_baseline.append(current_baseline)
 
-    plot_grouped_boxplot(
-        (
-            [
-                cycle_counts_profile,
-                cycle_counts_baseline,
-            ]
-            if not relative
-            else [cycle_counts_profile]
-        ),
-        programs,
-        title,
-        "Cycle Count",
-        (
-            [
-                profile,
-                baseline_profile,
-            ]
-            if not relative
-            else [profile]
-        ),
+    series_labels = (
+        [
+            profile,
+            baseline_profile,
+        ]
+        if not relative
+        else [profile]
     )
+    if plotted_zkvm is not None:
+        plot_sorted(
+            (
+                [
+                    np.squeeze(cycle_counts_profile, axis=1),
+                    np.squeeze(cycle_counts_baseline, axis=1),
+                ]
+                if not relative
+                else [np.squeeze(cycle_counts_profile, axis=1)]
+            ),
+            programs,
+            title,
+            "Cycle Count",
+            series_labels,
+        )
+    else:
+        plot_grouped_boxplot(
+            (
+                [
+                    cycle_counts_profile,
+                    cycle_counts_baseline,
+                ]
+                if not relative
+                else [cycle_counts_profile]
+            ),
+            programs,
+            title,
+            "Cycle Count",
+            series_labels,
+        )

@@ -2,6 +2,7 @@ mod bench;
 mod input;
 mod report_risc0;
 mod report_sp1;
+mod risc0_rv32im;
 mod tune;
 mod types;
 mod utils;
