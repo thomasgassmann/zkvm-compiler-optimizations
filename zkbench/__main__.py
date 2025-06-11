@@ -48,6 +48,7 @@ from zkbench.tune.plot.plot import (
     export_exhaustive_depth2_cli,
     export_genetic_cli,
     export_genetic_individual_cli,
+    extract_genetic_individual_cli,
     plot_exhaustive_depth2_cli,
     plot_genetic_cli,
     plot_genetic_individual_cli,
@@ -326,6 +327,7 @@ plot_tune_cli.add_command(export_exhaustive_depth2_cli)
 plot_tune_cli.add_command(export_genetic_cli)
 plot_tune_cli.add_command(export_genetic_individual_cli)
 plot_tune_cli.add_command(plot_genetic_individual_cli)
+plot_tune_cli.add_command(extract_genetic_individual_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)
