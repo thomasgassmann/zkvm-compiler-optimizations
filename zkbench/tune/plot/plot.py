@@ -9,7 +9,10 @@ from zkbench.tune.plot.export import (
     export_genetic_individual,
 )
 from zkbench.tune.plot.genetic import plot_genetic
-from zkbench.tune.plot.genetic_individual import plot_genetic_individual
+from zkbench.tune.plot.genetic_individual import (
+    extract_common_passses,
+    plot_genetic_individual,
+)
 
 
 @click.command(name="genetic")
@@ -46,6 +49,15 @@ def plot_genetic_individual_cli(
     plot_genetic_individual(
         stats_dir, baseline_profile, average_programs, program, zkvm, program_group
     )
+
+
+@click.command(name="extract-genetic-individual")
+@click.option("--stats-dir", required=True)
+@click.option("--worst", is_flag=True, default=False, help="Extract worst passes")
+def extract_genetic_individual_cli(stats_dir: str, worst: bool = False):
+    if not os.path.exists(stats_dir):
+        raise click.ClickException(f"{stats_dir} does not exist.")
+    extract_common_passses(stats_dir, not worst)
 
 
 @click.command(name="exhaustive-depth2")
