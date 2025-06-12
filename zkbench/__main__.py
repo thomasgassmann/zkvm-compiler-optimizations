@@ -53,7 +53,12 @@ from zkbench.tune.plot.plot import (
     plot_genetic_cli,
     plot_genetic_individual_cli,
 )
-from zkbench.tune.tune import TUNE_METRICS, tune_exhaustive_cli, tune_genetic_cli
+from zkbench.tune.tune import (
+    TUNE_METRICS,
+    tune_exhaustive_cli,
+    tune_ffd_cli,
+    tune_genetic_cli,
+)
 
 
 @click.group()
@@ -331,6 +336,7 @@ plot_tune_cli.add_command(extract_genetic_individual_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)
+tune_cli.add_command(tune_ffd_cli)
 
 if __name__ == "__main__":
     zkbench_cli()
