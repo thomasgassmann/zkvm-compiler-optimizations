@@ -5,7 +5,6 @@ CFLAGS=$(ZK_TARGET_CFLAGS) $(ZK_CFLAGS) -Xclang -disable-O0-optnone -I../c-platf
 LLVMFLAGS=-disable-verify -passes='$(PASSES)'
 
 LIBNAME=lib$(PROGRAM).a
-OUTDIR=ctarget
 
 define add 
 	$(CC) $(CFLAGS) -S -emit-llvm ${2} -o $(OUTDIR)/${1}.ll

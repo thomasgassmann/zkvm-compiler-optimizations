@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 import shutil
+import threading
 
 from zkbench.common import get_run_config, run_command
 from zkbench.config import (
@@ -102,6 +103,7 @@ def get_build_command(
         "PASSES": passes,
         "ZK_CFLAGS": profile.cflags,
         "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
+        "THREAD_ID": str(threading.get_ident()),
     }
     if target_dir is not None:
         env["CARGO_TARGET_DIR"] = target_dir
