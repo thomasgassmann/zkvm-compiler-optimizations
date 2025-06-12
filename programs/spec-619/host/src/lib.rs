@@ -30,6 +30,7 @@ pub extern "C" fn main_core(it: i32, action: i32, sim_type: i32) -> () {
         IT = it;
         ACTION = action;
         SIM_TYPE = sim_type;
+        CALL_COUNT = 0;
         cmain();
     }
 }

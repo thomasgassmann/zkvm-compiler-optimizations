@@ -6,9 +6,24 @@ from zkbench.config import get_profiles_ids
 from zkbench.plot.common import get_program_selection
 from zkbench.tune.common import TuneConfig
 from zkbench.tune.exhaustive import run_tune_exhaustive
+from zkbench.tune.ffd import run_tune_ffd
 from zkbench.tune.genetic import run_tune_genetic
 
 TUNE_METRICS = ["cycle-count", "prove-time", "gas", "exec-time", "paging-cycle-count"]
+
+
+@click.command(name="ffd")
+@click.option(
+    "--resolution",
+    multiple=False,
+    type=int,
+    help="Resolution",
+    required=True,
+)
+def tune_ffd_cli(resolution: int):
+    (selected_programs, zkvms, metric, config, out) = get_config()
+    os.makedirs(out, exist_ok=True)
+    run_tune_ffd(selected_programs, zkvms, metric, config, out, resolution)
 
 
 @click.command(name="exhaustive")
