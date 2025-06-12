@@ -34,7 +34,7 @@
     ],
     "function_passes": [
         "loop-mssa(licm)",
-        "instcombine",
+        "instcombine<max-iterations=1000>",
         "bdce",
         "correlated-propagation",
         "loop-sink",
