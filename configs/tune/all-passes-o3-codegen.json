@@ -30,12 +30,11 @@
         "ipsccp",
         "synthetic-counts-propagation",
         "rel-lookup-table-converter",
-        "aggressive-instcombine",
-        "instcombine<max-iterations=1000>"
+        "aggressive-instcombine"
     ],
     "function_passes": [
         "loop-mssa(licm)",
-        "instcombine",
+        "instcombine<max-iterations=1000>",
         "bdce",
         "correlated-propagation",
         "loop-sink",
