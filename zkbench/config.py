@@ -5,6 +5,8 @@ from dataclasses import dataclass
 import os
 from typing import List
 
+import click
+
 
 @dataclass(frozen=True)
 class Profile:
@@ -52,10 +54,12 @@ def get_profile_by_name(profile_name: str) -> Profile:
 
 
 def get_default_profiles_ids() -> List[str]:
+    remove_ox = click.get_current_context().parent.params["remove_ox"]
     return [
         profile_name
         for profile_name in get_profiles_ids()
         if not CONFIG["profiles"][profile_name].get("no_default", False)
+        and (not remove_ox or profile_name not in ["o0", "o1", "o2", "o3", "oz", "os"])
     ]
 
 

@@ -234,7 +234,8 @@ def run_single_cli(program: str, zkvm: str, elf: str, force: bool):
 
 @click.group(name="plot")
 @click.option("--dir", nargs=1, required=True, help="Directory with Criterion data")
-def plot_cli(dir: str):
+@click.option("--remove-ox", required=False, is_flag=True, default=False)
+def plot_cli(dir: str, remove_ox: bool):
     pass
 
 
