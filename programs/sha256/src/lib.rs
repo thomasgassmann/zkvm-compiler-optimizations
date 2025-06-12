@@ -170,6 +170,7 @@ pub fn generate_string(i: u64) -> String {
 #[cfg(feature = "x86")]
 use std::io::Write as IoWrite;
 
+#[cfg(feature = "x86")]
 #[no_mangle]
 pub extern "C" fn main_core() {
     for i in 0..10 {

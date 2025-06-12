@@ -192,7 +192,7 @@ async def build_program(
     )
     if ret != 0:
         logging.error(
-            f"{program}-{zkvm}-{profile_name}: Build failed with code {ret}, passes: {passes}"
+            f"{program}-{zkvm}-{profile_name}: Build failed with code {ret}, passes: {profile.passes}"
         )
         raise ValueError(f"Error: Build failed with code {ret}")
 
