@@ -1,6 +1,7 @@
 bench/
 genetic/
 exhaustive/
+ffd/
 root-cause-analysis-data/
 
 # docs/

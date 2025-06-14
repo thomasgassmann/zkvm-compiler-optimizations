@@ -32,6 +32,7 @@ class FFDRun:
     programs: list[str]
     zkvms: list[str]
     config: TuneConfig
+    factors: list[str]
     resolution: int
 
 
@@ -69,9 +70,15 @@ def run_tune_ffd(
 
     def flush():
         with open(os.path.join(out, "stats.json"), "w") as f:
-            json.dump(dataclasses.asdict(FFDRun(
-                results, metric, programs, zkvms, config, resolution
-            )), f, indent=2)
+            json.dump(
+                dataclasses.asdict(
+                    FFDRun(
+                        results, metric, programs, zkvms, config, factors, resolution
+                    )
+                ),
+                f,
+                indent=2,
+            )
 
     for idx, row in enumerate(design):
         active = list(compress(factors, row == 1))
