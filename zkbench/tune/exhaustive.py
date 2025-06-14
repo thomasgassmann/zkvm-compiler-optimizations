@@ -81,7 +81,7 @@ def run_tune_exhaustive(
                         res = asyncio.get_event_loop().run_until_complete(
                             builder_runner.run_build(programs, zkvms, profile_config)
                         )
-                        if not res:
+                        if all([not r.success for r in res]):
                             logging.error(
                                 f"Error building with config {profile_config}"
                             )
@@ -95,14 +95,15 @@ def run_tune_exhaustive(
                             )
                             continue
 
+                        successful = [r for r in res if r.success]
                         eval_result = builder_runner.eval_all(
-                            programs, zkvms, profile_config
+                            successful, profile_config
                         )
                         append_and_write(
                             ExhaustiveResult(
                                 passes=pass_config,
                                 profile_config=profile_config,
-                                build_error=False,
+                                build_error=any([not r.success for r in res]),
                                 eval_result=eval_result,
                             )
                         )

@@ -222,16 +222,16 @@ def create_tuner(
         if profile is None:
             raise ValueError(f"Baseline profile {baseline} not found.")
 
-        success = asyncio.get_event_loop().run_until_complete(
+        build_res = asyncio.get_event_loop().run_until_complete(
             runner.run_build(
                 programs,
                 zkvms,
                 profile,
             )
         )
-        if not success:
+        if any([not res.success for res in build_res]):
             raise ValueError(f"Error during build for baseline {baseline}")
-        eval_result = runner.eval_all(programs, zkvms, profile)
+        eval_result = runner.eval_all(build_res, profile)
         if eval_result.has_error:
             raise ValueError(f"Error during evaluation for baseline {baseline}")
         baseline_results[baseline] = eval_result.values
@@ -260,12 +260,12 @@ def create_tuner(
                     profile_config,
                 )
             )
-            if not res:
+            if any([not r.success for r in res]):
                 logging.error(f"Error during build for profile {profile_config}")
                 return Result(time=float("inf"), state="ERROR")
 
             # then calculate metrics
-            eval_result = runner.eval_all(programs, zkvms, profile_config)
+            eval_result = runner.eval_all(res, profile_config)
             if eval_result.has_error:
                 return Result(time=float("inf"), state="ERROR")
 

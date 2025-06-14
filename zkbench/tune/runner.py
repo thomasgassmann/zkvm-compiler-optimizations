@@ -23,6 +23,14 @@ CLEAN_CYCLE = 15
 N_SAMPLES = 3
 
 
+@dataclasses.dataclass(frozen=True)
+class BuildResult:
+    program: str
+    zkvm: str
+    success: bool
+    err: str | None
+
+
 class TuneRunner:
 
     def __init__(
@@ -120,12 +128,15 @@ class TuneRunner:
         self._clean_cycles[program] += 1
         logging.info(f"Built {program} for {zkvm}")
 
-    async def _build_for_all_zkvms(
-        self, program: str, zkvms: list[str], profile_config: ProfileConfig | Profile
+    async def _build_for_zkvm(
+        self, program: str, zkvm: str, profile_config: ProfileConfig | Profile
     ):
-        for zkvm in zkvms:
+        try:
             out = self.get_out_path(profile_config, zkvm, program)
             await self._build(program, zkvm, profile_config, out)
+            return BuildResult(program, zkvm, success=True, err=None)
+        except Exception as e:
+            return BuildResult(program, zkvm, success=False, err=str(e))
 
     async def clean(self, programs: list[str], zkvms: list[str]):
         await run_clean(
@@ -134,60 +145,58 @@ class TuneRunner:
         for program in programs:
             self._clean_cycles[program] = 0
 
-    async def try_build(
+    async def _try_build(
         self,
         programs: list[str],
         zkvms: list[str],
         profile_config: ProfileConfig | Profile,
     ):
-        await asyncio.gather(
-            *[
-                self._build_for_all_zkvms(program, zkvms, profile_config)
-                for program in programs
-            ]
-        )
+        res = []
+        for zkvm in zkvms:
+            res.extend(
+                await asyncio.gather(
+                    *[
+                        self._build_for_zkvm(program, zkvm, profile_config)
+                        for program in programs
+                    ],
+                    return_exceptions=True,
+                )
+            )
+        return res
 
     async def run_build(
         self,
         programs: list[str],
         zkvms: list[str],
         profile_config: ProfileConfig | Profile,
-    ):
-        try:
-            await self.try_build(programs, zkvms, profile_config)
-            return True
-        except Exception as e:
-            logging.error(f"Error during build: {e}")
-            if self._no_clean:
-                return False
-
-            try:
-                await self.clean(programs, zkvms)
-                await self.try_build(programs, zkvms, profile_config)
-                return True
-            except Exception as e:
-                logging.error(f"Error during build: {e}")
-
-                for program in programs:
-                    for zkvm in zkvms:
-                        # treat this as a timeout
-                        self.write_cache(
-                            program,
-                            zkvm,
-                            profile_config,
-                            MetricValue(
-                                zkvm=zkvm, program=program, metric=-1, timeout=True
-                            ),
-                        )
-
-                return False
+    ) -> list[BuildResult]:
+        res = await self._try_build(programs, zkvms, profile_config)
+        successful_programs = [r for r in res if r.success]
+        if any(not r.success for r in res):
+            unsuccessful = [r for r in res if not r.success]
+            unsuccessful_string = ", ".join(
+                f"{r.program}-{r.zkvm}" for r in unsuccessful
+            )
+            logging.error(f"Build failed for some programs: {unsuccessful_string}")
+            await self.clean(programs, zkvms)
+            for u in unsuccessful:
+                res = await self._try_build([u.program], [u.zkvm], profile_config)
+                if res[0].success:
+                    successful_programs.append(res[0])
+        return successful_programs
 
     def eval_all(
         self,
-        programs: list[str],
-        zkvms: list[str],
+        res: list[BuildResult],
         profile_config: ProfileConfig | Profile,
     ) -> EvalResult:
+        for c in res:
+            if not c.success:
+                logging.warning(
+                    f"Skipping evaluation for {c.program} on {c.zkvm} due to build failure: {c.err}"
+                )
+        eval_res = [c for c in res if c.success]
+
         values = []
         if is_metric_parallelizable(self._metric):
             try:
@@ -196,13 +205,12 @@ class TuneRunner:
                         *[
                             self.eval_metric(
                                 self._metric,
-                                zkvm,
-                                program,
-                                self.get_out_path(profile_config, zkvm, program),
+                                c.zkvm,
+                                c.program,
+                                self.get_out_path(profile_config, c.zkvm, c.program),
                                 profile_config,
                             )
-                            for zkvm in zkvms
-                            for program in programs
+                            for c in eval_res
                         ]
                     )
                 )
@@ -210,22 +218,21 @@ class TuneRunner:
                 logging.error(f"Error during evaluation: {e}")
                 return EvalResult(has_error=True, values=[])
         else:
-            for zkvm in zkvms:
-                for program in programs:
-                    try:
-                        current_metric = asyncio.get_event_loop().run_until_complete(
-                            self.eval_metric(
-                                self._metric,
-                                zkvm,
-                                program,
-                                self.get_out_path(profile_config, zkvm, program),
-                                profile_config,
-                            )
+            for c in eval_res:
+                try:
+                    current_metric = asyncio.get_event_loop().run_until_complete(
+                        self.eval_metric(
+                            self._metric,
+                            c.zkvm,
+                            c.program,
+                            self.get_out_path(profile_config, c.zkvm, c.program),
+                            profile_config,
                         )
-                        values.append(current_metric)
-                    except Exception as e:
-                        logging.error(f"Error during evaluation: {e}")
-                        return EvalResult(has_error=True, values=[])
+                    )
+                    values.append(current_metric)
+                except Exception as e:
+                    logging.error(f"Error during evaluation: {e}")
+                    return EvalResult(has_error=True, values=[])
         return EvalResult(
             has_error=False,
             values=values,
