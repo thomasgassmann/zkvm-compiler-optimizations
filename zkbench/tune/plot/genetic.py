@@ -1,24 +1,8 @@
 from matplotlib import pyplot as plt
 
-from zkbench.config import get_programs_by_group
-from zkbench.plot.common import show_or_save_plot
-from zkbench.tune.common import MetricValue
+from zkbench.plot.common import get_program_selection, show_or_save_plot
 from zkbench.tune.genetic import Genetic
-from zkbench.tune.plot.common import read_genetic_stats
-
-
-def get_metric_sum(
-    l: list[MetricValue], program_list: list[str] | None, zkvm: str | None
-) -> float:
-    return sum(
-        [
-            v.metric
-            for v in l
-            if (program_list is None or v.program in program_list)
-            and (v.zkvm == zkvm or zkvm is None)
-            and not v.timeout
-        ]
-    )
+from zkbench.tune.plot.common import get_metric_sum, read_genetic_stats
 
 
 def plot_genetic(
@@ -29,11 +13,7 @@ def plot_genetic(
 ):
     stats: Genetic = read_genetic_stats(stats)
 
-    programs = [] if program is None else [program]
-    if program_group is not None:
-        programs.extend(get_programs_by_group(program_group))
-    if program is None and program_group is None:
-        programs = None
+    programs = get_program_selection(program, program_group)
 
     stats_values = [get_metric_sum(v, programs, zkvm) for v in stats.metrics]
     stats_values = [v for v in stats_values if v > 0]

@@ -8,6 +8,7 @@ from zkbench.tune.plot.export import (
     export_genetic,
     export_genetic_individual,
 )
+from zkbench.tune.plot.ffd import plot_ffd1d, plot_ffd2d
 from zkbench.tune.plot.genetic import plot_genetic
 from zkbench.tune.plot.genetic_individual import (
     extract_common_passses,
@@ -68,6 +69,26 @@ def plot_exhaustive_depth2_cli(stats: str, program: str | None, zkvm: str | None
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
     plot_exhaustive_depth2(stats, program, zkvm)
+
+
+@click.command(name="ffd-1d")
+@click.option("--stats", required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def plot_ffd1d_cli(stats: str, program: str | None, zkvm: str | None):
+    if not os.path.exists(stats):
+        raise click.ClickException(f"File {stats} does not exist.")
+    plot_ffd1d(stats, program, zkvm)
+
+
+@click.command(name="ffd-2d")
+@click.option("--stats", required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+def plot_ffd2d_cli(stats: str, program: str | None, zkvm: str | None):
+    if not os.path.exists(stats):
+        raise click.ClickException(f"File {stats} does not exist.")
+    plot_ffd2d(stats, program, zkvm)
 
 
 @click.command(name="export-exhaustive-depth2")

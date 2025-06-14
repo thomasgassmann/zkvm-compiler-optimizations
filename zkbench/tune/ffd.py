@@ -35,7 +35,7 @@ class FFDRun:
     config: TuneConfig
     factors: list[str]
     resolution: int
-    design: list[list[int]]
+    design: list
 
 
 def run_tune_ffd(
