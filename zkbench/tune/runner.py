@@ -40,6 +40,7 @@ class TuneRunner:
         cache_dir: str | None = None,
         build_timeout: int | None = None,
         rebuild_failed: bool = False,
+        retry_build: bool = True,
     ):
         self._clean_cycles = {}
         self._out = out
@@ -52,6 +53,7 @@ class TuneRunner:
         )
         self._build_timeout = build_timeout
         self._rebuild_failed = rebuild_failed
+        self._retry_build = retry_build
 
     def get_build_path(self, zkvm: str, program: str):
         return os.path.join(
@@ -171,7 +173,7 @@ class TuneRunner:
         profile_config: ProfileConfig | Profile,
     ) -> list[BuildResult]:
         res = await self._try_build(programs, zkvms, profile_config)
-        if any(not r.success for r in res):
+        if any(not r.success for r in res) and self._retry_build:
             unsuccessful = [r for r in res if not r.success]
             unsuccessful_string = ", ".join(
                 f"{r.program}-{r.zkvm}" for r in unsuccessful
