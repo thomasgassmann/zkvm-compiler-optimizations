@@ -54,7 +54,11 @@ def get_profile_by_name(profile_name: str) -> Profile:
 
 
 def get_default_profiles_ids() -> List[str]:
-    remove_ox = click.get_current_context().parent.params["remove_ox"]
+    parent_context = click.get_current_context().parent.params
+    if "remove_ox" in parent_context:
+        remove_ox = parent_context["remove_ox"]
+    else:
+        remove_ox = False
     return [
         profile_name
         for profile_name in get_profiles_ids()
