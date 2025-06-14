@@ -171,7 +171,6 @@ class TuneRunner:
         profile_config: ProfileConfig | Profile,
     ) -> list[BuildResult]:
         res = await self._try_build(programs, zkvms, profile_config)
-        successful_programs = [r for r in res if r.success]
         if any(not r.success for r in res):
             unsuccessful = [r for r in res if not r.success]
             unsuccessful_string = ", ".join(
@@ -180,10 +179,11 @@ class TuneRunner:
             logging.error(f"Build failed for some programs: {unsuccessful_string}")
             await self.clean(programs, zkvms)
             for u in unsuccessful:
-                res = await self._try_build([u.program], [u.zkvm], profile_config)
-                if res[0].success:
-                    successful_programs.append(res[0])
-        return successful_programs
+                current = await self._try_build([u.program], [u.zkvm], profile_config)
+                if current[0].success:
+                    res.remove(u)
+                    res.append(current[0])
+        return res
 
     def eval_all(
         self,
