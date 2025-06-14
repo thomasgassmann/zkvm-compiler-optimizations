@@ -5,10 +5,9 @@ import json
 import logging
 import os
 
-import numpy as np
 from zkbench.tune.runner import TuneRunner
 from zkbench.tune.common import (
-    BIN_OUT_EXHAUSTIVE,
+    BIN_OUT_FFD,
     EvalResult,
     ProfileConfig,
     TuneConfig,
@@ -34,7 +33,6 @@ class FFDRun:
     zkvms: list[str]
     config: TuneConfig
     resolution: int
-
 
 
 def run_tune_ffd(
@@ -65,8 +63,7 @@ def run_tune_ffd(
     design = fracfact_by_res(len(factors), resolution)
 
     runner = TuneRunner(
-        BIN_OUT_EXHAUSTIVE, metric, out,
-        build_timeout=60 * 30, rebuild_failed=True
+        BIN_OUT_FFD, metric, out, build_timeout=60 * 30, rebuild_failed=True
     )
     results: list[FFDResult] = []
 
@@ -92,15 +89,19 @@ def run_tune_ffd(
         )
 
         logging.info("Row %d/%d: %s", idx + 1, len(design), profile)
-        ok = asyncio.get_event_loop().run_until_complete(
+        res = asyncio.get_event_loop().run_until_complete(
             runner.run_build(programs, zkvms, profile)
         )
-        if not ok:
+        if all([not r.success for r in res]):
             logging.error("Build failed for config %s", profile)
             results.append(FFDResult(idx, active_passes, active, profile, True, None))
             flush()
             continue
 
-        eval_result = runner.eval_all(programs, zkvms, profile)
-        results.append(FFDResult(idx, active_passes, active, profile, False, eval_result))
+        successful = [r for r in res if r.success]
+        eval_result = runner.eval_all(successful, profile)
+        build_error = any([not r.success for r in res])
+        results.append(
+            FFDResult(idx, active_passes, active, profile, build_error, eval_result)
+        )
         flush()

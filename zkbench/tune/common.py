@@ -158,6 +158,7 @@ OPT_LEVEL_OPTIONS = ["0", "1", "2", "3", "s", "z"]
 BIN_OUT = "./bin/tune"
 BIN_OUT_GENETIC = os.path.join(BIN_OUT, "genetic")
 BIN_OUT_EXHAUSTIVE = os.path.join(BIN_OUT, "exhaustive")
+BIN_OUT_FFD = os.path.join(BIN_OUT, "ffd")
 
 
 def build_pass_list(ordered_passes: list[str]) -> str:
