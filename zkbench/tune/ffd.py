@@ -34,6 +34,7 @@ class FFDRun:
     config: TuneConfig
     factors: list[str]
     resolution: int
+    design: list[list[int]]
 
 
 def run_tune_ffd(
@@ -73,7 +74,14 @@ def run_tune_ffd(
             json.dump(
                 dataclasses.asdict(
                     FFDRun(
-                        results, metric, programs, zkvms, config, factors, resolution
+                        results,
+                        metric,
+                        programs,
+                        zkvms,
+                        config,
+                        factors,
+                        resolution,
+                        design.tolist(),
                     )
                 ),
                 f,
