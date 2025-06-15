@@ -33,6 +33,12 @@ class EvalResult:
     has_error: bool
     values: list[MetricValue]
 
+    def merge(self, other: "EvalResult") -> "EvalResult":
+        return EvalResult(
+            has_error=self.has_error or other.has_error,
+            values=self.values + other.values,
+        )
+
 
 @dataclass
 class TuneConfig:
