@@ -1,19 +1,19 @@
 use core::panic;
 
+use super::super::{
+    types::{MeasurementType, ProgramId, ProverId},
+    utils::read_elf,
+};
 use super::risc0_utils::{
     exec_risc0, exec_risc0_setup, get_risc0_stats, prove_core_risc0, prove_core_risc0_prepare,
 };
 use super::utils::is_same_as_baseline;
 use super::x86_utils::{exec_x86_prepare, get_x86_stats};
-use super::{
-    super::{
-        types::{MeasurementType, ProgramId, ProverId},
-        utils::read_elf,
-    },
-    sp1_utils::exec_sp1_prepare,
+use crate::bench::sp1_utils::{
+    exec_sp1_bench, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare,
 };
-use crate::bench::sp1_utils::{exec_sp1, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare};
 use crate::bench::utils::write_elf_stats;
+use crate::input::get_sp1_stdin;
 use crate::utils::get_elf;
 use criterion::measurement::WallTime;
 use libloading::Library;
@@ -114,8 +114,8 @@ fn add_sp1_exec_and_prove(
         MeasurementType::Exec => {
             group.bench_function(profile, |b| {
                 b.iter_with_setup(
-                    || exec_sp1_prepare(&elf, program, input_override),
-                    |(stdin, prover)| exec_sp1(&stdin, &prover, &elf),
+                    || get_sp1_stdin(program, input_override),
+                    |stdin| exec_sp1_bench(&stdin, &elf),
                 );
             });
         }

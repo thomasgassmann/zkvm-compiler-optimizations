@@ -25,6 +25,7 @@ static ENV_PROVER_CLIENT: Lazy<EnvProver> = Lazy::new(|| {
     prover
 });
 
+#[inline(always)]
 pub fn exec_sp1_prepare(
     elf: &[u8],
     program: &ProgramId,
@@ -70,14 +71,31 @@ impl std::io::Write for SP1StdoutSink {
     }
 }
 
+#[inline(always)]
+pub fn exec_sp1_bench(stdin: &SP1Stdin, elf: &[u8]) -> () {
+    // taken from sp1_prover::SP1Prover::execute
+    let context = SP1Context::default();
+
+    let (opts, program) = (
+        sp1_stark::SP1CoreOpts::default(),
+        Program::from(elf).unwrap(),
+    );
+    let mut runtime = Executor::with_context(program, opts, context);
+
+    runtime.write_vecs(&stdin.buffer);
+    for (proof, vkey) in stdin.proofs.iter() {
+        runtime.write_proof(proof.clone(), vkey.clone());
+    }
+    runtime.run_fast().unwrap();
+}
+
+#[inline(always)]
 pub fn exec_sp1(
     stdin: &SP1Stdin,
     prover: &SP1Prover<CpuProverComponents>,
     elf: &[u8],
 ) -> (SP1PublicValues, ExecutionReport) {
-    let mut s = SP1StdoutSink;
-    let context = SP1Context::builder().stdout(&mut s).build();
-    prover.execute(&elf, stdin, context).unwrap()
+    prover.execute(&elf, stdin, SP1Context::default()).unwrap()
 }
 
 pub fn prove_core_sp1_prepare(
