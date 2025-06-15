@@ -1037,13 +1037,6 @@
                 "rust"
             ]
         },
-        "rsp": {
-            "specific": true,
-            "groups": [
-                "crypto",
-                "rust"
-            ]
-        },
         "zkvm-mnist": {
             "groups": [
                 "rust"

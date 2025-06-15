@@ -176,9 +176,6 @@ async def build_program(
     name = f"{program}-{zkvm}-{profile_name}"
     logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
 
-    profile_name = profile.profile_name
-    logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
-
     program_dir = get_program_path(program, zkvm)
     # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
