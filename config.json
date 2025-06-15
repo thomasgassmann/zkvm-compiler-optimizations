@@ -1113,6 +1113,13 @@
                 "spec",
                 "c"
             ]
+        },
+        "rsp": {
+            "specific": true,
+            "groups": [
+                "crypto",
+                "rust"
+            ]
         }
     }
 }
