@@ -11,7 +11,7 @@ from zkbench.tune.plot.export import (
 from zkbench.tune.plot.ffd import plot_ffd1d, plot_ffd2d
 from zkbench.tune.plot.genetic import plot_genetic
 from zkbench.tune.plot.genetic_individual import (
-    extract_common_passses,
+    extract_common_passes,
     plot_genetic_individual,
 )
 
@@ -58,7 +58,7 @@ def plot_genetic_individual_cli(
 def extract_genetic_individual_cli(stats_dir: str, worst: bool = False):
     if not os.path.exists(stats_dir):
         raise click.ClickException(f"{stats_dir} does not exist.")
-    extract_common_passses(stats_dir, not worst)
+    extract_common_passes(stats_dir, not worst)
 
 
 @click.command(name="exhaustive-depth2")
