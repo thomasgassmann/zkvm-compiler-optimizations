@@ -12,7 +12,7 @@ from zkbench.tune.plot.common import read_genetic_stats
 from zkbench.tune.plot.genetic import get_metric_sum
 
 
-def extract_common_passses(stats_dir: str, best: bool):
+def extract_common_passes(stats_dir: str, best: bool):
     stats = [
         read_genetic_stats(os.path.join(stats_dir, f"{program}-{zkvm}-stats.json"))
         for program in get_programs()
