@@ -55,7 +55,6 @@ def run_tune_ffd(
     out: str,
     resolution: int,
 ):
-    random.seed(42)
     assert len(config.allowed_opt_levels) == 1, "FFD tuning only supports a single optimization level"
 
     os.makedirs(out, exist_ok=True)
@@ -109,19 +108,36 @@ def run_tune_ffd(
     existing = read_ffd_stats(stats_path) if os.path.exists(stats_path) else None
 
     for idx, row in enumerate(design):
-        if existing is not None and idx < len(existing.results):
-            logging.warning("Skipping row %d/%d, already exists", idx + 1, len(design))
-            results.append(existing.results[idx])
-            continue
-
         active = list(compress(factors, row == 1))
         active_passes = [p for p in pass_factors if p in active]
         scgu = ("single_codegen_unit" in active) if config.tune_codegen_units else config.default_single_codegen_unit
         pp = ("prepopulate_passes" in active) if config.tune_prepopulate_passes else config.default_prepopulate_passes
 
+        if existing is not None and idx < len(existing.results):
+            logging.warning("Skipping row %d/%d, already exists", idx + 1, len(design))
+            existing_row = existing.results[idx]
+
+            assert existing_row.build_error is False
+            assert existing_row.eval_result is not None
+            assert existing_row.eval_result.has_error is False
+            assert set(existing_row.active_factors) == set(active)
+            assert set(existing.programs) == set(programs)
+            assert set(existing.zkvms) == set(zkvms)
+            assert len(existing_row.eval_result.values) == len(programs) * len(zkvms)
+            assert all(
+                [
+                    not p.timeout and p.metric != -1
+                    for p in existing_row.eval_result.values
+                ]
+            )
+
+            results.append(existing_row)
+            continue
+
         # we cannot get any info about ordering anyways
         # some sequences of passes seem to cause a SEGFAULT in
         # the rust compiler
+        random.seed(42)
         remaining = None
         eval_result = EvalResult(False, values=[])
         while remaining is None or len(remaining) > 0:
