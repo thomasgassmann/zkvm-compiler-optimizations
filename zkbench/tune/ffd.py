@@ -5,6 +5,8 @@ import json
 import logging
 import os
 
+from dacite import from_dict
+
 from zkbench.tune.runner import BuildResult, TuneRunner
 from zkbench.tune.common import (
     BIN_OUT_FFD,
@@ -17,6 +19,12 @@ from zkbench.tune.common import (
 from pyDOE3 import fracfact_by_res
 from itertools import compress
 import random
+
+
+def read_ffd_stats(stats: str):
+    stats = json.loads(open(stats).read())
+    return from_dict(FFDRun, stats)
+
 
 @dataclass(frozen=True)
 class FFDResult:
@@ -77,8 +85,10 @@ def run_tune_ffd(
     )
     results: list[FFDResult] = []
 
+    stats_path = os.path.join(out, "stats.json")
+
     def flush():
-        with open(os.path.join(out, "stats.json"), "w") as f:
+        with open(stats_path, "w") as f:
             json.dump(
                 dataclasses.asdict(
                     FFDRun(
@@ -96,7 +106,14 @@ def run_tune_ffd(
                 indent=2,
             )
 
+    existing = read_ffd_stats(stats_path) if os.path.exists(stats_path) else None
+
     for idx, row in enumerate(design):
+        if existing is not None and idx < len(existing.results):
+            logging.warning("Skipping row %d/%d, already exists", idx + 1, len(design))
+            results.append(existing.results[idx])
+            continue
+
         active = list(compress(factors, row == 1))
         active_passes = [p for p in pass_factors if p in active]
         scgu = ("single_codegen_unit" in active) if config.tune_codegen_units else config.default_single_codegen_unit
