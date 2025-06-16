@@ -67,6 +67,8 @@ def plot_ffd2d(stats_file: str, program: str | None = None, zkvm: str | None = N
                 effect_b = compute_factor_effect(stats, [factor_b, factor_a], programs, zkvm)
                 matrix[idx_a, idx_b] = (effect_a + effect_b) / 2
 
+    plt.figure(figsize=(12, 10))
+
     sns.heatmap(
         matrix,
         annot=True if len(stats.factors) <= 20 else False,

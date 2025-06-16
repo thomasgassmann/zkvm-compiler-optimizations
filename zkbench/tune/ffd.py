@@ -121,7 +121,12 @@ def run_tune_ffd(
             assert existing_row.eval_result is not None
             assert existing_row.eval_result.has_error is False
             assert set(existing_row.active_factors) == set(active)
-            assert set(existing.programs) == set(programs)
+            assert set(programs) <= set(existing.programs)
+
+            existing_row.eval_result.values = [
+                v for v in existing_row.eval_result.values if v.program in programs
+            ]
+
             assert set(existing.zkvms) == set(zkvms)
             assert len(existing_row.eval_result.values) == len(programs) * len(zkvms)
             assert all(
