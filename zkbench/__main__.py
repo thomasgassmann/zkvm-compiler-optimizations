@@ -24,6 +24,7 @@ from zkbench.plot.plot import (
     cycle_count_stats_cli,
     cycle_count_duration_cli,
     duration_by_program_cli,
+    duration_cli,
     export_report_cli,
     improvement_by_program_cli,
     improvement_by_program_exec_cli,
@@ -328,6 +329,7 @@ plot_cli.add_command(average_improvement_difference_cli)
 plot_cli.add_command(improvement_by_program_exec_cli)
 plot_cli.add_command(improvement_single_program_cli)
 plot_cli.add_command(cycle_count_single_program_cli)
+plot_cli.add_command(duration_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)

@@ -279,7 +279,7 @@ def plot_scatter_by_zkvm(
     show_or_save_plot()
 
 
-def plot_sorted(values, labels, title, y_label, series_labels):
+def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False):
     sorted_indices = np.argsort(values[0])[::-1]
     profiles_sorted = [labels[i] for i in sorted_indices]
     increase_values_sorted = [
@@ -311,6 +311,9 @@ def plot_sorted(values, labels, title, y_label, series_labels):
     ax.set_xticklabels(profiles_sorted, rotation=45, ha="right")
     ax.set_ylabel(y_label)
     ax.set_title(title)
+    if log_scale:
+        ax.set_yscale("log")
+
     if any(map(lambda x: x is not None, series_labels)):
         ax.legend()
 
@@ -324,7 +327,7 @@ def get_values_by_profile(
     dir: str,
     zkvm: str | None,
     measurement: str | None,
-    program: str | None,
+    program: str | list[str] | None,
     program_group: str | None,
     profiles: list[str],
     fn: Callable[[str, str, str, str, str], float],

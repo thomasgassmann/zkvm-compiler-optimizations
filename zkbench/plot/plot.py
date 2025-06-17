@@ -18,6 +18,7 @@ from zkbench.plot.average_improvement_difference import (
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_program
+from zkbench.plot.duration import plot_duration
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
@@ -81,6 +82,23 @@ def average_duration_cli(
 ):
     dir = click.get_current_context().parent.params["dir"]
     plot_average_duration(dir, zkvm, measurement, program, profile)
+
+
+@click.command(
+    name="duration", help="Plot raw duration of measurements for some program"
+)
+@click.option(
+    "--program", type=click.Choice(get_programs()), required=False, multiple=True
+)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=False
+)
+@click.option(
+    "--program-group", type=click.Choice(get_program_groups()), required=False
+)
+def duration_cli(program: list[str], profile: str, program_group: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_duration(dir, program, program_group, profile)
 
 
 @click.command(
