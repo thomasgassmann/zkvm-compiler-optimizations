@@ -18,6 +18,7 @@ from zkbench.plot.average_improvement_difference import (
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_program
+from zkbench.plot.duration import plot_duration
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
@@ -55,7 +56,6 @@ from zkbench.plot.x86_exec import plot_x86_exec
     "--global-average", type=bool, is_flag=True, required=False, default=False
 )
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
-@click.option("--remove-ox", type=bool, is_flag=True, required=False, default=False)
 def average_improvement_cli(
     zkvm: str | None,
     program: str | None,
@@ -63,11 +63,10 @@ def average_improvement_cli(
     speedup: bool,
     global_average: bool,
     show_x86: bool,
-    remove_ox: bool = False,
 ):
     dir = click.get_current_context().parent.params["dir"]
     plot_average_improvement(
-        dir, zkvm, program, program_group, speedup, global_average, show_x86, remove_ox
+        dir, zkvm, program, program_group, speedup, global_average, show_x86
     )
 
 
@@ -86,15 +85,47 @@ def average_duration_cli(
 
 
 @click.command(
+    name="duration", help="Plot raw duration of measurements for some program"
+)
+@click.option(
+    "--program", type=click.Choice(get_programs()), required=False, multiple=True
+)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=False
+)
+@click.option(
+    "--program-group", type=click.Choice(get_program_groups()), required=False
+)
+def duration_cli(program: list[str], profile: str, program_group: str | None):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_duration(dir, program, program_group, profile)
+
+
+@click.command(
     name="cycle-count", help="Plot relative cycle count compared to baseline"
 )
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option(
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
 )
-def cycle_count_cli(program: str | None, profile: list[str] | None):
+@click.option(
+    "--global-average", type=bool, is_flag=True, required=False, default=False
+)
+@click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
+def cycle_count_cli(
+    program: str | None,
+    profile: list[str] | None,
+    global_average: bool,
+    show_x86: bool,
+):
     dir = click.get_current_context().parent.params["dir"]
-    plot_cycle_count(dir, program, list(profile) if profile else None)
+    plot_cycle_count(
+        dir,
+        program,
+        list(profile) if profile else None,
+        global_average,
+        show_x86,
+    )
 
 
 @click.command(name="cycle-count-abs", help="Plot absolute cycle count")

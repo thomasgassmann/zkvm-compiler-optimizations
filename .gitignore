@@ -5,6 +5,6 @@ reports/
 data/
 criterion*/
 __pycache__/
-ctarget/
+ctarget*/
 opentuner.db/
 opentuner.log

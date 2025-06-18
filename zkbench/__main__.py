@@ -24,6 +24,7 @@ from zkbench.plot.plot import (
     cycle_count_stats_cli,
     cycle_count_duration_cli,
     duration_by_program_cli,
+    duration_cli,
     export_report_cli,
     improvement_by_program_cli,
     improvement_by_program_exec_cli,
@@ -48,11 +49,19 @@ from zkbench.tune.plot.plot import (
     export_exhaustive_depth2_cli,
     export_genetic_cli,
     export_genetic_individual_cli,
+    extract_genetic_individual_cli,
     plot_exhaustive_depth2_cli,
+    plot_ffd1d_cli,
+    plot_ffd2d_cli,
     plot_genetic_cli,
     plot_genetic_individual_cli,
 )
-from zkbench.tune.tune import TUNE_METRICS, tune_exhaustive_cli, tune_genetic_cli
+from zkbench.tune.tune import (
+    TUNE_METRICS,
+    tune_exhaustive_cli,
+    tune_ffd_cli,
+    tune_genetic_cli,
+)
 
 
 @click.group()
@@ -228,7 +237,8 @@ def run_single_cli(program: str, zkvm: str, elf: str, force: bool):
 
 @click.group(name="plot")
 @click.option("--dir", nargs=1, required=True, help="Directory with Criterion data")
-def plot_cli(dir: str):
+@click.option("--remove-ox", required=False, is_flag=True, default=False)
+def plot_cli(dir: str, remove_ox: bool):
     pass
 
 
@@ -319,6 +329,7 @@ plot_cli.add_command(average_improvement_difference_cli)
 plot_cli.add_command(improvement_by_program_exec_cli)
 plot_cli.add_command(improvement_single_program_cli)
 plot_cli.add_command(cycle_count_single_program_cli)
+plot_cli.add_command(duration_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
@@ -326,9 +337,13 @@ plot_tune_cli.add_command(export_exhaustive_depth2_cli)
 plot_tune_cli.add_command(export_genetic_cli)
 plot_tune_cli.add_command(export_genetic_individual_cli)
 plot_tune_cli.add_command(plot_genetic_individual_cli)
+plot_tune_cli.add_command(extract_genetic_individual_cli)
+plot_tune_cli.add_command(plot_ffd1d_cli)
+plot_tune_cli.add_command(plot_ffd2d_cli)
 
 tune_cli.add_command(tune_genetic_cli)
 tune_cli.add_command(tune_exhaustive_cli)
+tune_cli.add_command(tune_ffd_cli)
 
 if __name__ == "__main__":
     zkbench_cli()

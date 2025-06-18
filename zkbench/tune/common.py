@@ -33,6 +33,12 @@ class EvalResult:
     has_error: bool
     values: list[MetricValue]
 
+    def merge(self, other: "EvalResult") -> "EvalResult":
+        return EvalResult(
+            has_error=self.has_error or other.has_error,
+            values=self.values + other.values,
+        )
+
 
 @dataclass
 class TuneConfig:
@@ -83,6 +89,9 @@ MODULE_PASSES = [
     "synthetic-counts-propagation",
     "rel-lookup-table-converter",
     "aggressive-instcombine",
+    "lower-atomic",
+    "codegenprepare",
+    "instcombine<max-iterations=1000>",
 ]
 FUNCTION_PASSES = [
     "instcombine",
@@ -155,6 +164,7 @@ OPT_LEVEL_OPTIONS = ["0", "1", "2", "3", "s", "z"]
 BIN_OUT = "./bin/tune"
 BIN_OUT_GENETIC = os.path.join(BIN_OUT, "genetic")
 BIN_OUT_EXHAUSTIVE = os.path.join(BIN_OUT, "exhaustive")
+BIN_OUT_FFD = os.path.join(BIN_OUT, "ffd")
 
 
 def build_pass_list(ordered_passes: list[str]) -> str:

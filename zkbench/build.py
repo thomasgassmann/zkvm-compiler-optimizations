@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 import shutil
+import threading
 
 from zkbench.common import get_run_config, run_command
 from zkbench.config import (
@@ -102,6 +103,7 @@ def get_build_command(
         "PASSES": passes,
         "ZK_CFLAGS": profile.cflags,
         "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
+        "THREAD_ID": str(threading.get_ident()),
     }
     if target_dir is not None:
         env["CARGO_TARGET_DIR"] = target_dir
@@ -174,9 +176,6 @@ async def build_program(
     name = f"{program}-{zkvm}-{profile_name}"
     logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
 
-    profile_name = profile.profile_name
-    logging.info(f"Building {program} on {zkvm} with profile {profile_name}")
-
     program_dir = get_program_path(program, zkvm)
     # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
@@ -192,7 +191,7 @@ async def build_program(
     )
     if ret != 0:
         logging.error(
-            f"{program}-{zkvm}-{profile_name}: Build failed with code {ret}, passes: {passes}"
+            f"{program}-{zkvm}-{profile_name}: Build failed with code {ret}, passes: {profile.passes}"
         )
         raise ValueError(f"Error: Build failed with code {ret}")
 

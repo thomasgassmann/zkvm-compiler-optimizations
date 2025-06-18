@@ -18,7 +18,6 @@ def plot_average_improvement(
     speedup: bool,
     global_average: bool,
     show_x86: bool = False,
-    remove_ox: bool = False,
 ):
     def f(dir, program, zkvm, profile, measurement):
         return get_average_improvement_over_baseline(
@@ -32,13 +31,6 @@ def plot_average_improvement(
 
     profiles = get_default_profiles_ids()
     profiles.remove(BASELINE)
-    if remove_ox:
-        profiles.remove("o0")
-        profiles.remove("o1")
-        profiles.remove("o2")
-        profiles.remove("o3")
-        profiles.remove("oz")
-        profiles.remove("os")
     relative_improvements_prove = get_values_by_profile(
         dir, zkvm, "prove", program, program_group, profiles, f
     )

@@ -1,8 +1,8 @@
 {
     "tune_lto": false,
     "tune_codegen_units": false,
-    "tune_opt_level": false,
-    "tune_prepopulate_passes": true,
+    "tune_opt_level": true,
+    "tune_prepopulate_passes": false,
     "module_passes": [
         "always-inline",
         "inline",
@@ -95,15 +95,10 @@
         "loop-predication",
         "loop-versioning-licm"
     ],
-    "default_prepopulate_passes": true,
+    "default_prepopulate_passes": false,
     "default_single_codegen_unit": false,
     "allowed_opt_levels": [
-        "0",
-        "1",
-        "2",
-        "3",
-        "s",
-        "z"
+        "3"
     ],
     "allowed_lto": [
         "off",

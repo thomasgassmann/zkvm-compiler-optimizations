@@ -1,13 +1,71 @@
 import os
+import re
+from typing import Counter
 from matplotlib import pyplot as plt
 import numpy as np
 
-from zkbench.config import get_programs, get_programs_by_group, get_zkvms
+from zkbench.config import Profile, get_programs, get_programs_by_group, get_zkvms
 from zkbench.plot.common import show_or_save_plot
-from zkbench.tune.common import MetricValue
+from zkbench.tune.common import ProfileConfig
 from zkbench.tune.genetic import Genetic
 from zkbench.tune.plot.common import read_genetic_stats
 from zkbench.tune.plot.genetic import get_metric_sum
+
+
+def extract_common_passes(stats_dir: str, best: bool):
+    stats = [
+        read_genetic_stats(os.path.join(stats_dir, f"{program}-{zkvm}-stats.json"))
+        for program in get_programs()
+        for zkvm in get_zkvms()
+    ]
+
+    def get_k_best(
+        k: int, stats: list[Genetic], best=True
+    ) -> list[Profile | ProfileConfig]:
+        best_profiles = []
+        for stat in stats:
+            profile_value_pairs = list(zip(stat.profile_configs, stat.values))
+
+            profile_value_pairs.sort(key=lambda x: x[1], reverse=not best)
+
+            k_selected_profiles = [p for p, v in profile_value_pairs[:k]]
+
+            best_profiles.extend(k_selected_profiles)
+        return best_profiles
+
+    def parse_single_pass_string(passes: str) -> list[str]:
+        _token_re = re.compile(r"[A-Za-z0-9_-]+" r"(?=\s*(?:,|\)|$))")
+
+        _WRAPPERS = {"module", "function", "loop"}
+
+        return [tok for tok in _token_re.findall(passes) if tok not in _WRAPPERS]
+
+    def parse_passes(passes: list[str]) -> list[str]:
+        res = []
+        for p in passes:
+            res.extend(parse_single_pass_string(p))
+        return res
+
+    best_profiles = [
+        parse_passes(profile.passes) for profile in get_k_best(5, stats, best=best)
+    ]
+
+    def extract_top_of_len(
+        k: int, n: int, best_profiles: list[list[str]]
+    ) -> list[list[str]]:
+        counter: Counter[tuple[str, ...]] = Counter()
+        for profile in best_profiles:
+            n = len(profile)
+            if n < k:
+                continue
+            for i in range(n - k + 1):
+                counter[tuple(profile[i : i + k])] += 1
+        return [(list(seq), k) for seq, k in counter.most_common(n)]
+
+    for k in range(1, 6):
+        print(f"Top {k}-length sequences:")
+        for s, c in extract_top_of_len(k, 10, best_profiles):
+            print(f"Sequence: {s}, Count: {c}")
 
 
 def plot_genetic_individual(

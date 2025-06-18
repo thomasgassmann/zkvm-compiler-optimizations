@@ -7,6 +7,10 @@ pub fn setup_build(program: &str) {
     println!("cargo:rerun-if-env-changed=ZK_CFLAGS");
     println!("cargo:rerun-if-env-changed=RUSTFLAGS");
 
+    let current_id = env::var("THREAD_ID").unwrap_or("".to_string());
+    let ctarget = format!("./ctarget/{}", current_id);
+    std::fs::create_dir_all(&ctarget).expect("Failed to create ctarget directory");
+
     let passes = env::var("PASSES").unwrap_or("".to_string());
     let lower_atomic_before_str = env::var("LOWER_ATOMIC_BEFORE").unwrap_or("".to_string());
     let lower_atomic_before = lower_atomic_before_str == "True";
@@ -23,6 +27,7 @@ pub fn setup_build(program: &str) {
     println!("cargo::warning=Cleaning and building C with passes: {}", passes_string);
     let status = Command::new("make")
         .current_dir("..")
+        .arg(format!("OUTDIR={}", ctarget))
         .arg("clean")
         .status()
         .expect("Failed to run make");
@@ -48,6 +53,7 @@ pub fn setup_build(program: &str) {
         .arg(passes_string)
         .arg(format!("ZK_CFLAGS={}", cflags))
         .arg(format!("ZK_TARGET_CFLAGS={}", target))
+        .arg(format!("OUTDIR={}", ctarget))
         .arg(format!("LLC_FLAGS={}", llc_flags))
         .arg(format!("PROGRAM={}", program))
         .arg("-B")
@@ -62,6 +68,6 @@ pub fn setup_build(program: &str) {
     }
 
     println!("cargo::warning=Successfully built C");
-    println!("cargo:rustc-link-search=native=./ctarget");
+    println!("cargo:rustc-link-search=native={}", ctarget);
     println!("cargo:rustc-link-lib=static={}", program);
 }
