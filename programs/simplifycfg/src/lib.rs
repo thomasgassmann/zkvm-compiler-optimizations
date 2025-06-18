@@ -1,5 +1,6 @@
 #[inline(never)]
-pub fn abs_i32_branchy(x: i32) -> i32 {
+#[cfg(feature = "x86")]
+fn abs_i32_branchy(x: i32) -> i32 {
     if x < 0 {
         x.wrapping_neg()
     } else {

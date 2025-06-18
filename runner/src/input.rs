@@ -241,7 +241,7 @@ pub fn get_regex_match_input() -> (String, String) {
 pub fn get_simplifycfg_input() -> Vec<i32> {
     let mut arr = Vec::new();
     let mut rng = rand::thread_rng();
-    for _ in -2000..2000 {
+    for _ in 0..10000 {
         arr.push(rng.gen_range(-5000..5000));
     }
 
