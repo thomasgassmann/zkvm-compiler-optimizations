@@ -172,7 +172,9 @@ def get_average_improvement_over_baseline(
     return (-(compared - baseline) / baseline) * 100
 
 
-def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_width=0.35):
+def plot_grouped_boxplot(
+    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False
+):
     num_profiles = len(labels)
     num_series = len(values)
 
@@ -229,6 +231,8 @@ def plot_grouped_boxplot(values, labels, title, y_label, series_labels, bar_widt
     ax.set_xticklabels(sorted_labels, rotation=45, ha="right")
     ax.set_title(title)
     ax.set_ylabel(y_label)
+    if log_scale:
+        ax.set_yscale("log")
     ax.legend(box_artists, series_labels)
     ax.grid(axis="y", linestyle="--", alpha=0.7)
     ax.grid(axis="x", linestyle="--", alpha=0.5)

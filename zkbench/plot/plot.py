@@ -19,6 +19,7 @@ from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_program
 from zkbench.plot.duration import plot_duration
+from zkbench.plot.duration_single_program import plot_duration_for_single_program
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
@@ -315,6 +316,25 @@ def improvement_single_program_cli(
     plot_improvement_for_single_program(
         dir, program, profile, baseline_profile, speedup, show_x86
     )
+
+
+@click.command(
+    name="duration-single-program",
+    help="Show raw duration for some profile compared to some other baseline profile for a single program",
+)
+@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=True
+)
+@click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
+def duration_single_program_cli(
+    program: str,
+    profile: list[str],
+    show_x86: bool,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_duration_for_single_program(dir, program, profile, show_x86)
 
 
 @click.command(
