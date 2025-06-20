@@ -35,10 +35,12 @@ def save_path(val):
 
 
 def get_program_selection(
-    program: list[str] | str | None, program_group: list[str] | str | None
+    program: list[str] | str | None,
+    program_group: list[str] | str | None,
+    ignore: list[str] | None = None,
 ) -> list[str]:
     if program is None and program_group is None or not program and not program_group:
-        return get_programs()
+        return list([p for p in get_programs() if p not in (ignore or [])])
 
     programs = []
     if program is not None:
@@ -54,6 +56,9 @@ def get_program_selection(
             program_groups = program_group
         for group in program_groups:
             programs.extend(get_programs_by_group(group))
+
+    if ignore is not None:
+        programs = [p for p in programs if p not in ignore]
 
     return programs
 

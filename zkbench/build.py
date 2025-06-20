@@ -83,7 +83,6 @@ async def run_build(
 
         await asyncio.gather(*[_build_all(p) for p in build_jobs.keys()])
     else:
-        clean_jobs = []
         while any([len(build_jobs[program]) > 0 for program in build_jobs.keys()]):
             number_of_jobs = min(
                 j, len([job for job in build_jobs.keys() if len(build_jobs[job]) > 0])
@@ -136,9 +135,9 @@ def get_build_command(
     passes = ",".join(profile.passes)
     env = {
         **os.environ,
-        "PASSES": passes,
-        "ZK_CFLAGS": profile.cflags,
-        "LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
+        "CARGO_ZK_PASSES": passes,
+        "CARGO_ZK_CFLAGS": profile.cflags,
+        "CARGO_ZK_LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
         "THREAD_ID": str(threading.get_ident()),
     }
     if target_dir is not None:

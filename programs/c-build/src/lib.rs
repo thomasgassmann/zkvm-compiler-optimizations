@@ -3,16 +3,17 @@ use std::{env, process::Command};
 pub fn setup_build(program: &str) {
     println!("cargo:rerun-if-changed=NULL");
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-env-changed=PASSES");
-    println!("cargo:rerun-if-env-changed=ZK_CFLAGS");
+    println!("cargo:rerun-if-env-changed=CARGO_ZK_PASSES");
+    println!("cargo:rerun-if-env-changed=CARGO_ZK_CFLAGS");
+    println!("cargo:rerun-if-env-changed=CARGO_ZK_LOWER_ATOMIC_BEFORE");
     println!("cargo:rerun-if-env-changed=RUSTFLAGS");
 
     let current_id = env::var("THREAD_ID").unwrap_or("".to_string());
     let ctarget = format!("./ctarget/{}", current_id);
     std::fs::create_dir_all(&ctarget).expect("Failed to create ctarget directory");
 
-    let passes = env::var("PASSES").unwrap_or("".to_string());
-    let lower_atomic_before_str = env::var("LOWER_ATOMIC_BEFORE").unwrap_or("".to_string());
+    let passes = env::var("CARGO_ZK_PASSES").unwrap_or("".to_string());
+    let lower_atomic_before_str = env::var("CARGO_ZK_LOWER_ATOMIC_BEFORE").unwrap_or("".to_string());
     let lower_atomic_before = lower_atomic_before_str == "True";
 
     let mut passes_string = String::from(format!("PASSES={}", "lower-atomic"));
@@ -45,7 +46,7 @@ pub fn setup_build(program: &str) {
     #[cfg(not(feature = "x86"))]
     let llc_flags = "";
 
-    let cflags = env::var("ZK_CFLAGS").unwrap_or("".to_string());
+    let cflags = env::var("CARGO_ZK_CFLAGS").unwrap_or("".to_string());
     println!("cargo::warning=Done cleaning");
     let mut binding = Command::new("make");
     let make_command = binding

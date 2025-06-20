@@ -170,6 +170,9 @@ async def clean_cli(program: list[str], zkvm: list[str]):
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
 )
 @click.option(
+    "--ignore-program", type=click.Choice(get_programs()), required=False, multiple=True
+)
+@click.option(
     "--program-group",
     type=click.Choice(get_program_groups()),
     required=False,
@@ -206,6 +209,7 @@ async def clean_cli(program: list[str], zkvm: list[str]):
 )
 def bench_cli(
     program: list[str],
+    ignore_program: list[str],
     program_group: list[str],
     zkvm: list[str],
     measurement: list[str],
@@ -225,6 +229,7 @@ def bench_cli(
 ):
     run_bench(
         program,
+        ignore_program,
         program_group,
         zkvm,
         measurement,
