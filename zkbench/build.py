@@ -24,6 +24,7 @@ async def run_build(
     llvm: bool,
     features: list[str] | None = None,
     name: str | None = None,
+    build_by_program: bool = False,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
         programs, zkvms, profile_names, program_groups
@@ -51,29 +52,58 @@ async def run_build(
 
                 build_jobs[program].append((profile_name, zkvm))
 
-    while any([len(build_jobs[program]) > 0 for program in build_jobs.keys()]):
-        number_of_jobs = min(
-            j, len([job for job in build_jobs.keys() if len(build_jobs[job]) > 0])
-        )
-        jobs_to_run = []
-        for program in build_jobs.keys():
-            if len(build_jobs[program]) > 0:
-                profile_name, zkvm = build_jobs[program].pop(0)
-                jobs_to_run.append((program, profile_name, zkvm))
-                if len(jobs_to_run) == number_of_jobs:
-                    break
+    if build_by_program:
+        all_remaining = sum([len(jobs) for jobs in build_jobs.values()])
+        all_total = all_remaining
+        sem = asyncio.Semaphore(j)
 
-        logging.info(
-            "Running build jobs: {}".format(
-                ", ".join([f"{p}-{profile}-{zk}" for p, profile, zk in jobs_to_run])
+        async def _build_all(p: str):
+            nonlocal all_remaining
+            all_zkvms = sorted(set([zkvm for _, zkvm in build_jobs[p]]))
+            remaining = len(build_jobs[p])
+            total = remaining
+            for cz in all_zkvms:
+                profiles = sorted(
+                    set([profile_name for profile_name, z in build_jobs[p] if z == cz])
+                )
+                for profile_name in profiles:
+                    logging.info(
+                        f"Build jobs {p}: {remaining}/{total} ({all_remaining}/{all_total})"
+                    )
+                    async with sem:
+                        await _build(
+                            p, profile_name, cz, llvm, features=features, name=name
+                        )
+                    remaining -= 1
+                    all_remaining -= 1
+
+        await asyncio.gather(*[_build_all(p) for p in build_jobs.keys()])
+    else:
+        while any([len(build_jobs[program]) > 0 for program in build_jobs.keys()]):
+            number_of_jobs = min(
+                j, len([job for job in build_jobs.keys() if len(build_jobs[job]) > 0])
             )
-        )
-        await asyncio.gather(
-            *[
-                _build(program, profile_name, zkvm, llvm, features=features, name=name)
-                for program, profile_name, zkvm in jobs_to_run
-            ]
-        )
+            jobs_to_run = []
+            for program in build_jobs.keys():
+                if len(build_jobs[program]) > 0:
+                    profile_name, zkvm = build_jobs[program].pop(0)
+                    jobs_to_run.append((program, profile_name, zkvm))
+                    if len(jobs_to_run) == number_of_jobs:
+                        break
+
+            logging.info(
+                "Running build jobs: {}".format(
+                    ", ".join([f"{p}-{profile}-{zk}" for p, profile, zk in jobs_to_run])
+                )
+            )
+            await asyncio.gather(
+                *[
+                    _build(
+                        program, profile_name, zkvm, llvm, features=features, name=name
+                    )
+                    for program, profile_name, zkvm in jobs_to_run
+                ]
+            )
 
 
 async def _build(
