@@ -152,7 +152,7 @@ def get_build_command(
         return (
             f"""
             RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {profile.rustflags} {llvm_flag}" \
-                cargo +nightly {cmd} --release --locked --features x86 --lib {verbosity} {additional_features}
+                cargo +nightly-2025-01-30-x86_64-unknown-linux-gnu {cmd} --release --locked --features x86 --lib {verbosity} {additional_features}
         """.strip(),
             env,
         )
