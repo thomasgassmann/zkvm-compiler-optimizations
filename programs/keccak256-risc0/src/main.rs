@@ -16,7 +16,7 @@
 
 #![no_main]
 
-use risc0_zkvm::{guest::env, sha, sha::Sha256};
+use risc0_zkvm::guest::env;
 use sha3::{Digest as _, Keccak256};
 
 risc0_zkvm::guest::entry!(main);
