@@ -101,3 +101,4 @@ And for `simplifycfg-opt`:
 
 - Branches are relatively cheap on zkVMs and should therefore not always be eliminated in favor of semantically equivalent code without branches.
 - When deciding which branches to eliminate and which instructions to replace them with, compilers should take into account the respective zkVM instruction costs.
+- In a zkVM, executing both sides of a predicated operation is always a bad idea. Simple branching can be cheaper because only the taken path is proved.
