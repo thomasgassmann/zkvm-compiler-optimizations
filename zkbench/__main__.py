@@ -187,6 +187,11 @@ async def clean_cli(program: list[str], zkvm: list[str]):
 @click.option("--input-override", required=False, type=str)
 @click.option("--sample-size", required=False, type=int)
 @click.option("--sampling-mode", type=click.Choice(["flat", "linear"]), required=False)
+@click.option("--euler-d", type=int, required=False)
+@click.option("--euler-h", type=int, required=False)
+@click.option("--euler-log-out", type=str, required=False)
+@click.option("--euler-criterion-home", type=str, required=False)
+@click.option("--euler-dry", required=False, is_flag=True, default=False)
 @click.option(
     "--runner-path",
     type=click.Path(exists=True, file_okay=True, dir_okay=False),
@@ -206,6 +211,11 @@ def bench_cli(
     sample_size: int | None,
     sampling_mode: str | None,
     runner_path: str | None,
+    euler_d: int | None,
+    euler_h: int | None,
+    euler_log_out: str | None,
+    euler_criterion_home: str | None,
+    euler_dry: bool = False,
 ):
     run_bench(
         program,
@@ -220,6 +230,11 @@ def bench_cli(
         sample_size,
         sampling_mode,
         runner_path,
+        euler_d,
+        euler_h,
+        euler_log_out,
+        euler_criterion_home,
+        euler_dry,
     )
 
 

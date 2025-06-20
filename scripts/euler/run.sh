@@ -1,6 +1,7 @@
 #!/bin/bash
 OUT="${OUT:-out.txt}"
 TIMED="${TIMED:-5}"
+TIMEH="${TIMEH:-00}"
 GPUMEM="${GPUMEM:-1}"
 # models currently working with sp1  : rtx_3090, rtx_4090, a100-pcie-40gb, a100_80gb
 # models currently working with risc0: all tested so far
@@ -13,7 +14,7 @@ sbatch <<EOT
 #SBATCH --mem-per-cpu=8GB
 #SBATCH --output=${OUT}
 #SBATCH --error=${OUT}
-#SBATCH --time=${TIMED}-00:00:00
+#SBATCH --time=${TIMED}-${TIMEH}:00
 #SBATCH --gpus=${GPUS}
 #SBATCH --gres=gpumem:${GPUMEM}
 #SBATCH --exclusive
