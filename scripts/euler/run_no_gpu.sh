@@ -7,7 +7,7 @@ sbatch <<EOT
 #!/bin/bash
 
 #SBATCH -J ${OUT}
-#SBATCH -c 64
+#SBATCH -c 16
 #SBATCH --mem-per-cpu=1GB
 #SBATCH --output=${OUT}
 #SBATCH --error=${OUT}
