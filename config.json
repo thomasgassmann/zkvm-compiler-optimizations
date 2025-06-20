@@ -295,6 +295,14 @@
             "prepopulate_passes": false,
             "lower_atomic_before": true
         },
+        "instcombine": {
+            "cflags": "-O0",
+            "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "passes": [
+                "instcombine<max-iterations=1000>"
+            ],
+            "prepopulate_passes": false
+        },
         "aggressive-instcombine": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
