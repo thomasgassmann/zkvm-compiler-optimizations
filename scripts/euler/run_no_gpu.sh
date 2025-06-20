@@ -1,6 +1,7 @@
 #!/bin/bash
 OUT="${OUT:-out.txt}"
 TIMED="${TIMED:-5}"
+TIMEH="${TIMEH:-00}"
 
 sbatch <<EOT
 #!/bin/bash
@@ -10,7 +11,7 @@ sbatch <<EOT
 #SBATCH --mem-per-cpu=1GB
 #SBATCH --output=${OUT}
 #SBATCH --error=${OUT}
-#SBATCH --time=${TIMED}-00:00:00
+#SBATCH --time=${TIMED}-${TIMEH}:00:00
 #SBATCH --exclusive
 #SBATCH --constraint EPYC_7742
 
