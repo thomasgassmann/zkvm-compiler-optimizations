@@ -25,7 +25,7 @@ pub fn sum_to(n: u128) -> u128 {
 #[no_mangle]
 #[allow(improper_ctypes_definitions)]
 pub extern "C" fn main_core(n: u128, r: u128) {
-    for i in 0..r {
+    for _ in 0..r {
         let fac = factorial(n);
         let sum = sum_to(n);
         core::hint::black_box(fac);
