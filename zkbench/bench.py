@@ -7,6 +7,7 @@ from zkbench.plot.common import get_program_selection
 
 def run_euler(
     program: list[str],
+    ignore_program: list[str],
     program_group: list[str],
     zkvm: list[str],
     measurement: list[str],
@@ -28,7 +29,7 @@ def run_euler(
     assert profile_time is None, "No profiling!"
 
     measurement = measurement[0]
-    all_programs = get_program_selection(program, program_group)
+    all_programs = get_program_selection(program, program_group, ignore=ignore_program)
     for p in all_programs:
         for z in zkvm:
             cmd = "SP1_PROVER=cpu ./scripts/euler/run_no_gpu.sh"
@@ -67,6 +68,7 @@ def run_euler(
 
 def run_bench(
     program: list[str],
+    ignore_program: list[str],
     program_group: list[str],
     zkvm: list[str],
     measurement: list[str],
@@ -87,6 +89,7 @@ def run_bench(
     if euler_d or euler_h or euler_log_out or euler_criterion_home or euler_dry:
         run_euler(
             program,
+            ignore_program,
             program_group,
             zkvm,
             measurement,
@@ -107,14 +110,9 @@ def run_bench(
         return
 
     args = []
-    if program or program_group:
-        programs = [] if not program else program
-        if program_group:
-            for group in program_group:
-                programs.extend(get_programs_by_group(group))
-
-        for p in set(programs):
-            args.append(f"--program {p}")
+    all_programs = get_program_selection(program, program_group, ignore=ignore_program)
+    for p in set(all_programs):
+        args.append(f"--program {p}")
     if zkvm:
         for z in zkvm:
             args.append(f"--zkvm {z}")
