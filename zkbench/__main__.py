@@ -94,6 +94,7 @@ def zkbench_cli(log_level: str, log_file: str):
 @click.option("--build-by-program", required=False, is_flag=True, default=False)
 @click.option("--feature", required=False, type=str, multiple=True)
 @click.option("--name", required=False, type=str, default=None)
+@click.option("--clean-after-build", required=False, is_flag=True, default=False)
 @coro
 async def build_cli(
     program: list[str],
@@ -106,6 +107,7 @@ async def build_cli(
     feature: list[str] | None,
     name: str | None,
     build_by_program: bool = False,
+    clean_after_build: bool = False,
 ):
     await run_build(
         list(program),
@@ -118,6 +120,7 @@ async def build_cli(
         features=feature,
         name=name,
         build_by_program=build_by_program,
+        clean_after_build=clean_after_build,
     )
 
 

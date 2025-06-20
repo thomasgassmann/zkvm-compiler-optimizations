@@ -4,6 +4,7 @@ import os
 import shutil
 import threading
 
+from zkbench.clean import run_clean
 from zkbench.common import get_run_config, run_command
 from zkbench.config import (
     Profile,
@@ -25,6 +26,7 @@ async def run_build(
     features: list[str] | None = None,
     name: str | None = None,
     build_by_program: bool = False,
+    clean_after_build: bool = False,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
         programs, zkvms, profile_names, program_groups
@@ -76,9 +78,12 @@ async def run_build(
                         )
                     remaining -= 1
                     all_remaining -= 1
+                if clean_after_build:
+                    run_clean([p], [cz])
 
         await asyncio.gather(*[_build_all(p) for p in build_jobs.keys()])
     else:
+        clean_jobs = []
         while any([len(build_jobs[program]) > 0 for program in build_jobs.keys()]):
             number_of_jobs = min(
                 j, len([job for job in build_jobs.keys() if len(build_jobs[job]) > 0])
@@ -104,6 +109,7 @@ async def run_build(
                     for program, profile_name, zkvm in jobs_to_run
                 ]
             )
+        # TODO: clean after build
 
 
 async def _build(
@@ -226,5 +232,7 @@ async def build_program(
         raise ValueError(f"Error: Build failed with code {ret}")
 
     if not llvm:
-        shutil.copyfile(source, target)
+        temp_target = f"{target}.tmp"
+        shutil.copyfile(source, temp_target)
+        os.replace(temp_target, target)
         logging.info(f"Copied binary to {target}")
