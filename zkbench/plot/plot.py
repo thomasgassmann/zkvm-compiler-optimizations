@@ -200,10 +200,10 @@ def khz_cli(program: str | None, zkvm: str | None):
 
 @click.command(name="missing", help="List all missing measurements")
 @click.option("--measurement", type=click.Choice(get_measurements()), required=False)
-@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 def plot_missing_cli(measurement: str | None, zkvm: str | None):
     measurements = get_measurements() if measurement is None else [measurement]
-    zkvms = get_zkvms() if zkvm is None else [zkvm]
+    zkvms = get_zkvms_with_x86() if zkvm is None else [zkvm]
     programs = get_programs()
     dir = click.get_current_context().parent.params["dir"]
     for m in measurements:
