@@ -38,7 +38,7 @@ def run_euler(
             if euler_h is not None:
                 cmd = f"TIMEH={euler_h} " + cmd
             if euler_log_out is not None:
-                cmd = f"OUT={euler_log_out}-{z}-{p} " + cmd
+                cmd = f"OUT={euler_log_out} " + cmd
             if euler_criterion_home is not None:
                 cmd = f"CRITERION_HOME={euler_criterion_home} " + cmd
             cmd += f" bench --measurement exec --program {p} --zkvm {z}"

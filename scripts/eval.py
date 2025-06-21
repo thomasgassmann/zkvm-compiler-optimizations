@@ -6,7 +6,7 @@ from PIL import Image
 import asyncio
 import matplotlib.pyplot as plt
 
-a = "/run/user/1000/gvfs/sftp:host=euler/cluster/home/tgassmann/git/thesis/benchmarks/reexec-risc0"
+a = "/run/user/1000/gvfs/sftp:host=euler/cluster/home/tgassmann/git/thesis/benchmarks/reexec-sp1"
 b = "/home/thomas/git/thesis/benchmarks/results/bench"
 
 target = "/home/thomas/git/thesis/benchmarks/results/bench-rerun"
