@@ -77,6 +77,9 @@ def zkbench_cli(log_level: str, log_file: str):
     "--program", type=click.Choice(get_programs()), required=False, multiple=True
 )
 @click.option(
+    "--ignore-program", type=click.Choice(get_programs()), required=False, multiple=True
+)
+@click.option(
     "--program-group",
     type=click.Choice(get_program_groups()),
     required=False,
@@ -98,6 +101,7 @@ def zkbench_cli(log_level: str, log_file: str):
 @coro
 async def build_cli(
     program: list[str],
+    ignore_program: list[str],
     program_group: list[str],
     zkvm: list[str],
     profile: list[str],
@@ -111,6 +115,7 @@ async def build_cli(
 ):
     await run_build(
         list(program),
+        list(ignore_program),
         list(program_group),
         zkvm,
         profile,

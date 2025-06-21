@@ -27,11 +27,11 @@ def f(dir, program, zkvm, profile):
 def plot_cycle_count(
     dir: str,
     program: str | None,
+    program_group: str | None = None,
     profiles: list[str] | None = None,
     global_average: bool = False,
     show_x86: bool = False,
 ):
-    title = get_title("Relative cycle count compared to baseline", [program])
     profiles = get_default_profiles_ids() if profiles is None else profiles
     if BASELINE in profiles:
         profiles.remove(BASELINE)
@@ -44,7 +44,7 @@ def plot_cycle_count(
                 zkvm,
                 [get_measurements()[0]],  # can be arbitrary
                 program,
-                None,
+                program_group,
                 profiles,
                 lambda dir, program, zkvm, profile, _: f(dir, program, zkvm, profile),
             )
@@ -59,7 +59,7 @@ def plot_cycle_count(
                 "x86",
                 "exec",
                 program,
-                None,
+                program_group,
                 profiles,
                 lambda dir, program, _zk, profile, _: get_average_improvement_over_baseline(
                     dir, "x86", program, profile, "exec", False
@@ -73,7 +73,7 @@ def plot_cycle_count(
             if not show_x86
             else "Relative cycle count/x86 exec time compared to baseline"
         ),
-        [program],
+        [program, program_group],
     )
     y_label = (
         "Relative cycle count change (%)"

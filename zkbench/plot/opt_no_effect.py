@@ -1,3 +1,4 @@
+import logging
 from zkbench.config import (
     get_default_profiles_ids,
     get_program_by_name,
@@ -10,26 +11,31 @@ from zkbench.plot.common import BASELINE, get_title, plot_sorted, read_program_m
 def plot_opt_no_effect(dir: str, zkvm: str | None = None):
     zkvms = get_zkvms() if zkvm is None else [zkvm]
     title = get_title("Percentage of optimizations that had no effect", [", ".join(zkvms)])
-    programs = get_programs()
+    programs = []
     values = []
-    for program in programs:
-        values.append(
-            len(
-                [
-                    x
-                    for x in get_default_profiles_ids()
-                    for zkvm in zkvms
-                    if x != BASELINE
-                    and (
-                        x in get_program_by_name(program).skip
-                        or read_program_meta(dir, program, zkvm, x)["hash"]
-                        == read_program_meta(dir, program, zkvm, BASELINE)["hash"]
-                    )
-                ]
+    for program in get_programs():
+        try:
+            values.append(
+                len(
+                    [
+                        x
+                        for x in get_default_profiles_ids()
+                        for zkvm in zkvms
+                        if x != BASELINE
+                        and (
+                            x in get_program_by_name(program).skip
+                            or read_program_meta(dir, program, zkvm, x)["hash"]
+                            == read_program_meta(dir, program, zkvm, BASELINE)["hash"]
+                        )
+                    ]
+                )
+                / (len(get_default_profiles_ids()) * len(zkvms))
+                * 100
             )
-            / (len(get_default_profiles_ids()) * len(zkvms))
-            * 100
-        )
+            programs.append(program)
+        except FileNotFoundError:
+            logging.warning(f"Data for {program} not found")
+            continue
 
     plot_sorted(
         [values], programs, title, "Percentage of optimizations with no effect", [None]
