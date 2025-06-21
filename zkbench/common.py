@@ -25,6 +25,7 @@ def get_run_config(
     zkvms: list[str],
     profiles: list[str],
     program_groups: list[str] | None = None,
+    ignore: list[str] | None = None,
 ):
     if program_groups:
         for program_group in program_groups:
@@ -33,6 +34,9 @@ def get_run_config(
     programs = programs if len(programs) > 0 else get_programs()
     zkvms = zkvms if len(zkvms) > 0 else get_zkvms()
     profiles = profiles if len(profiles) > 0 else get_default_profiles_ids()
+    if ignore:
+        programs = [p for p in programs if p not in ignore]
+
     return programs, zkvms, profiles
 
 

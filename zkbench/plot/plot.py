@@ -107,6 +107,9 @@ def duration_cli(program: list[str], profile: str, program_group: str | None):
 )
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option(
+    "--program-group", type=click.Choice(get_program_groups()), required=False
+)
+@click.option(
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
 )
 @click.option(
@@ -115,6 +118,7 @@ def duration_cli(program: list[str], profile: str, program_group: str | None):
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 def cycle_count_cli(
     program: str | None,
+    program_group: str | None,
     profile: list[str] | None,
     global_average: bool,
     show_x86: bool,
@@ -123,6 +127,7 @@ def cycle_count_cli(
     plot_cycle_count(
         dir,
         program,
+        program_group,
         list(profile) if profile else None,
         global_average,
         show_x86,
@@ -222,9 +227,14 @@ def opt_no_effect_cli(zkvm: str | None):
     name="no-effect",
     help="Show for each optimization number of programs where it had no effect",
 )
-def no_effect_cli():
+@click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
+@click.option(
+    "--program-group", type=click.Choice(get_program_groups()), required=False
+)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+def no_effect_cli(zkvm: str | None, program_group: str | None, program: str | None):
     dir = click.get_current_context().parent.params["dir"]
-    plot_no_effect(dir)
+    plot_no_effect(dir, zkvm, program_group, program)
 
 
 @click.command(
