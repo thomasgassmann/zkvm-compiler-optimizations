@@ -1,4 +1,5 @@
 bench/
+bench-*/
 genetic/
 exhaustive/
 ffd/
