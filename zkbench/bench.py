@@ -32,7 +32,7 @@ def run_euler(
     all_programs = get_program_selection(program, program_group, ignore=ignore_program)
     for p in all_programs:
         for z in zkvm:
-            cmd = "SP1_PROVER=cpu ./scripts/euler/run_no_gpu.sh"
+            cmd = f"JOBNAME={p}-{z} SP1_PROVER=cpu ./scripts/euler/run_no_gpu.sh"
             if euler_d is not None:
                 cmd = f"TIMED={euler_d} " + cmd
             if euler_h is not None:
