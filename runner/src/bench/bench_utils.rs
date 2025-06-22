@@ -16,7 +16,7 @@ use crate::bench::utils::write_elf_stats;
 use crate::input::get_sp1_stdin;
 use crate::utils::get_elf;
 use criterion::measurement::WallTime;
-use libloading::Library;
+use libloading::os::unix::Library;
 
 pub fn add_benchmarks_for(
     program: &ProgramId,
@@ -76,7 +76,7 @@ fn add_x86_exec_and_prove(
 
     let elf_path = get_elf(program, &ProverId::X86, profile);
     let lib =
-        unsafe { Library::new(&elf_path) }.expect("couldn't dlopen the binary as a shared object");
+        unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }.expect("couldn't dlopen the binary as a shared object");
 
     let (mut setup, mut routine) = exec_x86_prepare(&lib, program, input_override);
 
@@ -90,6 +90,8 @@ fn add_x86_exec_and_prove(
             panic!("Proving for x86 not possible.");
         }
     }
+
+    lib.close().unwrap();
 }
 
 fn add_sp1_exec_and_prove(

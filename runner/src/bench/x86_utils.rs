@@ -1,6 +1,6 @@
 use core::panic;
 
-use libloading::{Library, Symbol};
+use libloading::{os::unix::Library, Symbol};
 
 use super::utils::{get_elf_hash, ElfStats};
 use crate::{
@@ -73,8 +73,10 @@ pub fn exec_x86_prepare<'a>(
     macro_rules! load_main_core_fn {
         ($fn_ty:ty) => {{
             let main_core_symbol: Symbol<$fn_ty> = unsafe {
-                lib.get(b"main_core")
-                    .expect("couldn't find `main_core` in symbol table")
+                std::mem::transmute::<_, Symbol<$fn_ty>>(
+                    lib.get::<Symbol<$fn_ty>>(b"main_core")
+                        .expect("couldn't find `main_core` in symbol table"),
+                )
             };
             *main_core_symbol
         }};
