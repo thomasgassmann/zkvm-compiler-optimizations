@@ -75,8 +75,8 @@ fn add_x86_exec_and_prove(
     }
 
     let elf_path = get_elf(program, &ProverId::X86, profile);
-    let lib =
-        unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }.expect("couldn't dlopen the binary as a shared object");
+    let lib = unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }
+        .expect("couldn't dlopen the binary as a shared object");
 
     let (mut setup, mut routine) = exec_x86_prepare(&lib, program, input_override);
 
