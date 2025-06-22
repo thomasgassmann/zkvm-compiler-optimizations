@@ -1,4 +1,5 @@
 mod bench;
+mod cputime;
 mod input;
 mod report_risc0;
 mod report_sp1;
@@ -120,14 +121,15 @@ impl Profiler for Cpuprofiler {
 fn run_criterion(args: CriterionArgs) {
     let config: Config = read_config_json();
 
-    let c: &mut criterion::Criterion = &mut Criterion::default()
+    let c: &mut criterion::Criterion<cputime::PosixTime> = &mut Criterion::default()
         .profile_time(if args.profile_time.is_some() {
             println!("Profiling for {} seconds", args.profile_time.unwrap());
             Some(Duration::from_secs(args.profile_time.unwrap()))
         } else {
             None
         })
-        .with_profiler(Cpuprofiler);
+        .with_profiler(Cpuprofiler)
+        .with_measurement(cputime::PosixTime::UserTime);
 
     let programs = match args.program {
         Some(program) => program,

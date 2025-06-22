@@ -69,7 +69,10 @@ pub fn exec_x86_prepare<'a>(
     lib: &'a Library,
     program: &ProgramId,
     input_override: &Option<String>,
-) -> (Box<dyn FnMut() -> Box<dyn std::any::Any>>, Box<dyn FnMut(Box<dyn std::any::Any>)>) {
+) -> (
+    Box<dyn FnMut() -> Box<dyn std::any::Any>>,
+    Box<dyn FnMut(Box<dyn std::any::Any>)>,
+) {
     macro_rules! load_main_core_fn {
         ($fn_ty:ty) => {{
             let main_core_symbol: Symbol<$fn_ty> = unsafe {
@@ -98,13 +101,11 @@ pub fn exec_x86_prepare<'a>(
             let main_core_fn: MainCoreEcdsaVerify = load_main_core_fn!(MainCoreEcdsaVerify);
             let (encoded_verifying_key, message, signature) = rand_ecdsa_signature();
             (
-                Box::new(move || {
-                    Box::new((encoded_verifying_key, message.clone(), signature))
-                }),
+                Box::new(move || Box::new((encoded_verifying_key, message.clone(), signature))),
                 Box::new(move |inp| unsafe {
-                    let (encoded_verifying_key, message, signature) =
-                        *inp.downcast::<(k256::EncodedPoint, Vec<u8>, k256::ecdsa::Signature)>()
-                            .expect("Invalid input type");
+                    let (encoded_verifying_key, message, signature) = *inp
+                        .downcast::<(k256::EncodedPoint, Vec<u8>, k256::ecdsa::Signature)>()
+                        .expect("Invalid input type");
                     main_core_fn(encoded_verifying_key, message, signature);
                 }),
             )
@@ -116,12 +117,14 @@ pub fn exec_x86_prepare<'a>(
                 input.push(rand_eddsa_signature());
             }
             (
-                Box::new(move || {
-                    Box::new(input.clone())
-                }),
+                Box::new(move || Box::new(input.clone())),
                 Box::new(move |b| unsafe {
                     let items = *b
-                        .downcast::<Vec<(ed25519_dalek::VerifyingKey, Vec<u8>, ed25519_dalek::Signature)>>()
+                        .downcast::<Vec<(
+                            ed25519_dalek::VerifyingKey,
+                            Vec<u8>,
+                            ed25519_dalek::Signature,
+                        )>>()
                         .expect("Invalid input type for EddsaVerify");
                     main_core_fn(items);
                 }),
@@ -133,7 +136,9 @@ pub fn exec_x86_prepare<'a>(
             (
                 Box::new(move || Box::new(inp)),
                 Box::new(move |inp| unsafe {
-                    let inp = *inp.downcast::<u32>().expect("Invalid input type for factorial");
+                    let inp = *inp
+                        .downcast::<u32>()
+                        .expect("Invalid input type for factorial");
                     main_core_fn(inp);
                 }),
             )
@@ -144,7 +149,9 @@ pub fn exec_x86_prepare<'a>(
             (
                 Box::new(move || Box::new(inp)),
                 Box::new(move |inp| unsafe {
-                    let inp = *inp.downcast::<u32>().expect("Invalid input type for fibonacci");
+                    let inp = *inp
+                        .downcast::<u32>()
+                        .expect("Invalid input type for fibonacci");
                     main_core_fn(inp);
                 }),
             )
@@ -255,9 +262,7 @@ pub fn exec_x86_prepare<'a>(
             (
                 Box::new(move || Box::new(input.clone())),
                 Box::new(move |b| unsafe {
-                    let input = b
-                        .downcast::<Vec<u8>>()
-                        .expect("Invalid input type for RSP");
+                    let input = b.downcast::<Vec<u8>>().expect("Invalid input type for RSP");
                     main_core_fn(&input);
                 }),
             )

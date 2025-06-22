@@ -9,19 +9,19 @@ use super::risc0_utils::{
 };
 use super::utils::is_same_as_baseline;
 use super::x86_utils::{exec_x86_prepare, get_x86_stats};
-use crate::bench::sp1_utils::{
-    exec_sp1_bench, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare,
-};
 use crate::bench::utils::write_elf_stats;
 use crate::input::get_sp1_stdin;
 use crate::utils::get_elf;
-use criterion::measurement::WallTime;
+use crate::{
+    bench::sp1_utils::{exec_sp1_bench, get_sp1_stats, prove_core_sp1, prove_core_sp1_prepare},
+    cputime,
+};
 use libloading::os::unix::Library;
 
 pub fn add_benchmarks_for(
     program: &ProgramId,
     prover: &ProverId,
-    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    group: &mut criterion::BenchmarkGroup<'_, cputime::PosixTime>,
     measurement: &MeasurementType,
     profile: &String,
     meta_only: bool,
@@ -56,7 +56,7 @@ pub fn add_benchmarks_for(
 }
 
 fn add_x86_exec_and_prove(
-    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    group: &mut criterion::BenchmarkGroup<'_, cputime::PosixTime>,
     program: &ProgramId,
     measurement: &MeasurementType,
     profile: &String,
@@ -75,8 +75,8 @@ fn add_x86_exec_and_prove(
     }
 
     let elf_path = get_elf(program, &ProverId::X86, profile);
-    let lib =
-        unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }.expect("couldn't dlopen the binary as a shared object");
+    let lib = unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }
+        .expect("couldn't dlopen the binary as a shared object");
 
     let (mut setup, mut routine) = exec_x86_prepare(&lib, program, input_override);
 
@@ -95,7 +95,7 @@ fn add_x86_exec_and_prove(
 }
 
 fn add_sp1_exec_and_prove(
-    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    group: &mut criterion::BenchmarkGroup<'_, cputime::PosixTime>,
     program: &ProgramId,
     measurement: &MeasurementType,
     profile: &String,
@@ -135,7 +135,7 @@ fn add_sp1_exec_and_prove(
 }
 
 fn add_risc0_exec_and_prove(
-    group: &mut criterion::BenchmarkGroup<'_, WallTime>,
+    group: &mut criterion::BenchmarkGroup<'_, cputime::PosixTime>,
     program: &ProgramId,
     measurement: &MeasurementType,
     profile: &String,
