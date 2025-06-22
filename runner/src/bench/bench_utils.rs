@@ -78,10 +78,12 @@ fn add_x86_exec_and_prove(
     let lib =
         unsafe { Library::new(&elf_path) }.expect("couldn't dlopen the binary as a shared object");
 
+    let (mut setup, mut routine) = exec_x86_prepare(&lib, program, input_override);
+
     match measurement {
         MeasurementType::Exec => {
             group.bench_function(profile, |b| {
-                b.iter_with_setup(|| exec_x86_prepare(&lib, program, input_override), |f| f());
+                b.iter_batched(|| setup(), |f| routine(f), criterion::BatchSize::LargeInput);
             });
         }
         MeasurementType::Prove => {
