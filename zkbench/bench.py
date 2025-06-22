@@ -24,6 +24,9 @@ def run_euler(
     euler_log_out: str | None = None,
     euler_criterion_home: str | None = None,
     euler_dry: bool = False,
+    measurement_time: int | None = None,
+    warmup_time: int | None = None,
+    nresamples: int | None = None,
 ):
     assert len(measurement) == 1 and measurement[0] == "exec", "Only exec for now"
     assert profile_time is None, "No profiling!"
@@ -57,6 +60,13 @@ def run_euler(
             if profile:
                 for pr in profile:
                     cmd += f" --profile {pr}"
+            if measurement_time is not None:
+                cmd += f" --measurement-time {measurement_time}"
+            if warmup_time is not None:
+                cmd += f" --warmup-time {warmup_time}"
+            if nresamples is not None:
+                cmd += f" --nresamples {nresamples}"
+
             if euler_dry:
                 print(cmd)
             else:
@@ -85,6 +95,9 @@ def run_bench(
     euler_log_out: str | None = None,
     euler_criterion_home: str | None = None,
     euler_dry: bool = False,
+    measurement_time: int | None = None,
+    warmup_time: int | None = None,
+    nresamples: int | None = None,
 ):
     if euler_d or euler_h or euler_log_out or euler_criterion_home or euler_dry:
         run_euler(
@@ -106,6 +119,9 @@ def run_bench(
             euler_log_out,
             euler_criterion_home,
             euler_dry,
+            measurement_time,
+            warmup_time,
+            nresamples,
         )
         return
 
@@ -137,6 +153,12 @@ def run_bench(
         args.append(f"--sample-size {sample_size}")
     if sampling_mode is not None:
         args.append(f"--sampling-mode {sampling_mode}")
+    if measurement_time is not None:
+        args.append(f"--measurement-time {measurement_time}")
+    if warmup_time is not None:
+        args.append(f"--warmup-time {warmup_time}")
+    if nresamples is not None:
+        args.append(f"--nresamples {nresamples}")
 
     arg_string = " ".join(args)
     runner_path = runner_path or "./target/release/runner"

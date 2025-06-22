@@ -62,6 +62,12 @@ pub struct CriterionArgs {
     sample_size: Option<usize>,
     #[arg(long = "sampling-mode")]
     sampling_mode: Option<CliSamplingMode>,
+    #[arg(long = "measurement-time")]
+    measurement_time: Option<u64>,
+    #[arg(long = "warmup-time")]
+    warmup_time: Option<u64>,
+    #[arg(long = "nresamples")]
+    nresamples: Option<usize>,
 }
 
 #[derive(Parser, Clone)]
@@ -172,6 +178,18 @@ fn run_criterion(args: CriterionArgs) {
                         CliSamplingMode::Linear => criterion::SamplingMode::Linear,
                     };
                     group.sampling_mode(sampling_mode);
+                }
+
+                if args.measurement_time.is_some() {
+                    group.measurement_time(Duration::from_secs(args.measurement_time.unwrap()));
+                }
+
+                if args.warmup_time.is_some() {
+                    group.warm_up_time(Duration::from_secs(args.warmup_time.unwrap()));
+                }
+
+                if args.nresamples.is_some() {
+                    group.nresamples(args.nresamples.unwrap());
                 }
 
                 for profile in profiles.iter() {

@@ -212,6 +212,9 @@ async def clean_cli(program: list[str], zkvm: list[str]):
     required=False,
     default="./target/release/runner",
 )
+@click.option("--measurement-time", type=int, required=False)
+@click.option("--warmup-time", type=int, required=False)
+@click.option("--nresamples", type=int, required=False)
 def bench_cli(
     program: list[str],
     ignore_program: list[str],
@@ -231,6 +234,9 @@ def bench_cli(
     euler_log_out: str | None,
     euler_criterion_home: str | None,
     euler_dry: bool = False,
+    measurement_time: int | None = None,
+    warmup_time: int | None = None,
+    nresamples: int | None = None,
 ):
     run_bench(
         program,
@@ -251,6 +257,9 @@ def bench_cli(
         euler_log_out,
         euler_criterion_home,
         euler_dry,
+        measurement_time,
+        warmup_time,
+        nresamples,
     )
 
 
