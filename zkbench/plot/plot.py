@@ -78,11 +78,12 @@ def average_improvement_cli(
 @click.option(
     "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
 )
+@click.option("--single", is_flag=True, default=False, help="Plot single value")
 def average_duration_cli(
-    zkvm: str | None, measurement: str, program: str | None, profile: list[str] | None
+    zkvm: str | None, measurement: str, program: str | None, profile: list[str] | None, single: bool = False
 ):
     dir = click.get_current_context().parent.params["dir"]
-    plot_average_duration(dir, zkvm, measurement, program, profile)
+    plot_average_duration(dir, zkvm, measurement, program, profile, single)
 
 
 @click.command(
