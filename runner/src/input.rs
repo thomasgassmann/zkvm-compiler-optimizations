@@ -269,6 +269,16 @@ pub fn get_tailcall_input() -> (u128, u128) {
     (25, 300)
 }
 
+pub fn get_instruction_selection_input() -> Vec<u32> {
+    let mut arr = Vec::new();
+    let mut rng = rand::thread_rng();
+    for _ in 0..50000 {
+        arr.push(rng.gen_range(0..10000000));
+    }
+
+    arr
+}
+
 fn write_program_inputs<W: ProgramInputWriter>(
     program: &ProgramId,
     stdin: &mut W,
@@ -342,6 +352,9 @@ fn write_program_inputs<W: ProgramInputWriter>(
         ProgramId::Spec631 => {
             let str = include_str!("../../inputs/spec-631/in.txt");
             stdin.write_string(str);
+        }
+        ProgramId::InstructionSelection => {
+            stdin.write_generic(&get_instruction_selection_input());
         }
         _ => {}
     }

@@ -6,9 +6,9 @@ use super::utils::{get_elf_hash, ElfStats};
 use crate::{
     input::{
         get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
-        get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input,
-        load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature,
+        get_instruction_selection_input, get_keccak256_input, get_loop_sum_input, get_merkle_input,
+        get_regex_match_input, get_sha_bench_input, get_sha_chain_input, get_spec619_input,
+        get_tailcall_input, load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature,
     },
     types::ProgramId,
 };
@@ -55,6 +55,8 @@ type MainCoreZkvmMnist = unsafe extern "C" fn(
     training_data: Vec<(Vec<f64>, Vec<f64>)>,
     test_data: Vec<(Vec<f64>, Vec<f64>)>,
 ) -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreInstructionSelection = unsafe extern "C" fn(data: Vec<u32>) -> ();
 
 pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats {
     ElfStats {
@@ -343,6 +345,20 @@ pub fn exec_x86_prepare<'a>(
                         .downcast::<(Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>)>()
                         .expect("Invalid input type for ZkvmMnist");
                     main_core_fn(training_data, test_data);
+                }),
+            )
+        }
+        ProgramId::InstructionSelection => {
+            let main_core_fn: MainCoreInstructionSelection =
+                load_main_core_fn!(MainCoreInstructionSelection);
+            let data = get_instruction_selection_input();
+            (
+                Box::new(move || Box::new(data.clone())),
+                Box::new(move |b| unsafe {
+                    let data = b
+                        .downcast::<Vec<u32>>()
+                        .expect("Invalid input type for InstructionSelection");
+                    main_core_fn(*data);
                 }),
             )
         }

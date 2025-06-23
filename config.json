@@ -1,5 +1,17 @@
 {
     "profiles": {
+        "instruction-selection-nodiv": {
+            "cflags": "-O0",
+            "rustflags": "-C opt-level=3",
+            "passes": [],
+            "prepopulate_passes": true
+        },
+        "instruction-selection-div": {
+            "cflags": "-O0",
+            "rustflags": "-C opt-level=3",
+            "passes": [],
+            "prepopulate_passes": true
+        },
         "baseline": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
@@ -1127,6 +1139,11 @@
             "groups": [
                 "crypto",
                 "rust"
+            ]
+        },
+        "instruction-selection": {
+            "specific": false,
+            "groups": [
             ]
         }
     }
