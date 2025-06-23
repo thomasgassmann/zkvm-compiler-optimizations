@@ -4,13 +4,15 @@
             "cflags": "-O0",
             "rustflags": "-C opt-level=3",
             "passes": [],
-            "prepopulate_passes": true
+            "prepopulate_passes": true,
+            "no_default": true
         },
         "instruction-selection-div": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=3",
             "passes": [],
-            "prepopulate_passes": true
+            "prepopulate_passes": true,
+            "no_default": true
         },
         "baseline": {
             "cflags": "-O0",
