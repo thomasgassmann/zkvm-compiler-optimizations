@@ -68,6 +68,16 @@ On risc0 it's easy to see that we get a reduction in cycle count. A `div` and an
 
 ![cycle-count](./imgs/instruction-selection/cycle-count.png)
 
+Looking at the speedup we get by not having a `div` instruction, this effect makes itself more clear:
+
+![speedup](./imgs/instruction-selection/speedup.png)
+
+![duration](./imgs/instruction-selection/duration.png)
+
+Replacing a `div` by multiply and shift degrades performance on risc0 and also does so for execution on sp1.
+
+While having a `div` is generally cheaper on zkVMs, it still yields a slight degradation on sp1 proving (despite the cycle count being reduced). This also illustrates that cycle count is not always directly related to proving time. Even though the `div` instruction reduces the number of executed cycles, it introduces more constraints for the prover (e.g. for remainder). In contrast, the multiply-and-shift variant, while longer in terms of cycles, uses only low-degree constraints (basic multiplication and bit-shifts), which may be cheaper for the prover to handle algebraically. This also shows that during instruction selection we cannot just always optimize for fewer cycles but also need to take into account the constraint complexity in the prover.
+
 ## Conclusions
 
 Divisions are expensive on most architectures, on zkVMs however the difference is much smaller (on risc0 e.g. a `div` is only 2 cycles compared to 1 cycle for an `add`). The LLVM backend should therefore refrain from replacing `div`'s with equivalent alternatives in most cases. Similar to instruction combining/selection we should update the LLVM cost model to reflect these circumstances. Additionally, the LLVM `TargetLowering` class also provides a method `isIntDivCheap` which could be adjusted on the respective backend.
