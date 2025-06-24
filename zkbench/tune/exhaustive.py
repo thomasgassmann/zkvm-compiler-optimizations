@@ -58,7 +58,7 @@ def run_tune_exhaustive(
         passes=[],
         single_codegen_unit=single_codegen_unit[0],
         opt_level=opt_level[0],
-        prepopulate_passes=prepopulate_pass[0],
+        prepopulate_passes=prepopulate_passes[0],
     )
     res = asyncio.get_event_loop().run_until_complete(
         builder_runner.run_build(programs, zkvms, profile_config)
