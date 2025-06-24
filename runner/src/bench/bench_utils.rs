@@ -75,23 +75,38 @@ fn add_x86_exec_and_prove(
     }
 
     let elf_path = get_elf(program, &ProverId::X86, profile);
-    let lib = unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }
-        .expect("couldn't dlopen the binary as a shared object");
 
-    let (mut setup, mut routine) = exec_x86_prepare(&lib, program, input_override);
-
+    let reload_lib = vec![ProgramId::Spec605, ProgramId::Spec619, ProgramId::Spec631];
     match measurement {
         MeasurementType::Exec => {
-            group.bench_function(profile, |b| {
-                b.iter_batched(|| setup(), |f| routine(f), criterion::BatchSize::LargeInput);
-            });
+            if reload_lib.contains(program) {
+                group.bench_function(profile, |b| {
+                    b.iter_with_setup(|| {
+                        let lib = unsafe { Library::open(Some(elf_path.clone()), libloading::os::unix::RTLD_NOW) }
+                            .expect("couldn't dlopen the binary as a shared object");
+                        let (mut setup, routine) = exec_x86_prepare(&lib, program, input_override);
+                        (setup(), routine, lib)
+                    }, |(i, mut r, _lib)| {
+                        r(i);
+                    });
+                });
+            } else {
+                let lib = unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }
+                    .expect("couldn't dlopen the binary as a shared object");
+
+                let (mut setup, mut routine) = exec_x86_prepare(&lib, program, input_override);
+                group.bench_function(profile, |b| {
+                    b.iter_batched(|| setup(), |f| routine(f), criterion::BatchSize::LargeInput);
+                });
+
+                lib.close().unwrap();
+            }
         }
         MeasurementType::Prove => {
             panic!("Proving for x86 not possible.");
         }
     }
 
-    lib.close().unwrap();
 }
 
 fn add_sp1_exec_and_prove(
