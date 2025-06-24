@@ -12,3 +12,7 @@
 ### sp1
 
 - sp1-sdk = "4.1.4"
+
+### x86
+
+- rust: 1.85-x86_64-unknown-linux-gnu
