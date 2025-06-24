@@ -65,30 +65,33 @@ def extract_genetic_individual_cli(stats_dir: str, worst: bool = False):
 @click.option("--stats", required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-def plot_exhaustive_depth2_cli(stats: str, program: str | None, zkvm: str | None):
+@click.option("--relative", is_flag=True, default=False, help="Plot relative values")
+def plot_exhaustive_depth2_cli(stats: str, program: str | None, zkvm: str | None, relative: bool = False):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
-    plot_exhaustive_depth2(stats, program, zkvm)
+    plot_exhaustive_depth2(stats, program, zkvm, program_group=None, relative=relative)
 
 
 @click.command(name="ffd-1d")
 @click.option("--stats", required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-def plot_ffd1d_cli(stats: str, program: str | None, zkvm: str | None):
+@click.option("--response", type=click.Choice(["cumulative", "relative-avg"]), default="cumulative")
+def plot_ffd1d_cli(stats: str, program: str | None, zkvm: str | None, response: str = "cumulative"):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
-    plot_ffd1d(stats, program, zkvm)
+    plot_ffd1d(stats, program, zkvm, response)
 
 
 @click.command(name="ffd-2d")
 @click.option("--stats", required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
-def plot_ffd2d_cli(stats: str, program: str | None, zkvm: str | None):
+@click.option("--response", type=click.Choice(["cumulative", "relative-avg"]), default="cumulative")
+def plot_ffd2d_cli(stats: str, program: str | None, zkvm: str | None, response: str = "cumulative"):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
-    plot_ffd2d(stats, program, zkvm)
+    plot_ffd2d(stats, program, zkvm, response)
 
 
 @click.command(name="export-exhaustive-depth2")

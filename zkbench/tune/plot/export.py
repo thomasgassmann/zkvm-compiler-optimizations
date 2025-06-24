@@ -189,6 +189,15 @@ def export_exhaustive_depth2(stats_path: str, out: str):
         lambda: plot_exhaustive_depth2(stats_path, None, None),
     )
 
+    md_file.new_header(level=2, title=f"Overview (relative)")
+    export_plot(
+        out,
+        None,
+        md_file,
+        "exhaustive-depth2-main-relative",
+        lambda: plot_exhaustive_depth2(stats_path, None, None, relative=True),
+    )
+
     for zkvm in stats.zkvms:
         md_file.new_header(level=2, title=f"Exhaustive for zkvm {zkvm}")
         export_plot(
@@ -197,6 +206,14 @@ def export_exhaustive_depth2(stats_path: str, out: str):
             md_file,
             f"exhaustive-depth2-{zkvm}",
             lambda: plot_exhaustive_depth2(stats_path, None, zkvm),
+        )
+        md_file.new_header(level=2, title=f"Exhaustive for zkvm {zkvm} (relative)")
+        export_plot(
+            out,
+            None,
+            md_file,
+            f"exhaustive-depth2-{zkvm}-relative",
+            lambda: plot_exhaustive_depth2(stats_path, None, zkvm, relative=True),
         )
 
     for program in stats.programs:
@@ -207,6 +224,16 @@ def export_exhaustive_depth2(stats_path: str, out: str):
             md_file,
             f"exhaustive-depth2-{program}",
             lambda: plot_exhaustive_depth2(stats_path, program, None),
+        )
+        md_file.new_header(
+            level=2, title=f"Exhaustive for program {program} (relative)"
+        )
+        export_plot(
+            out,
+            None,
+            md_file,
+            f"exhaustive-depth2-{program}-relative",
+            lambda: plot_exhaustive_depth2(stats_path, program, None, relative=True),
         )
 
     groups = get_program_groups_from_programs(stats.programs)
@@ -220,6 +247,16 @@ def export_exhaustive_depth2(stats_path: str, out: str):
                 md_file,
                 f"exhaustive-depth2-{group}",
                 lambda: plot_exhaustive_depth2(stats_path, None, None, group),
+            )
+            md_file.new_header(
+                level=3, title=f"Group {group} (relative)"
+            )
+            export_plot(
+                out,
+                None,
+                md_file,
+                f"exhaustive-depth2-{group}-relative",
+                lambda: plot_exhaustive_depth2(stats_path, None, None, group, relative=True),
             )
 
     md_file.create_md_file()
