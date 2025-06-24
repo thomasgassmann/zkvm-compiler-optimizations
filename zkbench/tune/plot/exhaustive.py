@@ -3,7 +3,6 @@ from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from matplotlib.colors import ListedColormap
 
 from zkbench.config import get_programs_by_group
 from zkbench.plot.common import get_title, show_or_save_plot
@@ -63,6 +62,11 @@ def plot_exhaustive_depth2(
 
     plt.figure(figsize=(12, 10))
 
+    cmap = sns.color_palette("coolwarm", as_cmap=True)
+
+    mask = np.isnan(matrix_normalized)
+    mask_negative = matrix < 0
+
     sns.heatmap(
         matrix_normalized,
         annot=True if len(passes) <= 20 else False,
@@ -71,8 +75,15 @@ def plot_exhaustive_depth2(
         yticklabels=passes,
         vmin=smallest / largest,
         vmax=1,
-        mask=np.isnan(matrix_normalized),
+        mask=mask,
+        cmap=cmap,
+        cbar_kws={"label": f"Normalized cumulative {stats.metric}"},
     )
+
+    for i in range(len(passes)):
+        for j in range(len(passes)):
+            if mask_negative[i, j]:
+                plt.gca().add_patch(plt.Rectangle((j, i), 1, 1, color="white", ec=None))
 
     plt.xticks(rotation=90, ha="center", fontsize=7)
     plt.yticks(rotation=0, fontsize=7)

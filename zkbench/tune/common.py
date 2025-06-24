@@ -38,6 +38,12 @@ class EvalResult:
             has_error=self.has_error or other.has_error,
             values=self.values + other.values,
         )
+    
+    def get_eval_result(self, zkvm: str, program: str) -> MetricValue | None:
+        for value in self.values:
+            if value.zkvm == zkvm and value.program == program:
+                return value
+        return None
 
 
 @dataclass
