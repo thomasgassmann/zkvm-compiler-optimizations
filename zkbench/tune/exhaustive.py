@@ -32,6 +32,7 @@ class Exhaustive:
     programs: list[str]
     zkvms: list[str]
     config: TuneConfig
+    baseline: ExhaustiveResult | None = None
 
 
 def run_tune_exhaustive(
@@ -51,6 +52,34 @@ def run_tune_exhaustive(
         BIN_OUT_EXHAUSTIVE, metric, out, build_timeout=60 * 30, rebuild_failed=True
     )
 
+    profile_config = ProfileConfig(
+        name="exhaustive",
+        lto=lto[0],
+        passes=[],
+        single_codegen_unit=single_codegen_unit[0],
+        opt_level=opt_level[0],
+        prepopulate_passes=prepopulate_pass[0],
+    )
+    res = asyncio.get_event_loop().run_until_complete(
+        builder_runner.run_build(programs, zkvms, profile_config)
+    )
+    if any([not r.success for r in res]):
+        raise RuntimeError(
+            f"Error building with initial config {profile_config}. "
+            "Please check your configuration and try again."
+        )
+    eval_result = builder_runner.eval_all(
+        res, profile_config
+    )
+    baseline_res = (
+        ExhaustiveResult(
+            passes=profile_config.passes,
+            profile_config=profile_config,
+            build_error=any([not r.success for r in res]),
+            eval_result=eval_result,
+        )
+    )
+
     results = []
 
     def append_and_write(new_result: ExhaustiveResult):
@@ -58,7 +87,7 @@ def run_tune_exhaustive(
         with open(os.path.join(out, "stats.json"), "w") as f:
             json.dump(
                 dataclasses.asdict(
-                    Exhaustive(results, metric, programs, zkvms, config)
+                    Exhaustive(results, metric, programs, zkvms, config, baseline=baseline_res)
                 ),
                 f,
             )
