@@ -2,12 +2,42 @@ import logging
 
 from matplotlib import pyplot as plt
 import numpy as np
-from zkbench.plot.common import get_program_selection, get_title, plot_sorted, show_or_save_plot
-from zkbench.tune.ffd import FFDRun, read_ffd_stats
+from zkbench.config import get_programs
+from zkbench.plot.common import BASELINE, get_cycle_count, get_program_selection, get_title, plot_sorted, show_or_save_plot
+from zkbench.tune.ffd import FFDResult, FFDRun, read_ffd_stats
 from zkbench.tune.plot.common import get_metric_sum
 import seaborn as sns
 
-def compute_factor_effect(ffd: FFDRun, factors: list[str], programs: list[str], zkvm: str | None) -> float:
+RESULTS_DIR = "./results/bench"
+
+
+BASELINE_CACHE = {}
+
+def get_response(response_type: str, run: FFDRun, res: FFDResult, programs: list[str], zkvm: str | None) -> float:
+    if response_type == "cumulative":
+        return float(get_metric_sum(res.eval_result.values, programs, zkvm))
+    elif response_type == "relative-avg":
+        improvements = []
+
+        zkvms = [zkvm] if zkvm else run.zkvms    
+        for program in programs:
+            for cz in zkvms:
+                eval_result = res.eval_result.get_eval_result(cz, program)
+                if not eval_result:
+                    raise ValueError(f"No eval result for program {program} and zkvm {cz} in row {res.row_index}.")
+                
+                if (cz, program) in BASELINE_CACHE:
+                    baseline_cycle_count = BASELINE_CACHE[(cz, program)]
+                else:
+                    baseline_cycle_count = get_cycle_count(RESULTS_DIR, program, cz, BASELINE)
+                    BASELINE_CACHE[(cz, program)] = baseline_cycle_count
+                relative_improvement = (baseline_cycle_count - eval_result.metric) / baseline_cycle_count * 100
+                improvements.append(relative_improvement)
+
+        return float(np.mean(improvements))
+
+
+def compute_factor_effect(ffd: FFDRun, factors: list[str], programs: list[str], zkvm: str | None, response_type: str) -> float:
     contrasts: list[int] = []
     responses: list[float] = []
 
@@ -28,7 +58,7 @@ def compute_factor_effect(ffd: FFDRun, factors: list[str], programs: list[str], 
         signs = [1 if f in active_factors else -1 for f in factors]
         contrast = int(np.prod(signs))
 
-        y = get_metric_sum(res.eval_result.values, programs, zkvm)
+        y = get_response(response_type, ffd, res, programs, zkvm)
 
         contrasts.append(contrast)
         responses.append(float(y))
@@ -42,30 +72,49 @@ def compute_factor_effect(ffd: FFDRun, factors: list[str], programs: list[str], 
     return effect
 
 
-def plot_ffd1d(stats_file: str, program: str | None = None, zkvm: str | None = None):
-    programs = get_program_selection(program, None)
+def _get_programs(ffd: FFDRun, program: str | None) -> list[str]:
+    ignore = set(get_programs()) - set(ffd.programs)
+    programs = get_program_selection(program, None, ignore=ignore)
+    return programs
+
+
+def _get_y_axis_label(response: str) -> str:
+    if response == "cumulative":
+        return "Change in cycle count"
+    elif response == "relative-avg":
+        return "Relative improvement (%)"
+    else:
+        raise ValueError(f"Unknown response type: {response}")
+
+
+def plot_ffd1d(stats_file: str, program: str | None = None, zkvm: str | None = None, response: str = "cumulative"):
     stats = read_ffd_stats(stats_file)
 
     effects = [
-        compute_factor_effect(stats, [factor], programs, zkvm)
+        compute_factor_effect(stats, [factor], _get_programs(stats, program), zkvm, response_type=response)
         for factor in stats.factors
     ]
-    plot_sorted([effects], stats.factors, get_title(f"FFD estimated effects ({stats.metric})", [program, zkvm]), "Change in cycle count", [None])
+    y_axis = _get_y_axis_label(response)
+    plot_sorted([effects], stats.factors, get_title(f"FFD estimated effects ({stats.metric}, {response})", [program, zkvm]), y_axis, [None])
 
 
-def plot_ffd2d(stats_file: str, program: str | None = None, zkvm: str | None = None):
-    programs = get_program_selection(program, None)
+def plot_ffd2d(stats_file: str, program: str | None = None, zkvm: str | None = None, response: str = "cumulative"):
     stats = read_ffd_stats(stats_file)
+    programs = _get_programs(stats, program)
 
     matrix = np.zeros((len(stats.factors), len(stats.factors)))
     for idx_a, factor_a in enumerate(stats.factors):
         for idx_b, factor_b in enumerate(stats.factors):
+            if idx_a > idx_b:
+                continue
+
+            logging.info(f"Computing effect for factors {factor_a} and {factor_b} ({idx_a}, {idx_b})")
             if factor_a == factor_b:
-                matrix[idx_a, idx_b] = compute_factor_effect(stats, [factor_a], programs, zkvm)
+                matrix[idx_a, idx_b] = compute_factor_effect(stats, [factor_a], programs, zkvm, response_type=response)
             else:
-                effect_a = compute_factor_effect(stats, [factor_a, factor_b], programs, zkvm)
-                effect_b = compute_factor_effect(stats, [factor_b, factor_a], programs, zkvm)
-                matrix[idx_a, idx_b] = (effect_a + effect_b) / 2
+                effect_a = compute_factor_effect(stats, [factor_a, factor_b], programs, zkvm, response_type=response)
+                matrix[idx_a, idx_b] = effect_a
+                matrix[idx_b, idx_a] = effect_a
 
     plt.figure(figsize=(12, 10))
 
