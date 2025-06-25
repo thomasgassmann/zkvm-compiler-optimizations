@@ -139,12 +139,13 @@ We have also observed this trend to continue for larger nesting depths. Further,
 
 This observation also aligns with our results in the `npb-lu` program as most functions that had strong performance regressions also exhibited multiple nested loops (up to depth four, see e.g. `rhs` in profiling info).
 
-<!-- TODO:
+The above however only holds for `licm` when applied individually. Furthermore, we also get similar results on x86:
 
-- why licm degradation, npb-lu
-  - compare llvm ir between baseline and licm for both risc0 and sp1
-  - why does it not occur for polybench-lu?
-- look at spec-605 sp1 (40% improvement licm)
-- check whether combination with other optimizations is better 
+![licm-x86](./imgs/licm/licm-x86.png)
 
--->
+The results from our fractional factorial design analysis also shows that loop-invariant code motion can still be beneficial in conjunction with other optimizations as well.
+
+## Conclusions
+
+- Optimizations that introduce a lot of paging pressure should be avoided.
+- Interactions between different optimizations are complex, and optimizations that are detrimental on their own can still be beneficial in conjunction with other optimizations.
