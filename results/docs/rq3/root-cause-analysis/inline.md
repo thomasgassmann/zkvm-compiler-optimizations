@@ -48,3 +48,4 @@ In the non-inlined version each outer‐loop iteration executes only a `jalr`/`r
 - Inlining should be avoided if it causes spilling to the stack. If the execution trace grows due to spilling inlining will likely hurt performance on zkVMs.
 - Most operations on risc0 take either 1 or 2 cycles. Because of this 1:1 (or 2:1) mapping of instructions to cycles, even small differences in the generated instruction sequence can change cycle counts significantly.
 - If inlining causes the stack to grow across page boundaries, loads and stores might be even more expensive due to page-ins and page-outs.
+- Increasing the inlining threshold on zkVMs can sometimes be very beneficial.

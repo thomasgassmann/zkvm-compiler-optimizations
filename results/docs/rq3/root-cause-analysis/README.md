@@ -6,6 +6,9 @@ We analyze selected optimizations on different programs that show large effects 
 - [loop-unroll](./loop-unroll.md)
 - [inline](./inline.md)
 - [simplifycfg](./simplifycfg.md)
+- [instcombine](./instcombine.md)
+- [speculative-execution](./speculative-execution.md)
+- [instruction selection](./instruction-selection.md)
 
 ## Tuning
 
