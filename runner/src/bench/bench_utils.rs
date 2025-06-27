@@ -81,14 +81,23 @@ fn add_x86_exec_and_prove(
         MeasurementType::Exec => {
             if reload_lib.contains(program) {
                 group.bench_function(profile, |b| {
-                    b.iter_with_setup(|| {
-                        let lib = unsafe { Library::open(Some(elf_path.clone()), libloading::os::unix::RTLD_NOW) }
+                    b.iter_with_setup(
+                        || {
+                            let lib = unsafe {
+                                Library::open(
+                                    Some(elf_path.clone()),
+                                    libloading::os::unix::RTLD_NOW,
+                                )
+                            }
                             .expect("couldn't dlopen the binary as a shared object");
-                        let (mut setup, routine) = exec_x86_prepare(&lib, program, input_override);
-                        (setup(), routine, lib)
-                    }, |(i, mut r, _lib)| {
-                        r(i);
-                    });
+                            let (mut setup, routine) =
+                                exec_x86_prepare(&lib, program, input_override);
+                            (setup(), routine, lib)
+                        },
+                        |(i, mut r, _lib)| {
+                            r(i);
+                        },
+                    );
                 });
             } else {
                 let lib = unsafe { Library::open(Some(elf_path), libloading::os::unix::RTLD_NOW) }
@@ -106,7 +115,6 @@ fn add_x86_exec_and_prove(
             panic!("Proving for x86 not possible.");
         }
     }
-
 }
 
 fn add_sp1_exec_and_prove(

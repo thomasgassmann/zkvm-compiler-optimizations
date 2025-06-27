@@ -5,10 +5,10 @@ use libloading::{os::unix::Library, Symbol};
 use super::utils::{get_elf_hash, ElfStats};
 use crate::{
     input::{
-        get_bigmem_input, get_eddsa_times, get_factorial_input, get_fibonacci_input,
-        get_keccak256_input, get_loop_sum_input, get_merkle_input, get_regex_match_input,
-        get_sha_bench_input, get_sha_chain_input, get_spec619_input, get_tailcall_input,
-        load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature,
+        get_bigmem_input, get_eddsa_times, get_example_input, get_factorial_input,
+        get_fibonacci_input, get_keccak256_input, get_loop_sum_input, get_merkle_input,
+        get_regex_match_input, get_sha_bench_input, get_sha_chain_input, get_spec619_input,
+        get_tailcall_input, load_mnist, load_rsp_input, rand_ecdsa_signature, rand_eddsa_signature,
     },
     types::ProgramId,
 };
@@ -55,6 +55,8 @@ type MainCoreZkvmMnist = unsafe extern "C" fn(
     training_data: Vec<(Vec<f64>, Vec<f64>)>,
     test_data: Vec<(Vec<f64>, Vec<f64>)>,
 ) -> ();
+#[allow(improper_ctypes_definitions)]
+type MainCoreExample = unsafe extern "C" fn(data: Vec<i32>) -> ();
 
 pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats {
     ElfStats {
@@ -343,6 +345,19 @@ pub fn exec_x86_prepare<'a>(
                         .downcast::<(Vec<(Vec<f64>, Vec<f64>)>, Vec<(Vec<f64>, Vec<f64>)>)>()
                         .expect("Invalid input type for ZkvmMnist");
                     main_core_fn(training_data, test_data);
+                }),
+            )
+        }
+        ProgramId::Example => {
+            let main_core_fn: MainCoreExample = load_main_core_fn!(MainCoreExample);
+            let inp = get_example_input();
+            (
+                Box::new(move || Box::new(inp.clone())),
+                Box::new(move |inp| unsafe {
+                    let inp = inp
+                        .downcast::<Vec<i32>>()
+                        .expect("Invalid input type for example");
+                    main_core_fn(*inp);
                 }),
             )
         }

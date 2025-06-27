@@ -230,6 +230,16 @@ pub fn get_loop_sum_input() -> Vec<i32> {
     arr
 }
 
+pub fn get_example_input() -> Vec<i32> {
+    let mut arr = Vec::new();
+    let mut rng = rand::thread_rng();
+    for _ in 0..1000 {
+        arr.push(rng.gen_range(-5000..5000));
+    }
+
+    arr
+}
+
 pub fn get_regex_match_input() -> (String, String) {
     // sample from https://docs.rs/regex/latest/regex/
     (
@@ -342,6 +352,9 @@ fn write_program_inputs<W: ProgramInputWriter>(
         ProgramId::Spec631 => {
             let str = include_str!("../../inputs/spec-631/in.txt");
             stdin.write_string(str);
+        }
+        ProgramId::Example => {
+            stdin.write_generic(&get_example_input());
         }
         _ => {}
     }
