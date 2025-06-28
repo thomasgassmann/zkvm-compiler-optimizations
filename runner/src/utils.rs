@@ -1,6 +1,7 @@
 use core::time;
 use std::fs::{self, File};
 use std::io::BufReader;
+use std::path::Path;
 use std::{env, time::Instant};
 
 use serde_json::from_reader;
@@ -27,6 +28,9 @@ pub fn read_config_json() -> Config {
 
 pub fn read_elf(program: &ProgramId, prover: &ProverId, profile: &String) -> Vec<u8> {
     let elf_path = get_elf(program, prover, profile);
+    if !Path::new(&elf_path).exists() {
+        panic!("ELF file does not exist: {}", elf_path);
+    }
     fs::read(elf_path).unwrap()
 }
 
