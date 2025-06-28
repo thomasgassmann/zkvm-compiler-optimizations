@@ -74,7 +74,10 @@ def zkbench_cli(log_level: str, log_file: str):
 
 @click.command(name="build")
 @click.option(
-    "--program", type=click.Choice(get_programs() + ["example"]), required=False, multiple=True
+    "--program",
+    type=click.Choice(get_programs() + ["example"]),
+    required=False,
+    multiple=True,
 )
 @click.option(
     "--ignore-program", type=click.Choice(get_programs()), required=False, multiple=True
@@ -131,7 +134,10 @@ async def build_cli(
 
 @click.command(name="asm")
 @click.option(
-    "--program", type=click.Choice(get_programs() + ["example"]), required=True, multiple=False
+    "--program",
+    type=click.Choice(get_programs() + ["example"]),
+    required=True,
+    multiple=False,
 )
 @click.option(
     "--zkvm", type=click.Choice(get_zkvms_with_x86()), required=True, multiple=False
@@ -172,7 +178,10 @@ async def clean_cli(program: list[str], zkvm: list[str]):
 
 @click.command(name="bench")
 @click.option(
-    "--program", type=click.Choice(get_programs() + ["example"]), required=False, multiple=True
+    "--program",
+    type=click.Choice(get_programs() + ["example"]),
+    required=False,
+    multiple=True,
 )
 @click.option(
     "--ignore-program", type=click.Choice(get_programs()), required=False, multiple=True
@@ -192,9 +201,7 @@ async def clean_cli(program: list[str], zkvm: list[str]):
     required=False,
     multiple=True,
 )
-@click.option(
-    "--profile", type=str, required=False, multiple=True
-)
+@click.option("--profile", type=str, required=False, multiple=True)
 @click.option("--profile-time", type=int, required=False)
 @click.option("--force", required=False, is_flag=True, default=False)
 @click.option("--meta-only", required=False, is_flag=True, default=False)
@@ -264,7 +271,9 @@ def bench_cli(
 
 
 @click.command(name="run")
-@click.option("--program", type=click.Choice(get_programs() + ["example"]), required=True)
+@click.option(
+    "--program", type=click.Choice(get_programs() + ["example"]), required=True
+)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=True)
 @click.option(
     "--elf",
