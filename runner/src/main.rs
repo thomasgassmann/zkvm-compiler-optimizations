@@ -161,7 +161,7 @@ fn run_criterion(args: CriterionArgs) {
     }
 
     for program in programs.iter() {
-        let program_config = config.programs.get(program).unwrap();
+        let program_config = config.programs.get(program);
         for measurement in measurements.iter().rev() {
             for prover in zkvms.iter() {
                 let group_name = format!("{}-{}-{}", program, prover, measurement);
@@ -193,7 +193,9 @@ fn run_criterion(args: CriterionArgs) {
                 }
 
                 for profile in profiles.iter() {
-                    if program_config.skip.contains(profile) {
+                    if program_config.is_none() {
+                        println!("No config: {program}-{prover}-{measurement}-{profile}");
+                    } else if program_config.unwrap().skip.contains(profile) {
                         println!(
                             "Skipping: {program}-{prover}-{measurement}-{profile} (skip config)"
                         );

@@ -1,6 +1,13 @@
-use std::{env, fs, path::PathBuf, process::Command};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
-use crate::{types::MeasurementType, utils::read_elf};
+use crate::{
+    types::MeasurementType,
+    utils::{get_elf, read_elf},
+};
 
 use super::super::types::{ProgramId, ProverId};
 use k256::sha2;
@@ -23,6 +30,10 @@ static BASLINE_PROFILE: &'static str = "baseline";
 
 pub fn is_same_as_baseline(program: &ProgramId, prover: &ProverId, profile: &String) -> bool {
     if profile == &String::from(BASLINE_PROFILE) {
+        return false;
+    }
+
+    if !Path::new(&get_elf(program, prover, &String::from(BASLINE_PROFILE))).exists() {
         return false;
     }
 
