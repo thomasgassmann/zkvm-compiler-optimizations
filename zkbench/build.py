@@ -48,7 +48,7 @@ async def run_build(
                         f"Error: Program directory {program_dir} does not exist"
                     )
 
-                target = get_target_binary_path(program, zkvm, profile_name)
+                target = get_target_binary_path(program, zkvm, profile_name if name is None else name)
                 if os.path.isfile(target) and not force:
                     logging.info(f"Skipping build as target already exists")
                     continue
