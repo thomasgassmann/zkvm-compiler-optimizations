@@ -230,14 +230,20 @@ pub fn get_loop_sum_input() -> Vec<i32> {
     arr
 }
 
-pub fn get_example_input() -> Vec<i32> {
-    let mut arr = Vec::new();
+pub fn get_example_input() -> (Vec<i32>, Vec<i32>) {
+    const N: usize = 1048576;
+    let mut arr = vec![0i32; N];
+    let mut arr2 = vec![0i32; N];
     let mut rng = rand::thread_rng();
-    for _ in 0..1000 {
-        arr.push(rng.gen_range(-5000..5000));
+    for i in 0..N {
+        arr[i] = rng.gen_range(-5000..5000);
     }
 
-    arr
+    for i in 0..N {
+        arr2[i] = rng.gen_range(-5000..5000);
+    }
+
+    (arr, arr2)
 }
 
 pub fn get_regex_match_input() -> (String, String) {

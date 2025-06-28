@@ -56,7 +56,7 @@ type MainCoreZkvmMnist = unsafe extern "C" fn(
     test_data: Vec<(Vec<f64>, Vec<f64>)>,
 ) -> ();
 #[allow(improper_ctypes_definitions)]
-type MainCoreExample = unsafe extern "C" fn(data: Vec<i32>) -> ();
+type MainCoreExample = unsafe extern "C" fn(a: Vec<i32>, b: Vec<i32>) -> ();
 
 pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats {
     ElfStats {
@@ -354,10 +354,10 @@ pub fn exec_x86_prepare<'a>(
             (
                 Box::new(move || Box::new(inp.clone())),
                 Box::new(move |inp| unsafe {
-                    let inp = inp
-                        .downcast::<Vec<i32>>()
+                    let inp = *inp
+                        .downcast::<(Vec<i32>, Vec<i32>)>()
                         .expect("Invalid input type for example");
-                    main_core_fn(*inp);
+                    main_core_fn(inp.0, inp.1);
                 }),
             )
         }
