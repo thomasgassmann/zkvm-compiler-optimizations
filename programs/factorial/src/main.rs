@@ -17,6 +17,7 @@ fn main() {
     let n: u32 = sp1_zkvm::io::read();
 
     for _i in 0..n {
-        let _ = factorial(20);
+        let res = factorial(20);
+        core::hint::black_box(res);
     }
 }
