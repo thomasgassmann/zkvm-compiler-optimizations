@@ -411,9 +411,9 @@ def duration_by_program_cli(
     name="cycle-count-by-program",
     help="Show cycle count for some profiles by program",
 )
-@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option("--profile", type=str, required=True)
 @click.option(
-    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+    "--baseline-profile", type=str, required=True
 )
 @click.option("--relative", is_flag=True, default=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
