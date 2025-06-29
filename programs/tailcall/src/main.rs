@@ -20,6 +20,8 @@ fn main() {
     for i in 0..r {
         let fac = tailcall::factorial(n);
         let sum = tailcall::sum_to(n);
+        core::hint::black_box(fac);
+        core::hint::black_box(sum);
         if i == r - 1 {
             println!("Factorial of {n} is: {fac}");
             println!("Sum of 1..{n} is: {sum}");
