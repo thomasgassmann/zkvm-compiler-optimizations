@@ -210,6 +210,9 @@ def plot_missing_cli(measurement: str | None, zkvm: str | None):
     for m in measurements:
         for z in zkvms:
             for p in programs:
+                if z == "x86" and m != "exec":
+                    continue
+
                 if not has_data_on(dir, p, z, m):
                     print(f"{p}-{z}-{m}")
 
