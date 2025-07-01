@@ -1,0 +1,258 @@
+diff --git a/llvm/include/llvm/Analysis/InlineCost.h b/llvm/include/llvm/Analysis/InlineCost.h
+index c5978ce54fc1..b89cc0fd4ed9 100644
+--- a/llvm/include/llvm/Analysis/InlineCost.h
++++ b/llvm/include/llvm/Analysis/InlineCost.h
+@@ -41,7 +41,7 @@ const int OptSizeThreshold = 50;
+ const int OptMinSizeThreshold = 5;
+ 
+ /// Use when -O3 is specified.
+-const int OptAggressiveThreshold = 250;
++const int OptAggressiveThreshold = 2500;
+ 
+ // Various magic constants used to adjust heuristics.
+ int getInstrCost();
+diff --git a/llvm/include/llvm/Analysis/TargetTransformInfoImpl.h b/llvm/include/llvm/Analysis/TargetTransformInfoImpl.h
+index 00efa474a91b..b732a62c366a 100644
+--- a/llvm/include/llvm/Analysis/TargetTransformInfoImpl.h
++++ b/llvm/include/llvm/Analysis/TargetTransformInfoImpl.h
+@@ -430,7 +430,7 @@ public:
+   bool isFCmpOrdCheaperThanFCmpZero(Type *Ty) const { return true; }
+ 
+   InstructionCost getFPOpCost(Type *Ty) const {
+-    return TargetTransformInfo::TCC_Basic;
++    return TargetTransformInfo::TCC_Expensive;
+   }
+ 
+   InstructionCost getIntImmCodeSizeCost(unsigned Opcode, unsigned Idx,
+diff --git a/llvm/include/llvm/CodeGen/BasicTTIImpl.h b/llvm/include/llvm/CodeGen/BasicTTIImpl.h
+index 5b9cc5dfeead..38c6fd7fea5d 100644
+--- a/llvm/include/llvm/CodeGen/BasicTTIImpl.h
++++ b/llvm/include/llvm/CodeGen/BasicTTIImpl.h
+@@ -551,10 +551,10 @@ public:
+   InstructionCost getFPOpCost(Type *Ty) {
+     // Check whether FADD is available, as a proxy for floating-point in
+     // general.
+-    const TargetLoweringBase *TLI = getTLI();
+-    EVT VT = TLI->getValueType(DL, Ty);
+-    if (TLI->isOperationLegalOrCustomOrPromote(ISD::FADD, VT))
+-      return TargetTransformInfo::TCC_Basic;
++    // const TargetLoweringBase *TLI = getTLI();
++    // EVT VT = TLI->getValueType(DL, Ty);
++    // if (TLI->isOperationLegalOrCustomOrPromote(ISD::FADD, VT))
++    //   return TargetTransformInfo::TCC_Basic;
+     return TargetTransformInfo::TCC_Expensive;
+   }
+ 
+diff --git a/llvm/lib/Analysis/InlineCost.cpp b/llvm/lib/Analysis/InlineCost.cpp
+index 345e5a019520..5405c696e176 100644
+--- a/llvm/lib/Analysis/InlineCost.cpp
++++ b/llvm/lib/Analysis/InlineCost.cpp
+@@ -54,7 +54,7 @@ using namespace llvm;
+ STATISTIC(NumCallsAnalyzed, "Number of call sites analyzed");
+ 
+ static cl::opt<int>
+-    DefaultThreshold("inlinedefault-threshold", cl::Hidden, cl::init(225),
++    DefaultThreshold("inlinedefault-threshold", cl::Hidden, cl::init(2500),
+                      cl::desc("Default amount of inlining to perform"));
+ 
+ // We introduce this option since there is a minor compile-time win by avoiding
+@@ -72,16 +72,16 @@ static cl::opt<bool> PrintInstructionComments(
+     cl::desc("Prints comments for instruction based on inline cost analysis"));
+ 
+ static cl::opt<int> InlineThreshold(
+-    "inline-threshold", cl::Hidden, cl::init(225),
+-    cl::desc("Control the amount of inlining to perform (default = 225)"));
++    "inline-threshold", cl::Hidden, cl::init(2500),
++    cl::desc("Control the amount of inlining to perform (default = 450)"));
+ 
+ static cl::opt<int> HintThreshold(
+-    "inlinehint-threshold", cl::Hidden, cl::init(325),
++    "inlinehint-threshold", cl::Hidden, cl::init(5000),
+     cl::desc("Threshold for inlining functions with inline hint"));
+ 
+ static cl::opt<int>
+     ColdCallSiteThreshold("inline-cold-callsite-threshold", cl::Hidden,
+-                          cl::init(45),
++                          cl::init(90),
+                           cl::desc("Threshold for inlining cold callsites"));
+ 
+ static cl::opt<bool> InlineEnableCostBenefitAnalysis(
+@@ -136,15 +136,15 @@ static cl::opt<uint64_t> HotCallSiteRelFreq(
+              "profile information."));
+ 
+ static cl::opt<int>
+-    InstrCost("inline-instr-cost", cl::Hidden, cl::init(5),
++    InstrCost("inline-instr-cost", cl::Hidden, cl::init(1),
+               cl::desc("Cost of a single instruction when inlining"));
+ 
+ static cl::opt<int>
+-    MemAccessCost("inline-memaccess-cost", cl::Hidden, cl::init(0),
++    MemAccessCost("inline-memaccess-cost", cl::Hidden, cl::init(1),
+                   cl::desc("Cost of load/store instruction when inlining"));
+ 
+ static cl::opt<int> CallPenalty(
+-    "inline-call-penalty", cl::Hidden, cl::init(25),
++    "inline-call-penalty", cl::Hidden, cl::init(5),
+     cl::desc("Call penalty that is applied per callsite when inlining"));
+ 
+ static cl::opt<size_t>
+diff --git a/llvm/lib/Passes/PassBuilderPipelines.cpp b/llvm/lib/Passes/PassBuilderPipelines.cpp
+index 6f36bdad780a..2de4d0fda7f9 100644
+--- a/llvm/lib/Passes/PassBuilderPipelines.cpp
++++ b/llvm/lib/Passes/PassBuilderPipelines.cpp
+@@ -232,7 +232,7 @@ static cl::opt<bool> EnablePGOForceFunctionAttrs(
+     cl::init(false));
+ 
+ static cl::opt<bool>
+-    EnableHotColdSplit("hot-cold-split",
++    EnableHotColdSplit("hot-cold-split",                      
+                        cl::desc("Enable hot-cold splitting pass"));
+ 
+ static cl::opt<bool> EnableIROutliner("ir-outliner", cl::init(false),
+@@ -577,7 +577,7 @@ PassBuilder::buildFunctionSimplificationPipeline(OptimizationLevel Level,
+   }
+ 
+   // Speculative execution if the target has divergent branches; otherwise nop.
+-  FPM.addPass(SpeculativeExecutionPass(/* OnlyIfDivergentTarget =*/true));
++  //FPM.addPass(SpeculativeExecutionPass(/* OnlyIfDivergentTarget =*/true));
+ 
+   // Optimize based on known information about branches, and cleanup afterward.
+   FPM.addPass(JumpThreadingPass());
+@@ -1528,8 +1528,8 @@ PassBuilder::buildModuleOptimizationPipeline(OptimizationLevel Level,
+   // Split out cold code. Splitting is done late to avoid hiding context from
+   // other optimizations and inadvertently regressing performance. The tradeoff
+   // is that this has a higher code size cost than splitting early.
+-  if (EnableHotColdSplit && !LTOPreLink)
+-    MPM.addPass(HotColdSplittingPass());
++  // if (EnableHotColdSplit && !LTOPreLink)
++  //   MPM.addPass(HotColdSplittingPass());
+ 
+   // Search the code for similar regions of code. If enough similar regions can
+   // be found where extracting the regions into their own function will decrease
+@@ -2017,8 +2017,8 @@ PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level,
+   MPM.addPass(LowerTypeTestsPass(nullptr, nullptr, true));
+ 
+   // Enable splitting late in the FullLTO post-link pipeline.
+-  if (EnableHotColdSplit)
+-    MPM.addPass(HotColdSplittingPass());
++  // if (EnableHotColdSplit)
++  //   MPM.addPass(HotColdSplittingPass());
+ 
+   // Add late LTO optimization passes.
+   FunctionPassManager LateFPM;
+diff --git a/llvm/lib/Target/RISCV/RISCVISelLowering.cpp b/llvm/lib/Target/RISCV/RISCVISelLowering.cpp
+index badbb4259974..4a51d73f7a70 100644
+--- a/llvm/lib/Target/RISCV/RISCVISelLowering.cpp
++++ b/llvm/lib/Target/RISCV/RISCVISelLowering.cpp
+@@ -21580,8 +21580,9 @@ bool RISCVTargetLowering::isIntDivCheap(EVT VT, AttributeList Attr) const {
+   // When aggressively optimizing for code size, we prefer to use a div
+   // instruction, as it is usually smaller than the alternative sequence.
+   // TODO: Add vector division?
+-  bool OptSize = Attr.hasFnAttr(Attribute::MinSize);
+-  return OptSize && !VT.isVector();
++  // bool OptSize = Attr.hasFnAttr(Attribute::MinSize);
++  // return OptSize && !VT.isVector();
++  return true;
+ }
+ 
+ bool RISCVTargetLowering::preferScalarizeSplat(SDNode *N) const {
+diff --git a/llvm/lib/Target/RISCV/RISCVTargetMachine.cpp b/llvm/lib/Target/RISCV/RISCVTargetMachine.cpp
+index 21fbf47875e6..c492ae87679f 100644
+--- a/llvm/lib/Target/RISCV/RISCVTargetMachine.cpp
++++ b/llvm/lib/Target/RISCV/RISCVTargetMachine.cpp
+@@ -91,7 +91,7 @@ static cl::opt<bool>
+ static cl::opt<bool>
+     EnableLoopDataPrefetch("riscv-enable-loop-data-prefetch", cl::Hidden,
+                            cl::desc("Enable the loop data prefetch pass"),
+-                           cl::init(true));
++                           cl::init(false));
+ 
+ static cl::opt<bool> EnableMISchedLoadClustering(
+     "riscv-misched-load-clustering", cl::Hidden,
+@@ -420,8 +420,8 @@ void RISCVPassConfig::addIRPasses() {
+   addPass(createAtomicExpandLegacyPass());
+ 
+   if (getOptLevel() != CodeGenOptLevel::None) {
+-    if (EnableLoopDataPrefetch)
+-      addPass(createLoopDataPrefetchPass());
++    // if (EnableLoopDataPrefetch)
++    //   addPass(createLoopDataPrefetchPass());
+ 
+     addPass(createRISCVGatherScatterLoweringPass());
+     addPass(createInterleavedAccessPass());
+diff --git a/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp b/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp
+index 5a92d6bab31a..01624fe2628a 100644
+--- a/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp
++++ b/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp
+@@ -762,6 +762,7 @@ InstructionCost RISCVTTIImpl::getStridedMemoryOpCost(
+ // for the respective intrinsics.  The costs in this table are simply
+ // instruction counts with the following adjustments made:
+ // * One vsetvli is considered free.
++// TODO
+ static const CostTblEntry VectorIntrinsicCostTable[]{
+     {Intrinsic::floor, MVT::f32, 9},
+     {Intrinsic::floor, MVT::f64, 9},
+@@ -1381,6 +1382,12 @@ InstructionCost RISCVTTIImpl::getMemoryOpCost(unsigned Opcode, Type *Src,
+                                               TTI::TargetCostKind CostKind,
+                                               TTI::OperandValueInfo OpInfo,
+                                               const Instruction *I) {
++  if (!Src->isVectorTy()) {
++    unsigned align = Alignment ? Alignment->value() : Src->getScalarSizeInBits() / 8;
++    if (Opcode == Instruction::Load || Opcode == Instruction::Store) {
++      return align < 4 ? 12 : 1;
++    }
++  }
+   EVT VT = TLI->getValueType(DL, Src, true);
+   // Type legalization can't handle structs
+   if (VT == MVT::Other)
+@@ -1390,9 +1397,7 @@ InstructionCost RISCVTTIImpl::getMemoryOpCost(unsigned Opcode, Type *Src,
+   InstructionCost Cost = 0;
+   if (Opcode == Instruction::Store && OpInfo.isConstant())
+     Cost += getStoreImmCost(Src, OpInfo, CostKind);
+-  InstructionCost BaseCost =
+-    BaseT::getMemoryOpCost(Opcode, Src, Alignment, AddressSpace,
+-                           CostKind, OpInfo, I);
++  InstructionCost BaseCost = 1;
+   // Assume memory ops cost scale with the number of vector registers
+   // possible accessed by the instruction.  Note that BasicTTI already
+   // handles the LT.first term for us.
+@@ -1683,6 +1688,39 @@ InstructionCost RISCVTTIImpl::getArithmeticInstrCost(
+   // Legalize the type.
+   std::pair<InstructionCost, MVT> LT = getTypeLegalizationCost(Ty);
+ 
++  if (!LT.second.isVector()) {
++    switch (Opcode) {
++      // 1-cycle operations
++      case Instruction::Add:
++      case Instruction::Sub:
++      case Instruction::Mul:
++      case Instruction::Shl:
++        return 1;
++      // 2-cycle operations
++      case Instruction::And:
++      case Instruction::Or:
++      case Instruction::Xor:
++      case Instruction::UDiv:
++      case Instruction::SDiv:
++      case Instruction::URem:
++      case Instruction::SRem:
++      case Instruction::LShr:
++      case Instruction::AShr:
++        return 2;
++      // Floating point is more expensive (60 - 140 cycles, but we use something lower here)
++      case Instruction::FAdd:
++      case Instruction::FSub:
++      case Instruction::FMul:
++      case Instruction::FDiv:
++      case Instruction::FRem:
++        return 5;
++      default:
++        printf("In getArithmeticInstrCost2: unknown %d\n", Opcode);
++        break;
++    }
++    return BaseT::getArithmeticInstrCost(Opcode, Ty, CostKind, Op1Info, Op2Info,
++                                         Args, CxtI);
++  }
+   // TODO: Handle scalar type.
+   if (!LT.second.isVector())
+     return BaseT::getArithmeticInstrCost(Opcode, Ty, CostKind, Op1Info, Op2Info,

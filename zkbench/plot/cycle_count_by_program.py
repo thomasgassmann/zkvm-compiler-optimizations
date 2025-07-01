@@ -36,7 +36,7 @@ def plot_cycle_count_by_program(
                     dir, program, zkvm, baseline_profile
                 )
                 if relative:
-                    current_profile.append(cycle_count / cycle_count_baseline)
+                    current_profile.append((cycle_count - cycle_count_baseline) / cycle_count_baseline * 100)
                 else:
                     current_profile.append(cycle_count)
                     current_baseline.append(cycle_count_baseline)
@@ -60,6 +60,7 @@ def plot_cycle_count_by_program(
         if not relative
         else [profile]
     )
+    y_axis = "Change in Cycle Count (relative to baseline)" if relative else "Cycle Count"
     if plotted_zkvm is not None:
         plot_sorted(
             (
@@ -72,7 +73,7 @@ def plot_cycle_count_by_program(
             ),
             programs,
             title,
-            "Cycle Count",
+            y_axis,
             series_labels,
         )
     else:
@@ -87,6 +88,6 @@ def plot_cycle_count_by_program(
             ),
             programs,
             title,
-            "Cycle Count",
+            y_axis,
             series_labels,
         )
