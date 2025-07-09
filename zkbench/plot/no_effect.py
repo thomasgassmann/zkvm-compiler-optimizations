@@ -26,7 +26,9 @@ def plot_no_effect(
         if program_group or program
         else get_programs()
     )
-    title = get_title("Percentage of programs where optimization had no effect", [", ".join(zkvms)])
+    title = get_title(
+        "Percentage of programs where optimization had no effect", [", ".join(zkvms)]
+    )
     profiles = []
     values = []
     for profile in get_default_profiles_ids():
@@ -34,7 +36,7 @@ def plot_no_effect(
             continue
 
         try:
-            values.append(
+            current = (
                 len(
                     [
                         x
@@ -51,6 +53,15 @@ def plot_no_effect(
                 / (len(zkvms) * len(programs))
                 * 100
             )
+            if current == 100:
+                logging.warning(
+                    f"Profile {profile} has no effect on all programs for zkvm {zkvm}"
+                )
+            elif current >= 90:
+                logging.warning(
+                    f"Profile {profile} has no effect on more than 90% of all programs for zkvm {zkvm}"
+                )
+            values.append(current)
             profiles.append(profile)
         except FileNotFoundError:
             logging.warning(f"Data for profile {profile} not found")

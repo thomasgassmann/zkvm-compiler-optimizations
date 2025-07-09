@@ -76,9 +76,9 @@ def plot_cycle_count(
         [program, program_group],
     )
     y_label = (
-        "Relative cycle count change (%)"
+        "Relative change in cycle count (%)"
         if not show_x86
-        else "Relative cycle count/x86 exec time change (%)"
+        else "Relative change in cycle count/x86 exec time (%)"
     )
     if global_average:
         for i in range(len(values)):
