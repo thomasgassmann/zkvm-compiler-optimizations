@@ -31,6 +31,9 @@ def plot_no_effect(
     )
     profiles = []
     values = []
+    logging.info(
+        f"Number of default profiles: {len(get_default_profiles_ids())}"
+    )
     for profile in get_default_profiles_ids():
         if profile == BASELINE:
             continue

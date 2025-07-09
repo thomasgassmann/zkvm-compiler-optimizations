@@ -60,7 +60,8 @@
             "passes": [
                 "globalsplit"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "globalopt": {
             "cflags": "-O0",
@@ -92,7 +93,8 @@
             "passes": [
                 "loop-sink"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "loop-data-prefetch": {
             "cflags": "-O0",
@@ -100,7 +102,8 @@
             "passes": [
                 "loop-data-prefetch"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "loop-extract": {
             "cflags": "-O0",
@@ -164,7 +167,8 @@
             "passes": [
                 "mergeicmps"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "mldst-motion": {
             "cflags": "-O0",
@@ -196,7 +200,8 @@
             "passes": [
                 "partially-inline-libcalls"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "sroa": {
             "cflags": "-O0",
@@ -244,7 +249,8 @@
             "passes": [
                 "wholeprogramdevirt"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "sccp": {
             "cflags": "-O0",
@@ -459,7 +465,8 @@
             "passes": [
                 "extract-blocks"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "break-crit-edges": {
             "cflags": "-O0",
@@ -475,7 +482,8 @@
             "passes": [
                 "constmerge"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "dce": {
             "cflags": "-O0",
@@ -507,7 +515,8 @@
             "passes": [
                 "lower-global-dtors"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "lower-invoke": {
             "cflags": "-O0",
@@ -515,7 +524,8 @@
             "passes": [
                 "lower-invoke"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "lower-switch": {
             "cflags": "-O0",
@@ -531,7 +541,8 @@
             "passes": [
                 "rel-lookup-table-converter"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "strip-dead-debug-info": {
             "cflags": "-O0",
@@ -539,7 +550,8 @@
             "passes": [
                 "strip-dead-debug-info"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "strip-dead-prototypes": {
             "cflags": "-O0",
@@ -547,7 +559,8 @@
             "passes": [
                 "strip-dead-prototypes"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "bounds-checking": {
             "cflags": "-O0",
@@ -563,7 +576,8 @@
             "passes": [
                 "callsite-splitting"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "consthoist": {
             "cflags": "-O0",
@@ -579,7 +593,8 @@
             "passes": [
                 "div-rem-pairs"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "early-cse": {
             "cflags": "-O0",
@@ -595,7 +610,8 @@
             "passes": [
                 "float2int"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "gvn-hoist": {
             "cflags": "-O0",
@@ -619,7 +635,8 @@
             "passes": [
                 "guard-widening"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "hotcoldsplit": {
             "cflags": "-O0",
@@ -651,7 +668,8 @@
             "passes": [
                 "libcalls-shrinkwrap"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "loop-idiom": {
             "cflags": "-O0",
@@ -668,7 +686,8 @@
             "passes": [
                 "nary-reassociate"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "separate-const-offset-from-gep": {
             "cflags": "-O0",
@@ -684,7 +703,8 @@
             "passes": [
                 "strip-gc-relocates"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "synthetic-counts-propagation": {
             "cflags": "-O0",
@@ -692,7 +712,8 @@
             "passes": [
                 "synthetic-counts-propagation"
             ],
-            "prepopulate_passes": false
+            "prepopulate_passes": false,
+            "no_default": true
         },
         "o0": {
             "cflags": "-O0",
