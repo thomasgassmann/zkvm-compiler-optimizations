@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from typing import Callable
+import click
 from scipy import stats
 
 from matplotlib import pyplot as plt
@@ -179,10 +180,23 @@ def get_average_improvement_over_baseline(
     return (-(compared - baseline) / baseline) * 100
 
 
+def _get_config():
+    parent_context = click.get_current_context().parent.params
+    if "violin" in parent_context:
+        violin = parent_context["violin"]
+    else:
+        violin = False
+    if "vertical" in parent_context:
+        vertical = parent_context["vertical"]
+    else:
+        vertical = False
+    return vertical, violin
+
+
 def plot_grouped_boxplot(
-    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False, violin=False, vertical=False
+    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False
 ):
-    
+    vertical, violin = _get_config()
     num_profiles = len(labels)
     num_series = len(values)
 
@@ -333,7 +347,8 @@ def plot_scatter_by_zkvm(
     show_or_save_plot()
 
 
-def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False, vertical=True):
+def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False):
+    vertical, _ = _get_config()
     sorted_indices = np.argsort(values[0])[::-1]
     profiles_sorted = [labels[i] for i in sorted_indices]
     increase_values_sorted = [
