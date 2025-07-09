@@ -117,12 +117,17 @@ def duration_cli(program: list[str], profile: str, program_group: str | None):
     "--global-average", type=bool, is_flag=True, required=False, default=False
 )
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
+@click.option(
+    "--drop-below", type=float, required=False, default=None,
+    help="Drop values below this threshold (in percent)",
+)
 def cycle_count_cli(
     program: str | None,
     program_group: str | None,
     profile: list[str] | None,
     global_average: bool,
     show_x86: bool,
+    drop_below: float | None = None,
 ):
     dir = click.get_current_context().parent.params["dir"]
     plot_cycle_count(
@@ -132,6 +137,7 @@ def cycle_count_cli(
         list(profile) if profile else None,
         global_average,
         show_x86,
+        drop_below=drop_below,
     )
 
 

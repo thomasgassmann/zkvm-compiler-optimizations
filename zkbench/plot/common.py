@@ -347,7 +347,23 @@ def plot_scatter_by_zkvm(
     show_or_save_plot()
 
 
-def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False):
+def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False, drop_below=None):
+    if drop_below is not None:
+        # if the value is below the threshold in all series, drop this value
+        new_labels = []
+        new_values = []
+        for i, label in enumerate(labels):
+            if np.any([np.abs(values[series_idx][i]) >= drop_below for series_idx in range(len(values))]):
+                new_labels.append(label)
+                for j in range(len(values)):
+                    if len(new_values) <= j:
+                        new_values.append([])
+
+                    new_values[j].append(values[j][i])
+        labels = new_labels
+        values = new_values
+
+
     vertical, _ = _get_config()
     sorted_indices = np.argsort(values[0])[::-1]
     profiles_sorted = [labels[i] for i in sorted_indices]

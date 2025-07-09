@@ -31,6 +31,7 @@ def plot_cycle_count(
     profiles: list[str] | None = None,
     global_average: bool = False,
     show_x86: bool = False,
+    drop_below: float | None = None,
 ):
     profiles = get_default_profiles_ids() if profiles is None else profiles
     if BASELINE in profiles:
@@ -83,6 +84,11 @@ def plot_cycle_count(
     if global_average:
         for i in range(len(values)):
             values[i] = np.mean(values[i], axis=1)
-        plot_sorted(values, profiles, title, y_label, series)
+        plot_sorted(values, profiles, title, y_label, series, drop_below=drop_below)
     else:
+        if drop_below:
+            raise ValueError(
+                "drop_below is not supported for grouped boxplots"
+            )
+
         plot_grouped_boxplot(values, profiles, title, y_label, series)
