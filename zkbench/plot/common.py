@@ -180,7 +180,7 @@ def get_average_improvement_over_baseline(
 
 
 def plot_grouped_boxplot(
-    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False, violin=False
+    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False, violin=False, vertical=False
 ):
     
     num_profiles = len(labels)
@@ -194,7 +194,10 @@ def plot_grouped_boxplot(
     sorted_labels = [labels[i] for i in sorted_indices]
     sorted_values = [[series[i] for i in sorted_indices] for series in values]
 
-    _, ax = plt.subplots(figsize=(10, 6))
+    if vertical:
+        _, ax = plt.subplots(figsize=(6, 10))
+    else:
+        _, ax = plt.subplots(figsize=(10, 6))
     
     if violin:
         data_list = []
@@ -210,8 +213,12 @@ def plot_grouped_boxplot(
         
         df = pd.DataFrame(data_list)
         if not df.empty:
-            sns.violinplot(data=df, x='profile', y='value', hue='series', ax=ax)
-            ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+            if vertical:
+                sns.violinplot(data=df, y='profile', x='value', hue='series', ax=ax, orient='h')
+                ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
+            else:
+                sns.violinplot(data=df, x='profile', y='value', hue='series', ax=ax)
+                ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     else:
         box_artists = []
         if num_series > 1:
@@ -230,6 +237,7 @@ def plot_grouped_boxplot(
                 widths=bar_width,
                 patch_artist=True,
                 manage_ticks=False,
+                vert=not vertical,
             )
             color = plt.cm.tab10(series_idx)
             for box in bp["boxes"]:
@@ -242,8 +250,12 @@ def plot_grouped_boxplot(
                 # if the data array has exactly one element, the box collapses to a line
                 # add a small scatter marker to make it more visible
                 if len(set(arr)) == 1:
-                    x = positions[i]
-                    y = arr[0]
+                    pos = positions[i]
+                    val = arr[0]
+                    if vertical:
+                        x, y = val, pos
+                    else:
+                        x, y = pos, val
                     ax.scatter(
                         [x],
                         [y],
@@ -253,16 +265,27 @@ def plot_grouped_boxplot(
                         zorder=3,
                     )
 
-        ax.set_xticks(np.arange(num_profiles))
-        ax.set_xticklabels(sorted_labels, rotation=45, ha="right")
+        if vertical:
+            ax.set_yticks(np.arange(num_profiles))
+            ax.set_yticklabels(sorted_labels)
+        else:
+            ax.set_xticks(np.arange(num_profiles))
+            ax.set_xticklabels(sorted_labels, rotation=45, ha="right")
         ax.legend(box_artists, series_labels)
 
     ax.set_title(title)
-    ax.set_ylabel(y_label)
-    if log_scale:
-        ax.set_yscale("log")
-    ax.grid(axis="y", linestyle="--", alpha=0.7)
-    ax.grid(axis="x", linestyle="--", alpha=0.5)
+    if vertical:
+        ax.set_xlabel(y_label)
+        if log_scale:
+            ax.set_xscale("log")
+        ax.grid(axis="x", linestyle="--", alpha=0.7)
+        ax.grid(axis="y", linestyle="--", alpha=0.5)
+    else:
+        ax.set_ylabel(y_label)
+        if log_scale:
+            ax.set_yscale("log")
+        ax.grid(axis="y", linestyle="--", alpha=0.7)
+        ax.grid(axis="x", linestyle="--", alpha=0.5)
     plt.tight_layout()
     show_or_save_plot()
 
@@ -310,45 +333,72 @@ def plot_scatter_by_zkvm(
     show_or_save_plot()
 
 
-def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False):
+def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False, vertical=True):
     sorted_indices = np.argsort(values[0])[::-1]
     profiles_sorted = [labels[i] for i in sorted_indices]
     increase_values_sorted = [
         [values[j][i] for i in sorted_indices] for j in range(len(values))
     ]
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    x_pos = np.arange(len(profiles_sorted))
-
+    if vertical:
+        fig, ax = plt.subplots(figsize=(6, 10))
+    else:
+        fig, ax = plt.subplots(figsize=(10, 6))
+    
+    pos = np.arange(len(profiles_sorted))
     bar_width = 0.8 / len(values)
 
     for i in range(len(values)):
-        ax.bar(
-            x_pos + i * bar_width - (0.8 - bar_width) / 2,
-            increase_values_sorted[i],
-            width=bar_width,
-            label=series_labels[i],
-        )
+        if vertical:
+            ax.barh(
+                pos + i * bar_width - (0.8 - bar_width) / 2,
+                increase_values_sorted[i],
+                height=bar_width,
+                label=series_labels[i],
+            )
+        else:
+            ax.bar(
+                pos + i * bar_width - (0.8 - bar_width) / 2,
+                increase_values_sorted[i],
+                width=bar_width,
+                label=series_labels[i],
+            )
 
-    for x in x_pos:
-        ax.axvline(
-            x + bar_width / 2 - (0.8 - bar_width) / 2,
-            color="gray",
-            linestyle="--",
-            alpha=0.2,
-        )
+    for x in pos:
+        if vertical:
+            ax.axhline(
+                x + bar_width / 2 - (0.8 - bar_width) / 2,
+                color="gray",
+                linestyle="--",
+                alpha=0.2,
+            )
+        else:
+            ax.axvline(
+                x + bar_width / 2 - (0.8 - bar_width) / 2,
+                color="gray",
+                linestyle="--",
+                alpha=0.2,
+            )
 
-    ax.set_xticks(x_pos)
-    ax.set_xticklabels(profiles_sorted, rotation=45, ha="right")
-    ax.set_ylabel(y_label)
+    if vertical:
+        ax.set_yticks(pos)
+        ax.set_yticklabels(profiles_sorted)
+        ax.set_xlabel(y_label)
+        if log_scale:
+            ax.set_xscale("log")
+        ax.grid(axis="x", linestyle="--", alpha=0.7)
+    else:
+        ax.set_xticks(pos)
+        ax.set_xticklabels(profiles_sorted, rotation=45, ha="right")
+        ax.set_ylabel(y_label)
+        if log_scale:
+            ax.set_yscale("log")
+        ax.grid(axis="y", linestyle="--", alpha=0.7)
+    
     ax.set_title(title)
-    if log_scale:
-        ax.set_yscale("log")
 
     if any(map(lambda x: x is not None, series_labels)):
         ax.legend()
-
-    ax.grid(axis="y", linestyle="--", alpha=0.7)
 
     plt.tight_layout()
     show_or_save_plot()
