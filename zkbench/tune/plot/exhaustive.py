@@ -1,13 +1,28 @@
+import itertools
 import logging
-from matplotlib import pyplot as plt
+from matplotlib import cm, pyplot as plt
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+import matplotlib.colors as mcolors
 
-from zkbench.config import get_programs_by_group
+from zkbench.config import (
+    get_default_profiles_ids,
+    get_profile_by_name,
+    get_programs_by_group,
+)
 from zkbench.plot.common import get_title, show_or_save_plot
+from zkbench.tune.common import METRIC_NAMES, EvalResult, MetricValue
 from zkbench.tune.exhaustive import Exhaustive, ExhaustiveResult
 from zkbench.tune.plot.common import read_exhaustive_stats
+
+
+def get_pass_label(pass_name: str) -> str:
+    profiles = [get_profile_by_name(p) for p in get_default_profiles_ids()]
+    for profile in profiles:
+        if pass_name in profile.passes:
+            return profile.name
+    raise ValueError(f"Pass {pass_name} not found in any profile.")
 
 
 def plot_exhaustive_depth2(
@@ -27,6 +42,36 @@ def plot_exhaustive_depth2(
         + stats.config.function_passes
         + stats.config.module_passes
     )
+
+    known_default = list(
+        itertools.chain(
+            *[get_profile_by_name(p).passes for p in get_default_profiles_ids()]
+        )
+    )
+    new_passes = [p for p in passes if p in known_default]
+    skipped = set(passes) - set(new_passes)
+    logging.info(
+        f"Skipped {len(skipped)} passes that are not in the default profiles: {', '.join(skipped)}"
+    )
+
+    def get_relevant(res: ExhaustiveResult) -> list[MetricValue]:
+        return list(
+            filter(
+                lambda x: (
+                    x.program == program
+                    or (
+                        program_group is not None
+                        and x.program in get_programs_by_group(program_group)
+                    )
+                )
+                or (program is None and program_group is None)
+                and (x.zkvm == zkvm or zkvm is None),
+                res.eval_result.values,
+            )
+        )
+
+    passes = list(sorted(new_passes))
+
     matrix = []
     largest = 0
     smallest = float("inf")
@@ -53,20 +98,7 @@ def plot_exhaustive_depth2(
             elif res.eval_result.has_error:
                 row.append(np.nan)
             else:
-                relevant = list(
-                    filter(
-                        lambda x: (
-                            x.program == program
-                            or (
-                                program_group is not None
-                                and x.program in get_programs_by_group(program_group)
-                            )
-                        )
-                        or (program is None and program_group is None)
-                        and (x.zkvm == zkvm or zkvm is None),
-                        res.eval_result.values,
-                    )
-                )
+                relevant = get_relevant(res)
                 if any(map(lambda x: x.timeout, relevant)):
                     row.append(np.nan)
                 else:
@@ -83,8 +115,10 @@ def plot_exhaustive_depth2(
                                     f"No baseline eval result for program {s.program} and zkvm {s.zkvm}."
                                 )
                             relative_value = (
-                                s.metric - baseline_result.metric
-                            ) / baseline_result.metric * 100
+                                (s.metric - baseline_result.metric)
+                                / baseline_result.metric
+                                * 100
+                            )
                             all_values.append(relative_value)
                         mean_value = float(np.mean(all_values))
                         largest = max(largest, mean_value)
@@ -103,25 +137,30 @@ def plot_exhaustive_depth2(
 
     plt.figure(figsize=(12, 10))
 
-    cmap = sns.color_palette("coolwarm", as_cmap=True)
+    vmin = smallest / largest if not relative else smallest
+    vmax = 1 if not relative else largest
+    cmap = sns.diverging_palette(145, 300, s=60, l=60, as_cmap=True)
+    normalize = mcolors.TwoSlopeNorm(vcenter=0, vmin=vmin, vmax=vmax)
 
     mask = np.isnan(matrix)
 
+    pass_labels = [get_pass_label(p) for p in passes]
     sns.heatmap(
         matrix,
         annot=True if len(passes) <= 20 else False,
         fmt=".3f",
-        xticklabels=passes,
-        yticklabels=passes,
-        vmin=smallest / largest if not relative else largest,
-        vmax=1 if not relative else smallest,
+        xticklabels=pass_labels,
+        yticklabels=pass_labels,
+        vmin=vmin,
+        vmax=vmax,
+        norm=normalize,
         mask=mask,
         cmap=cmap,
         cbar_kws={
             "label": (
-                f"Normalized cumulative {stats.metric}"
+                f"Normalized cumulative {METRIC_NAMES[stats.metric]}"
                 if not relative
-                else f"Relative change (% {stats.metric})"
+                else f"Relative change (% {METRIC_NAMES[stats.metric]})"
             )
         },
     )
@@ -135,7 +174,12 @@ def plot_exhaustive_depth2(
     plt.yticks(rotation=0, fontsize=7)
 
     title = get_title(
-        f"Normalized cumulative {stats.metric}{' (relative)' if relative else ''}", [program, zkvm, program_group]
+        (
+            f"Normalized cumulative {METRIC_NAMES[stats.metric]}{' (relative)' if relative else ''}"
+            if not relative
+            else f"Relative change (% {METRIC_NAMES[stats.metric]})"
+        ),
+        [program, zkvm, program_group],
     )
     plt.title(title)
     plt.xlabel("Pass B")
