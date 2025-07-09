@@ -7,6 +7,8 @@ from scipy import stats
 from matplotlib import pyplot as plt
 import numpy as np
 from contextlib import contextmanager
+import seaborn as sns
+import pandas as pd
 
 from zkbench.config import (
     get_measurements,
@@ -178,8 +180,9 @@ def get_average_improvement_over_baseline(
 
 
 def plot_grouped_boxplot(
-    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False
+    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False, violin=False
 ):
+    
     num_profiles = len(labels)
     num_series = len(values)
 
@@ -192,53 +195,72 @@ def plot_grouped_boxplot(
     sorted_values = [[series[i] for i in sorted_indices] for series in values]
 
     _, ax = plt.subplots(figsize=(10, 6))
-    box_artists = []
-    if num_series > 1:
-        offsets = np.linspace(
-            -((num_series - 1) * bar_width) / 2,
-            ((num_series - 1) * bar_width) / 2,
-            num_series,
-        )
+    
+    if violin:
+        data_list = []
+        for series_idx in range(num_series):
+            for profile_idx, profile_values in enumerate(sorted_values[series_idx]):
+                if profile_values is not None and len(profile_values) > 0:
+                    for value in profile_values:
+                        data_list.append({
+                            'profile': sorted_labels[profile_idx],
+                            'series': series_labels[series_idx],
+                            'value': value
+                        })
+        
+        df = pd.DataFrame(data_list)
+        if not df.empty:
+            sns.violinplot(data=df, x='profile', y='value', hue='series', ax=ax)
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     else:
-        offsets = [0]
-    for series_idx in range(num_series):
-        positions = np.arange(num_profiles) + offsets[series_idx]
-        bp = ax.boxplot(
-            sorted_values[series_idx],
-            positions=positions,
-            widths=bar_width,
-            patch_artist=True,
-            manage_ticks=False,
-        )
-        color = plt.cm.tab10(series_idx)
-        for box in bp["boxes"]:
-            box.set(facecolor=color)
-        box_artists.append(bp["boxes"][0])
+        box_artists = []
+        if num_series > 1:
+            offsets = np.linspace(
+                -((num_series - 1) * bar_width) / 2,
+                ((num_series - 1) * bar_width) / 2,
+                num_series,
+            )
+        else:
+            offsets = [0]
+        for series_idx in range(num_series):
+            positions = np.arange(num_profiles) + offsets[series_idx]
+            bp = ax.boxplot(
+                sorted_values[series_idx],
+                positions=positions,
+                widths=bar_width,
+                patch_artist=True,
+                manage_ticks=False,
+            )
+            color = plt.cm.tab10(series_idx)
+            for box in bp["boxes"]:
+                box.set(facecolor=color)
+            box_artists.append(bp["boxes"][0])
 
-        for i, arr in enumerate(sorted_values[series_idx]):
-            if arr is None or len(arr) == 0:
-                continue
-            # if the data array has exactly one element, the box collapses to a line
-            # add a small scatter marker to make it more visible
-            if len(set(arr)) == 1:
-                x = positions[i]
-                y = arr[0]
-                ax.scatter(
-                    [x],
-                    [y],
-                    color=color,
-                    marker="o",
-                    s=50,  # size of the dot
-                    zorder=3,
-                )
+            for i, arr in enumerate(sorted_values[series_idx]):
+                if arr is None or len(arr) == 0:
+                    continue
+                # if the data array has exactly one element, the box collapses to a line
+                # add a small scatter marker to make it more visible
+                if len(set(arr)) == 1:
+                    x = positions[i]
+                    y = arr[0]
+                    ax.scatter(
+                        [x],
+                        [y],
+                        color=color,
+                        marker="o",
+                        s=50,  # size of the dot
+                        zorder=3,
+                    )
 
-    ax.set_xticks(np.arange(num_profiles))
-    ax.set_xticklabels(sorted_labels, rotation=45, ha="right")
+        ax.set_xticks(np.arange(num_profiles))
+        ax.set_xticklabels(sorted_labels, rotation=45, ha="right")
+        ax.legend(box_artists, series_labels)
+
     ax.set_title(title)
     ax.set_ylabel(y_label)
     if log_scale:
         ax.set_yscale("log")
-    ax.legend(box_artists, series_labels)
     ax.grid(axis="y", linestyle="--", alpha=0.7)
     ax.grid(axis="x", linestyle="--", alpha=0.5)
     plt.tight_layout()
