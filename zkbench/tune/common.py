@@ -16,6 +16,14 @@ METRIC_TIMEOUT = {
 }
 SAMPLED_METRICS = ["cycle-count", "exec-time"]
 
+METRIC_NAMES = {
+    "cycle-count": "Cycle Count",
+    "prove": "Prove",
+    "gas": "Gas",
+    "exec-time": "Execution Time",
+    "paging-cycle-count": "Paging Cycle Count",
+}
+
 def is_metric_parallelizable(metric: str) -> bool:
     return metric in ["cycle-count", "gas"]
 
