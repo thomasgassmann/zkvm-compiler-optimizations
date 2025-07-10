@@ -15,6 +15,7 @@ from zkbench.plot.average_improvement_compare import plot_average_improvement_co
 from zkbench.plot.average_improvement_difference import (
     plot_average_improvement_difference,
 )
+from zkbench.plot.average_improvement_zkvm import plot_average_improvement_zkvm
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
 from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_program
@@ -58,7 +59,10 @@ from zkbench.plot.x86_exec import plot_x86_exec
 )
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 @click.option(
-    "--drop-below", type=float, required=False, default=None,
+    "--drop-below",
+    type=float,
+    required=False,
+    default=None,
     help="Drop values below this threshold (in percent)",
 )
 def average_improvement_cli(
@@ -72,7 +76,53 @@ def average_improvement_cli(
 ):
     dir = click.get_current_context().parent.params["dir"]
     plot_average_improvement(
-        dir, zkvm, program, program_group, speedup, global_average, show_x86, drop_below=drop_below
+        dir,
+        zkvm,
+        program,
+        program_group,
+        speedup,
+        global_average,
+        show_x86,
+        drop_below=drop_below,
+    )
+
+
+@click.command(
+    name="average-improvement-zkvm", help="Plot average improvement compared to baseline with each zkVM being a series"
+)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+@click.option("--program", type=click.Choice(get_programs()), required=False)
+@click.option(
+    "--program-group", type=click.Choice(get_program_groups()), required=False
+)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+@click.option(
+    "--global-average", type=bool, is_flag=True, required=False, default=False
+)
+@click.option(
+    "--drop-below",
+    type=float,
+    required=False,
+    default=None,
+    help="Drop values below this threshold (in percent)",
+)
+def average_improvement_zkvm_cli(
+    measurement: str,
+    program: str | None,
+    program_group: str | None,
+    speedup: bool,
+    global_average: bool,
+    drop_below: float | None = None,
+):
+    dir = click.get_current_context().parent.params["dir"]
+    plot_average_improvement_zkvm(
+        dir,
+        measurement,
+        program,
+        program_group,
+        speedup,
+        global_average,
+        drop_below=drop_below,
     )
 
 
@@ -85,7 +135,11 @@ def average_improvement_cli(
 )
 @click.option("--single", is_flag=True, default=False, help="Plot single value")
 def average_duration_cli(
-    zkvm: str | None, measurement: str, program: str | None, profile: list[str] | None, single: bool = False
+    zkvm: str | None,
+    measurement: str,
+    program: str | None,
+    profile: list[str] | None,
+    single: bool = False,
 ):
     dir = click.get_current_context().parent.params["dir"]
     plot_average_duration(dir, zkvm, measurement, program, profile, single)
@@ -123,7 +177,10 @@ def duration_cli(program: list[str], profile: str, program_group: str | None):
 )
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 @click.option(
-    "--drop-below", type=float, required=False, default=None,
+    "--drop-below",
+    type=float,
+    required=False,
+    default=None,
     help="Drop values below this threshold (in percent)",
 )
 def cycle_count_cli(
@@ -426,9 +483,7 @@ def duration_by_program_cli(
     help="Show cycle count for some profiles by program",
 )
 @click.option("--profile", type=str, required=True)
-@click.option(
-    "--baseline-profile", type=str, required=True
-)
+@click.option("--baseline-profile", type=str, required=True)
 @click.option("--relative", is_flag=True, default=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 def cycle_count_by_program_cli(
