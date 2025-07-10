@@ -95,7 +95,7 @@ def plot_cycle_count_duration(
         profiles.remove(BASELINE)
     programs = get_programs() if program is None else [program]
     plot_scatter_by_zkvm(
-        get_title("Cycle count vs duration", [measurement, program]),
+        get_title("Cycle count vs. duration", [measurement, program]),
         lambda zkvm: _get_values(dir, zkvm, programs, profiles, measurement, relative),
         "Cycle count",
         "Duration (ms)",

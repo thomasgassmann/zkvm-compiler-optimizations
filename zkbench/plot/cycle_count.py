@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from zkbench.config import (
     get_default_profiles_ids,
@@ -83,7 +84,32 @@ def plot_cycle_count(
     )
     if global_average:
         for i in range(len(values)):
+            pos = {}
+            neg = {}
+            for j in range(len(values[i])):
+                count_positives = len(
+                    [v for v in values[i][j] if v < 0]
+                )
+                count_negatives = len(
+                    [v for v in values[i][j] if v > 0]
+                )
+                pos.setdefault(profiles[j], 0)
+                pos[profiles[j]] += count_positives
+                neg.setdefault(profiles[j], 0)
+                neg[profiles[j]] += count_negatives
+            for j in range(len(profiles)):
+                logging.info(
+                    f"Number of programs for {series[i]}-{profiles[j]}: "
+                    f"{pos[profiles[j]]} positive, {neg[profiles[j]]} negative"
+                )
+
+
+        for i in range(len(values)):
             values[i] = np.mean(values[i], axis=1)
+            for j in range(len(values[i])):
+                logging.info(
+                    f"Average cycle count change for {series[i]}-{profiles[j]}: {values[i][j]}"
+                )
         plot_sorted(values, profiles, title, y_label, series, drop_below=drop_below)
     else:
         if drop_below:

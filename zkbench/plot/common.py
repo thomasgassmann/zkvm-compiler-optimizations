@@ -252,6 +252,7 @@ def plot_grouped_boxplot(
                 patch_artist=True,
                 manage_ticks=False,
                 vert=not vertical,
+                showfliers=False,
             )
             color = plt.cm.tab10(series_idx)
             for box in bp["boxes"]:

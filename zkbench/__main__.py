@@ -1,5 +1,6 @@
 import logging
 import click
+from matplotlib import pyplot as plt
 
 from zkbench.asm import show_asm
 from zkbench.common import coro, setup_logger
@@ -288,10 +289,13 @@ def run_single_cli(program: str, zkvm: str, elf: str, force: bool):
 @click.group(name="plot")
 @click.option("--dir", nargs=1, required=True, help="Directory with Criterion data")
 @click.option("--remove-ox", required=False, is_flag=True, default=False)
+@click.option("--only-ox", required=False, is_flag=True, default=False)
 @click.option("--violin", required=False, is_flag=True, default=False)
 @click.option("--vertical", required=False, is_flag=True, default=False)
-def plot_cli(dir: str, remove_ox: bool, violin: bool, vertical: bool):
-    pass
+@click.option("--font-size", type=int, default=None, help="Font size for plots")
+def plot_cli(dir: str, remove_ox: bool, only_ox: bool, violin: bool, vertical: bool, font_size: int | None):
+    if font_size is not None:
+        plt.rcParams.update({'font.size': font_size})
 
 
 @click.group(name="plot-tune")

@@ -18,6 +18,7 @@ def plot_average_improvement(
     speedup: bool,
     global_average: bool,
     show_x86: bool = False,
+    drop_below: float | None = None,
 ):
     def f(dir, program, zkvm, profile, measurement):
         return get_average_improvement_over_baseline(
@@ -80,8 +81,12 @@ def plot_average_improvement(
             title,
             y_axis,
             ["prove", "exec"] if not show_x86 else ["prove", "exec", "exec x86"],
+            drop_below=drop_below,
         )
     else:
+        if drop_below is not None:
+            raise NotImplementedError("not supported for boxplots")
+
         plot_grouped_boxplot(
             (
                 [relative_improvements_prove, relative_improvements_exec]
