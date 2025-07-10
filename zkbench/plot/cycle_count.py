@@ -106,7 +106,8 @@ def plot_cycle_count(
 
         for i in range(len(values)):
             values[i] = np.mean(values[i], axis=1)
-            for j in range(len(values[i])):
+            c = sorted([(j, value) for j, value in enumerate(values[i])], key=lambda x: x[1])
+            for (j, _) in c:
                 logging.info(
                     f"Average cycle count change for {series[i]}-{profiles[j]}: {values[i][j]}"
                 )
