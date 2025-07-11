@@ -404,9 +404,9 @@ def improvement_single_program_cli(
     name="duration-single-program",
     help="Show raw duration for some profile compared to some other baseline profile for a single program",
 )
-@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option("--program", type=str, required=True)
 @click.option(
-    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=True
+    "--profile", type=str, required=True, multiple=True
 )
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 def duration_single_program_cli(
