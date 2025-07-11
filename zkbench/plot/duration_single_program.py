@@ -40,4 +40,4 @@ def plot_duration_for_single_program(
                 labels.append(f"{zkvm} ({measurement})")
 
     y_axis = "Duration (ms)"
-    plot_grouped_boxplot(improvements, labels, title, y_axis, profiles)
+    plot_grouped_boxplot(improvements, labels, title, y_axis, profiles, show_fliers=True)

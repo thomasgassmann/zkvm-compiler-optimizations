@@ -194,7 +194,7 @@ def _get_config():
 
 
 def plot_grouped_boxplot(
-    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False
+    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False, show_fliers=False
 ):
     vertical, violin = _get_config()
     num_profiles = len(labels)
@@ -252,7 +252,7 @@ def plot_grouped_boxplot(
                 patch_artist=True,
                 manage_ticks=False,
                 vert=not vertical,
-                showfliers=False,
+                showfliers=show_fliers,
             )
             color = plt.cm.tab10(series_idx)
             for box in bp["boxes"]:
