@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from zkbench.config import get_default_profiles_ids
 from zkbench.plot.common import (
@@ -51,7 +52,7 @@ def plot_average_improvement(
                 relative_improvements_exec_x86, axis=1
             )
 
-    y_axis = "speedup" if speedup else "% faster"
+    y_axis = "speedup" if speedup else "speedup (%)"
     if global_average or len(relative_improvements_exec[0]) == 1:
         # if we only have one value, no need to plot boxplot
         if not global_average:
@@ -64,6 +65,19 @@ def plot_average_improvement(
             exec_values = relative_improvements_exec
             if show_x86:
                 exec_values_x86 = relative_improvements_exec_x86
+
+        if show_x86:
+            for pass_name, x86, prove_value, exec_value in zip(
+                profiles,
+                exec_values_x86,
+                prove_values,
+                exec_values,
+            ):
+                if (x86 > 0) != (prove_value > 0 and exec_value > 0) and abs(x86 - prove_value) >= 1 and abs(x86 - exec_value) >= 1:
+                    logging.info(
+                        f"Opposite impact for {pass_name}: {x86} (x86) vs {prove_value} (prove) and {exec_value} (exec)"
+                    )
+
         plot_sorted(
             (
                 [

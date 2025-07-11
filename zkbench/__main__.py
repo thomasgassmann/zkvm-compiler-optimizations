@@ -300,8 +300,10 @@ def plot_cli(dir: str, remove_ox: bool, only_ox: bool, violin: bool, vertical: b
 
 
 @click.group(name="plot-tune")
-def plot_tune_cli():
-    pass
+@click.option("--font-size", type=int, default=None, help="Font size for plots")
+def plot_tune_cli(font_size: int | None):
+    if font_size is not None:
+        plt.rcParams.update({'font.size': font_size})
 
 
 @click.group(name="tune")

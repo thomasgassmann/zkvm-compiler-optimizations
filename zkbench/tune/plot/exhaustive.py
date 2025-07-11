@@ -1,3 +1,4 @@
+import heapq
 import itertools
 import logging
 from matplotlib import cm, pyplot as plt
@@ -22,6 +23,7 @@ def get_pass_label(pass_name: str) -> str:
     for profile in profiles:
         if pass_name in profile.passes:
             return profile.name
+    return ""
     raise ValueError(f"Pass {pass_name} not found in any profile.")
 
 
@@ -75,6 +77,7 @@ def plot_exhaustive_depth2(
     matrix = []
     largest = 0
     smallest = float("inf")
+    heap = []
     for pass_a in passes:
         row = []
         for pass_b in passes:
@@ -123,6 +126,9 @@ def plot_exhaustive_depth2(
                         mean_value = float(np.mean(all_values))
                         largest = max(largest, mean_value)
                         smallest = min(smallest, mean_value)
+
+                        heapq.heappush(heap, (mean_value, pass_a, pass_b))
+
                         row.append(mean_value)
                     else:
                         s = sum(map(lambda x: x.metric, relevant))
@@ -130,6 +136,12 @@ def plot_exhaustive_depth2(
                         smallest = min(smallest, s)
                         row.append(s)
         matrix.append(row)
+
+    for _ in range(len(heap)):
+        mean_value, pass_a, pass_b = heapq.heappop(heap)
+        logging.info(
+            f"Passes {pass_a} and {pass_b} have value {mean_value:.3f}"
+        )
 
     matrix = np.array(matrix)
     if not relative:
@@ -156,13 +168,6 @@ def plot_exhaustive_depth2(
         norm=normalize,
         mask=mask,
         cmap=cmap,
-        cbar_kws={
-            "label": (
-                f"Normalized cumulative {METRIC_NAMES[stats.metric]}"
-                if not relative
-                else f"Relative change (% {METRIC_NAMES[stats.metric]})"
-            )
-        },
     )
 
     for i in range(len(passes)):

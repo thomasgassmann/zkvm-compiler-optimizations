@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 from typing import Counter
@@ -89,6 +90,7 @@ def plot_genetic_individual(
 
     zkvms = get_zkvms() if zkvm is None else [zkvm]
     for zkvm in zkvms:
+        outperformers = []
         program_values = []
         for program in programs:
             stats = read_genetic_stats(
@@ -103,7 +105,11 @@ def plot_genetic_individual(
                 baseline = max(stats_values)
             relative_values = [v / baseline for v in stats_values if v > 0]
             program_values.append(relative_values)
-
+            if any(v < 1 for v in relative_values):
+                logging.info(
+                    f"Program {program} on zkvm {zkvm} has values below baseline: {min(relative_values)}"
+                )
+                outperformers.append(min(relative_values))
         if average_programs:
             least_number_of_iterations = min([len(values) for values in program_values])
             program_values = [
@@ -118,6 +124,7 @@ def plot_genetic_individual(
                     label=f"{program} ({zkvm})",
                     marker="o",
                 )
+        logging.info(f"Outperformers for {zkvm}: {np.average(outperformers)}")
 
     plt.legend()
     plt.xlabel("Iteration")

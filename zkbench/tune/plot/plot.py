@@ -77,10 +77,11 @@ def plot_exhaustive_depth2_cli(stats: str, program: str | None, zkvm: str | None
 @click.option("--program", type=click.Choice(get_programs()), required=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
 @click.option("--response", type=click.Choice(["cumulative", "relative-avg"]), default="cumulative")
-def plot_ffd1d_cli(stats: str, program: str | None, zkvm: str | None, response: str = "cumulative"):
+@click.option("--drop-below", type=float, default=0.0, help="Drop effects below this value")
+def plot_ffd1d_cli(stats: str, program: str | None, zkvm: str | None, response: str = "cumulative", drop_below: float = 0.0):
     if not os.path.exists(stats):
         raise click.ClickException(f"File {stats} does not exist.")
-    plot_ffd1d(stats, program, zkvm, response)
+    plot_ffd1d(stats, program, zkvm, response, drop_below=drop_below)
 
 
 @click.command(name="ffd-2d")

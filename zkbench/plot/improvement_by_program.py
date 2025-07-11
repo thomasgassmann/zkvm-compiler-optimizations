@@ -1,4 +1,6 @@
 import logging
+
+import numpy as np
 from zkbench.config import get_programs, get_zkvms
 from zkbench.plot.common import (
     get_average_improvement_over_baseline,
@@ -23,7 +25,7 @@ def plot_improvement_by_program(
         )
 
     title = get_title(
-        f"Average improvement for {profile} compared to {baseline_profile}",
+        f"Improvement compared to {baseline_profile}",
         [],
     )
 
@@ -31,12 +33,13 @@ def plot_improvement_by_program(
     relative_improvements_exec = []
     relative_improvements_exec_x86 = []
     programs = []
+    zkvms = get_zkvms()
     for program in get_programs():
         err = False
         current_improvements_prove = []
         current_improvements_exec = []
         current_improvements_exec_x86 = []
-        for zkvm in get_zkvms():
+        for zkvm in zkvms:
             try:
                 p = f(dir, program, zkvm, "prove")
                 e = f(dir, program, zkvm, "exec")
@@ -58,7 +61,12 @@ def plot_improvement_by_program(
         relative_improvements_exec.append(current_improvements_exec)
         relative_improvements_exec_x86.append(current_improvements_exec_x86)
 
-    y_axis = "speedup" if speedup else "% faster"
+    logging.info("All values (prove, %s, %s): %s", zkvms, programs, relative_improvements_prove)
+    logging.info("All values (exec, %s, %s): %s", zkvms, programs, relative_improvements_exec)
+    logging.info("Prove speedups (%s): %s", zkvms, np.mean(relative_improvements_prove, axis=0))
+    logging.info("Exec speedups (%s): %s", zkvms, np.mean(relative_improvements_exec, axis=0))
+
+    y_axis = "speedup" if speedup else "speedup (%)"
     plot_grouped_boxplot(
         (
             [relative_improvements_prove, relative_improvements_exec]

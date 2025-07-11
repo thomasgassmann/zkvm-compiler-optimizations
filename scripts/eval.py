@@ -6,7 +6,7 @@ from PIL import Image
 import asyncio
 import matplotlib.pyplot as plt
 
-a = "/home/thomas/git/thesis/benchmarks/results/a/out/criterion"
+a = "/home/thomas/Downloads/k/out/criterion"
 # a = "/run/user/1000/gvfs/sftp:host=prove1/home/user/git/thesis/target/criterion"
 # a = "/run/user/1000/gvfs/sftp:host=prove2/home/user/git/thesis/target/criterion"
 b = "/home/thomas/git/thesis/benchmarks/results/bench"
