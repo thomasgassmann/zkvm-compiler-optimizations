@@ -1,3 +1,6 @@
+import logging
+
+import numpy as np
 from zkbench.config import get_measurements, get_zkvms_with_x86
 from zkbench.plot.common import (
     get_average_improvement_over_baseline,
@@ -49,6 +52,10 @@ def plot_improvement_for_single_program(
                     continue
             else:
                 labels.append(f"{zkvm} ({measurement})")
+
+    for i, label in enumerate(labels):
+        logging.info(f"Label: {label}")
+        logging.info("Improvements: %s", np.array(improvements)[:, i])
 
     y_axis = "speedup" if speedup else "% faster"
     plot_sorted(improvements, labels, title, y_axis, profiles)

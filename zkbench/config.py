@@ -84,6 +84,14 @@ def get_programs():
 
 
 def get_program_by_name(program_name: str) -> Program:
+    if program_name not in CONFIG["programs"]:
+        return Program(
+            program_name,
+            None,
+            [],
+            [],
+        )
+
     program = CONFIG["programs"][program_name]
     return Program(
         program_name,

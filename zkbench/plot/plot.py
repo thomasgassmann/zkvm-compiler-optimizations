@@ -377,12 +377,12 @@ def improvement_by_program_cli(
     name="improvement-single-program",
     help="Show (average) improvement for some profile compared to some other baseline profile for a single program",
 )
-@click.option("--program", type=click.Choice(get_programs()), required=True)
+@click.option("--program", type=str, required=True)
 @click.option(
-    "--profile", type=click.Choice(get_profiles_ids()), required=True, multiple=True
+    "--profile", type=str, required=True, multiple=True
 )
 @click.option(
-    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+    "--baseline-profile", type=str, required=True
 )
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
@@ -482,16 +482,16 @@ def duration_by_program_cli(
     name="cycle-count-by-program",
     help="Show cycle count for some profiles by program",
 )
-@click.option("--profile", type=str, required=True)
+@click.option("--profile", type=str, required=True, multiple=True)
 @click.option("--baseline-profile", type=str, required=True)
 @click.option("--relative", is_flag=True, default=False)
 @click.option("--zkvm", type=click.Choice(get_zkvms_with_x86()), required=False)
 def cycle_count_by_program_cli(
-    profile: str, baseline_profile: str, relative: bool, zkvm: str | None
+    profile: list[str], baseline_profile: str, relative: bool, zkvm: str | None
 ):
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_cycle_count_by_program(dir, profile, baseline_profile, relative, zkvm)
+    plot_cycle_count_by_program(dir, list(profile), baseline_profile, relative, zkvm)
 
 
 @click.command(

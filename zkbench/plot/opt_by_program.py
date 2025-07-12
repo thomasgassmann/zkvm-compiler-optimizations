@@ -24,12 +24,13 @@ def plot_opt_by_program(
     relative_improvements_exec = []
     relative_improvements_x86 = []
     plotted_programs = []
+    all_zkvms = get_zkvms() if not zkvm else [zkvm]
     for program in programs:
         try:
             exec_values = []
             prove_values = []
             x86_values = []
-            for current_zkvm in get_zkvms() if not zkvm else [zkvm]:
+            for current_zkvm in all_zkvms:
                 exec_improvement = get_average_improvement_over_baseline(
                     dir, current_zkvm, program, profile, "exec", speedup=speedup
                 )
@@ -62,6 +63,11 @@ def plot_opt_by_program(
             plotted_programs.append(program)
         except FileNotFoundError:
             logging.warning(f"Data for {program}-{current_zkvm}-{profile} not found")
+
+    logging.info("zkVMs: %s", all_zkvms)
+    logging.info("Average improvements (exec): %s", np.mean(relative_improvements_exec, axis=0))
+    logging.info("Average improvements (prove): %s", np.mean(relative_improvements_prove, axis=0))
+    logging.info("Average improvements (x86): %s", np.mean(relative_improvements_x86, axis=0))
 
     y_axis = "speedup" if speedup else "% faster"
     labels = ["prove", "exec"] if zkvm != "x86" else ["exec-x86", "exec-zkvm (avg)"]
