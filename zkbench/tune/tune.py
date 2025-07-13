@@ -55,12 +55,14 @@ def tune_exhaustive_cli(depth: int):
 )
 @click.option("--individual", type=bool, default=False, is_flag=True)
 @click.option("--seed", type=int, default=None, required=False)
+@click.option("-j", type=int, default=10, required=False)
 def tune_genetic_cli(
     mode: str,
     depth: int | None,
     baseline: list[str] | None,
     individual: bool,
     seed: int | None,
+    j: int = 10,
 ):
     if mode == "depth" and depth is None:
         raise click.UsageError("Depth must be provided when mode is 'depth'.")
@@ -78,6 +80,7 @@ def tune_genetic_cli(
         baseline,
         individual,
         seed,
+        j=j,
     )
 
 

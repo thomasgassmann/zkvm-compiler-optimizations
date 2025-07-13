@@ -2,6 +2,7 @@ import asyncio
 import dataclasses
 import json
 import logging
+import multiprocessing
 import os
 from zkbench.build import build_program
 from zkbench.clean import run_clean
@@ -41,9 +42,11 @@ class TuneRunner:
         build_timeout: int | None = None,
         rebuild_failed: bool = False,
         retry_build: bool = True,
+        build_semaphore = None,
     ):
         self._clean_cycles = {}
         self._out = out
+        os.makedirs(self._out, exist_ok=True)
         self._metric = metric
         self._cache_dir = cache_dir
         self._no_clean = os.environ.get("NO_CLEAN", "False").lower() in (
@@ -54,6 +57,7 @@ class TuneRunner:
         self._build_timeout = build_timeout
         self._rebuild_failed = rebuild_failed
         self._retry_build = retry_build
+        self._build_semaphore = build_semaphore
 
     def get_build_path(self, zkvm: str, program: str):
         return os.path.join(
@@ -117,18 +121,27 @@ class TuneRunner:
             await run_clean(
                 [program], [zkvm], get_path=lambda p, z: self.get_build_path(z, p)
             )
-        await build_program(
-            program,
-            zkvm,
-            profile,
-            False,
-            out,
-            verbose=False,
-            timeout=self._build_timeout,
-            target_dir=self.get_build_path(zkvm, program),
-        )
-        self._clean_cycles[program] += 1
-        logging.info(f"Built {program} for {zkvm}")
+
+        if self._build_semaphore is not None:
+            res = self._build_semaphore.acquire()
+            if isinstance(res, asyncio.Future):
+                await res
+        try:
+            await build_program(
+                program,
+                zkvm,
+                profile,
+                False,
+                out,
+                verbose=False,
+                timeout=self._build_timeout,
+                target_dir=self.get_build_path(zkvm, program),
+            )
+            self._clean_cycles[program] += 1
+            logging.info(f"Built {program} for {zkvm}")
+        finally:
+            if self._build_semaphore is not None:
+                self._build_semaphore.release()
 
     async def _build_for_zkvm(
         self, program: str, zkvm: str, profile_config: ProfileConfig | Profile
@@ -138,6 +151,7 @@ class TuneRunner:
             await self._build(program, zkvm, profile_config, out)
             return BuildResult(program, zkvm, success=True, err=None)
         except Exception as e:
+            logging.error(f"Error building {program} for {zkvm}: {e}")
             return BuildResult(program, zkvm, success=False, err=str(e))
 
     async def clean(self, programs: list[str], zkvms: list[str]):

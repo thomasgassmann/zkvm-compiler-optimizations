@@ -18,7 +18,7 @@ def plot_cycle_count_by_program(
     plotted_zkvm: str | None = None,
 ):
     title = get_title(
-        f"Cycle count compared to {baseline_profile}",
+        f"Change in cycle count",
         [plotted_zkvm],
     )
 
@@ -61,11 +61,15 @@ def plot_cycle_count_by_program(
         if not relative
         else profile
     )
-    y_axis = "Change in Cycle Count (relative to baseline)" if relative else "Cycle Count"
+    y_axis = "Change in Cycle Count (%)" if relative else "Cycle Count"
     
     if relative:
         for prof in profile:
             avg = np.mean(cycle_counts_profiles[prof], axis=0)
+            for label, value in zip(programs, cycle_counts_profiles[prof]):
+                logging.info(
+                    f"Cycle count change for {prof} on {label}: {value[0]:.2f}%"
+                )
             logging.info(
                 f"Average cycle count change for {prof} across zkVMs: {avg}"
             )
