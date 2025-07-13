@@ -208,12 +208,17 @@ def create_tuner(
     mode: Mode,
     baselines: list[str],
     seed: int | None,
+    build_semaphore = None,
 ):
     if seed is not None:
         logging.info(f"Using seed: {seed}")
         random.seed(seed)
     runner = TuneRunner(
-        out=BIN_OUT_GENETIC, metric=metric, cache_dir=out, build_timeout=60 * 20
+        out=BIN_OUT_GENETIC,
+        metric=metric,
+        cache_dir=out,
+        build_timeout=60 * 20,
+        build_semaphore=build_semaphore,
     )
 
     baseline_results: dict[str, list[MetricValue]] = {}
@@ -330,6 +335,7 @@ def run_tune_genetic(
     baselines: list[str] | None = None,
     individual: bool = False,
     seed: int | None = None,
+    j: int = 10,
 ):
     arg_parser = opentuner.default_argparser()
 
@@ -359,12 +365,14 @@ def run_tune_genetic(
             mode,
             baselines or [],
             seed,
+            build_semaphore=asyncio.Semaphore(j),
         ).main(arg_parser.parse_args([f"--database=opentuner.db/{uuid_str}.db"]))
     else:
         if seed is not None:
             logging.info(f"Using main seed: {seed}")
             random.seed(seed)
         processes = {}
+        build_semaphore = multiprocessing.Semaphore(j)
         for program in sorted(programs):
             for zkvm in sorted(zkvms):
                 uuid_str = f"{program}-{zkvm}-{str(uuid.uuid4())[:10]}"
@@ -381,6 +389,7 @@ def run_tune_genetic(
                         mode,
                         baselines or [],
                         current_seed,
+                        build_semaphore=build_semaphore,
                     ).main(
                         arg_parser.parse_args(
                             [f"--database=opentuner.db/{uuid_str}.db"]

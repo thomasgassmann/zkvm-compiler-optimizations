@@ -18,7 +18,6 @@
         "strip-dead-debug-info",
         "strip-dead-prototypes",
         "bounds-checking",
-        "loop-extract",
         "mergefunc",
         "extract-blocks",
         "constmerge",
@@ -28,7 +27,6 @@
         "hotcoldsplit",
         "argpromotion",
         "ipsccp",
-        "synthetic-counts-propagation",
         "rel-lookup-table-converter",
         "aggressive-instcombine"
     ],
