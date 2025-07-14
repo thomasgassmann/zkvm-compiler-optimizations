@@ -15,7 +15,7 @@ cmake -G Ninja ../src/llvm-project/llvm \
 ninja
 ```
 
-## in risc0/rzup
+## in risc0/rzup or sp1/crates/cli
 
 Use following toml:
 
