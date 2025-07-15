@@ -1,1 +1,4 @@
-bin/
+instrcosts-bin/
+instrcosts-with-inline-bin/
+instrcosts-prove/
+instrcosts-with-inline-prove/
