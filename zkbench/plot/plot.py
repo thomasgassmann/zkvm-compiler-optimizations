@@ -22,6 +22,7 @@ from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_
 from zkbench.plot.duration import plot_duration
 from zkbench.plot.duration_single_program import plot_duration_for_single_program
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
+from zkbench.plot.improvement_profile import plot_improvement_for_profile
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
 from zkbench.plot.stddev import list_by_stddev
@@ -88,7 +89,8 @@ def average_improvement_cli(
 
 
 @click.command(
-    name="average-improvement-zkvm", help="Plot average improvement compared to baseline with each zkVM being a series"
+    name="average-improvement-zkvm",
+    help="Plot average improvement compared to baseline with each zkVM being a series",
 )
 @click.option("--measurement", type=click.Choice(get_measurements()), required=True)
 @click.option("--program", type=click.Choice(get_programs()), required=False)
@@ -360,18 +362,47 @@ def binsize_duration_cli(measurement: str, program: str | None):
     help="Show (average) improvement for some profile compared to some other baseline profile by program",
 )
 @click.option("--profile", type=str, required=True)
-@click.option(
-    "--baseline-profile", type=str, required=True
-)
+@click.option("--baseline-profile", type=str, required=True)
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
-@click.option("--measurement", type=click.Choice(get_measurements()), required=False, default=None)
+@click.option(
+    "--measurement", type=click.Choice(get_measurements()), required=False, default=None
+)
 def improvement_by_program_cli(
-    profile: str, baseline_profile: str, speedup: bool, show_x86: bool, measurement: str | None
+    profile: str,
+    baseline_profile: str,
+    speedup: bool,
+    show_x86: bool,
+    measurement: str | None,
 ):
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_improvement_by_program(dir, profile, baseline_profile, speedup, show_x86, measurement)
+    plot_improvement_by_program(
+        dir, profile, baseline_profile, speedup, show_x86, measurement
+    )
+
+
+@click.command(
+    name="improvement-for-profile",
+    help="Show (average) improvement for some profile compared to some other baseline profile by program",
+)
+@click.option("--profile", type=str, required=True)
+@click.option("--baseline-profile", type=str, required=True)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False)
+def improvement_for_profile_cli(
+    profile: str,
+    baseline_profile: str,
+    speedup: bool,
+    zkvm: str | None,
+    measurement: str | None = None,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_for_profile(
+        dir, profile, baseline_profile, speedup, zkvm, measurement
+    )
 
 
 @click.command(
@@ -379,12 +410,8 @@ def improvement_by_program_cli(
     help="Show (average) improvement for some profile compared to some other baseline profile for a single program",
 )
 @click.option("--program", type=str, required=True)
-@click.option(
-    "--profile", type=str, required=True, multiple=True
-)
-@click.option(
-    "--baseline-profile", type=str, required=True
-)
+@click.option("--profile", type=str, required=True, multiple=True)
+@click.option("--baseline-profile", type=str, required=True)
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 def improvement_single_program_cli(
@@ -406,9 +433,7 @@ def improvement_single_program_cli(
     help="Show raw duration for some profile compared to some other baseline profile for a single program",
 )
 @click.option("--program", type=str, required=True)
-@click.option(
-    "--profile", type=str, required=True, multiple=True
-)
+@click.option("--profile", type=str, required=True, multiple=True)
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
 def duration_single_program_cli(
     program: str,
