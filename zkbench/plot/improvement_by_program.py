@@ -10,7 +10,7 @@ from zkbench.plot.common import (
 
 
 def plot_improvement_by_program(
-    dir: str, profile: str, baseline_profile: str, speedup: bool, show_x86: bool = False
+    dir: str, profile: str, baseline_profile: str, speedup: bool, show_x86: bool = False, measurement: str | None = None
 ):
 
     def f(dir, program, zkvm, measurement):
@@ -41,13 +41,17 @@ def plot_improvement_by_program(
         current_improvements_exec_x86 = []
         for zkvm in zkvms:
             try:
-                p = f(dir, program, zkvm, "prove")
-                e = f(dir, program, zkvm, "exec")
-                if show_x86:
-                    x86 = f(dir, program, "x86", "exec")
-                    current_improvements_exec_x86.append(x86)
-                current_improvements_prove.append(p)
-                current_improvements_exec.append(e)
+                if measurement is None:
+                    p = f(dir, program, zkvm, "prove")
+                    e = f(dir, program, zkvm, "exec")
+                    if show_x86:
+                        x86 = f(dir, program, "x86", "exec")
+                        current_improvements_exec_x86.append(x86)
+                    current_improvements_prove.append(p)
+                    current_improvements_exec.append(e)
+                else:
+                    m = f(dir, program, zkvm, measurement)
+                    current_improvements_prove.append(m)
             except FileNotFoundError:
                 logging.warning(
                     f"File not found for {program} {zkvm} {profile} {baseline_profile}. Skipping."
@@ -61,14 +65,21 @@ def plot_improvement_by_program(
         relative_improvements_exec.append(current_improvements_exec)
         relative_improvements_exec_x86.append(current_improvements_exec_x86)
 
-    logging.info("All values (prove, %s, %s): %s", zkvms, programs, relative_improvements_prove)
-    logging.info("All values (exec, %s, %s): %s", zkvms, programs, relative_improvements_exec)
-    logging.info("Prove speedups (%s): %s", zkvms, np.mean(relative_improvements_prove, axis=0))
-    logging.info("Exec speedups (%s): %s", zkvms, np.mean(relative_improvements_exec, axis=0))
+    logging.info(
+        "All values (prove, %s, %s): %s", zkvms, programs, relative_improvements_prove
+    )
+    logging.info(
+        "All values (exec, %s, %s): %s", zkvms, programs, relative_improvements_exec
+    )
+    logging.info(
+        "Prove speedups (%s): %s", zkvms, np.mean(relative_improvements_prove, axis=0)
+    )
+    logging.info(
+        "Exec speedups (%s): %s", zkvms, np.mean(relative_improvements_exec, axis=0)
+    )
 
-    y_axis = "speedup" if speedup else "speedup (%)"
-    plot_grouped_boxplot(
-        (
+    if measurement is None:
+        values = (
             [relative_improvements_prove, relative_improvements_exec]
             if not show_x86
             else [
@@ -76,10 +87,18 @@ def plot_improvement_by_program(
                 relative_improvements_exec,
                 relative_improvements_exec_x86,
             ]
-        ),
+        )
+        series_labels = ["prove", "exec"] if not show_x86 else ["prove", "exec", "x86"]
+    else:
+        values = [relative_improvements_prove]
+        series_labels = [measurement]
+
+    y_axis = "speedup" if speedup else "speedup (%)"
+    plot_grouped_boxplot(
+        values,
         programs,
         title,
         y_axis,
-        ["prove", "exec"] if not show_x86 else ["prove", "exec", "x86"],
+        series_labels,
         bar_width=0.35 if not show_x86 else 0.2,
     )

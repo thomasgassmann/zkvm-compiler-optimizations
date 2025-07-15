@@ -359,18 +359,19 @@ def binsize_duration_cli(measurement: str, program: str | None):
     name="improvement-by-program",
     help="Show (average) improvement for some profile compared to some other baseline profile by program",
 )
-@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option("--profile", type=str, required=True)
 @click.option(
-    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+    "--baseline-profile", type=str, required=True
 )
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=False, default=None)
 def improvement_by_program_cli(
-    profile: str, baseline_profile: str, speedup: bool, show_x86: bool
+    profile: str, baseline_profile: str, speedup: bool, show_x86: bool, measurement: str | None
 ):
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_improvement_by_program(dir, profile, baseline_profile, speedup, show_x86)
+    plot_improvement_by_program(dir, profile, baseline_profile, speedup, show_x86, measurement)
 
 
 @click.command(
