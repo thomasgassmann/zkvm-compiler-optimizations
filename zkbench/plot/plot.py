@@ -2,6 +2,7 @@ import os
 import click
 
 from zkbench.config import (
+    get_default_profiles_ids,
     get_measurements,
     get_profiles_ids,
     get_program_groups,
@@ -18,15 +19,18 @@ from zkbench.plot.average_improvement_difference import (
 from zkbench.plot.average_improvement_zkvm import plot_average_improvement_zkvm
 from zkbench.plot.average_khz import plot_khz
 from zkbench.plot.binary_size_duration import plot_binsize_duration
+from zkbench.plot.cycle_count_by_program_zkvm import plot_cycle_count_by_program_zkvm
 from zkbench.plot.cycle_count_single_program import plot_cycle_count_for_single_program
 from zkbench.plot.duration import plot_duration
 from zkbench.plot.duration_single_program import plot_duration_for_single_program
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
+from zkbench.plot.improvement_by_program_zkvm import plot_improvement_by_program_zkvm
 from zkbench.plot.improvement_profile import plot_improvement_for_profile
+from zkbench.plot.improvement_programs import plot_improvement_number_of_programs
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.rca_classify import classify_rca
 from zkbench.plot.stddev import list_by_stddev
-from zkbench.plot.common import has_data_on
+from zkbench.plot.common import BASELINE, get_point_estimate_mean_ms, has_data_on
 from zkbench.plot.cycle_count import plot_cycle_count
 from zkbench.plot.cycle_count_abs import plot_cycle_count_abs
 from zkbench.plot.cycle_count_by_program import plot_cycle_count_by_program
@@ -277,6 +281,14 @@ def plot_missing_cli(measurement: str | None, zkvm: str | None):
     zkvms = get_zkvms_with_x86() if zkvm is None else [zkvm]
     programs = get_programs()
     dir = click.get_current_context().parent.params["dir"]
+
+    t = 0
+    for program in programs:
+        for zkvm in get_zkvms():
+            t += get_point_estimate_mean_ms(dir, program, zkvm, BASELINE, "prove")
+
+    print(t)
+
     for m in measurements:
         for z in zkvms:
             for p in programs:
@@ -380,6 +392,31 @@ def improvement_by_program_cli(
     plot_improvement_by_program(
         dir, profile, baseline_profile, speedup, show_x86, measurement
     )
+
+@click.command(
+    name="improvement-by-program-zkvm",
+    help="Show (average) improvement for some profile compared to some other baseline profile by program using zkVM as series",
+)
+@click.option("--profile", type=str, required=True)
+@click.option("--baseline-profile", type=str, required=True)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+@click.option(
+    "--measurement", type=click.Choice(get_measurements()), required=True, default=None
+)
+@click.option("--drop-below", type=float, required=False, default=None)
+def improvement_by_program_zkvm_cli(
+    profile: str,
+    baseline_profile: str,
+    speedup: bool,
+    measurement: str,
+    drop_below: float | None = None,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_by_program_zkvm(
+        dir, profile, baseline_profile, speedup, measurement, drop_below=drop_below
+    )
+
 
 
 @click.command(
@@ -521,6 +558,19 @@ def cycle_count_by_program_cli(
 
 
 @click.command(
+    name="cycle-count-by-program-zkvm",
+    help="Show cycle count for some profiles relative to a specific baseline by program",
+)
+@click.option("--profile", type=str, required=True, multiple=False)
+@click.option("--baseline-profile", type=str, required=True)
+@click.option("--drop-below", type=float, required=False, default=None)
+def cycle_count_by_program_zkvm_cli(profile: str, baseline_profile: str, drop_below: float | None = None):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_cycle_count_by_program_zkvm(dir, profile, baseline_profile, drop_below)
+
+
+@click.command(
     name="stddev",
     help="Show cases where standard deviation is too high",
 )
@@ -630,3 +680,22 @@ def average_improvement_difference_cli(
         speedup,
         zkvm,
     )
+
+
+@click.command(
+    name="improvement-number-of-programs",
+    help="For each profile, plot number of programs with at least x improvement",
+)
+@click.option("--measurement", type=click.Choice(get_measurements()), required=True)
+@click.option("--drop-below", type=float, required=False, default=None)
+@click.option(
+    "--profile", type=click.Choice(get_profiles_ids()), required=False, multiple=True
+)
+def improvement_number_of_programs_cli(
+    measurement: str,
+    drop_below: float | None,
+    profile: list[str] | None,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_number_of_programs(dir, measurement, drop_below, profiles=profile)

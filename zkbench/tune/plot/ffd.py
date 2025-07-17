@@ -150,7 +150,7 @@ def plot_ffd1d(
         [effect_list],
         factor_list,
         get_title(
-            f"Estimated reduction in cycle count by optimization pass", [program, zkvm]
+            f"Estimated change in cumulative cycle count by optimization pass", [program, zkvm]
         ),
         y_axis,
         [None],

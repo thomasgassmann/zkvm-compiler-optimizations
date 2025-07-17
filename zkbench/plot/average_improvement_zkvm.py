@@ -51,12 +51,8 @@ def plot_average_improvement_zkvm(
             pos = {}
             neg = {}
             for j in range(len(values[i])):
-                count_positives = len(
-                    [v for v in values[i][j] if v > 0]
-                )
-                count_negatives = len(
-                    [v for v in values[i][j] if v < 0]
-                )
+                count_positives = len([v for v in values[i][j] if v > 0])
+                count_negatives = len([v for v in values[i][j] if v < 0])
                 if drop_below is not None:
                     count_positives = len([v for v in values[i][j] if v >= drop_below])
                     count_negatives = len([v for v in values[i][j] if v <= -drop_below])
@@ -71,18 +67,24 @@ def plot_average_improvement_zkvm(
                     f"{pos[profiles[j]]} positive, {neg[profiles[j]]} negative"
                 )
 
-
         for i in range(len(values)):
             values[i] = np.mean(values[i], axis=1)
-            c = sorted([(j, value) for j, value in enumerate(values[i])], key=lambda x: x[1])
-            for (j, _) in c:
+            c = sorted(
+                [(j, value) for j, value in enumerate(values[i])], key=lambda x: x[1]
+            )
+            for j, _ in c:
                 logging.info(
                     f"Average speedup change for {series[i]}-{profiles[j]}: {values[i][j]}"
                 )
 
         plot_sorted(values, profiles, title, y_label, series, drop_below=drop_below)
     else:
-        if drop_below:
-            raise ValueError("drop_below is not supported for grouped boxplots")
-
-        plot_grouped_boxplot(values, profiles, title, y_label, series)
+        plot_grouped_boxplot(
+            values,
+            profiles,
+            title,
+            y_label,
+            series,
+            drop_below=drop_below,
+            show_fliers=True,
+        )

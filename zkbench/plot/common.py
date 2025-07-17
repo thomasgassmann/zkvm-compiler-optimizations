@@ -194,7 +194,7 @@ def _get_config():
 
 
 def plot_grouped_boxplot(
-    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False, show_fliers=False
+    values, labels, title, y_label, series_labels, bar_width=0.35, log_scale=False, show_fliers=False, drop_below=None
 ):
     vertical, violin = _get_config()
     num_profiles = len(labels)
@@ -205,6 +205,13 @@ def plot_grouped_boxplot(
         key=lambda i: np.median(values[0][i]) if any(values[0][i]) else 0,
         reverse=True,
     )
+    if drop_below is not None:
+        sorted_indices = [
+            i for i in sorted_indices
+            if any((np.abs(values[series_idx][i]) >= drop_below).any() for series_idx in range(num_series))
+        ]
+        num_profiles = len(sorted_indices)
+
     sorted_labels = [labels[i] for i in sorted_indices]
     sorted_values = [[series[i] for i in sorted_indices] for series in values]
 
@@ -348,7 +355,7 @@ def plot_scatter_by_zkvm(
     show_or_save_plot()
 
 
-def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False, drop_below=None):
+def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False, drop_below=None, num_series_labels=None):
     if drop_below is not None:
         # if the value is below the threshold in all series, drop this value
         new_labels = []
@@ -378,19 +385,21 @@ def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False, 
         fig, ax = plt.subplots(figsize=(10, 6))
     
     pos = np.arange(len(profiles_sorted))
-    bar_width = 0.8 / len(values)
+    num_series_labels = len(series_labels) if num_series_labels is None else num_series_labels
+    bar_width = 0.8 / num_series_labels
 
     for i in range(len(values)):
+        series_index = i % num_series_labels
         if vertical:
             ax.barh(
-                pos + i * bar_width - (0.8 - bar_width) / 2,
+                pos + series_index * bar_width - (0.8 - bar_width) / 2,
                 increase_values_sorted[i],
                 height=bar_width,
                 label=series_labels[i],
             )
         else:
             ax.bar(
-                pos + i * bar_width - (0.8 - bar_width) / 2,
+                pos + series_index * bar_width - (0.8 - bar_width) / 2,
                 increase_values_sorted[i],
                 width=bar_width,
                 label=series_labels[i],
@@ -406,7 +415,7 @@ def plot_sorted(values, labels, title, y_label, series_labels, log_scale=False, 
             )
         else:
             ax.axvline(
-                x + bar_width / 2 - (0.8 - bar_width) / 2,
+                x,
                 color="gray",
                 linestyle="--",
                 alpha=0.2,

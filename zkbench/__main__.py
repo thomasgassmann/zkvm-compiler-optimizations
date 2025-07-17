@@ -21,6 +21,7 @@ from zkbench.plot.plot import (
     binsize_duration_cli,
     cycle_count_abs_cli,
     cycle_count_by_program_cli,
+    cycle_count_by_program_zkvm_cli,
     cycle_count_cli,
     cycle_count_single_program_cli,
     cycle_count_stats_cli,
@@ -31,7 +32,9 @@ from zkbench.plot.plot import (
     export_report_cli,
     improvement_by_program_cli,
     improvement_by_program_exec_cli,
+    improvement_by_program_zkvm_cli,
     improvement_for_profile_cli,
+    improvement_number_of_programs_cli,
     improvement_single_program_cli,
     khz_cli,
     no_effect_cli,
@@ -393,6 +396,9 @@ plot_cli.add_command(duration_cli)
 plot_cli.add_command(duration_single_program_cli)
 plot_cli.add_command(average_improvement_zkvm_cli)
 plot_cli.add_command(improvement_for_profile_cli)
+plot_cli.add_command(improvement_number_of_programs_cli)
+plot_cli.add_command(cycle_count_by_program_zkvm_cli)
+plot_cli.add_command(improvement_by_program_zkvm_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)
