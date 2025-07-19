@@ -1,4 +1,4 @@
-from zkbench.config import get_default_profiles_ids, get_programs, get_zkvms
+from zkbench.config import get_default_profiles_ids, get_programs, get_zkvm_display_name, get_zkvms
 from zkbench.plot.common import (
     get_average_improvement_over_baseline,
     get_title,
@@ -54,9 +54,9 @@ def plot_improvement_number_of_programs(
     )
 
     series = [
-        zkvms[0] + " (positive)",
-        zkvms[1] + " (positive)",
-        zkvms[0] + " (negative)",
-        zkvms[1] + " (negative)"
+        get_zkvm_display_name(zkvms[0]) + " (positive)",
+        get_zkvm_display_name(zkvms[1]) + " (positive)",
+        get_zkvm_display_name(zkvms[0]) + " (negative)",
+        get_zkvm_display_name(zkvms[1]) + " (negative)"
     ]
     plot_sorted(values, labels, title, "Number of programs", series, num_series_labels=2)

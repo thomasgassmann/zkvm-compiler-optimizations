@@ -2,7 +2,7 @@ import logging
 
 from matplotlib import pyplot as plt
 import numpy as np
-from zkbench.config import get_default_profiles_ids, get_programs
+from zkbench.config import get_default_profiles_ids, get_programs, get_zkvm_display_name
 from zkbench.plot.common import (
     BASELINE,
     get_cycle_count,
@@ -122,38 +122,45 @@ def _get_y_axis_label(response: str) -> str:
 def plot_ffd1d(
     stats_file: str,
     program: str | None = None,
-    zkvm: str | None = None,
     response: str = "cumulative",
     drop_below: float = 0.0,
 ):
     stats = read_ffd_stats(stats_file)
 
-    effects = [
+    effects_risc0 = [
         compute_factor_effect(
-            stats, [factor], _get_programs(stats, program), zkvm, response_type=response
+            stats, [factor], _get_programs(stats, program), "risc0", response_type=response
+        )
+        for factor in stats.factors
+    ]
+    effects_sp1 = [
+        compute_factor_effect(
+            stats, [factor], _get_programs(stats, program), "sp1", response_type=response
         )
         for factor in stats.factors
     ]
 
     factor_list = []
-    effect_list = []
-    for factor, effect in zip(stats.factors, effects):
+    effect_list_risc0 = []
+    effect_list_sp1 = []
+    for factor, effect_risc0, effect_sp1 in zip(stats.factors, effects_risc0, effects_sp1):
         factor_label = get_pass_label(factor)
         if factor_label in get_default_profiles_ids():
             factor_list.append(factor_label)
-            effect_list.append(-effect)
+            effect_list_risc0.append(-effect_risc0)
+            effect_list_sp1.append(-effect_sp1)
         else:
             logging.warning(f"Factor {factor} is not a valid pass. Skipping.")
 
     y_axis = _get_y_axis_label(response)
     plot_sorted(
-        [effect_list],
+        [effect_list_risc0, effect_list_sp1],
         factor_list,
         get_title(
-            f"Estimated change in cumulative cycle count by optimization pass", [program, zkvm]
+            f"Estimated change in cycle count by optimization pass", [program]
         ),
         y_axis,
-        [None],
+        [get_zkvm_display_name("risc0"), get_zkvm_display_name("sp1")],
         drop_below=drop_below,
     )
 

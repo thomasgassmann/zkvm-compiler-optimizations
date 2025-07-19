@@ -3,6 +3,7 @@ import numpy as np
 from zkbench.config import (
     get_default_profiles_ids,
     get_measurements,
+    get_zkvm_display_name,
     get_zkvms,
 )
 from zkbench.plot.common import (
@@ -51,7 +52,7 @@ def plot_cycle_count(
                 lambda dir, program, zkvm, profile, _: f(dir, program, zkvm, profile),
             )
         )
-        series.append(zkvm)
+        series.append(get_zkvm_display_name(zkvm))
 
     if show_x86:
         series.append("x86")
