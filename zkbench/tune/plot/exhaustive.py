@@ -13,7 +13,7 @@ from zkbench.config import (
     get_programs_by_group,
 )
 from zkbench.plot.common import get_title, show_or_save_plot
-from zkbench.tune.common import METRIC_NAMES, EvalResult, MetricValue
+from zkbench.tune.common import METRIC_NAMES, MetricValue
 from zkbench.tune.exhaustive import Exhaustive, ExhaustiveResult
 from zkbench.tune.plot.common import read_exhaustive_stats
 
@@ -23,8 +23,8 @@ def get_pass_label(pass_name: str) -> str:
     for profile in profiles:
         if pass_name in profile.passes:
             return profile.name
-    return ""
-    raise ValueError(f"Pass {pass_name} not found in any profile.")
+    
+    return pass_name
 
 
 def plot_exhaustive_depth2(
@@ -34,6 +34,8 @@ def plot_exhaustive_depth2(
     program_group: str | None = None,
     relative: bool = False,
 ):
+    logging.info(f"Default profiles: {len(get_default_profiles_ids())}")
+
     stats: Exhaustive = read_exhaustive_stats(stats)
     if relative and stats.baseline is None:
         logging.error("Relative plotting requested, but no baseline found in stats.")
@@ -50,7 +52,7 @@ def plot_exhaustive_depth2(
             *[get_profile_by_name(p).passes for p in get_default_profiles_ids()]
         )
     )
-    new_passes = [p for p in passes if p in known_default]
+    new_passes = [p for p in passes if p in known_default or any([p in a for a in known_default])]
     skipped = set(passes) - set(new_passes)
     logging.info(
         f"Skipped {len(skipped)} passes that are not in the default profiles: {', '.join(skipped)}"
@@ -78,6 +80,7 @@ def plot_exhaustive_depth2(
     largest = 0
     smallest = float("inf")
     heap = []
+    logging.info(f"Number of passes: {len(passes)}")
     for pass_a in passes:
         row = []
         for pass_b in passes:
