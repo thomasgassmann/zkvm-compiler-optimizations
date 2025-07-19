@@ -1,6 +1,6 @@
 import logging
 import numpy as np
-from zkbench.config import get_default_profiles_ids, get_zkvms
+from zkbench.config import get_default_profiles_ids, get_zkvm_display_name, get_zkvms
 from zkbench.plot.common import (
     BASELINE,
     get_average_improvement_over_baseline,
@@ -39,7 +39,7 @@ def plot_average_improvement_zkvm(
                 ),
             )
         )
-        series.append(zkvm)
+        series.append(get_zkvm_display_name(zkvm))
 
     title = get_title(
         f"Improvement over baseline ({measurement})",

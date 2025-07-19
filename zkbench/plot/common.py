@@ -16,6 +16,7 @@ from zkbench.config import (
     get_program_by_name,
     get_programs,
     get_programs_by_group,
+    get_zkvm_display_name,
     get_zkvms,
 )
 
@@ -340,7 +341,7 @@ def plot_scatter_by_zkvm(
         pearson = get_pearson(x, y)
         spearman = get_spearman(x, y)
         plt.scatter(
-            x, y, label=f"{zkvm}, Pearson={pearson:.3f}, Spearman={spearman:.3f}"
+            x, y, label=f"{get_zkvm_display_name(zkvm)} (Pearson={pearson:.3f}, Spearman={spearman:.3f})"
         )
         plt.plot(
             np.unique(x),

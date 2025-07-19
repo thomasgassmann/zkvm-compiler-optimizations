@@ -1,4 +1,4 @@
-from zkbench.config import get_measurements, get_zkvms_with_x86
+from zkbench.config import get_measurements, get_zkvm_display_name, get_zkvms_with_x86
 from zkbench.plot.common import (
     get_average_improvement_over_baseline,
     get_sample_times_ms,
@@ -33,11 +33,18 @@ def plot_duration_for_single_program(
             for i, profile in enumerate(profiles):
                 try:
                     prof = get_sample_times_ms(dir, program, zkvm, profile, measurement)
-                    improvements[i].append(prof)
+                    improvements[i].append([a / 1000 for a in prof])
                 except FileNotFoundError:
                     continue
             else:
-                labels.append(f"{zkvm} ({measurement})")
+                labels.append(f"{get_zkvm_display_name(zkvm)} ({measurement})")
 
-    y_axis = "Duration (ms)"
-    plot_grouped_boxplot(improvements, labels, title, y_axis, profiles, show_fliers=True)
+    y_axis = "Duration (s)"
+    plot_grouped_boxplot(
+        improvements,
+        labels,
+        "Duration with and without optimization",
+        y_axis,
+        ["with optimization", "without optimization"],
+        show_fliers=True,
+    )

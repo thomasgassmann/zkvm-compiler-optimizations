@@ -50,7 +50,7 @@ def _get_values(
                     y.append((duration - baseline_duration) / baseline_duration)
                 else:
                     x.append(cycle_count)
-                    y.append(duration)
+                    y.append(duration / 1000)
         except FileNotFoundError as e:
             logging.warning(f"Data for {program}-{zkvm}-{measurement} not found {e}")
     return x, y
@@ -98,5 +98,5 @@ def plot_cycle_count_duration(
         get_title("Cycle count vs. duration", [measurement, program]),
         lambda zkvm: _get_values(dir, zkvm, programs, profiles, measurement, relative),
         "Cycle count",
-        "Duration (ms)",
+        "Duration (s)",
     )

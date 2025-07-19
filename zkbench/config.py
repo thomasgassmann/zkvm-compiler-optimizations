@@ -134,6 +134,16 @@ def get_zkvms():
     return list(sorted(CONFIG["zkvms"]))
 
 
+def get_zkvm_display_name(zkvm: str) -> str:
+    if zkvm == "x86":
+        return "x86"
+    if zkvm == "sp1":
+        return "SP1"
+    if zkvm == "risc0":
+        return "RISC Zero"
+    raise ValueError(f"Unknown zkvm: {zkvm}")
+
+
 def get_zkvms_with_x86():
     return get_zkvms() + ["x86"]
 

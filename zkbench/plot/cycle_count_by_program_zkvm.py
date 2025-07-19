@@ -1,7 +1,7 @@
 import logging
 
 import numpy as np
-from zkbench.config import get_programs, get_zkvms
+from zkbench.config import get_programs, get_zkvm_display_name, get_zkvms
 from zkbench.plot.common import (
     get_cycle_count,
     get_title,
@@ -62,6 +62,6 @@ def plot_cycle_count_by_program_zkvm(
         programs,
         title,
         "Change in Cycle Count (%)",
-        zkvms,
+        [get_zkvm_display_name(zkvm) for zkvm in zkvms],
         drop_below=drop_below,
     )

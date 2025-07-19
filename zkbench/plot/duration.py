@@ -1,5 +1,5 @@
 import numpy as np
-from zkbench.config import get_measurements, get_zkvms
+from zkbench.config import get_measurements, get_zkvm_display_name, get_zkvms
 from zkbench.plot.common import get_point_estimate_median_ms, get_program_selection, get_sample_times_ms, get_title, get_values_by_profile, plot_sorted
 
 
@@ -26,7 +26,7 @@ def plot_duration(dir: str, programs: list[str], program_group: str, profile: st
                 ),
             )
             series.append(values)
-            labels.append(f"{zkvm} {measurement}")
+            labels.append(f"{get_zkvm_display_name(zkvm)} {measurement}")
     series.append(
         get_values_by_profile(
             dir,

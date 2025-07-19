@@ -1,7 +1,7 @@
 import logging
 
 import numpy as np
-from zkbench.config import get_programs, get_zkvms
+from zkbench.config import get_programs, get_zkvm_display_name, get_zkvms
 from zkbench.plot.common import (
     get_average_improvement_over_baseline,
     get_title,
@@ -59,12 +59,30 @@ def plot_improvement_by_program_zkvm(
         logging.info("Average improvement for zkVM %s: %.2f%%", zkvm, np.mean(values[i]))
 
 
+    for zkvm in zkvms:
+        num_neg = len([v for v in values[zkvms.index(zkvm)] if v < -drop_below ])
+        num_pos = len([v for v in values[zkvms.index(zkvm)] if v > drop_below ])
+        logging.info(
+            f"Number of programs for {zkvm}: {num_pos} positive, {num_neg} negative"
+        )
+
+    for program in programs:
+        values_for_program = [values[i][programs.index(program)] for i in range(len(zkvms))]
+        logging.info(
+            "Average improvement for program %s (%s, %s): (%.2f%%, %.2f%%)",
+            program,
+            zkvms[0],
+            zkvms[1],
+            values_for_program[0],
+            values_for_program[1],
+        )
+
     y_axis = "speedup" if speedup else "speedup (%)"
     plot_sorted(
         values,
         programs,
         title,
         y_axis,
-        zkvms,
+        [get_zkvm_display_name(zkvm) for zkvm in zkvms],
         drop_below=drop_below,
     )
