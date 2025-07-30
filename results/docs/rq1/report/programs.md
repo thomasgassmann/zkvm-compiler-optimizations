@@ -51,7 +51,6 @@
 - [merkle](./programs/merkle.md)
 - [ecdsa-verify](./programs/ecdsa-verify.md)
 - [eddsa-verify](./programs/eddsa-verify.md)
-- [rsp](./programs/rsp.md)
 - [zkvm-mnist](./programs/zkvm-mnist.md)
 - [spec-605](./programs/spec-605.md)
 - [spec-619](./programs/spec-619.md)
@@ -64,18 +63,19 @@
 - [npb-mg](./programs/npb-mg.md)
 - [npb-sp](./programs/npb-sp.md)
 - [spec-631](./programs/spec-631.md)
+- [rsp](./programs/rsp.md)
 
 ## Program groups
 
-- [loop-intensive](./program-groups/loop-intensive.md)
+- [crypto](./program-groups/crypto.md)
 - [spec](./program-groups/spec.md)
 - [polybench](./program-groups/polybench.md)
-- [rust](./program-groups/rust.md)
 - [memory-intensive](./program-groups/memory-intensive.md)
-- [npb](./program-groups/npb.md)
-- [crypto](./program-groups/crypto.md)
-- [c](./program-groups/c.md)
+- [loop-intensive](./program-groups/loop-intensive.md)
 - [recursive](./program-groups/recursive.md)
+- [rust](./program-groups/rust.md)
+- [npb](./program-groups/npb.md)
+- [c](./program-groups/c.md)
 
 ## % faster by profile
   

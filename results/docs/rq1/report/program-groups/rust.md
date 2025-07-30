@@ -51,7 +51,6 @@
 - [merkle](../programs/merkle.md)
 - [ecdsa-verify](../programs/ecdsa-verify.md)
 - [eddsa-verify](../programs/eddsa-verify.md)
-- [rsp](../programs/rsp.md)
 - [zkvm-mnist](../programs/zkvm-mnist.md)
 - [npb-bt](../programs/npb-bt.md)
 - [npb-cg](../programs/npb-cg.md)
@@ -61,6 +60,7 @@
 - [npb-lu](../programs/npb-lu.md)
 - [npb-mg](../programs/npb-mg.md)
 - [npb-sp](../programs/npb-sp.md)
+- [rsp](../programs/rsp.md)
 
 ## Speedup by profile
   

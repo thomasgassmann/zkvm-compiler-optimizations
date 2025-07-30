@@ -1,7 +1,5 @@
 # Build LLVM risc0
 
-The following is still in progress.
-
 ## in rust-risc0
 
 ```bash
