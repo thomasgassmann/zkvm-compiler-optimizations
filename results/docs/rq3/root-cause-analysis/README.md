@@ -7,7 +7,6 @@ We analyze selected optimizations on different programs that show large effects 
 - [inline](./inline.md)
 - [simplifycfg](./simplifycfg.md)
 - [instcombine](./instcombine.md)
-- [speculative-execution](./speculative-execution.md)
 - [instruction selection](./instruction-selection.md)
 
 ## Tuning
