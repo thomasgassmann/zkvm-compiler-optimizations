@@ -37,6 +37,7 @@ from zkbench.plot.plot import (
     improvement_number_of_programs_cli,
     improvement_single_program_cli,
     khz_cli,
+    metric_overview_cli,
     no_effect_cli,
     opt_by_program_cli,
     opt_no_effect_cli,
@@ -399,6 +400,7 @@ plot_cli.add_command(improvement_for_profile_cli)
 plot_cli.add_command(improvement_number_of_programs_cli)
 plot_cli.add_command(cycle_count_by_program_zkvm_cli)
 plot_cli.add_command(improvement_by_program_zkvm_cli)
+plot_cli.add_command(metric_overview_cli)
 
 plot_tune_cli.add_command(plot_genetic_cli)
 plot_tune_cli.add_command(plot_exhaustive_depth2_cli)

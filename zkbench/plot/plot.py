@@ -28,6 +28,7 @@ from zkbench.plot.improvement_by_program_zkvm import plot_improvement_by_program
 from zkbench.plot.improvement_profile import plot_improvement_for_profile
 from zkbench.plot.improvement_programs import plot_improvement_number_of_programs
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
+from zkbench.plot.metric_overview import plot_metric_overview
 from zkbench.plot.rca_classify import classify_rca
 from zkbench.plot.stddev import list_by_stddev
 from zkbench.plot.common import BASELINE, get_point_estimate_mean_ms, has_data_on
@@ -699,3 +700,22 @@ def improvement_number_of_programs_cli(
     dir = click.get_current_context().parent.params["dir"]
 
     plot_improvement_number_of_programs(dir, measurement, drop_below, profiles=profile)
+
+
+@click.command(
+    name="metric-overview",
+    help="",
+)
+@click.option("--top-n", type=int, required=False, default=None)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
+@click.option("--metric", type=click.Choice(["prove", "exec", "cycle-count"]), required=False, default=None, multiple=True)
+@click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
+def metric_overview_cli(
+    top_n: int | None,
+    zkvm: tuple[str] | None,
+    metric: tuple[str] | None,
+    speedup: bool,
+):
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_metric_overview(dir, top_n, list(zkvm), list(metric), speedup)

@@ -165,6 +165,16 @@ def get_sample_times_ms(
     return [item / 1_000_000 for item in data["times"]]
 
 
+def get_cycle_count_improvement_over_baseline(
+    dir: str, program: str, zkvm: str, profile: str, speedup: bool = False
+):
+    baseline = get_cycle_count(dir, program, zkvm, BASELINE)
+    compared = get_cycle_count(dir, program, zkvm, profile)
+    if speedup:
+        return compared / baseline
+    return (compared - baseline) / baseline * 100
+
+
 def get_average_improvement_over_baseline(
     dir: str,
     zkvm: str,
@@ -322,6 +332,7 @@ def get_pearson(x, y):
 
 
 def show_or_save_plot():
+    plt.tight_layout()
     if SaveContext.path is not None:
         plt.gcf().set_size_inches(18, 10)
         plt.savefig(SaveContext.path, dpi=200)
