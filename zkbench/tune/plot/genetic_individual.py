@@ -59,8 +59,14 @@ def extract_common_passes(stats_dir: str, best: bool):
             n = len(profile)
             if n < k:
                 continue
+            seen = set()
             for i in range(n - k + 1):
-                counter[tuple(profile[i : i + k])] += 1
+                current = tuple(profile[i : i + k])
+                # do not count sequences twice for a single profile
+                if current in seen:
+                    continue
+                seen.add(current)
+                counter[current] += 1
         return [(list(seq), k) for seq, k in counter.most_common(n)]
 
     for k in range(1, 6):
