@@ -134,6 +134,17 @@ def get_zkvms():
     return list(sorted(CONFIG["zkvms"]))
 
 
+def get_metric_display_name(metric: str) -> str:
+    if metric == "prove":
+        return "proving time"
+    elif metric == "exec":
+        return "execution time"
+    elif metric == "cycle-count":
+        return "cycle count"
+    else:
+        raise ValueError(f"Unknown metric: {metric}")
+
+
 def get_zkvm_display_name(zkvm: str) -> str:
     if zkvm == "x86":
         return "x86"
