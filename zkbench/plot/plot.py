@@ -1,5 +1,6 @@
 import os
 import click
+from matplotlib import pyplot as plt
 
 from zkbench.config import (
     get_default_profiles_ids,
@@ -10,6 +11,7 @@ from zkbench.config import (
     get_zkvms,
     get_zkvms_with_x86,
 )
+import seaborn as sns
 from zkbench.plot.average_improvement import plot_average_improvement
 from zkbench.plot.average_duration import plot_average_duration
 from zkbench.plot.average_improvement_compare import plot_average_improvement_compare
@@ -25,6 +27,7 @@ from zkbench.plot.duration import plot_duration
 from zkbench.plot.duration_single_program import plot_duration_for_single_program
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
 from zkbench.plot.improvement_by_program_zkvm import plot_improvement_by_program_zkvm
+from zkbench.plot.improvement_number_overview import plot_improvement_number_overview
 from zkbench.plot.improvement_profile import plot_improvement_for_profile
 from zkbench.plot.improvement_programs import plot_improvement_number_of_programs
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
@@ -702,9 +705,23 @@ def improvement_number_of_programs_cli(
     plot_improvement_number_of_programs(dir, measurement, drop_below, profiles=profile)
 
 
+def apply_overview_styles():
+    plt.style.use('default')
+    plt.rcParams['font.size'] = 19
+    plt.rcParams['axes.labelsize'] = 18
+    plt.rcParams['axes.titlesize'] = 14
+    plt.rcParams['xtick.labelsize'] = 14
+    plt.rcParams['ytick.labelsize'] = 15
+    plt.rcParams['legend.fontsize'] = 16
+    plt.rcParams['figure.titlesize'] = 24
+    plt.rcParams['figure.figsize'] = (20, 15)
+    plt.rcParams['pdf.fonttype'] = 42
+    sns.set_theme(style="whitegrid")
+
+
 @click.command(
     name="metric-overview",
-    help="",
+    help="Overview of improvement by zkVM and metric",
 )
 @click.option("--top-n", type=int, required=False, default=None)
 @click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
@@ -716,6 +733,30 @@ def metric_overview_cli(
     metric: tuple[str] | None,
     speedup: bool,
 ):
+    apply_overview_styles()
+
     dir = click.get_current_context().parent.params["dir"]
 
     plot_metric_overview(dir, top_n, list(zkvm), list(metric), speedup)
+
+@click.command(
+    name="improvement-number-overview",
+    help="For each profile, plot number of programs with at least x improvement",
+)
+@click.option("--top-n", type=int, required=False, default=None)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
+@click.option("--metric", type=click.Choice(["prove", "exec", "cycle-count"]), required=False, default=None, multiple=True)
+@click.option("--severe", type=float, required=True, help="Severe improvement threshold")
+@click.option("--moderate", type=float, required=True, help="Moderate improvement threshold")
+def improvement_number_overview_cli(
+    zkvm: list[str] | None,
+    metric: list[str] | None,
+    top_n: int | None,
+    severe: float,
+    moderate: float,
+):
+    apply_overview_styles()
+
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_number_overview(dir, severe, moderate, top_n, list(zkvm), list(metric))
