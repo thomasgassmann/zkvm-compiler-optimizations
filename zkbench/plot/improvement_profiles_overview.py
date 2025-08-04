@@ -15,7 +15,7 @@ from zkbench.plot.common import (
 )
 
 
-def plot_improvement_number_overview(
+def plot_improvement_profiles_overview(
     dir: str,
     severe: float,
     moderate: float,

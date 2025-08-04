@@ -27,9 +27,10 @@ from zkbench.plot.duration import plot_duration
 from zkbench.plot.duration_single_program import plot_duration_for_single_program
 from zkbench.plot.improvement_by_program_exec import plot_improvement_by_program_exec
 from zkbench.plot.improvement_by_program_zkvm import plot_improvement_by_program_zkvm
-from zkbench.plot.improvement_number_overview import plot_improvement_number_overview
+from zkbench.plot.improvement_profiles_overview import plot_improvement_profiles_overview
 from zkbench.plot.improvement_profile import plot_improvement_for_profile
 from zkbench.plot.improvement_programs import plot_improvement_number_of_programs
+from zkbench.plot.improvement_programs_overview import plot_improvement_programs_overview
 from zkbench.plot.improvement_single_program import plot_improvement_for_single_program
 from zkbench.plot.metric_overview import plot_metric_overview
 from zkbench.plot.rca_classify import classify_rca
@@ -740,7 +741,7 @@ def metric_overview_cli(
     plot_metric_overview(dir, top_n, list(zkvm), list(metric), speedup)
 
 @click.command(
-    name="improvement-number-overview",
+    name="improvement-profiles-overview",
     help="For each profile, plot number of programs with at least x improvement",
 )
 @click.option("--top-n", type=int, required=False, default=None)
@@ -748,7 +749,7 @@ def metric_overview_cli(
 @click.option("--metric", type=click.Choice(["prove", "exec", "cycle-count"]), required=False, default=None, multiple=True)
 @click.option("--severe", type=float, required=True, help="Severe improvement threshold")
 @click.option("--moderate", type=float, required=True, help="Moderate improvement threshold")
-def improvement_number_overview_cli(
+def improvement_profiles_overview_cli(
     zkvm: list[str] | None,
     metric: list[str] | None,
     top_n: int | None,
@@ -759,4 +760,26 @@ def improvement_number_overview_cli(
 
     dir = click.get_current_context().parent.params["dir"]
 
-    plot_improvement_number_overview(dir, severe, moderate, top_n, list(zkvm), list(metric))
+    plot_improvement_profiles_overview(dir, severe, moderate, top_n, list(zkvm), list(metric))
+
+@click.command(
+    name="improvement-programs-overview",
+    help="For each program, plot number of profiles with at least x improvement",
+)
+@click.option("--top-n", type=int, required=False, default=None)
+@click.option("--zkvm", type=click.Choice(get_zkvms()), required=False, multiple=True)
+@click.option("--metric", type=click.Choice(["prove", "exec", "cycle-count"]), required=False, default=None, multiple=True)
+@click.option("--severe", type=float, required=True, help="Severe improvement threshold")
+@click.option("--moderate", type=float, required=True, help="Moderate improvement threshold")
+def improvement_programs_overview_cli(
+    zkvm: list[str] | None,
+    metric: list[str] | None,
+    top_n: int | None,
+    severe: float,
+    moderate: float,
+):
+    apply_overview_styles()
+
+    dir = click.get_current_context().parent.params["dir"]
+
+    plot_improvement_programs_overview(dir, severe, moderate, top_n, list(zkvm), list(metric))
