@@ -41,6 +41,12 @@ llvm-config = "/home/thomas/git/thesis/rust-risc0/llvm-build/bin/llvm-config"
 llvm-config = "/home/thomas/git/thesis/rust-risc0/llvm-build/bin/llvm-config"
 ```
 
+might need to run the following (see github issue):
+
+```bash
+ln -s libLLVM.so.19.1 libLLVM-19.so
+```
+
 Build rust (only once):
 
 ```bash
