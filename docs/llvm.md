@@ -48,6 +48,13 @@ export LD_LIBRARY_PATH=/home/thomas/git/thesis/rust-risc0/llvm-build/lib:$LD_LIB
 cargo run -- build --path ~/git/thesis/rust-risc0 rust
 ```
 
+For sp1:
+
+```bash
+export LD_LIBRARY_PATH=/home/thomas/git/thesis/rust-risc0/llvm-build/lib:$LD_LIBRARY_PATH
+SP1_BUILD_DIR=~/git/thesis/rust-sp1 cargo run --release -- prove build-toolchain
+```
+
 ## Rebuild LLVM
 
 ```bash
