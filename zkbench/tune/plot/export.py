@@ -1,6 +1,7 @@
 import os
 import mdutils
 from zkbench.config import get_program_groups_from_programs, get_programs, get_zkvms
+from zkbench.plot.common import get_program_selection
 from zkbench.plot.export import export_plot
 from zkbench.tune.exhaustive import Exhaustive
 from zkbench.tune.genetic import Genetic
@@ -10,7 +11,9 @@ from zkbench.tune.plot.genetic import plot_genetic
 from zkbench.tune.plot.genetic_individual import plot_genetic_individual
 
 
-def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str):
+def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str, program_group: str | None = None):
+    programs = get_program_selection(None, program_group)
+
     path = os.path.join(out, "README.md")
     md_file = mdutils.MdUtils(file_name=path)
     md_file.new_header(level=1, title=f"Individual genetic run")
@@ -27,7 +30,7 @@ def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str):
         md_file,
         "main",
         lambda: plot_genetic_individual(
-            stats_dir, baseline_profile, average_programs=False
+            stats_dir, baseline_profile, average_programs=False, program_group=program_group
         ),
     )
     md_file.new_header(
@@ -39,12 +42,12 @@ def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str):
         md_file,
         "main-average",
         lambda: plot_genetic_individual(
-            stats_dir, baseline_profile, average_programs=True
+            stats_dir, baseline_profile, average_programs=True, program_group=program_group
         ),
     )
 
     md_file.new_header(level=2, title=f"By program overview")
-    for program in get_programs():
+    for program in programs:
         try:
             md_file.new_header(level=3, title=f"Program {program}")
             export_plot(
@@ -60,7 +63,7 @@ def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str):
             md_file.new_paragraph(f"No data for program {program}.")
 
     md_file.new_header(level=2, title=f"By program overview (absolute values)")
-    for program in get_programs():
+    for program in programs:
         for zkvm in get_zkvms():
             try:
                 md_file.new_header(level=3, title=f"Program {program} on zkVM {zkvm}")
@@ -88,7 +91,7 @@ def export_genetic_individual(stats_dir: str, out: str, baseline_profile: str):
                 md_file,
                 f"genetic-individual-plot-{zkvm}",
                 lambda: plot_genetic_individual(
-                    stats_dir, baseline_profile, average_programs=False, zkvm=zkvm
+                    stats_dir, baseline_profile, average_programs=False, zkvm=zkvm, program_group=program_group
                 ),
             )
         except:

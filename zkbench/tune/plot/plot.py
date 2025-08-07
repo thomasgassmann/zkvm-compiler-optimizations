@@ -118,7 +118,8 @@ def export_genetic_cli(stats: str, out: str):
 @click.option(
     "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
 )
-def export_genetic_individual_cli(stats_dir: str, out: str, baseline_profile: str):
+@click.option("--program-group", type=click.Choice(get_program_groups()), required=False)
+def export_genetic_individual_cli(stats_dir: str, out: str, baseline_profile: str, program_group: str | None = None):
     if not os.path.exists(stats_dir):
         raise click.ClickException(f"Directory {stats_dir} does not exist.")
-    export_genetic_individual(stats_dir, out, baseline_profile)
+    export_genetic_individual(stats_dir, out, baseline_profile, program_group=program_group)

@@ -1146,7 +1146,6 @@
         "rsp": {
             "specific": true,
             "groups": [
-                "crypto",
                 "rust"
             ]
         }
