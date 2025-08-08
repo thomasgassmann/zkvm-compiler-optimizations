@@ -514,9 +514,9 @@ def cycle_count_single_program_cli(
     name="improvement-by-program-exec",
     help="Show (average) improvement for some profile compared to some other baseline profile by program for exec",
 )
-@click.option("--profile", type=click.Choice(get_profiles_ids()), required=True)
+@click.option("--profile", type=str, required=True)
 @click.option(
-    "--baseline-profile", type=click.Choice(get_profiles_ids()), required=True
+    "--baseline-profile", type=str, required=True
 )
 @click.option("--speedup", type=bool, is_flag=True, required=False, default=False)
 @click.option("--show-x86", type=bool, is_flag=True, required=False, default=False)
