@@ -1,0 +1,168 @@
+diff --git a/llvm/lib/Passes/PassBuilderPipelines.cpp b/llvm/lib/Passes/PassBuilderPipelines.cpp
+index 6f36bdad780a..1edba099f6fa 100644
+--- a/llvm/lib/Passes/PassBuilderPipelines.cpp
++++ b/llvm/lib/Passes/PassBuilderPipelines.cpp
+@@ -232,7 +232,7 @@ static cl::opt<bool> EnablePGOForceFunctionAttrs(
+     cl::init(false));
+ 
+ static cl::opt<bool>
+-    EnableHotColdSplit("hot-cold-split",
++    EnableHotColdSplit("hot-cold-split",                      
+                        cl::desc("Enable hot-cold splitting pass"));
+ 
+ static cl::opt<bool> EnableIROutliner("ir-outliner", cl::init(false),
+@@ -577,7 +577,7 @@ PassBuilder::buildFunctionSimplificationPipeline(OptimizationLevel Level,
+   }
+ 
+   // Speculative execution if the target has divergent branches; otherwise nop.
+-  FPM.addPass(SpeculativeExecutionPass(/* OnlyIfDivergentTarget =*/true));
++  //FPM.addPass(SpeculativeExecutionPass(/* OnlyIfDivergentTarget =*/true));
+ 
+   // Optimize based on known information about branches, and cleanup afterward.
+   FPM.addPass(JumpThreadingPass());
+diff --git a/llvm/lib/Target/RISCV/RISCVISelLowering.cpp b/llvm/lib/Target/RISCV/RISCVISelLowering.cpp
+index badbb4259974..4a51d73f7a70 100644
+--- a/llvm/lib/Target/RISCV/RISCVISelLowering.cpp
++++ b/llvm/lib/Target/RISCV/RISCVISelLowering.cpp
+@@ -21580,8 +21580,9 @@ bool RISCVTargetLowering::isIntDivCheap(EVT VT, AttributeList Attr) const {
+   // When aggressively optimizing for code size, we prefer to use a div
+   // instruction, as it is usually smaller than the alternative sequence.
+   // TODO: Add vector division?
+-  bool OptSize = Attr.hasFnAttr(Attribute::MinSize);
+-  return OptSize && !VT.isVector();
++  // bool OptSize = Attr.hasFnAttr(Attribute::MinSize);
++  // return OptSize && !VT.isVector();
++  return true;
+ }
+ 
+ bool RISCVTargetLowering::preferScalarizeSplat(SDNode *N) const {
+diff --git a/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp b/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp
+index 5a92d6bab31a..7e440895d9f6 100644
+--- a/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp
++++ b/llvm/lib/Target/RISCV/RISCVTargetTransformInfo.cpp
+@@ -1381,6 +1381,12 @@ InstructionCost RISCVTTIImpl::getMemoryOpCost(unsigned Opcode, Type *Src,
+                                               TTI::TargetCostKind CostKind,
+                                               TTI::OperandValueInfo OpInfo,
+                                               const Instruction *I) {
++  if (!Src->isVectorTy()) {
++    unsigned align = Alignment ? Alignment->value() : Src->getScalarSizeInBits() / 8;
++    if (Opcode == Instruction::Load || Opcode == Instruction::Store) {
++      return align < 4 ? 12 : 1;
++    }
++  }
+   EVT VT = TLI->getValueType(DL, Src, true);
+   // Type legalization can't handle structs
+   if (VT == MVT::Other)
+@@ -1390,9 +1396,7 @@ InstructionCost RISCVTTIImpl::getMemoryOpCost(unsigned Opcode, Type *Src,
+   InstructionCost Cost = 0;
+   if (Opcode == Instruction::Store && OpInfo.isConstant())
+     Cost += getStoreImmCost(Src, OpInfo, CostKind);
+-  InstructionCost BaseCost =
+-    BaseT::getMemoryOpCost(Opcode, Src, Alignment, AddressSpace,
+-                           CostKind, OpInfo, I);
++  InstructionCost BaseCost = 1;
+   // Assume memory ops cost scale with the number of vector registers
+   // possible accessed by the instruction.  Note that BasicTTI already
+   // handles the LT.first term for us.
+@@ -1683,6 +1687,40 @@ InstructionCost RISCVTTIImpl::getArithmeticInstrCost(
+   // Legalize the type.
+   std::pair<InstructionCost, MVT> LT = getTypeLegalizationCost(Ty);
+ 
++  printf("In getArithmeticInstrCost51: Opcode = %d\n", Opcode);
++  if (!LT.second.isVector()) {
++    switch (Opcode) {
++      // 1-cycle operations
++      case Instruction::Add:
++      case Instruction::Sub:
++      case Instruction::Mul:
++      case Instruction::Shl:
++        return 1;
++      // 2-cycle operations
++      case Instruction::And:
++      case Instruction::Or:
++      case Instruction::Xor:
++      case Instruction::UDiv:
++      case Instruction::SDiv:
++      case Instruction::URem:
++      case Instruction::SRem:
++      case Instruction::LShr:
++      case Instruction::AShr:
++        return 2;
++      // Floating point is more expensive (60 - 140 cycles, but we use something lower here)
++      case Instruction::FAdd:
++      case Instruction::FSub:
++      case Instruction::FMul:
++      case Instruction::FDiv:
++      case Instruction::FRem:
++        return 5;
++      default:
++        printf("In getArithmeticInstrCost2: unknown %d\n", Opcode);
++        break;
++    }
++    return BaseT::getArithmeticInstrCost(Opcode, Ty, CostKind, Op1Info, Op2Info,
++                                         Args, CxtI);
++  }
+   // TODO: Handle scalar type.
+   if (!LT.second.isVector())
+     return BaseT::getArithmeticInstrCost(Opcode, Ty, CostKind, Op1Info, Op2Info,
+diff --git a/llvm/lib/Transforms/InstCombine/InstCombineMulDivRem.cpp b/llvm/lib/Transforms/InstCombine/InstCombineMulDivRem.cpp
+index f4f3644acfe5..0bb8bb83d0a4 100644
+--- a/llvm/lib/Transforms/InstCombine/InstCombineMulDivRem.cpp
++++ b/llvm/lib/Transforms/InstCombine/InstCombineMulDivRem.cpp
+@@ -1543,12 +1543,14 @@ Instruction *InstCombinerImpl::visitUDiv(BinaryOperator &I) {
+   // Op0 / C where C is large (negative) --> zext (Op0 >= C)
+   // TODO: Could use isKnownNegative() to handle non-constant values.
+   Type *Ty = I.getType();
+-  if (match(Op1, m_Negative())) {
++  if (false && match(Op1, m_Negative())) {
+     Value *Cmp = Builder.CreateICmpUGE(Op0, Op1);
+     return CastInst::CreateZExtOrBitCast(Cmp, Ty);
+   }
+   // Op0 / (sext i1 X) --> zext (Op0 == -1) (if X is 0, the div is undefined)
+-  if (match(Op1, m_SExt(m_Value(X))) && X->getType()->isIntOrIntVectorTy(1)) {
++  // avoid replacing division by a sign-extended i1 with compare+zext
++  if (false && match(Op1, m_SExt(m_Value(X))) &&
++      X->getType()->isIntOrIntVectorTy(1)) {
+     Value *Cmp = Builder.CreateICmpEQ(Op0, ConstantInt::getAllOnesValue(Ty));
+     return CastInst::CreateZExtOrBitCast(Cmp, Ty);
+   }
+diff --git a/llvm/lib/Transforms/Utils/SimplifyCFG.cpp b/llvm/lib/Transforms/Utils/SimplifyCFG.cpp
+index f23e28888931..14b3898d0b81 100644
+--- a/llvm/lib/Transforms/Utils/SimplifyCFG.cpp
++++ b/llvm/lib/Transforms/Utils/SimplifyCFG.cpp
+@@ -2999,6 +2999,8 @@ static bool validateAndCostRequiredSelects(BasicBlock *BB, BasicBlock *ThenBB,
+ /// \returns true if the conditional block is removed.
+ bool SimplifyCFGOpt::SpeculativelyExecuteBB(BranchInst *BI,
+                                             BasicBlock *ThenBB) {
++  // disable speculative if-conversion, i.e. we won't execute both branches of a conditional branch
++  return false;
+   if (!Options.SpeculateBlocks)
+     return false;
+ 
+@@ -3478,6 +3480,8 @@ static bool FoldCondBranchOnValueKnownInPredecessor(BranchInst *BI,
+ static bool FoldTwoEntryPHINode(PHINode *PN, const TargetTransformInfo &TTI,
+                                 DomTreeUpdater *DTU, const DataLayout &DL,
+                                 bool SpeculateUnpredictables) {
++  // disable folding to avoid predicated selects.
++  return false;
+   // Ok, this is a two entry PHI node.  Check to see if this is a simple "if
+   // statement", which has a very simple dominance structure.  Basically, we
+   // are trying to find the condition that is being branched on, which
+@@ -6167,6 +6171,8 @@ static void removeSwitchAfterSelectFold(SwitchInst *SI, PHINode *PHI,
+ static bool trySwitchToSelect(SwitchInst *SI, IRBuilder<> &Builder,
+                               DomTreeUpdater *DTU, const DataLayout &DL,
+                               const TargetTransformInfo &TTI) {
++  // disable switch->select lowering to keep cheap branches.
++  return false;
+   Value *const Cond = SI->getCondition();
+   PHINode *PHI = nullptr;
+   BasicBlock *CommonDest = nullptr;
+@@ -6643,6 +6649,8 @@ static void reuseTableCompare(
+ static bool SwitchToLookupTable(SwitchInst *SI, IRBuilder<> &Builder,
+                                 DomTreeUpdater *DTU, const DataLayout &DL,
+                                 const TargetTransformInfo &TTI) {
++  // disable switch->lookup-table lowering to avoid table eval.
++  return false;
+   assert(SI->getNumCases() > 1 && "Degenerate switch?");
+ 
+   BasicBlock *BB = SI->getParent();

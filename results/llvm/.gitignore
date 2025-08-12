@@ -1,4 +1,4 @@
-instrcosts-bin/
-instrcosts-with-inline-bin/
-instrcosts-prove/
-instrcosts-with-inline-prove/
+*.tar
+*-bin
+inlining/bin/
+!criterion/

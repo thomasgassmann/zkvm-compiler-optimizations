@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Index - Criterion.rs</title>
+    <style type="text/css">
+        body {
+            font: 14px Helvetica Neue;
+            text-rendering: optimizelegibility;
+        }
+
+        .body {
+            width: 960px;
+            margin: auto;
+        }
+
+        a:link {
+            color: #1F78B4;
+            text-decoration: none;
+        }
+
+        h2 {
+            font-size: 36px;
+            font-weight: 300;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 300;
+        }
+
+        #footer {
+            height: 40px;
+            background: #888;
+            color: white;
+            font-size: larger;
+            font-weight: 300;
+        }
+
+        #footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        #footer p {
+            text-align: center
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body">
+        <h2>Criterion.rs Benchmark Index</h2>
+        See individual benchmark pages below for more details.
+        <ul>
+            <li><a href="../bigmem-risc0-prove/report/index.html">bigmem-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../bigmem-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../bigmem-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../bigmem-sp1-prove/report/index.html">bigmem-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../bigmem-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../bigmem-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../ecdsa-verify-risc0-prove/report/index.html">ecdsa-verify-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../ecdsa-verify-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../ecdsa-verify-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../ecdsa-verify-sp1-prove/report/index.html">ecdsa-verify-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../ecdsa-verify-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../ecdsa-verify-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../eddsa-verify-risc0-prove/report/index.html">eddsa-verify-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../eddsa-verify-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../eddsa-verify-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../eddsa-verify-sp1-prove/report/index.html">eddsa-verify-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../eddsa-verify-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../eddsa-verify-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../factorial-risc0-prove/report/index.html">factorial-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../factorial-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../factorial-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../factorial-sp1-prove/report/index.html">factorial-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../factorial-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../factorial-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../fibonacci-risc0-prove/report/index.html">fibonacci-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../fibonacci-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../fibonacci-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../fibonacci-sp1-prove/report/index.html">fibonacci-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../fibonacci-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../fibonacci-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../keccak256-risc0-prove/report/index.html">keccak256-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../keccak256-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../keccak256-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../keccak256-sp1-prove/report/index.html">keccak256-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../keccak256-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../keccak256-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../loop-sum-risc0-prove/report/index.html">loop-sum-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../loop-sum-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../loop-sum-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../loop-sum-sp1-prove/report/index.html">loop-sum-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../loop-sum-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../loop-sum-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../merkle-risc0-prove/report/index.html">merkle-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../merkle-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../merkle-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../merkle-sp1-prove/report/index.html">merkle-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../merkle-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../merkle-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-bt-risc0-prove/report/index.html">npb-bt-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-bt-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-bt-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-bt-sp1-prove/report/index.html">npb-bt-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-bt-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-bt-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-cg-risc0-prove/report/index.html">npb-cg-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-cg-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-cg-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-cg-sp1-prove/report/index.html">npb-cg-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-cg-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-cg-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-ep-risc0-prove/report/index.html">npb-ep-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-ep-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-ep-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-ep-sp1-prove/report/index.html">npb-ep-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-ep-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-ep-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-ft-risc0-prove/report/index.html">npb-ft-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-ft-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-ft-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-ft-sp1-prove/report/index.html">npb-ft-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-ft-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-ft-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-is-risc0-prove/report/index.html">npb-is-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-is-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-is-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-is-sp1-prove/report/index.html">npb-is-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-is-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-is-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-lu-risc0-prove/report/index.html">npb-lu-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-lu-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-lu-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-lu-sp1-prove/report/index.html">npb-lu-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-lu-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-lu-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-mg-risc0-prove/report/index.html">npb-mg-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-mg-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-mg-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-mg-sp1-prove/report/index.html">npb-mg-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-mg-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-mg-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-sp-risc0-prove/report/index.html">npb-sp-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-sp-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-sp-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../npb-sp-sp1-prove/report/index.html">npb-sp-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../npb-sp-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../npb-sp-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-2mm-risc0-prove/report/index.html">polybench-2mm-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-2mm-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-2mm-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-2mm-sp1-prove/report/index.html">polybench-2mm-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-2mm-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-2mm-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-3mm-risc0-prove/report/index.html">polybench-3mm-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-3mm-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-3mm-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-3mm-sp1-prove/report/index.html">polybench-3mm-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-3mm-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-3mm-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-adi-risc0-prove/report/index.html">polybench-adi-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-adi-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-adi-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-adi-sp1-prove/report/index.html">polybench-adi-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-adi-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-adi-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-atax-risc0-prove/report/index.html">polybench-atax-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-atax-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-atax-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-atax-sp1-prove/report/index.html">polybench-atax-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-atax-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-atax-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-bicg-risc0-prove/report/index.html">polybench-bicg-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-bicg-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-bicg-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-bicg-sp1-prove/report/index.html">polybench-bicg-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-bicg-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-bicg-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-cholesky-risc0-prove/report/index.html">polybench-cholesky-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-cholesky-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-cholesky-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-cholesky-sp1-prove/report/index.html">polybench-cholesky-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-cholesky-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-cholesky-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-correlation-risc0-prove/report/index.html">polybench-correlation-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-correlation-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-correlation-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-correlation-sp1-prove/report/index.html">polybench-correlation-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-correlation-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-correlation-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-covariance-risc0-prove/report/index.html">polybench-covariance-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-covariance-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-covariance-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-covariance-sp1-prove/report/index.html">polybench-covariance-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-covariance-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-covariance-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-deriche-risc0-prove/report/index.html">polybench-deriche-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-deriche-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-deriche-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-deriche-sp1-prove/report/index.html">polybench-deriche-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-deriche-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-deriche-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-doitgen-risc0-prove/report/index.html">polybench-doitgen-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-doitgen-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-doitgen-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-doitgen-sp1-prove/report/index.html">polybench-doitgen-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-doitgen-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-doitgen-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-durbin-risc0-prove/report/index.html">polybench-durbin-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-durbin-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-durbin-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-durbin-sp1-prove/report/index.html">polybench-durbin-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-durbin-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-durbin-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-fdtd-2d-risc0-prove/report/index.html">polybench-fdtd-2d-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-fdtd-2d-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-fdtd-2d-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-fdtd-2d-sp1-prove/report/index.html">polybench-fdtd-2d-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-fdtd-2d-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-fdtd-2d-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-floyd-warshall-risc0-prove/report/index.html">polybench-floyd-warshall-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-floyd-warshall-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-floyd-warshall-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-floyd-warshall-sp1-prove/report/index.html">polybench-floyd-warshall-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-floyd-warshall-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-floyd-warshall-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gemm-risc0-prove/report/index.html">polybench-gemm-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gemm-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gemm-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gemm-sp1-prove/report/index.html">polybench-gemm-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gemm-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gemm-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gemver-risc0-prove/report/index.html">polybench-gemver-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gemver-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gemver-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gemver-sp1-prove/report/index.html">polybench-gemver-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gemver-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gemver-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gesummv-risc0-prove/report/index.html">polybench-gesummv-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gesummv-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gesummv-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gesummv-sp1-prove/report/index.html">polybench-gesummv-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gesummv-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gesummv-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gramschmidt-risc0-prove/report/index.html">polybench-gramschmidt-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gramschmidt-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gramschmidt-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-gramschmidt-sp1-prove/report/index.html">polybench-gramschmidt-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-gramschmidt-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-gramschmidt-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-heat-3d-risc0-prove/report/index.html">polybench-heat-3d-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-heat-3d-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-heat-3d-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-heat-3d-sp1-prove/report/index.html">polybench-heat-3d-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-heat-3d-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-heat-3d-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-jacobi-1d-risc0-prove/report/index.html">polybench-jacobi-1d-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-jacobi-1d-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-jacobi-1d-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-jacobi-1d-sp1-prove/report/index.html">polybench-jacobi-1d-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-jacobi-1d-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-jacobi-1d-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-jacobi-2d-risc0-prove/report/index.html">polybench-jacobi-2d-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-jacobi-2d-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-jacobi-2d-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-jacobi-2d-sp1-prove/report/index.html">polybench-jacobi-2d-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-jacobi-2d-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-jacobi-2d-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-lu-risc0-prove/report/index.html">polybench-lu-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-lu-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-lu-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-lu-sp1-prove/report/index.html">polybench-lu-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-lu-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-lu-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-ludcmp-risc0-prove/report/index.html">polybench-ludcmp-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-ludcmp-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-ludcmp-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-ludcmp-sp1-prove/report/index.html">polybench-ludcmp-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-ludcmp-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-ludcmp-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-mvt-risc0-prove/report/index.html">polybench-mvt-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-mvt-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-mvt-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-mvt-sp1-prove/report/index.html">polybench-mvt-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-mvt-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-mvt-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-nussinov-risc0-prove/report/index.html">polybench-nussinov-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-nussinov-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-nussinov-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-nussinov-sp1-prove/report/index.html">polybench-nussinov-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-nussinov-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-nussinov-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-seidel-2d-risc0-prove/report/index.html">polybench-seidel-2d-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-seidel-2d-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-seidel-2d-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-seidel-2d-sp1-prove/report/index.html">polybench-seidel-2d-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-seidel-2d-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-seidel-2d-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-symm-risc0-prove/report/index.html">polybench-symm-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-symm-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-symm-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-symm-sp1-prove/report/index.html">polybench-symm-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-symm-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-symm-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-syr2k-risc0-prove/report/index.html">polybench-syr2k-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-syr2k-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-syr2k-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-syr2k-sp1-prove/report/index.html">polybench-syr2k-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-syr2k-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-syr2k-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-syrk-risc0-prove/report/index.html">polybench-syrk-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-syrk-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-syrk-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-syrk-sp1-prove/report/index.html">polybench-syrk-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-syrk-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-syrk-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-trisolv-risc0-prove/report/index.html">polybench-trisolv-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-trisolv-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-trisolv-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-trisolv-sp1-prove/report/index.html">polybench-trisolv-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-trisolv-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-trisolv-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-trmm-risc0-prove/report/index.html">polybench-trmm-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-trmm-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-trmm-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../polybench-trmm-sp1-prove/report/index.html">polybench-trmm-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../polybench-trmm-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../polybench-trmm-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../regex-match-risc0-prove/report/index.html">regex-match-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../regex-match-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../regex-match-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../regex-match-sp1-prove/report/index.html">regex-match-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../regex-match-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../regex-match-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../rsp-risc0-prove/report/index.html">rsp-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../rsp-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../rsp-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../rsp-sp1-prove/report/index.html">rsp-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../rsp-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../rsp-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha2-bench-risc0-prove/report/index.html">sha2-bench-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha2-bench-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha2-bench-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha2-bench-sp1-prove/report/index.html">sha2-bench-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha2-bench-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha2-bench-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha2-chain-risc0-prove/report/index.html">sha2-chain-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha2-chain-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha2-chain-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha2-chain-sp1-prove/report/index.html">sha2-chain-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha2-chain-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha2-chain-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha256-risc0-prove/report/index.html">sha256-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha256-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha256-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha256-sp1-prove/report/index.html">sha256-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha256-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha256-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha3-bench-risc0-prove/report/index.html">sha3-bench-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha3-bench-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha3-bench-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha3-bench-sp1-prove/report/index.html">sha3-bench-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha3-bench-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha3-bench-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha3-chain-risc0-prove/report/index.html">sha3-chain-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha3-chain-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha3-chain-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../sha3-chain-sp1-prove/report/index.html">sha3-chain-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../sha3-chain-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../sha3-chain-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../tailcall-risc0-prove/report/index.html">tailcall-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../tailcall-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../tailcall-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../tailcall-sp1-prove/report/index.html">tailcall-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../tailcall-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../tailcall-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../zkvm-mnist-risc0-prove/report/index.html">zkvm-mnist-risc0-prove</a></li>
+            
+            <ul>
+                <li><a href="../zkvm-mnist-risc0-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../zkvm-mnist-risc0-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+            <li><a href="../zkvm-mnist-sp1-prove/report/index.html">zkvm-mnist-sp1-prove</a></li>
+            
+            <ul>
+                <li><a href="../zkvm-mnist-sp1-prove/o3-default/report/index.html">o3-default</a></li>
+                <li><a href="../zkvm-mnist-sp1-prove/o3-updated/report/index.html">o3-updated</a></li>
+            </ul>
+        </ul>
+    </div>
+    <div id="footer">
+        <p>This report was generated by
+            <a href="https://github.com/bheisler/criterion.rs">Criterion.rs</a>, a statistics-driven benchmarking
+            library in Rust.</p>
+    </div>
+</body>
+</html>
