@@ -1,3 +1,3 @@
 #!/bin/bash
 
-RUSTFLAGS="-C target-cpu=native -C target-feature=-avx512f" cargo build --release -p runner
+RUSTFLAGS="-C target-cpu=native" cargo build --release -p runner
