@@ -28,6 +28,7 @@ async def run_build(
     name: str | None = None,
     build_by_program: bool = False,
     clean_after_build: bool = False,
+    subtractive: bool = False,
 ):
     programs_to_build, zkvms, profiles_to_build = get_run_config(
         programs, zkvms, profile_names, program_groups, ignore=ignore_program
@@ -75,7 +76,13 @@ async def run_build(
                     )
                     async with sem:
                         await _build(
-                            p, profile_name, cz, llvm, features=features, name=name
+                            p,
+                            profile_name,
+                            cz,
+                            llvm,
+                            features=features,
+                            name=name,
+                            subtractive=subtractive,
                         )
                     remaining -= 1
                     all_remaining -= 1
@@ -104,7 +111,13 @@ async def run_build(
             await asyncio.gather(
                 *[
                     _build(
-                        program, profile_name, zkvm, llvm, features=features, name=name
+                        program,
+                        profile_name,
+                        zkvm,
+                        llvm,
+                        features=features,
+                        name=name,
+                        subtractive=subtractive,
                     )
                     for program, profile_name, zkvm in jobs_to_run
                 ]
@@ -113,7 +126,13 @@ async def run_build(
 
 
 async def _build(
-    program: str, profile_name: str, zkvm: str, llvm: bool, features=None, name=None
+    program: str,
+    profile_name: str,
+    zkvm: str,
+    llvm: bool,
+    features=None,
+    name=None,
+    subtractive: bool = False,
 ):
     target = get_target_binary_path(
         program, zkvm, profile_name if name is None else name
@@ -121,7 +140,9 @@ async def _build(
     os.makedirs(os.path.dirname(target), exist_ok=True)
 
     profile = get_profile_by_name(profile_name)
-    await build_program(program, zkvm, profile, llvm, target, features=features)
+    await build_program(
+        program, zkvm, profile, llvm, target, features=features, subtractive=subtractive
+    )
 
 
 def get_build_command(
@@ -132,6 +153,7 @@ def get_build_command(
     target_dir: str | None,
     features: list[str] | None,
     cmd: str,
+    subtractive: bool = False,
 ):
     passes = ",".join(profile.passes)
     env = {
@@ -155,10 +177,14 @@ def get_build_command(
         if not profile.lower_atomic_before
         else (lower_atomic_pass + profile.passes)
     )
-    pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
-    prepopulate_passes = (
-        "" if profile.prepopulate_passes else "-C no-prepopulate-passes"
+    pass_string = (
+        "" if passes_string == "" or subtractive else f"-C passes={passes_string}"
     )
+
+    prepopulate_passes = (
+        "" if profile.prepopulate_passes or subtractive else "-C no-prepopulate-passes"
+    )
+    rflags = profile.rustflags if not subtractive else profile.subtractive
     llvm_flag = "--emit=llvm-ir" if llvm else ""
     # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
@@ -166,7 +192,7 @@ def get_build_command(
         return (
             f"""
             CC=gcc CC_riscv32im_succinct_zkvm_elf=~/.sp1/bin/riscv32-unknown-elf-gcc \
-                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
+                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {rflags} {llvm_flag}" \
                 RUSTUP_TOOLCHAIN=succinct \
                 CARGO_BUILD_TARGET=riscv32im-succinct-zkvm-elf \
                 cargo +succinct {cmd} --release --locked --features sp1 {verbosity} {additional_features}
@@ -177,7 +203,7 @@ def get_build_command(
         return (
             f"""
             CC=gcc CC_riscv32im_risc0_zkvm_elf=~/.risc0/cpp/bin/riscv32-unknown-elf-gcc \
-                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {profile.rustflags} {llvm_flag}" \
+                RUSTFLAGS="{prepopulate_passes} {pass_string} -C link-arg=-Ttext=0x00200800 -C panic=abort {rflags} {llvm_flag}" \
                 RISC0_FEATURE_bigint2=1 \
                 cargo +risc0 {cmd} --release --locked --features risc0 \
                     --target riscv32im-risc0-zkvm-elf {verbosity} {additional_features}
@@ -187,7 +213,7 @@ def get_build_command(
     elif zkvm == "x86":
         return (
             f"""
-            RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {profile.rustflags} {llvm_flag}" \
+            RUSTFLAGS="{prepopulate_passes} {pass_string} -C panic=abort {rflags} {llvm_flag}" \
                 cargo +nightly-2025-01-30-x86_64-unknown-linux-gnu {cmd} --release --locked --features x86 --lib {verbosity} {additional_features}
         """.strip(),
             env,
@@ -206,6 +232,7 @@ async def build_program(
     timeout=None,
     target_dir=None,
     features=None,
+    subtractive: bool = False,
 ):
     source = get_source_binary_path(program, zkvm, target_dir)
     profile_name = profile.profile_name
@@ -216,7 +243,14 @@ async def build_program(
     # setting CC below uses gcc for dependencies with c code, ideally we should use clang
     # to apply the same optimization passes, this currently only seems to affect rsp-risc0
     cmd, env = get_build_command(
-        zkvm, profile, llvm, verbose, target_dir, features, "build"
+        zkvm,
+        profile,
+        llvm,
+        verbose,
+        target_dir,
+        features,
+        "build",
+        subtractive=subtractive,
     )
     ret = await run_command(
         cmd,

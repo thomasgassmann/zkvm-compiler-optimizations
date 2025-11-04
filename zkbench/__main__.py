@@ -110,6 +110,7 @@ def zkbench_cli(log_level: str, log_file: str):
 @click.option("--feature", required=False, type=str, multiple=True)
 @click.option("--name", required=False, type=str, default=None)
 @click.option("--clean-after-build", required=False, is_flag=True, default=False)
+@click.option("--subtractive", required=False, is_flag=True, default=False)
 @coro
 async def build_cli(
     program: list[str],
@@ -124,6 +125,7 @@ async def build_cli(
     name: str | None,
     build_by_program: bool = False,
     clean_after_build: bool = False,
+    subtractive: bool = False,
 ):
     await run_build(
         list(program),
@@ -138,6 +140,7 @@ async def build_cli(
         name=name,
         build_by_program=build_by_program,
         clean_after_build=clean_after_build,
+        subtractive=subtractive,
     )
 
 
@@ -159,6 +162,7 @@ async def build_cli(
 @click.option("--open", required=False, is_flag=True, default=False)
 @click.option("--feature", required=False, type=str, multiple=True)
 @click.argument("rest", required=False, default="")
+@click.option("--subtractive", required=False, is_flag=True, default=False)
 @coro
 async def asm_cli(
     program: str,
@@ -169,8 +173,11 @@ async def asm_cli(
     feature: list[str],
     rest: str,
     open: bool,
+    subtractive: bool = False,
 ):
-    show_asm(program, zkvm, profile, feature, llvm, rust, rest, open)
+    show_asm(
+        program, zkvm, profile, feature, llvm, rust, rest, open, subtractive=subtractive
+    )
 
 
 @click.command(name="clean")

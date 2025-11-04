@@ -1,3 +1,4 @@
+import logging
 import os
 import subprocess
 import sys
@@ -6,9 +7,21 @@ from zkbench.build import get_build_command
 from zkbench.config import get_profile_by_name, get_program_path
 
 
-def show_asm(program: str, zkvm: str, profile_name: str, features: list[str], llvm: bool, rust: bool, rest: str, do_open: bool):
+def show_asm(
+    program: str,
+    zkvm: str,
+    profile_name: str,
+    features: list[str],
+    llvm: bool,
+    rust: bool,
+    rest: str,
+    do_open: bool,
+    subtractive: bool = False,
+):
     profile = get_profile_by_name(profile_name)
-    cmd, env = get_build_command(zkvm, profile, False, False, None, features, "asm")
+    cmd, env = get_build_command(
+        zkvm, profile, False, False, None, features, "asm", subtractive=subtractive
+    )
     if llvm:
         cmd += " --llvm"
     if rust:
@@ -22,6 +35,8 @@ def show_asm(program: str, zkvm: str, profile_name: str, features: list[str], ll
         raise ValueError(f"Unsupported zkvm: {zkvm}")
 
     cmd += f" --context 3 {rest}"
+
+    logging.debug(f"Running command: {cmd}")
 
     program_dir = get_program_path(program, zkvm)
     if not do_open:

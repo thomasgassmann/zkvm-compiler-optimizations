@@ -3,12 +3,14 @@
         "baseline": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3",
             "passes": [],
             "prepopulate_passes": false
         },
         "always-inline": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-always-inline",
             "passes": [
                 "always-inline"
             ],
@@ -17,6 +19,7 @@
         "argpromotion": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-argpromotion",
             "passes": [
                 "argpromotion"
             ],
@@ -25,6 +28,7 @@
         "attributor": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-attributor",
             "passes": [
                 "attributor"
             ],
@@ -33,6 +37,7 @@
         "bdce": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-bdce",
             "passes": [
                 "bdce"
             ],
@@ -41,6 +46,7 @@
         "correlated-propagation": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-correlated-propagation",
             "passes": [
                 "correlated-propagation"
             ],
@@ -49,6 +55,7 @@
         "globaldce": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-globaldce",
             "passes": [
                 "globaldce"
             ],
@@ -57,6 +64,7 @@
         "globalsplit": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-globalsplit",
             "passes": [
                 "globalsplit"
             ],
@@ -66,6 +74,7 @@
         "globalopt": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-globalopt",
             "passes": [
                 "globalopt"
             ],
@@ -74,6 +83,7 @@
         "ipsccp": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-ipsccp",
             "passes": [
                 "ipsccp"
             ],
@@ -82,6 +92,7 @@
         "inline": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-inline",
             "passes": [
                 "inline"
             ],
@@ -90,6 +101,7 @@
         "loop-sink": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-sink",
             "passes": [
                 "loop-sink"
             ],
@@ -99,6 +111,7 @@
         "loop-data-prefetch": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-data-prefetch",
             "passes": [
                 "loop-data-prefetch"
             ],
@@ -108,6 +121,7 @@
         "loop-extract": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-extract",
             "passes": [
                 "loop-extract"
             ],
@@ -116,6 +130,7 @@
         "loop-fusion": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-fusion",
             "passes": [
                 "loop-fusion"
             ],
@@ -124,6 +139,7 @@
         "loop-instsimplify": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-instsimplify",
             "passes": [
                 "loop(loop-instsimplify)"
             ],
@@ -132,6 +148,7 @@
         "loop-interchange": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-interchange",
             "passes": [
                 "loop(loop-interchange)"
             ],
@@ -140,6 +157,7 @@
         "loop-predication": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-predication",
             "passes": [
                 "loop(loop-predication)"
             ],
@@ -148,6 +166,7 @@
         "loop-versioning-licm": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-versioning-licm",
             "passes": [
                 "loop(loop-versioning-licm)"
             ],
@@ -156,6 +175,7 @@
         "mergefunc": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-mergefunc",
             "passes": [
                 "mergefunc"
             ],
@@ -164,6 +184,7 @@
         "mergeicmps": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-mergeicmps",
             "passes": [
                 "mergeicmps"
             ],
@@ -173,6 +194,7 @@
         "mldst-motion": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-mldst-motion",
             "passes": [
                 "mldst-motion"
             ],
@@ -181,6 +203,7 @@
         "newgvn": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-newgvn",
             "passes": [
                 "newgvn"
             ],
@@ -189,6 +212,7 @@
         "partial-inliner": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-partial-inlining",
             "passes": [
                 "partial-inliner"
             ],
@@ -197,6 +221,7 @@
         "partially-inline-libcalls": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-partially-inline-libcalls",
             "passes": [
                 "partially-inline-libcalls"
             ],
@@ -206,6 +231,7 @@
         "sroa": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-sroa",
             "passes": [
                 "sroa"
             ],
@@ -214,6 +240,7 @@
         "sink": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-sink",
             "passes": [
                 "sink"
             ],
@@ -222,6 +249,7 @@
         "speculative-execution": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-speculative-execution",
             "passes": [
                 "speculative-execution"
             ],
@@ -230,6 +258,7 @@
         "slsr": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-slsr",
             "passes": [
                 "slsr"
             ],
@@ -238,6 +267,7 @@
         "strip": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-strip",
             "passes": [
                 "strip"
             ],
@@ -246,6 +276,7 @@
         "wholeprogramdevirt": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-wholeprogramdevirt",
             "passes": [
                 "wholeprogramdevirt"
             ],
@@ -255,6 +286,7 @@
         "sccp": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-sccp",
             "passes": [
                 "sccp"
             ],
@@ -263,6 +295,7 @@
         "gvn": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-gvn",
             "passes": [
                 "gvn"
             ],
@@ -271,6 +304,7 @@
         "tailcall": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-tailcallelim",
             "passes": [
                 "tailcallelim"
             ],
@@ -279,6 +313,7 @@
         "adce": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-adce",
             "passes": [
                 "adce"
             ],
@@ -287,6 +322,7 @@
         "dse": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-dse",
             "passes": [
                 "dse"
             ],
@@ -295,6 +331,7 @@
         "indvars": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-indvars",
             "passes": [
                 "indvars"
             ],
@@ -304,6 +341,7 @@
         "instcombine": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-instcombine",
             "passes": [
                 "instcombine<max-iterations=1000>"
             ],
@@ -312,6 +350,7 @@
         "aggressive-instcombine": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-aggressive-instcombine",
             "passes": [
                 "aggressive-instcombine"
             ],
@@ -320,6 +359,7 @@
         "jump-threading": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-jump-threading",
             "passes": [
                 "jump-threading"
             ],
@@ -328,6 +368,7 @@
         "lcssa": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-lcssa",
             "passes": [
                 "lcssa"
             ],
@@ -336,6 +377,7 @@
         "loop-reduce": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-reduce",
             "passes": [
                 "loop-reduce"
             ],
@@ -345,6 +387,7 @@
         "loop-rotate": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-rotate",
             "passes": [
                 "loop-rotate"
             ],
@@ -354,6 +397,7 @@
         "loop-simplify": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-simplify",
             "passes": [
                 "loop-simplify"
             ],
@@ -362,6 +406,7 @@
         "loop-unroll": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-unroll",
             "passes": [
                 "loop-unroll"
             ],
@@ -370,6 +415,7 @@
         "loop-unroll-and-jam": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-unroll-and-jam",
             "passes": [
                 "loop-unroll-and-jam"
             ],
@@ -379,6 +425,7 @@
         "loop-unroll-full": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-unroll-full",
             "passes": [
                 "loop-unroll-full"
             ],
@@ -388,6 +435,7 @@
         "licm": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-licm",
             "passes": [
                 "loop-mssa(licm)"
             ],
@@ -396,6 +444,7 @@
         "loop-deletion": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-deletion",
             "passes": [
                 "loop-deletion"
             ],
@@ -405,6 +454,7 @@
         "memcpyopt": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-memcpyopt",
             "passes": [
                 "memcpyopt"
             ],
@@ -413,6 +463,7 @@
         "simplifycfg": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-simplifycfg",
             "passes": [
                 "simplifycfg"
             ],
@@ -421,6 +472,7 @@
         "reassociate": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-reassociate",
             "passes": [
                 "reassociate"
             ],
@@ -429,6 +481,7 @@
         "mem2reg": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-mem2reg",
             "passes": [
                 "mem2reg"
             ],
@@ -437,6 +490,7 @@
         "reg2mem": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-reg2mem",
             "passes": [
                 "reg2mem"
             ],
@@ -445,6 +499,7 @@
         "simple-loop-unswitch": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-simple-loop-unswitch",
             "passes": [
                 "simple-loop-unswitch"
             ],
@@ -454,6 +509,7 @@
         "mergereturn": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-mergereturn",
             "passes": [
                 "mergereturn"
             ],
@@ -462,6 +518,7 @@
         "extract-blocks": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-extract-blocks",
             "passes": [
                 "extract-blocks"
             ],
@@ -471,6 +528,7 @@
         "break-crit-edges": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-break-crit-edges",
             "passes": [
                 "break-crit-edges"
             ],
@@ -479,6 +537,7 @@
         "constmerge": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-constmerge",
             "passes": [
                 "constmerge"
             ],
@@ -488,6 +547,7 @@
         "dce": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-dce",
             "passes": [
                 "dce"
             ],
@@ -496,6 +556,7 @@
         "deadargelim": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-deadargelim",
             "passes": [
                 "deadargelim"
             ],
@@ -504,6 +565,7 @@
         "function-attrs": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-function-attrs",
             "passes": [
                 "function-attrs"
             ],
@@ -512,6 +574,7 @@
         "lower-global-dtors": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-lower-global-dtors",
             "passes": [
                 "lower-global-dtors"
             ],
@@ -521,6 +584,7 @@
         "lower-invoke": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-lower-invoke",
             "passes": [
                 "lower-invoke"
             ],
@@ -530,6 +594,7 @@
         "lower-switch": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-lower-switch",
             "passes": [
                 "lower-switch"
             ],
@@ -538,6 +603,7 @@
         "rel-lookup-table-converter": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "rel-lookup-table-converter"
             ],
@@ -547,6 +613,7 @@
         "strip-dead-debug-info": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "strip-dead-debug-info"
             ],
@@ -556,6 +623,7 @@
         "strip-dead-prototypes": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "strip-dead-prototypes"
             ],
@@ -565,6 +633,7 @@
         "bounds-checking": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-bounds-checking",
             "passes": [
                 "bounds-checking"
             ],
@@ -573,6 +642,7 @@
         "callsite-splitting": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "callsite-splitting"
             ],
@@ -582,6 +652,7 @@
         "consthoist": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-consthoist",
             "passes": [
                 "consthoist"
             ],
@@ -590,6 +661,7 @@
         "div-rem-pairs": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "div-rem-pairs"
             ],
@@ -599,6 +671,7 @@
         "early-cse": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-early-cse",
             "passes": [
                 "early-cse"
             ],
@@ -607,6 +680,7 @@
         "float2int": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "float2int"
             ],
@@ -616,6 +690,7 @@
         "gvn-hoist": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-gvn-hoist",
             "passes": [
                 "gvn-hoist"
             ],
@@ -624,6 +699,7 @@
         "gvn-sink": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-gvn-sink",
             "passes": [
                 "gvn-sink"
             ],
@@ -632,6 +708,7 @@
         "guard-widening": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "guard-widening"
             ],
@@ -641,6 +718,7 @@
         "hotcoldsplit": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-hotcoldsplit",
             "passes": [
                 "hotcoldsplit"
             ],
@@ -649,6 +727,7 @@
         "irce": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-irce",
             "passes": [
                 "irce"
             ],
@@ -657,6 +736,7 @@
         "instsimplify": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-instsimplify",
             "passes": [
                 "instsimplify"
             ],
@@ -665,6 +745,7 @@
         "libcalls-shrinkwrap": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-libcalls-shrinkwrap",
             "passes": [
                 "libcalls-shrinkwrap"
             ],
@@ -674,6 +755,7 @@
         "loop-idiom": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-loop-idiom",
             "passes": [
                 "loop-idiom"
             ],
@@ -683,6 +765,7 @@
         "nary-reassociate": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "nary-reassociate"
             ],
@@ -692,6 +775,7 @@
         "separate-const-offset-from-gep": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-separate-const-offset-from-gep",
             "passes": [
                 "separate-const-offset-from-gep"
             ],
@@ -700,6 +784,7 @@
         "strip-gc-relocates": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "strip-gc-relocates"
             ],
@@ -709,6 +794,7 @@
         "synthetic-counts-propagation": {
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
+            "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-TODO:",
             "passes": [
                 "synthetic-counts-propagation"
             ],
