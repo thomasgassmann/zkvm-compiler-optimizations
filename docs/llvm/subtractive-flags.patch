@@ -2532,7 +2532,7 @@ index 4606514cbc71..7ad72e1986bd 100644
    auto *LI = AM.getCachedResult<LoopAnalysis>(F);
    unsigned N = SplitAllCriticalEdges(F, CriticalEdgeSplittingOptions(DT, LI));
 diff --git a/llvm/lib/Transforms/Utils/LCSSA.cpp b/llvm/lib/Transforms/Utils/LCSSA.cpp
-index ab1edf47d8db..15c651e9664e 100644
+index ab1edf47d8db..45887824b426 100644
 --- a/llvm/lib/Transforms/Utils/LCSSA.cpp
 +++ b/llvm/lib/Transforms/Utils/LCSSA.cpp
 @@ -65,6 +65,9 @@ static cl::opt<bool, true>
@@ -2549,8 +2549,8 @@ index ab1edf47d8db..15c651e9664e 100644
  
  /// Transform \p F into loop-closed SSA form.
  bool LCSSAWrapperPass::runOnFunction(Function &F) {
-+  if (DisableLCSSA)
-+    return false;
++  //   if (DisableLCSSA)
++  //     return false;
 +
    LI = &getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
    DT = &getAnalysis<DominatorTreeWrapperPass>().getDomTree();
@@ -2559,8 +2559,8 @@ index ab1edf47d8db..15c651e9664e 100644
  }
  
  PreservedAnalyses LCSSAPass::run(Function &F, FunctionAnalysisManager &AM) {
-+  if (DisableLCSSA)
-+    return PreservedAnalyses::all();
++  //   if (DisableLCSSA)
++  //     return PreservedAnalyses::all();
 +
    auto &LI = AM.getResult<LoopAnalysis>(F);
    auto &DT = AM.getResult<DominatorTreeAnalysis>(F);
@@ -2641,7 +2641,7 @@ index 04042e71a2b8..9a3b7cf4d198 100644
                  IsUtilMode, PrepareForLTO);
    return LR.processLoop(L);
 diff --git a/llvm/lib/Transforms/Utils/LoopSimplify.cpp b/llvm/lib/Transforms/Utils/LoopSimplify.cpp
-index a764fef57491..124083bc2b5f 100644
+index a764fef57491..36e2928320d4 100644
 --- a/llvm/lib/Transforms/Utils/LoopSimplify.cpp
 +++ b/llvm/lib/Transforms/Utils/LoopSimplify.cpp
 @@ -75,6 +75,9 @@ using namespace llvm;
@@ -2654,31 +2654,12 @@ index a764fef57491..124083bc2b5f 100644
  // If the block isn't already, move the new block to right after some 'outside
  // block' block.  This prevents the preheader from being placed inside the loop
  // body, e.g. when the loop hasn't been rotated.
-@@ -700,6 +703,9 @@ ReprocessLoop:
- bool llvm::simplifyLoop(Loop *L, DominatorTree *DT, LoopInfo *LI,
-                         ScalarEvolution *SE, AssumptionCache *AC,
-                         MemorySSAUpdater *MSSAU, bool PreserveLCSSA) {
-+  if (DisableLoopSimplify)
-+    return false;
-+
-   bool Changed = false;
- 
- #ifndef NDEBUG
-@@ -792,6 +798,8 @@ Pass *llvm::createLoopSimplifyPass() { return new LoopSimplify(); }
- /// it in any convenient order) inserting preheaders...
- ///
- bool LoopSimplify::runOnFunction(Function &F) {
-+  if (DisableLoopSimplify)
-+    return false;
-   bool Changed = false;
-   LoopInfo *LI = &getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
-   DominatorTree *DT = &getAnalysis<DominatorTreeWrapperPass>().getDomTree();
-@@ -825,6 +833,8 @@ bool LoopSimplify::runOnFunction(Function &F) {
+@@ -825,6 +828,8 @@ bool LoopSimplify::runOnFunction(Function &F) {
  
  PreservedAnalyses LoopSimplifyPass::run(Function &F,
                                          FunctionAnalysisManager &AM) {
-+  if (DisableLoopSimplify)
-+    return PreservedAnalyses::all();
++  //   if (DisableLoopSimplify)
++  //     return PreservedAnalyses::all();
    bool Changed = false;
    LoopInfo *LI = &AM.getResult<LoopAnalysis>(F);
    DominatorTree *DT = &AM.getResult<DominatorTreeAnalysis>(F);
