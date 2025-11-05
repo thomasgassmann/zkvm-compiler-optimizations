@@ -177,9 +177,9 @@ def get_build_command(
         if not profile.lower_atomic_before
         else (lower_atomic_pass + profile.passes)
     )
-    pass_string = (
-        "" if passes_string == "" or subtractive else f"-C passes={passes_string}"
-    )
+    pass_string = "" if passes_string == "" else f"-C passes={passes_string}"
+    if subtractive:
+        pass_string = f"-C passes=" + ",".join(lower_atomic_pass)
 
     prepopulate_passes = (
         "" if profile.prepopulate_passes or subtractive else "-C no-prepopulate-passes"
