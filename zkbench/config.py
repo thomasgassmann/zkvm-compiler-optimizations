@@ -17,6 +17,8 @@ class Profile:
     prepopulate_passes: bool
     lower_atomic_before: bool = False
     subtractive: str = ""
+    csubtractive: str = ""
+    csubtractivellvm: str = ""
 
     def __getattribute__(self, name):
         if name == "name":
@@ -52,6 +54,8 @@ def get_profile_by_name(profile_name: str) -> Profile:
         CONFIG["profiles"][profile_name]["prepopulate_passes"],
         CONFIG["profiles"][profile_name].get("lower_atomic_before", False),
         CONFIG["profiles"][profile_name].get("subtractive", ""),
+        CONFIG["profiles"][profile_name].get("csubtractive", ""),
+        CONFIG["profiles"][profile_name].get("csubtractivellvm", ""),
     )
 
 

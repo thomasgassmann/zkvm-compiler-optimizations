@@ -1,8 +1,8 @@
-CC=clang
-OPT=opt
-LLC=llc
+CC=$(ZK_CLANG_PATH)
+OPT=$(ZK_OPT_PATH)
+LLC=$(ZK_LLC_PATH)
 CFLAGS=$(ZK_TARGET_CFLAGS) $(ZK_CFLAGS) -Xclang -disable-O0-optnone -I../c-platform/include -Wno-incompatible-library-redeclaration
-LLVMFLAGS=-disable-verify -passes='$(PASSES)'
+LLVMFLAGS=-disable-verify -passes='$(PASSES)' $(ZK_LLVMFLAGS)
 
 LIBNAME=lib$(PROGRAM).a
 

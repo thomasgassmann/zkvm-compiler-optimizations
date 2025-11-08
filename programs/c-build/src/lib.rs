@@ -47,13 +47,18 @@ pub fn setup_build(program: &str) {
     let llc_flags = "";
 
     let cflags = env::var("CARGO_ZK_CFLAGS").unwrap_or("".to_string());
+    let cllvm_flags = env::var("CARGO_ZK_LLVMFLAGS").unwrap_or("".to_string());
     println!("cargo::warning=Done cleaning");
     let mut binding = Command::new("make");
     let make_command = binding
         .current_dir("..")
         .arg(passes_string)
         .arg(format!("ZK_CFLAGS={}", cflags))
+        .arg(format!("ZK_LLVMFLAGS={}", cllvm_flags))
         .arg(format!("ZK_TARGET_CFLAGS={}", target))
+        .arg(format!("ZK_CLANG_PATH={}", env::var("ZK_CLANG_PATH").unwrap_or("clang".to_string())))
+        .arg(format!("ZK_OPT_PATH={}", env::var("ZK_OPT_PATH").unwrap_or("opt".to_string())))
+        .arg(format!("ZK_LLC_PATH={}", env::var("ZK_LLC_PATH").unwrap_or("llc".to_string())))
         .arg(format!("OUTDIR={}", ctarget))
         .arg(format!("LLC_FLAGS={}", llc_flags))
         .arg(format!("PROGRAM={}", program))

@@ -159,7 +159,8 @@ def get_build_command(
     env = {
         **os.environ,
         "CARGO_ZK_PASSES": passes,
-        "CARGO_ZK_CFLAGS": profile.cflags,
+        "CARGO_ZK_CFLAGS": profile.cflags if not subtractive else profile.csubtractive,
+        "CARGO_ZK_LLVMFLAGS": "" if not subtractive else profile.csubtractivellvm,
         "CARGO_ZK_LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),
         "THREAD_ID": str(threading.get_ident()),
     }
