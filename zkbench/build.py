@@ -158,7 +158,7 @@ def get_build_command(
     passes = ",".join(profile.passes)
     env = {
         **os.environ,
-        "CARGO_ZK_PASSES": passes,
+        "CARGO_ZK_PASSES": passes if not subtractive else "",
         "CARGO_ZK_CFLAGS": profile.cflags if not subtractive else profile.csubtractive,
         "CARGO_ZK_LLVMFLAGS": "" if not subtractive else profile.csubtractivellvm,
         "CARGO_ZK_LOWER_ATOMIC_BEFORE": str(profile.lower_atomic_before),

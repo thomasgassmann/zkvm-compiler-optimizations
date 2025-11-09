@@ -16,13 +16,18 @@ pub fn setup_build(program: &str) {
     let lower_atomic_before_str = env::var("CARGO_ZK_LOWER_ATOMIC_BEFORE").unwrap_or("".to_string());
     let lower_atomic_before = lower_atomic_before_str == "True";
 
-    let mut passes_string = String::from(format!("PASSES={}", "lower-atomic"));
+    let cflags = env::var("CARGO_ZK_CFLAGS").unwrap_or("".to_string());
+    let cllvm_flags = env::var("CARGO_ZK_LLVMFLAGS").unwrap_or("".to_string());
+
+    let mut passes_string = String::from("PASSES=lower-atomic");
     if !passes.is_empty() {
         if lower_atomic_before {
             passes_string = format!("PASSES={},{}", "lower-atomic", &passes);
         } else {
             passes_string = format!("PASSES={},{}", &passes, "lower-atomic");
         }
+    } else if !cflags.is_empty() {
+        passes_string = String::from("PASSES=default<O3>,lower-atomic");
     }
 
     println!("cargo::warning=Cleaning and building C with passes: {}", passes_string);
@@ -46,8 +51,6 @@ pub fn setup_build(program: &str) {
     #[cfg(not(feature = "x86"))]
     let llc_flags = "";
 
-    let cflags = env::var("CARGO_ZK_CFLAGS").unwrap_or("".to_string());
-    let cllvm_flags = env::var("CARGO_ZK_LLVMFLAGS").unwrap_or("".to_string());
     println!("cargo::warning=Done cleaning");
     let mut binding = Command::new("make");
     let make_command = binding
