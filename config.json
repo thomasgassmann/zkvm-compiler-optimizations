@@ -946,7 +946,8 @@
                 "separate-const-offset-from-gep"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3 -Cllvm-args=--disable-separate-const-offset-from-gep"
+            "csubtractive": "-O0",
+            "csubtractivellvm": "--disable-separate-const-offset-from-gep"
         },
         "strip-gc-relocates": {
             "cflags": "-O0",
