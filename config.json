@@ -4,7 +4,7 @@
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "subtractive": "-C opt-level=3",
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "passes": [],
             "prepopulate_passes": false,
             "csubtractivellvm": ""
@@ -13,7 +13,7 @@
             "cflags": "-O0",
             "rustflags": "-C opt-level=0 -Z mir-opt-level=0",
             "subtractive": "-C opt-level=3 -Cllvm-args=--disable-pass-always-inline",
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "passes": [
                 "always-inline"
             ],
@@ -28,7 +28,7 @@
                 "argpromotion"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-argpromotion"
         },
         "attributor": {
@@ -39,7 +39,7 @@
                 "attributor"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-attributor"
         },
         "bdce": {
@@ -50,7 +50,7 @@
                 "bdce"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-bdce"
         },
         "correlated-propagation": {
@@ -61,7 +61,7 @@
                 "correlated-propagation"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-correlated-propagation"
         },
         "globaldce": {
@@ -72,7 +72,7 @@
                 "globaldce"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-globaldce"
         },
         "globalsplit": {
@@ -84,7 +84,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-globalsplit"
         },
         "globalopt": {
@@ -95,7 +95,7 @@
                 "globalopt"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-globalopt"
         },
         "ipsccp": {
@@ -106,7 +106,7 @@
                 "ipsccp"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-ipsccp"
         },
         "inline": {
@@ -117,7 +117,7 @@
                 "inline"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-inline"
         },
         "loop-sink": {
@@ -129,7 +129,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-sink"
         },
         "loop-data-prefetch": {
@@ -141,7 +141,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-data-prefetch"
         },
         "loop-extract": {
@@ -152,7 +152,7 @@
                 "loop-extract"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-extract"
         },
         "loop-fusion": {
@@ -163,7 +163,7 @@
                 "loop-fusion"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-fusion"
         },
         "loop-instsimplify": {
@@ -174,7 +174,7 @@
                 "loop(loop-instsimplify)"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-instsimplify"
         },
         "loop-interchange": {
@@ -185,7 +185,7 @@
                 "loop(loop-interchange)"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-interchange"
         },
         "loop-predication": {
@@ -196,7 +196,7 @@
                 "loop(loop-predication)"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-predication"
         },
         "loop-versioning-licm": {
@@ -207,7 +207,7 @@
                 "loop(loop-versioning-licm)"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-versioning-licm"
         },
         "mergefunc": {
@@ -218,7 +218,7 @@
                 "mergefunc"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-mergefunc"
         },
         "mergeicmps": {
@@ -230,7 +230,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-mergeicmps"
         },
         "mldst-motion": {
@@ -241,7 +241,7 @@
                 "mldst-motion"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-mldst-motion"
         },
         "newgvn": {
@@ -252,7 +252,7 @@
                 "newgvn"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-newgvn"
         },
         "partial-inliner": {
@@ -263,7 +263,8 @@
                 "partial-inliner"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3 -Cllvm-args=--disable-partial-inlining"
+            "csubtractive": "-O0",
+            "csubtractivellvm": "--disable-partial-inlining"
         },
         "partially-inline-libcalls": {
             "cflags": "-O0",
@@ -274,7 +275,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-partially-inline-libcalls"
         },
         "sroa": {
@@ -285,7 +286,7 @@
                 "sroa"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-sroa"
         },
         "sink": {
@@ -296,7 +297,7 @@
                 "sink"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-sink"
         },
         "speculative-execution": {
@@ -307,7 +308,7 @@
                 "speculative-execution"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-speculative-execution"
         },
         "slsr": {
@@ -318,7 +319,7 @@
                 "slsr"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-slsr"
         },
         "strip": {
@@ -329,7 +330,7 @@
                 "strip"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-strip"
         },
         "wholeprogramdevirt": {
@@ -341,7 +342,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-wholeprogramdevirt"
         },
         "sccp": {
@@ -352,7 +353,7 @@
                 "sccp"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-sccp"
         },
         "gvn": {
@@ -363,7 +364,7 @@
                 "gvn"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-gvn"
         },
         "tailcall": {
@@ -374,7 +375,7 @@
                 "tailcallelim"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-tailcallelim"
         },
         "adce": {
@@ -385,7 +386,7 @@
                 "adce"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-adce"
         },
         "dse": {
@@ -396,7 +397,7 @@
                 "dse"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-dse"
         },
         "indvars": {
@@ -408,7 +409,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-indvars"
         },
         "instcombine": {
@@ -419,7 +420,7 @@
                 "instcombine<max-iterations=1000>"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-instcombine"
         },
         "aggressive-instcombine": {
@@ -430,7 +431,7 @@
                 "aggressive-instcombine"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-aggressive-instcombine"
         },
         "jump-threading": {
@@ -441,7 +442,7 @@
                 "jump-threading"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-jump-threading"
         },
         "lcssa": {
@@ -452,7 +453,7 @@
                 "lcssa"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-lcssa"
         },
         "loop-reduce": {
@@ -464,7 +465,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-reduce"
         },
         "loop-rotate": {
@@ -476,7 +477,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-rotate"
         },
         "loop-simplify": {
@@ -487,7 +488,7 @@
                 "loop-simplify"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-simplify"
         },
         "loop-unroll": {
@@ -498,7 +499,7 @@
                 "loop-unroll"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-unroll"
         },
         "loop-unroll-and-jam": {
@@ -510,7 +511,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-unroll-and-jam"
         },
         "loop-unroll-full": {
@@ -522,7 +523,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-unroll-full"
         },
         "licm": {
@@ -533,7 +534,7 @@
                 "loop-mssa(licm)"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-licm"
         },
         "loop-deletion": {
@@ -545,7 +546,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-deletion"
         },
         "memcpyopt": {
@@ -556,7 +557,7 @@
                 "memcpyopt"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-memcpyopt"
         },
         "simplifycfg": {
@@ -567,7 +568,7 @@
                 "simplifycfg"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-simplifycfg"
         },
         "reassociate": {
@@ -578,7 +579,7 @@
                 "reassociate"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-reassociate"
         },
         "mem2reg": {
@@ -589,7 +590,7 @@
                 "mem2reg"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-mem2reg"
         },
         "reg2mem": {
@@ -600,7 +601,7 @@
                 "reg2mem"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-reg2mem"
         },
         "simple-loop-unswitch": {
@@ -612,7 +613,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-simple-loop-unswitch"
         },
         "mergereturn": {
@@ -623,7 +624,7 @@
                 "mergereturn"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-mergereturn"
         },
         "extract-blocks": {
@@ -635,7 +636,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-extract-blocks"
         },
         "break-crit-edges": {
@@ -646,7 +647,7 @@
                 "break-crit-edges"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-break-crit-edges"
         },
         "constmerge": {
@@ -658,7 +659,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-constmerge"
         },
         "dce": {
@@ -669,7 +670,7 @@
                 "dce"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-dce"
         },
         "deadargelim": {
@@ -680,7 +681,7 @@
                 "deadargelim"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-deadargelim"
         },
         "function-attrs": {
@@ -691,7 +692,7 @@
                 "function-attrs"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-function-attrs"
         },
         "lower-global-dtors": {
@@ -703,7 +704,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-lower-global-dtors"
         },
         "lower-invoke": {
@@ -715,7 +716,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-lower-invoke"
         },
         "lower-switch": {
@@ -726,7 +727,7 @@
                 "lower-switch"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-lower-switch"
         },
         "rel-lookup-table-converter": {
@@ -738,7 +739,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "strip-dead-debug-info": {
@@ -750,7 +751,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "strip-dead-prototypes": {
@@ -762,7 +763,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "bounds-checking": {
@@ -773,7 +774,7 @@
                 "bounds-checking"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-bounds-checking"
         },
         "callsite-splitting": {
@@ -785,7 +786,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "consthoist": {
@@ -796,7 +797,7 @@
                 "consthoist"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-consthoist"
         },
         "div-rem-pairs": {
@@ -808,7 +809,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "early-cse": {
@@ -819,7 +820,7 @@
                 "early-cse"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-early-cse"
         },
         "float2int": {
@@ -831,7 +832,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "gvn-hoist": {
@@ -842,7 +843,7 @@
                 "gvn-hoist"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-gvn-hoist"
         },
         "gvn-sink": {
@@ -853,7 +854,7 @@
                 "gvn-sink"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-gvn-sink"
         },
         "guard-widening": {
@@ -865,7 +866,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "hotcoldsplit": {
@@ -876,7 +877,7 @@
                 "hotcoldsplit"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-hotcoldsplit"
         },
         "irce": {
@@ -887,7 +888,7 @@
                 "irce"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-irce"
         },
         "instsimplify": {
@@ -898,7 +899,7 @@
                 "instsimplify"
             ],
             "prepopulate_passes": false,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-instsimplify"
         },
         "libcalls-shrinkwrap": {
@@ -910,7 +911,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-libcalls-shrinkwrap"
         },
         "loop-idiom": {
@@ -922,7 +923,7 @@
             ],
             "prepopulate_passes": false,
             "lower_atomic_before": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-loop-idiom"
         },
         "nary-reassociate": {
@@ -934,7 +935,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "separate-const-offset-from-gep": {
@@ -956,7 +957,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "synthetic-counts-propagation": {
@@ -968,7 +969,7 @@
             ],
             "prepopulate_passes": false,
             "no_default": true,
-            "csubtractive": "-O3",
+            "csubtractive": "-O0",
             "csubtractivellvm": "--disable-pass-TODO:"
         },
         "o0": {
