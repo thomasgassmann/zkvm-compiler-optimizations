@@ -7,7 +7,7 @@ use super::{
     utils::get_elf_hash,
 };
 use once_cell::sync::Lazy;
-use sp1_core_executor::{IoWriter, Program};
+use sp1_core_executor::{ExecutorMode, IoWriter, Program};
 use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{
     EnvProver, ExecutionReport, Executor, ProverClient, SP1Context, SP1Prover, SP1ProvingKey,
@@ -49,11 +49,39 @@ fn get_cycles(elf: &[u8], stdin: &SP1Stdin) -> u64 {
     runtime.state.global_clk
 }
 
+fn get_shards(elf: &[u8], stdin: &SP1Stdin) -> u64 {
+    let program = Program::from(elf).unwrap();
+
+    let opts = sp1_stark::SP1CoreOpts {
+        shard_batch_size: 0,
+        ..Default::default()
+    };
+
+    let mut executor = Executor::with_context(program, opts, SP1Context::default());
+    executor.executor_mode = ExecutorMode::Trace;
+    executor.write_vecs(&stdin.buffer);
+    for (proof, vkey) in stdin.proofs.iter() {
+        executor.write_proof(proof.clone(), vkey.clone());
+    }
+
+    let mut total_shards = 0;
+    let mut done = false;
+
+    while !done {
+        let (records, finished) = executor.execute_record(true).unwrap();
+        total_shards += records.len() as u64;
+        done = finished;
+    }
+
+    total_shards
+}
+
 pub fn get_sp1_stats(elf: &[u8], program: &ProgramId, input_override: &Option<String>) -> ElfStats {
     let (stdin, _) = exec_sp1_prepare(elf, program, input_override);
     ElfStats {
         cycle_count: Some(get_cycles(&elf, &stdin)),
         paging_cycles: None,
+        shards: Some(get_shards(elf, &stdin)),
         size: elf.len(),
         hash: get_elf_hash(elf),
     }
