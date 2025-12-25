@@ -1,4 +1,7 @@
-use std::rc::Rc;
+use std::{
+    rc::Rc,
+    sync::{Arc, Mutex},
+};
 
 use super::{
     super::{input::set_risc0_input, types::ProgramId},
@@ -23,6 +26,35 @@ pub fn exec_risc0_setup<'a>(
     ExecutorImpl::from_elf(env.unwrap(), elf).unwrap()
 }
 
+fn get_dynamic_instruction_count(program: &ProgramId, elf: &[u8]) -> u64 {
+    let mut builder = ExecutorEnv::builder();
+    let instruction_count = Arc::new(Mutex::new(0u64));
+    builder.trace_callback({
+        let c = Arc::clone(&instruction_count);
+        move |trace: risc0_zkvm::TraceEvent| {
+            match trace {
+                risc0_zkvm::TraceEvent::InstructionStart {
+                    cycle: _,
+                    pc: _,
+                    insn: _,
+                } => {
+                    let mut count = c.lock().unwrap();
+                    *count += 1;
+                }
+                _ => {}
+            };
+            Ok(())
+        }
+    });
+    set_risc0_input(&program, &mut builder, &None);
+    let env = builder.build().unwrap();
+
+    let mut exec = ExecutorImpl::from_elf(env, &elf).unwrap();
+    exec.run().unwrap();
+    let count = instruction_count.lock().unwrap();
+    *count
+}
+
 pub fn get_risc0_stats<'a>(
     elf: &'a [u8],
     program: &'a ProgramId,
@@ -31,6 +63,7 @@ pub fn get_risc0_stats<'a>(
     let mut exec = exec_risc0_setup(elf, program, input_override);
     let session = exec.run().unwrap();
     ElfStats {
+        dynamic_instruction_count: Some(get_dynamic_instruction_count(program, elf)),
         cycle_count: Some(session.user_cycles),
         paging_cycles: Some(session.paging_cycles),
         reserved_cycles: Some(session.reserved_cycles),

@@ -60,6 +60,7 @@ type MainCoreExample = unsafe extern "C" fn(a: Vec<i32>, b: Vec<i32>) -> ();
 
 pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats {
     ElfStats {
+        dynamic_instruction_count: None,
         cycle_count: None,
         paging_cycles: None,
         reserved_cycles: None,

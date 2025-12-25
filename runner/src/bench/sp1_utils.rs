@@ -76,9 +76,19 @@ fn get_shards(elf: &[u8], stdin: &SP1Stdin) -> u64 {
     total_shards
 }
 
+fn get_dynamic_instruction_count(elf: &[u8], stdin: &SP1Stdin) -> u64 {
+    let client = ProverClient::builder().cpu().build();
+
+    let (_, execution_report) = client.execute(elf, &stdin).run().unwrap();
+
+    let instruction_count = execution_report.total_instruction_count();
+    instruction_count
+}
+
 pub fn get_sp1_stats(elf: &[u8], program: &ProgramId, input_override: &Option<String>) -> ElfStats {
     let (stdin, _) = exec_sp1_prepare(elf, program, input_override);
     ElfStats {
+        dynamic_instruction_count: Some(get_dynamic_instruction_count(elf, &stdin)),
         cycle_count: Some(get_cycles(&elf, &stdin)),
         paging_cycles: None,
         reserved_cycles: None,

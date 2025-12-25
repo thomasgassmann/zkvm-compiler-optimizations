@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
 pub struct ElfStats {
+    pub dynamic_instruction_count: Option<u64>,
     pub cycle_count: Option<u64>,
     pub paging_cycles: Option<u64>,
     pub reserved_cycles: Option<u64>,
