@@ -81,6 +81,8 @@ pub fn get_sp1_stats(elf: &[u8], program: &ProgramId, input_override: &Option<St
     ElfStats {
         cycle_count: Some(get_cycles(&elf, &stdin)),
         paging_cycles: None,
+        reserved_cycles: None,
+        total_cycles: None,
         shards: Some(get_shards(elf, &stdin)),
         size: elf.len(),
         hash: get_elf_hash(elf),

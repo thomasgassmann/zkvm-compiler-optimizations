@@ -17,6 +17,8 @@ use serde::{Deserialize, Serialize};
 pub struct ElfStats {
     pub cycle_count: Option<u64>,
     pub paging_cycles: Option<u64>,
+    pub reserved_cycles: Option<u64>,
+    pub total_cycles: Option<u64>,
     pub shards: Option<u64>,
     pub size: usize,
     pub hash: String,

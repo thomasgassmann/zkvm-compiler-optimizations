@@ -33,6 +33,8 @@ pub fn get_risc0_stats<'a>(
     ElfStats {
         cycle_count: Some(session.user_cycles),
         paging_cycles: Some(session.paging_cycles),
+        reserved_cycles: Some(session.reserved_cycles),
+        total_cycles: Some(session.total_cycles),
         shards: Some(session.segments.len() as u64),
         size: elf.len(),
         hash: get_elf_hash(elf),

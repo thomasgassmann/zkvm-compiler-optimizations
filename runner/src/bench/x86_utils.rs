@@ -62,6 +62,8 @@ pub fn get_x86_stats(elf: &[u8], _: &ProgramId, _: &Option<String>) -> ElfStats 
     ElfStats {
         cycle_count: None,
         paging_cycles: None,
+        reserved_cycles: None,
+        total_cycles: None,
         shards: None,
         size: elf.len(),
         hash: get_elf_hash(elf),
