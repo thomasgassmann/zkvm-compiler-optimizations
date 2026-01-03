@@ -8,13 +8,13 @@ use super::{
     utils::get_elf_hash,
 };
 use once_cell::sync::Lazy;
-use sp1_core_executor::{ExecutionRecord, IoWriter, Program};
+use sp1_core_executor::{ExecutionRecord, Program};
 use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{
     EnvProver, ExecutionReport, Executor, ProverClient, SP1Context, SP1Prover, SP1ProvingKey,
     SP1PublicValues, SP1Stdin, SP1VerifyingKey,
 };
-use sp1_stark::{MachineRecord, SP1CoreOpts, SP1ProverOpts};
+use sp1_stark::{MachineRecord, SP1ProverOpts};
 
 use super::utils::ElfStats;
 
@@ -39,22 +39,15 @@ pub fn exec_sp1_prepare(
     (stdin, prover)
 }
 
-fn get_cycles(elf: &[u8], stdin: &SP1Stdin) -> u64 {
-    let mut sink = SP1StdoutSink;
-    let writer: Option<&'_ mut dyn IoWriter> = Some(&mut sink);
-    let program = Program::from(elf).unwrap();
-    let mut runtime = Executor::new(program, SP1CoreOpts::default());
-    runtime.write_vecs(&stdin.buffer);
-    runtime.io_options.stdout = writer;
-    runtime.run_fast().unwrap();
-    runtime.state.global_clk
-}
-
-
-pub fn get_shards(elf: &[u8], stdin: &SP1Stdin) -> u64 {
+fn get_sp1_metrics_combined(
+    elf: &[u8],
+    program: &ProgramId,
+    input_override: &Option<String>,
+) -> (u64, u64, u64) {
+    let stdin = get_sp1_stdin(program, input_override);
     let prover = SP1Prover::<CpuProverComponents>::new();
     let (_, _, program, _) = prover.setup(&elf);
-    
+
     let opts = SP1ProverOpts::auto().core_opts;
 
     let mut executor = Executor::with_context(program.clone(), opts.clone(), SP1Context::default());
@@ -72,19 +65,30 @@ pub fn get_shards(elf: &[u8], stdin: &SP1Stdin) -> u64 {
     }
 
     let mut total_shards = 0;
+    let mut total_instructions = 0;
+    let mut total_cycles = 0;
     let mut deferred_acc = ExecutionRecord::new(Arc::new(program.clone()));
-    
+
     loop {
         let (checkpoint_state, _, done) = executor.execute_state(false).expect("Execution failed");
         let num_cycles = executor.state.global_clk;
-        
+        if done {
+            total_cycles = num_cycles;
+        }
+
         let mut runtime = Executor::recover(program.clone(), checkpoint_state, opts.clone());
         runtime.maximal_shapes = prover.core_shape_config.as_ref().map(|config| {
-             config.maximal_core_shapes(opts.shard_size.ilog2() as usize).into_iter().collect()
+            config
+                .maximal_core_shapes(opts.shard_size.ilog2() as usize)
+                .into_iter()
+                .collect()
         });
-        
-        let (mut records, _) = runtime.execute_record(true).expect("Trace execution failed");
-        
+
+        let (mut records, _) = runtime
+            .execute_record(true)
+            .expect("Trace execution failed");
+        total_instructions += runtime.report.total_instruction_count();
+
         for record in records.iter_mut() {
             deferred_acc.append(&mut record.defer());
         }
@@ -95,55 +99,36 @@ pub fn get_shards(elf: &[u8], stdin: &SP1Stdin) -> u64 {
                 < opts.split_opts.combine_memory_threshold
             && deferred_acc.global_memory_finalize_events.len()
                 < opts.split_opts.combine_memory_threshold;
-        
+
         let last_record = if should_combine {
             records.last_mut().map(|b| b.as_mut())
         } else {
             None
         };
         let extra_shards = deferred_acc.split(done, last_record, opts.split_opts);
-        
+
         total_shards += records.len();
         total_shards += extra_shards.len();
-        
-        if done { break; }
+
+        if done {
+            break;
+        }
     }
 
-    total_shards as u64
-}
-
-fn get_dynamic_instruction_count(elf: &[u8], stdin: &SP1Stdin) -> u64 {
-    let client = ProverClient::builder().cpu().build();
-
-    let (_, execution_report) = client.execute(elf, &stdin).run().unwrap();
-
-    let instruction_count = execution_report.total_instruction_count();
-    instruction_count
+    (total_shards as u64, total_cycles, total_instructions)
 }
 
 pub fn get_sp1_stats(elf: &[u8], program: &ProgramId, input_override: &Option<String>) -> ElfStats {
-    let (stdin, _) = exec_sp1_prepare(elf, program, input_override);
+    let (shards, cycles, instructions) = get_sp1_metrics_combined(elf, program, input_override);
     ElfStats {
-        dynamic_instruction_count: Some(get_dynamic_instruction_count(elf, &stdin)),
-        cycle_count: Some(get_cycles(&elf, &stdin)),
+        dynamic_instruction_count: Some(instructions),
+        cycle_count: Some(cycles),
         paging_cycles: None,
         reserved_cycles: None,
         total_cycles: None,
-        shards: Some(get_shards(elf, &stdin)),
+        shards: Some(shards),
         size: elf.len(),
         hash: get_elf_hash(elf),
-    }
-}
-
-struct SP1StdoutSink;
-
-impl std::io::Write for SP1StdoutSink {
-    fn write(&mut self, _buf: &[u8]) -> std::io::Result<usize> {
-        Ok(_buf.len())
-    }
-
-    fn flush(&mut self) -> std::io::Result<()> {
-        Ok(())
     }
 }
 
