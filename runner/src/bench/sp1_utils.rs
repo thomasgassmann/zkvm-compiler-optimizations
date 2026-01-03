@@ -1,4 +1,5 @@
 use std::env;
+use std::sync::Arc;
 
 use crate::utils::is_gpu_proving;
 
@@ -7,13 +8,13 @@ use super::{
     utils::get_elf_hash,
 };
 use once_cell::sync::Lazy;
-use sp1_core_executor::{IoWriter, Program, RiscvAirId};
-use sp1_prover::{components::CpuProverComponents, gas};
+use sp1_core_executor::{ExecutionRecord, IoWriter, Program};
+use sp1_prover::components::CpuProverComponents;
 use sp1_sdk::{
     EnvProver, ExecutionReport, Executor, ProverClient, SP1Context, SP1Prover, SP1ProvingKey,
     SP1PublicValues, SP1Stdin, SP1VerifyingKey,
 };
-use sp1_stark::{SP1CoreOpts, SP1ProverOpts};
+use sp1_stark::{MachineRecord, SP1CoreOpts, SP1ProverOpts};
 
 use super::utils::ElfStats;
 
@@ -52,11 +53,11 @@ fn get_cycles(elf: &[u8], stdin: &SP1Stdin) -> u64 {
 
 pub fn get_shards(elf: &[u8], stdin: &SP1Stdin) -> u64 {
     let prover = SP1Prover::<CpuProverComponents>::new();
+    let (_, _, program, _) = prover.setup(&elf);
     
     let opts = SP1ProverOpts::auto().core_opts;
-    let program = Program::from(elf).unwrap();
 
-    let mut executor = Executor::with_context(program, opts.clone(), SP1Context::default());
+    let mut executor = Executor::with_context(program.clone(), opts.clone(), SP1Context::default());
     executor.maximal_shapes = prover.core_shape_config.as_ref().map(|config| {
         config
             .maximal_core_shapes(opts.shard_size.ilog2() as usize)
@@ -70,36 +71,45 @@ pub fn get_shards(elf: &[u8], stdin: &SP1Stdin) -> u64 {
         executor.write_proof(proof.clone(), vkey.clone());
     }
 
-    executor.run_fast().expect("Execution failed");
-
-    let mut estimator = executor.record_estimator.unwrap();
-
-    // adapted from `prove_core_stream`
-    if executor.state.global_clk < (1 << 21)
-        && estimator.memory_global_init_events < opts.split_opts.combine_memory_threshold as u64
-        && estimator.memory_global_finalize_events < opts.split_opts.combine_memory_threshold as u64
-    {
-        if let Some(last_shard) = estimator.core_records.last_mut() {
-            let init = estimator.memory_global_init_events;
-            let finalize = estimator.memory_global_finalize_events;
-
-            last_shard[RiscvAirId::MemoryGlobalInit] += init;
-            last_shard[RiscvAirId::MemoryGlobalFinalize] += finalize;
-            last_shard[RiscvAirId::Global] += init + finalize;
-
-            estimator.memory_global_init_events = 0;
-            estimator.memory_global_finalize_events = 0;
+    let mut total_shards = 0;
+    let mut deferred_acc = ExecutionRecord::new(Arc::new(program.clone()));
+    
+    loop {
+        let (checkpoint_state, _, done) = executor.execute_state(false).expect("Execution failed");
+        let num_cycles = executor.state.global_clk;
+        
+        let mut runtime = Executor::recover(program.clone(), checkpoint_state, opts.clone());
+        runtime.maximal_shapes = prover.core_shape_config.as_ref().map(|config| {
+             config.maximal_core_shapes(opts.shard_size.ilog2() as usize).into_iter().collect()
+        });
+        
+        let (mut records, _) = runtime.execute_record(true).expect("Trace execution failed");
+        
+        for record in records.iter_mut() {
+            deferred_acc.append(&mut record.defer());
         }
+
+        let should_combine = done
+            && num_cycles < 1 << 21
+            && deferred_acc.global_memory_initialize_events.len()
+                < opts.split_opts.combine_memory_threshold
+            && deferred_acc.global_memory_finalize_events.len()
+                < opts.split_opts.combine_memory_threshold;
+        
+        let last_record = if should_combine {
+            records.last_mut().map(|b| b.as_mut())
+        } else {
+            None
+        };
+        let extra_shards = deferred_acc.split(done, last_record, opts.split_opts);
+        
+        total_shards += records.len();
+        total_shards += extra_shards.len();
+        
+        if done { break; }
     }
 
-    let raw_records = gas::estimated_records(&opts.split_opts, &estimator);
-
-    let shard_count = gas::fit_records_to_shapes(
-        prover.core_shape_config.as_ref().expect("Core shapes not initialized"),
-        raw_records
-    ).count();
-
-    shard_count as u64
+    total_shards as u64
 }
 
 fn get_dynamic_instruction_count(elf: &[u8], stdin: &SP1Stdin) -> u64 {
